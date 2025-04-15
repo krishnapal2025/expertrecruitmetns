@@ -6,6 +6,14 @@ import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { insertJobSchema, insertApplicationSchema } from "@shared/schema";
 
+// In-memory store for real-time updates
+const realtimeStore = {
+  lastJobId: 0,
+  lastApplicationId: 0,
+  notifications: [] as { id: number; userId: number; message: string; read: boolean; createdAt: Date }[],
+  notificationId: 1
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication routes
   setupAuth(app);
@@ -80,6 +88,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         employerId: employer.id
       });
       
+      // Update real-time store and create notifications for job seekers
+      realtimeStore.lastJobId = Math.max(realtimeStore.lastJobId, job.id);
+      
+      // Get all job seekers to send notifications to
+      const users = await storage.getAllUsers();
+      const jobSeekerUsers = users.filter(u => u.userType === "jobseeker");
+      
+      // Create notifications for all job seekers
+      jobSeekerUsers.forEach(jobSeekerUser => {
+        realtimeStore.notifications.push({
+          id: realtimeStore.notificationId++,
+          userId: jobSeekerUser.id,
+          message: `New job posted: ${job.title} at ${employer.companyName}`,
+          read: false,
+          createdAt: new Date()
+        });
+      });
+      
       res.status(201).json(job);
     } catch (error) {
       if (error instanceof ZodError) {
@@ -138,6 +164,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         jobSeekerId: jobSeeker.id,
         coverLetter
       });
+      
+      // Update real-time store for application tracking
+      realtimeStore.lastApplicationId = Math.max(realtimeStore.lastApplicationId, application.id);
+      
+      // Get the employer who posted this job
+      const employer = await storage.getEmployer(job.employerId);
+      if (employer) {
+        // Get the employer user
+        const employerUser = await storage.getUserByEmployerId(employer.id);
+        if (employerUser) {
+          // Create a notification for the employer
+          realtimeStore.notifications.push({
+            id: realtimeStore.notificationId++,
+            userId: employerUser.id,
+            message: `${jobSeeker.firstName} ${jobSeeker.lastName} applied for your job: ${job.title}`,
+            read: false,
+            createdAt: new Date()
+          });
+        }
+      }
       
       res.status(201).json(application);
     } catch (error) {
@@ -212,6 +258,148 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching testimonials:", error);
       res.status(500).json({ message: "Failed to fetch testimonials" });
+    }
+  });
+
+  // AJAX Real-time updates API endpoints
+  
+  // Get real-time job updates (new jobs since last check)
+  app.get("/api/realtime/jobs", async (req, res) => {
+    try {
+      const { since } = req.query;
+      const sinceId = parseInt(since as string) || 0;
+      
+      // Get all jobs newer than the provided job ID
+      const jobs = await storage.getJobs();
+      const newJobs = jobs.filter(job => job.id > sinceId);
+      
+      // Update lastJobId if we found newer jobs
+      if (newJobs.length > 0) {
+        const maxId = Math.max(...newJobs.map(job => job.id));
+        realtimeStore.lastJobId = Math.max(realtimeStore.lastJobId, maxId);
+      }
+      
+      res.json({
+        jobs: newJobs,
+        lastId: realtimeStore.lastJobId
+      });
+    } catch (error) {
+      console.error("Error fetching real-time job updates:", error);
+      res.status(500).json({ message: "Failed to fetch job updates" });
+    }
+  });
+  
+  // Get real-time application updates for employers
+  app.get("/api/realtime/applications", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to get updates" });
+      }
+      
+      const { since } = req.query;
+      const sinceId = parseInt(since as string) || 0;
+      
+      const user = req.user;
+      
+      if (user.userType === "employer") {
+        // Get employer profile
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (!employer) {
+          return res.status(404).json({ message: "Employer profile not found" });
+        }
+        
+        // Get all jobs for this employer
+        const jobs = await storage.getJobs();
+        const employerJobs = jobs.filter(job => job.employerId === employer.id);
+        
+        // Get new applications for all jobs
+        let newApplications: any[] = [];
+        for (const job of employerJobs) {
+          const jobApplications = await storage.getApplicationsByJobId(job.id);
+          const filteredApplications = jobApplications.filter(app => app.id > sinceId);
+          
+          newApplications = newApplications.concat(
+            filteredApplications.map(app => ({ ...app, job }))
+          );
+        }
+        
+        // Update lastApplicationId if we found newer applications
+        if (newApplications.length > 0) {
+          const maxId = Math.max(...newApplications.map(app => app.id));
+          realtimeStore.lastApplicationId = Math.max(realtimeStore.lastApplicationId, maxId);
+        }
+        
+        res.json({
+          applications: newApplications,
+          lastId: realtimeStore.lastApplicationId
+        });
+      } else {
+        res.status(403).json({ message: "Only employers can access this endpoint" });
+      }
+    } catch (error) {
+      console.error("Error fetching real-time application updates:", error);
+      res.status(500).json({ message: "Failed to fetch application updates" });
+    }
+  });
+  
+  // Get notifications for a user
+  app.get("/api/realtime/notifications", (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to get notifications" });
+      }
+      
+      const { since } = req.query;
+      const sinceId = parseInt(since as string) || 0;
+      
+      const userId = req.user.id;
+      
+      // Get unread notifications for this user that are newer than the provided ID
+      const userNotifications = realtimeStore.notifications.filter(
+        notification => notification.userId === userId && notification.id > sinceId
+      );
+      
+      res.json({
+        notifications: userNotifications,
+        lastId: userNotifications.length > 0
+          ? Math.max(...userNotifications.map(n => n.id))
+          : sinceId
+      });
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      res.status(500).json({ message: "Failed to fetch notifications" });
+    }
+  });
+  
+  // Mark notifications as read
+  app.post("/api/realtime/notifications/read", (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to update notifications" });
+      }
+      
+      const { ids } = req.body;
+      const userId = req.user.id;
+      
+      if (!Array.isArray(ids)) {
+        return res.status(400).json({ message: "Invalid notification IDs" });
+      }
+      
+      // Mark notifications as read
+      ids.forEach(id => {
+        const notification = realtimeStore.notifications.find(
+          n => n.id === id && n.userId === userId
+        );
+        
+        if (notification) {
+          notification.read = true;
+        }
+      });
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error marking notifications as read:", error);
+      res.status(500).json({ message: "Failed to update notifications" });
     }
   });
 
