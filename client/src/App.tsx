@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -18,6 +18,19 @@ import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
+import { useEffect } from "react";
+import { initializeAnalytics, trackPageView } from "@/lib/analytics";
+
+// Track page views
+function PageViewTracker() {
+  const [location] = useLocation();
+  
+  useEffect(() => {
+    trackPageView(location);
+  }, [location]);
+  
+  return null;
+}
 
 function Router() {
   return (
@@ -41,12 +54,18 @@ function Router() {
 }
 
 function App() {
+  // Initialize Google Analytics on app load
+  useEffect(() => {
+    initializeAnalytics();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="flex-grow">
+            <PageViewTracker />
             <Router />
           </main>
           <Footer />
