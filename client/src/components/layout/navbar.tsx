@@ -20,7 +20,8 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, X, Search, Briefcase, User, LogOut } from "lucide-react";
+import { Menu, Briefcase, User, LogOut } from "lucide-react";
+import NotificationsPopover from "@/components/common/notifications";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -100,42 +101,45 @@ export default function Navbar() {
           {/* Desktop right section */}
           <div className="hidden md:flex items-center space-x-4">
             {currentUser ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-primary text-white">
-                        {getUserInitials()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </DropdownMenuItem>
-                  {currentUser.user.userType === "jobseeker" && (
+              <>
+                <NotificationsPopover />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-primary text-white">
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                      <Briefcase className="mr-2 h-4 w-4" />
-                      <span>My Applications</span>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
                     </DropdownMenuItem>
-                  )}
-                  {currentUser.user.userType === "employer" && (
-                    <DropdownMenuItem>
-                      <Briefcase className="mr-2 h-4 w-4" />
-                      <span>Posted Jobs</span>
+                    {currentUser.user.userType === "jobseeker" && (
+                      <DropdownMenuItem>
+                        <Briefcase className="mr-2 h-4 w-4" />
+                        <span>My Applications</span>
+                      </DropdownMenuItem>
+                    )}
+                    {currentUser.user.userType === "employer" && (
+                      <DropdownMenuItem>
+                        <Briefcase className="mr-2 h-4 w-4" />
+                        <span>Posted Jobs</span>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
                     </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
             ) : (
               <>
                 <Link href="/auth">

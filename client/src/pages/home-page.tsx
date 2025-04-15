@@ -8,8 +8,13 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { BriefcaseIcon, BuildingIcon, GraduationCapIcon } from "@/assets/icons";
 import { MessageSquareShare } from "lucide-react";
+import RealtimeJobs from "@/components/job/real-time-jobs";
+import RealtimeApplications from "@/components/job/real-time-applications";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function HomePage() {
+  const { currentUser } = useAuth();
+  
   return (
     <>
       <Helmet>
@@ -20,6 +25,14 @@ export default function HomePage() {
       <Banner />
       
       <Welcome />
+      
+      {/* Real-time updates section */}
+      {currentUser && (
+        <div className="container mx-auto px-4 py-4">
+          {currentUser.user.userType === "jobseeker" && <RealtimeJobs />}
+          {currentUser.user.userType === "employer" && <RealtimeApplications />}
+        </div>
+      )}
       
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
