@@ -16,21 +16,7 @@ class User {
         $this->conn = $db;
     }
 
-    // Get all users
-    public function read() {
-        // Query to read all users
-        $query = "SELECT * FROM " . $this->table_name;
-        
-        // Prepare statement
-        $stmt = $this->conn->prepare($query);
-        
-        // Execute query
-        $stmt->execute();
-        
-        return $stmt;
-    }
-
-    // Get single user by ID
+    // Read user by ID
     public function readOne() {
         // Query to read single user
         $query = "SELECT * FROM " . $this->table_name . " WHERE id = ?";
@@ -50,12 +36,15 @@ class User {
         // Set properties
         if($row) {
             $this->email = $row['email'];
+            $this->password = $row['password'];
             $this->userType = $row['userType'];
             $this->createdAt = $row['createdAt'];
         }
+        
+        return $row;
     }
 
-    // Get user by email
+    // Read user by email
     public function readByEmail() {
         // Query to read user by email
         $query = "SELECT * FROM " . $this->table_name . " WHERE email = ?";
@@ -83,10 +72,9 @@ class User {
         
         // Sanitize inputs
         $this->email = htmlspecialchars(strip_tags($this->email));
-        $this->password = htmlspecialchars(strip_tags($this->password));
         $this->userType = htmlspecialchars(strip_tags($this->userType));
         
-        // Current timestamp for created_at
+        // Set created date
         $this->createdAt = date('Y-m-d H:i:s');
         
         // Bind values
@@ -103,30 +91,29 @@ class User {
         return false;
     }
 
-    // Verify user password
-    public function verifyPassword($password) {
-        // Check if user exists
+    // Hash password
+    public function hashPassword() {
+        $this->password = password_hash($this->password, PASSWORD_BCRYPT);
+    }
+
+    // Verify password
+    public function verifyPassword($suppliedPassword) {
+        // Read user by email
         $stmt = $this->readByEmail();
         
         if($stmt->rowCount() > 0) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->id = $row['id'];
             $this->userType = $row['userType'];
-            $stored_password = $row['password'];
+            $this->createdAt = $row['createdAt'];
             
             // Verify password
-            if(password_verify($password, $stored_password)) {
+            if(password_verify($suppliedPassword, $row['password'])) {
                 return true;
             }
         }
         
         return false;
-    }
-
-    // Hash password
-    public function hashPassword() {
-        // Hash the password before storing
-        $this->password = password_hash($this->password, PASSWORD_BCRYPT);
     }
 }
 ?>

@@ -24,42 +24,64 @@ class Job {
     // Read all jobs with optional filters
     public function read($filters = []) {
         // Base query
-        $query = "SELECT j.*, e.companyName 
+        $query = "SELECT j.*, e.companyName
                   FROM " . $this->table_name . " j
                   LEFT JOIN employers e ON j.employerId = e.id
-                  WHERE 1";
+                  WHERE 1=1";
         
-        // Apply filters if provided
-        $params = [];
-        
-        if(isset($filters['category']) && !empty($filters['category'])) {
-            $query .= " AND j.category = ?";
-            $params[] = $filters['category'];
+        // Add filters if provided
+        if(isset($filters['category'])) {
+            $query .= " AND j.category = :category";
         }
         
-        if(isset($filters['location']) && !empty($filters['location'])) {
-            $query .= " AND j.location = ?";
-            $params[] = $filters['location'];
+        if(isset($filters['location'])) {
+            $query .= " AND j.location LIKE :location";
         }
         
-        if(isset($filters['jobType']) && !empty($filters['jobType'])) {
-            $query .= " AND j.jobType = ?";
-            $params[] = $filters['jobType'];
+        if(isset($filters['jobType'])) {
+            $query .= " AND j.jobType = :jobType";
         }
         
-        // Default to only active jobs
-        $query .= " AND j.isActive = 1";
-        
-        // Order by newest first
+        // Order by most recent
         $query .= " ORDER BY j.postedDate DESC";
         
         // Prepare statement
         $stmt = $this->conn->prepare($query);
         
-        // Bind parameters if any
-        for($i = 0; $i < count($params); $i++) {
-            $stmt->bindParam($i + 1, $params[$i]);
+        // Bind filter values if provided
+        if(isset($filters['category'])) {
+            $stmt->bindParam(':category', $filters['category']);
         }
+        
+        if(isset($filters['location'])) {
+            $locationParam = "%" . $filters['location'] . "%";
+            $stmt->bindParam(':location', $locationParam);
+        }
+        
+        if(isset($filters['jobType'])) {
+            $stmt->bindParam(':jobType', $filters['jobType']);
+        }
+        
+        // Execute query
+        $stmt->execute();
+        
+        return $stmt;
+    }
+
+    // Read jobs posted by an employer
+    public function readByEmployerId() {
+        // Query to read jobs by employer ID
+        $query = "SELECT j.*, e.companyName
+                  FROM " . $this->table_name . " j
+                  LEFT JOIN employers e ON j.employerId = e.id
+                  WHERE j.employerId = ?
+                  ORDER BY j.postedDate DESC";
+        
+        // Prepare statement
+        $stmt = $this->conn->prepare($query);
+        
+        // Bind employer ID
+        $stmt->bindParam(1, $this->employerId);
         
         // Execute query
         $stmt->execute();
@@ -69,8 +91,8 @@ class Job {
 
     // Read single job
     public function readOne() {
-        // Query to read single job with employer details
-        $query = "SELECT j.*, e.companyName, e.industry, e.logoPath 
+        // Query to read single job
+        $query = "SELECT j.*, e.companyName, e.industry, e.companySize, e.logoPath, e.websiteUrl
                   FROM " . $this->table_name . " j
                   LEFT JOIN employers e ON j.employerId = e.id
                   WHERE j.id = ?";
@@ -98,9 +120,11 @@ class Job {
             $this->salary = $row['salary'];
             $this->postedDate = $row['postedDate'];
             $this->isActive = $row['isActive'];
+            
+            return $row;
         }
         
-        return $row;
+        return false;
     }
 
     // Create job
@@ -123,11 +147,9 @@ class Job {
         $this->employerId = htmlspecialchars(strip_tags($this->employerId));
         $this->salary = $this->salary ? htmlspecialchars(strip_tags($this->salary)) : null;
         
-        // Set posted date to current date if not provided
+        // Set other values
         $this->postedDate = date('Y-m-d H:i:s');
-        
-        // Default to active
-        $this->isActive = 1;
+        $this->isActive = true;
         
         // Bind values
         $stmt->bindParam(":title", $this->title);
@@ -143,6 +165,48 @@ class Job {
         // Execute query
         if($stmt->execute()) {
             return $this->conn->lastInsertId();
+        }
+        
+        return false;
+    }
+
+    // Update job
+    public function update() {
+        // Query to update record
+        $query = "UPDATE " . $this->table_name . " 
+                  SET title=:title, description=:description, category=:category, 
+                      location=:location, jobType=:jobType, salary=:salary, 
+                      isActive=:isActive
+                  WHERE id=:id AND employerId=:employerId";
+        
+        // Prepare query
+        $stmt = $this->conn->prepare($query);
+        
+        // Sanitize inputs
+        $this->title = htmlspecialchars(strip_tags($this->title));
+        $this->description = htmlspecialchars(strip_tags($this->description));
+        $this->category = htmlspecialchars(strip_tags($this->category));
+        $this->location = htmlspecialchars(strip_tags($this->location));
+        $this->jobType = htmlspecialchars(strip_tags($this->jobType));
+        $this->salary = $this->salary ? htmlspecialchars(strip_tags($this->salary)) : null;
+        $this->isActive = $this->isActive ? 1 : 0;
+        $this->id = htmlspecialchars(strip_tags($this->id));
+        $this->employerId = htmlspecialchars(strip_tags($this->employerId));
+        
+        // Bind values
+        $stmt->bindParam(":title", $this->title);
+        $stmt->bindParam(":description", $this->description);
+        $stmt->bindParam(":category", $this->category);
+        $stmt->bindParam(":location", $this->location);
+        $stmt->bindParam(":jobType", $this->jobType);
+        $stmt->bindParam(":salary", $this->salary);
+        $stmt->bindParam(":isActive", $this->isActive);
+        $stmt->bindParam(":id", $this->id);
+        $stmt->bindParam(":employerId", $this->employerId);
+        
+        // Execute query
+        if($stmt->execute()) {
+            return true;
         }
         
         return false;

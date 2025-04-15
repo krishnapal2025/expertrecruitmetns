@@ -80,10 +80,10 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/">
-              <a className="flex items-center">
+              <div className="flex items-center cursor-pointer">
                 <Briefcase className="h-8 w-8 text-primary mr-2" />
                 <span className="text-xl font-bold">RH Job Portal</span>
-              </a>
+              </div>
             </Link>
           </div>
 
@@ -91,9 +91,9 @@ export default function Navbar() {
           <nav className="hidden md:flex space-x-8 items-center">
             {navigationLinks.map((link) => (
               <Link key={link.name} href={link.href}>
-                <a className={`text-sm font-medium transition-colors hover:text-primary ${location === link.href ? "text-primary" : "text-gray-700"}`}>
+                <div className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer ${location === link.href ? "text-primary" : "text-gray-700"}`}>
                   {link.name}
-                </a>
+                </div>
               </Link>
             ))}
           </nav>
@@ -172,9 +172,9 @@ export default function Navbar() {
                   {navigationLinks.map((link) => (
                     <SheetClose asChild key={link.name}>
                       <Link href={link.href}>
-                        <a className={`px-4 py-2 rounded-md ${location === link.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}>
+                        <div className={`px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}>
                           {link.name}
-                        </a>
+                        </div>
                       </Link>
                     </SheetClose>
                   ))}
@@ -196,10 +196,10 @@ export default function Navbar() {
                         </div>
                         <SheetClose asChild>
                           <Link href="/profile">
-                            <a className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center">
+                            <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
                               <User className="mr-2 h-4 w-4" />
                               Profile
-                            </a>
+                            </div>
                           </Link>
                         </SheetClose>
                         <button
