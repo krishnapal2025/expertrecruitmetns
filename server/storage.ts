@@ -134,6 +134,17 @@ export class MemStorage implements IStorage {
     this.users.set(id, user);
     return user;
   }
+  
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
+  
+  async getUserByEmployerId(employerId: number): Promise<User | undefined> {
+    const employer = await this.getEmployer(employerId);
+    if (!employer) return undefined;
+    
+    return this.users.get(employer.userId);
+  }
 
   // JobSeeker methods
   async getJobSeeker(id: number): Promise<JobSeeker | undefined> {

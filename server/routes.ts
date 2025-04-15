@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
-import { insertJobSchema, insertApplicationSchema } from "@shared/schema";
+import { insertJobSchema, insertApplicationSchema, User } from "@shared/schema";
 
 // In-memory store for real-time updates
 const realtimeStore = {
@@ -93,10 +93,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get all job seekers to send notifications to
       const users = await storage.getAllUsers();
-      const jobSeekerUsers = users.filter(u => u.userType === "jobseeker");
+      const jobSeekerUsers = users.filter((u: User) => u.userType === "jobseeker");
       
       // Create notifications for all job seekers
-      jobSeekerUsers.forEach(jobSeekerUser => {
+      jobSeekerUsers.forEach((jobSeekerUser: User) => {
         realtimeStore.notifications.push({
           id: realtimeStore.notificationId++,
           userId: jobSeekerUser.id,
