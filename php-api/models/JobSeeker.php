@@ -20,7 +20,7 @@ class JobSeeker {
         $this->conn = $db;
     }
 
-    // Get job seeker by ID
+    // Read single job seeker profile
     public function readOne() {
         // Query to read single job seeker
         $query = "SELECT * FROM " . $this->table_name . " WHERE id = ?";
@@ -50,7 +50,7 @@ class JobSeeker {
         }
     }
 
-    // Get job seeker by user ID
+    // Read job seeker by user ID
     public function readByUserId() {
         // Query to read job seeker by user ID
         $query = "SELECT * FROM " . $this->table_name . " WHERE userId = ?";
@@ -67,7 +67,7 @@ class JobSeeker {
         return $stmt;
     }
 
-    // Create job seeker
+    // Create job seeker profile
     public function create() {
         // Query to insert record
         $query = "INSERT INTO " . $this->table_name . " 
@@ -89,6 +89,48 @@ class JobSeeker {
         $this->cvPath = $this->cvPath ? htmlspecialchars(strip_tags($this->cvPath)) : null;
         
         // Bind values
+        $stmt->bindParam(":userId", $this->userId);
+        $stmt->bindParam(":firstName", $this->firstName);
+        $stmt->bindParam(":lastName", $this->lastName);
+        $stmt->bindParam(":gender", $this->gender);
+        $stmt->bindParam(":dateOfBirth", $this->dateOfBirth);
+        $stmt->bindParam(":country", $this->country);
+        $stmt->bindParam(":phoneNumber", $this->phoneNumber);
+        $stmt->bindParam(":cvPath", $this->cvPath);
+        
+        // Execute query
+        if($stmt->execute()) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    // Update job seeker profile
+    public function update() {
+        // Query to update record
+        $query = "UPDATE " . $this->table_name . " 
+                  SET firstName=:firstName, lastName=:lastName, 
+                      gender=:gender, dateOfBirth=:dateOfBirth, country=:country, 
+                      phoneNumber=:phoneNumber, cvPath=:cvPath
+                  WHERE id=:id AND userId=:userId";
+        
+        // Prepare query
+        $stmt = $this->conn->prepare($query);
+        
+        // Sanitize inputs
+        $this->id = htmlspecialchars(strip_tags($this->id));
+        $this->userId = htmlspecialchars(strip_tags($this->userId));
+        $this->firstName = htmlspecialchars(strip_tags($this->firstName));
+        $this->lastName = htmlspecialchars(strip_tags($this->lastName));
+        $this->gender = htmlspecialchars(strip_tags($this->gender));
+        $this->dateOfBirth = htmlspecialchars(strip_tags($this->dateOfBirth));
+        $this->country = htmlspecialchars(strip_tags($this->country));
+        $this->phoneNumber = htmlspecialchars(strip_tags($this->phoneNumber));
+        $this->cvPath = $this->cvPath ? htmlspecialchars(strip_tags($this->cvPath)) : null;
+        
+        // Bind values
+        $stmt->bindParam(":id", $this->id);
         $stmt->bindParam(":userId", $this->userId);
         $stmt->bindParam(":firstName", $this->firstName);
         $stmt->bindParam(":lastName", $this->lastName);

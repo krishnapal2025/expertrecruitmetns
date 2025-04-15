@@ -45,10 +45,10 @@ export default function QuickLinks() {
                 {jobCategories.map((category, index) => (
                   <li key={index}>
                     <Link href={`/job-board?category=${category.toLowerCase()}`}>
-                      <a className="flex items-center justify-between py-2 text-gray-700 hover:text-primary transition-colors group">
+                      <div className="flex items-center justify-between py-2 text-gray-700 hover:text-primary transition-colors group cursor-pointer">
                         <span>{category}</span>
                         <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </a>
+                      </div>
                     </Link>
                   </li>
                 ))}
@@ -75,10 +75,10 @@ export default function QuickLinks() {
                 {popularLocations.map((location, index) => (
                   <li key={index}>
                     <Link href={`/job-board?location=${location.toLowerCase()}`}>
-                      <a className="flex items-center justify-between py-2 text-gray-700 hover:text-primary transition-colors group">
+                      <div className="flex items-center justify-between py-2 text-gray-700 hover:text-primary transition-colors group cursor-pointer">
                         <span>{location}</span>
                         <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </a>
+                      </div>
                     </Link>
                   </li>
                 ))}
@@ -110,23 +110,23 @@ export default function QuickLinks() {
                   <ul className="space-y-2 pl-7">
                     <li>
                       <Link href="/auth?type=jobseeker">
-                        <a className="text-gray-700 hover:text-primary transition-colors">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
                           Register an Account
-                        </a>
+                        </div>
                       </Link>
                     </li>
                     <li>
                       <Link href="/job-board">
-                        <a className="text-gray-700 hover:text-primary transition-colors">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
                           Browse All Jobs
-                        </a>
+                        </div>
                       </Link>
                     </li>
                     <li>
                       <Link href="/blogs">
-                        <a className="text-gray-700 hover:text-primary transition-colors">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
                           Career Resources
-                        </a>
+                        </div>
                       </Link>
                     </li>
                   </ul>
@@ -140,23 +140,23 @@ export default function QuickLinks() {
                   <ul className="space-y-2 pl-7">
                     <li>
                       <Link href="/auth?type=employer">
-                        <a className="text-gray-700 hover:text-primary transition-colors">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
                           Post a Job
-                        </a>
+                        </div>
                       </Link>
                     </li>
                     <li>
                       <Link href="/services">
-                        <a className="text-gray-700 hover:text-primary transition-colors">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
                           Our Services
-                        </a>
+                        </div>
                       </Link>
                     </li>
                     <li>
                       <Link href="/contact-us">
-                        <a className="text-gray-700 hover:text-primary transition-colors">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
                           Contact Us
-                        </a>
+                        </div>
                       </Link>
                     </li>
                   </ul>
