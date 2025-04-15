@@ -1,0 +1,220 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { setupAuth } from "./auth";
+import { ZodError } from "zod";
+import { fromZodError } from "zod-validation-error";
+import { insertJobSchema, insertApplicationSchema } from "@shared/schema";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Set up authentication routes
+  setupAuth(app);
+
+  // API routes
+  // Get all job listings with optional filters
+  app.get("/api/jobs", async (req, res) => {
+    try {
+      const { category, location, jobType } = req.query;
+      
+      const filters: any = {};
+      if (category) filters.category = category as string;
+      if (location) filters.location = location as string;
+      if (jobType) filters.jobType = jobType as string;
+      
+      const jobs = await storage.getJobs(Object.keys(filters).length > 0 ? filters : undefined);
+      
+      res.json(jobs);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      res.status(500).json({ message: "Failed to fetch jobs" });
+    }
+  });
+
+  // Get a specific job by ID
+  app.get("/api/jobs/:id", async (req, res) => {
+    try {
+      const jobId = parseInt(req.params.id);
+      if (isNaN(jobId)) {
+        return res.status(400).json({ message: "Invalid job ID" });
+      }
+      
+      const job = await storage.getJob(jobId);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+      
+      // Get the employer details for the job
+      const employer = await storage.getEmployer(job.employerId);
+      
+      res.json({ job, employer });
+    } catch (error) {
+      console.error("Error fetching job:", error);
+      res.status(500).json({ message: "Failed to fetch job details" });
+    }
+  });
+
+  // Create a new job (requires employer authentication)
+  app.post("/api/jobs", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to post a job" });
+      }
+      
+      const user = req.user;
+      if (user.userType !== "employer") {
+        return res.status(403).json({ message: "Only employers can post jobs" });
+      }
+      
+      // Validate job data
+      const validatedData = insertJobSchema.parse(req.body);
+      
+      // Get employer profile
+      const employer = await storage.getEmployerByUserId(user.id);
+      if (!employer) {
+        return res.status(404).json({ message: "Employer profile not found" });
+      }
+      
+      // Create the job
+      const job = await storage.createJob({
+        ...validatedData,
+        employerId: employer.id
+      });
+      
+      res.status(201).json(job);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      
+      console.error("Error creating job:", error);
+      res.status(500).json({ message: "Failed to create job" });
+    }
+  });
+
+  // Apply for a job (requires jobseeker authentication)
+  app.post("/api/jobs/:id/apply", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to apply for a job" });
+      }
+      
+      const user = req.user;
+      if (user.userType !== "jobseeker") {
+        return res.status(403).json({ message: "Only job seekers can apply for jobs" });
+      }
+      
+      const jobId = parseInt(req.params.id);
+      if (isNaN(jobId)) {
+        return res.status(400).json({ message: "Invalid job ID" });
+      }
+      
+      // Validate the job exists
+      const job = await storage.getJob(jobId);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+      
+      // Get jobseeker profile
+      const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+      if (!jobSeeker) {
+        return res.status(404).json({ message: "Job seeker profile not found" });
+      }
+      
+      // Check if already applied
+      const existingApplications = await storage.getApplicationsByJobSeekerId(jobSeeker.id);
+      const alreadyApplied = existingApplications.some(app => app.jobId === jobId);
+      
+      if (alreadyApplied) {
+        return res.status(400).json({ message: "You have already applied for this job" });
+      }
+      
+      // Validate application data
+      const { coverLetter } = req.body;
+      
+      // Create the application
+      const application = await storage.createApplication({
+        jobId,
+        jobSeekerId: jobSeeker.id,
+        coverLetter
+      });
+      
+      res.status(201).json(application);
+    } catch (error) {
+      console.error("Error applying for job:", error);
+      res.status(500).json({ message: "Failed to apply for job" });
+    }
+  });
+
+  // Get all applications for a specific jobseeker
+  app.get("/api/applications", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to view applications" });
+      }
+      
+      const user = req.user;
+      
+      if (user.userType === "jobseeker") {
+        // Get jobseeker profile
+        const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+        if (!jobSeeker) {
+          return res.status(404).json({ message: "Job seeker profile not found" });
+        }
+        
+        // Get all applications for this jobseeker
+        const applications = await storage.getApplicationsByJobSeekerId(jobSeeker.id);
+        
+        // Get job details for each application
+        const applicationsWithJobs = await Promise.all(
+          applications.map(async (app) => {
+            const job = await storage.getJob(app.jobId);
+            return { ...app, job };
+          })
+        );
+        
+        res.json(applicationsWithJobs);
+      } else if (user.userType === "employer") {
+        // Get employer profile
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (!employer) {
+          return res.status(404).json({ message: "Employer profile not found" });
+        }
+        
+        // Get all jobs for this employer
+        const jobs = await storage.getJobs();
+        const employerJobs = jobs.filter(job => job.employerId === employer.id);
+        
+        // Get applications for all jobs
+        let applications: any[] = [];
+        for (const job of employerJobs) {
+          const jobApplications = await storage.getApplicationsByJobId(job.id);
+          applications = applications.concat(
+            jobApplications.map(app => ({ ...app, job }))
+          );
+        }
+        
+        res.json(applications);
+      } else {
+        res.status(403).json({ message: "Unauthorized user type" });
+      }
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+      res.status(500).json({ message: "Failed to fetch applications" });
+    }
+  });
+
+  // Get all testimonials
+  app.get("/api/testimonials", async (req, res) => {
+    try {
+      const testimonials = await storage.getTestimonials();
+      res.json(testimonials);
+    } catch (error) {
+      console.error("Error fetching testimonials:", error);
+      res.status(500).json({ message: "Failed to fetch testimonials" });
+    }
+  });
+
+  const httpServer = createServer(app);
+  return httpServer;
+}
