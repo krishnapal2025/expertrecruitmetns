@@ -132,7 +132,7 @@ export default function Banner() {
                 transition={{ delay: 0.1, duration: 0.5 }}
                 className="mb-6"
               >
-                <span className={`inline-block ${slides[currentSlide].color} bg-opacity-10 text-xs font-semibold tracking-wider px-3 py-1 rounded-sm ${currentSlide === 0 ? 'text-primary dark:text-primary/80' : `text-${slides[currentSlide].color.split('-')[1]}-600 dark:text-${slides[currentSlide].color.split('-')[1]}-400`}`}>
+                <span className={`inline-block ${currentSlide === 0 ? 'bg-blue-100 dark:bg-blue-900/30' : `${slides[currentSlide].color} bg-opacity-10`} text-xs font-semibold tracking-wider px-3 py-1 rounded-sm ${currentSlide === 0 ? 'text-blue-600 dark:text-blue-400' : `text-${slides[currentSlide].color.split('-')[1]}-600 dark:text-${slides[currentSlide].color.split('-')[1]}-400`}`}>
                   {slides[currentSlide].tagline}
                 </span>
               </motion.div>
