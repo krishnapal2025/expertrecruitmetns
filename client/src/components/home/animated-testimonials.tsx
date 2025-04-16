@@ -61,19 +61,10 @@ export default function AnimatedTestimonials() {
 
   return (
     <section className="py-20 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
-      {/* Lunar pattern background */}
-      <div className="absolute inset-0 pointer-events-none bg-lunar-grid"></div>
-      <div className="absolute inset-0 pointer-events-none bg-stars-pattern opacity-30"></div>
-      <div className="absolute top-0 right-0 w-96 h-96 -mt-24 -mr-24 bg-gradient-lunar rounded-full blur-3xl opacity-15"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 -mb-24 -ml-24 bg-gradient-cosmic rounded-full blur-3xl opacity-20"></div>
-      
-      {/* Star elements */}
-      <div className="star-lg animate-twinkle absolute top-[15%] right-[25%]"></div>
-      <div className="star-md animate-twinkle absolute top-[40%] right-[10%]"></div>
-      <div className="star-lg animate-twinkle absolute top-[65%] right-[30%]"></div>
-      <div className="star-sm animate-twinkle absolute top-[20%] left-[15%]"></div>
-      <div className="star-md animate-twinkle absolute top-[50%] left-[8%]"></div>
-      <div className="star-lg animate-twinkle absolute top-[75%] left-[20%]"></div>
+      {/* Grid pattern background */}
+      <div className="absolute inset-0 pointer-events-none bg-grid-pattern opacity-40"></div>
+      <div className="absolute top-0 right-0 w-96 h-96 -mt-24 -mr-24 bg-gradient-secondary rounded-full blur-3xl opacity-10"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 -mb-24 -ml-24 bg-gradient-accent rounded-full blur-3xl opacity-10"></div>
       
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
@@ -87,11 +78,11 @@ export default function AnimatedTestimonials() {
               Success Stories
             </span>
           </div>
-          <h2 className="mb-4 text-3xl font-bold md:text-5xl text-gradient-cosmic dark:text-gradient-cosmic">
+          <h2 className="mb-4 text-3xl font-bold md:text-5xl">
             <span className="relative inline-block">
               What Our Users Say
               <motion.div 
-                className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-secondary dark:bg-gradient-secondary"
+                className="absolute -bottom-2 left-0 w-full h-1 bg-primary/20 dark:bg-primary/30"
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ delay: 0.3, duration: 0.8 }}
@@ -107,7 +98,7 @@ export default function AnimatedTestimonials() {
           {/* Minimalist Testimonial Card */}
           <div className="md:col-span-7">
             <div 
-              className="relative overflow-hidden glass-effect-fullmoon rounded-2xl shadow-lg min-h-[300px] border border-primary/10 hover-lift"
+              className="relative overflow-hidden glass-effect rounded-2xl shadow-lg min-h-[300px] border border-primary/10 hover-lift"
               onMouseEnter={() => setIsPaused(true)}
               onMouseLeave={() => setIsPaused(false)}
             >
@@ -174,7 +165,7 @@ export default function AnimatedTestimonials() {
             <div className="flex justify-between mt-4">
               <button
                 onClick={() => setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)}
-                className="w-10 h-10 rounded-full glass-effect-crescent flex items-center justify-center text-white dark:text-white hover:bg-primary/5 transition-colors"
+                className="w-10 h-10 rounded-full glass-effect flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-primary/5 transition-colors"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
@@ -196,7 +187,7 @@ export default function AnimatedTestimonials() {
               
               <button
                 onClick={() => setActiveIndex((prev) => (prev + 1) % testimonials.length)}
-                className="w-10 h-10 rounded-full glass-effect-crescent flex items-center justify-center text-white dark:text-white hover:bg-primary/5 transition-colors"
+                className="w-10 h-10 rounded-full glass-effect flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-primary/5 transition-colors"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>
@@ -209,29 +200,29 @@ export default function AnimatedTestimonials() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-gradient-cosmic rounded-2xl p-8 shadow-md border border-primary/10 dark:border-primary/20 relative overflow-hidden"
+              className="bg-gradient-primary rounded-2xl p-8 shadow-md border border-primary/10 dark:border-primary/20 relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-dot-pattern opacity-10"></div>
               <div className="relative z-10">
                 <h3 className="text-2xl font-bold mb-6 text-white">Join Our Success Stories</h3>
                 
                 <div className="grid grid-cols-2 gap-6 mb-8">
-                  <div className="glass-effect-fullmoon rounded-lg p-4 shadow-md hover-lift">
-                    <div className="text-3xl font-bold text-primary">94%</div>
-                    <div className="text-sm text-slate-600">Microsoft Placement Rate</div>
+                  <div className="glass-effect rounded-lg p-4 shadow-md hover-lift">
+                    <div className="text-3xl font-bold text-white">94%</div>
+                    <div className="text-sm text-white/80">Microsoft Placement Rate</div>
                   </div>
                   
-                  <div className="glass-effect-crescent rounded-lg p-4 shadow-md hover-lift">
+                  <div className="glass-effect rounded-lg p-4 shadow-md hover-lift">
                     <div className="text-3xl font-bold text-white">+32%</div>
                     <div className="text-sm text-white/80">Google Salary Increase</div>
                   </div>
                   
-                  <div className="glass-effect-eclipse rounded-lg p-4 shadow-md hover-lift">
+                  <div className="glass-effect rounded-lg p-4 shadow-md hover-lift">
                     <div className="text-3xl font-bold text-white">14K+</div>
                     <div className="text-sm text-white/80">Amazon Hired Clients</div>
                   </div>
                   
-                  <div className="glass-effect-newmoon rounded-lg p-4 shadow-md hover-lift">
+                  <div className="glass-effect rounded-lg p-4 shadow-md hover-lift">
                     <div className="text-3xl font-bold text-white">4.8/5</div>
                     <div className="text-sm text-white/80">Apple Client Rating</div>
                   </div>
