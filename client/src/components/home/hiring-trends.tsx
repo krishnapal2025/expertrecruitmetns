@@ -9,7 +9,7 @@ const trendingIndustries = [
   {
     id: 1,
     title: "Tech Growth Outlook",
-    description: "AI, machine learning, and data science professionals see 35% higher demand in 2025",
+    description: "Google & Microsoft AI engineers and NVIDIA data scientists see 35% higher demand in 2025",
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&h=450&fit=crop",
     icon: <Code className="h-5 w-5" />,
     link: "/sectors/tech"
@@ -17,7 +17,7 @@ const trendingIndustries = [
   {
     id: 2,
     title: "Remote Work Trends",
-    description: "76% of companies now offer permanent remote positions across all departments",
+    description: "Amazon, GitLab & Spotify now offer 76% of positions as permanent remote across departments",
     image: "https://images.unsplash.com/photo-1593642634367-d91a135587b5?q=80&w=800&h=450&fit=crop",
     icon: <Globe className="h-5 w-5" />,
     link: "/blogs/remote-work"
@@ -25,7 +25,7 @@ const trendingIndustries = [
   {
     id: 3,
     title: "Healthcare Expansion",
-    description: "Healthcare sector projected to add 1.5 million new jobs over the next five years",
+    description: "Mayo Clinic, Kaiser Permanente & Cleveland Clinic projected to add 1.5M jobs in five years",
     image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&h=450&fit=crop",
     icon: <Users className="h-5 w-5" />,
     link: "/sectors/healthcare"
@@ -33,7 +33,7 @@ const trendingIndustries = [
   {
     id: 4,
     title: "Sustainability Roles",
-    description: "ESG and sustainability positions increased by 45% in Fortune 500 companies",
+    description: "Tesla, Patagonia & Unilever ESG positions increased by 45% and lead Fortune 500 growth",
     image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=800&h=450&fit=crop",
     icon: <TrendingUp className="h-5 w-5" />,
     link: "/sectors/sustainability"
@@ -41,7 +41,7 @@ const trendingIndustries = [
   {
     id: 5,
     title: "Education Evolution",
-    description: "EdTech and online learning specialists among the fastest-growing education roles",
+    description: "Coursera, Udemy & Khan Academy EdTech specialists among fastest-growing education roles",
     image: "https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?q=80&w=800&h=450&fit=crop",
     icon: <GraduationCap className="h-5 w-5" />,
     link: "/sectors/education"
@@ -49,7 +49,7 @@ const trendingIndustries = [
   {
     id: 6,
     title: "Gig Economy Expansion",
-    description: "Freelance marketplace expected to represent 50% of the workforce by 2027",
+    description: "Upwork, Fiverr & Toptal freelance marketplace expected to represent 50% of workforce by 2027",
     image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=800&h=450&fit=crop",
     icon: <Briefcase className="h-5 w-5" />,
     link: "/blogs/gig-economy"
@@ -200,28 +200,28 @@ export default function HiringTrends() {
             <TrendingUp className="mb-3 h-8 w-8 text-primary" />
             <span className="stat-counter text-3xl font-bold text-primary" data-target="73">0</span>
             <span className="text-lg font-semibold">%</span>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">Growth in remote jobs</p>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">Growth in Google & Microsoft remote roles</p>
           </div>
           
           <div className="flex flex-col items-center p-6 text-center rounded-lg bg-white shadow-sm dark:bg-gray-800">
             <Code className="mb-3 h-8 w-8 text-primary" />
             <span className="stat-counter text-3xl font-bold text-primary" data-target="122">0</span>
             <span className="text-lg font-semibold">K</span>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">Tech jobs added yearly</p>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">Amazon & IBM AI developer jobs yearly</p>
           </div>
           
           <div className="flex flex-col items-center p-6 text-center rounded-lg bg-white shadow-sm dark:bg-gray-800">
             <Users className="mb-3 h-8 w-8 text-primary" />
             <span className="stat-counter text-3xl font-bold text-primary" data-target="42">0</span>
             <span className="text-lg font-semibold">%</span>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">Increase in healthcare demand</p>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">Mayo Clinic & Cleveland Clinic nurse demand</p>
           </div>
           
           <div className="flex flex-col items-center p-6 text-center rounded-lg bg-white shadow-sm dark:bg-gray-800">
             <Briefcase className="mb-3 h-8 w-8 text-primary" />
             <span className="stat-counter text-3xl font-bold text-primary" data-target="89">0</span>
             <span className="text-lg font-semibold">K</span>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">Monthly active job seekers</p>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">LinkedIn & Indeed monthly active seekers</p>
           </div>
         </motion.div>
 

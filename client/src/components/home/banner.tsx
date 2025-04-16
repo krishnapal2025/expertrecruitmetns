@@ -21,9 +21,9 @@ const slides = [
     image: "https://images.unsplash.com/photo-1568992687947-868a62a9f521?q=80&w=1600&auto=format&fit=crop",
     color: "bg-blue-500",
     stats: [
-      { value: "15k+", label: "Jobs" },
-      { value: "1.2k", label: "Companies" },
-      { value: "24/7", label: "Support" }
+      { value: "15k+", label: "Google & Amazon Jobs" },
+      { value: "1.2k", label: "Fortune 500 Companies" },
+      { value: "24/7", label: "Expert Support" }
     ],
     ctaText: "Browse Jobs",
     ctaLink: "/job-board",
@@ -35,9 +35,9 @@ const slides = [
     image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1600&auto=format&fit=crop",
     color: "bg-violet-500",
     stats: [
-      { value: "90k+", label: "Candidates" },
-      { value: "48hr", label: "Avg. Hire Time" },
-      { value: "92%", label: "Success Rate" }
+      { value: "90k+", label: "Microsoft & Apple Candidates" },
+      { value: "48hr", label: "Meta & Salesforce Hire Time" },
+      { value: "92%", label: "Tesla & Netflix Success Rate" }
     ],
     ctaText: "Post a Job",
     ctaLink: "/auth?type=employer",
@@ -49,9 +49,9 @@ const slides = [
     image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1600&auto=format&fit=crop",
     color: "bg-emerald-500",
     stats: [
-      { value: "200+", label: "Expert Guides" },
-      { value: "45%", label: "Salary Growth" },
-      { value: "8k+", label: "Success Stories" }
+      { value: "200+", label: "Google & Adobe Career Guides" },
+      { value: "45%", label: "Deloitte & McKinsey Salary Growth" },
+      { value: "8k+", label: "Amazon & Microsoft Success Stories" }
     ],
     ctaText: "Career Resources",
     ctaLink: "/blogs",
