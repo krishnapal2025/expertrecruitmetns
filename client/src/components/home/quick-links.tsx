@@ -189,7 +189,7 @@ export default function QuickLinks() {
               href="https://facebook.com" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition-colors"
+              className="bg-primary text-white p-3 rounded-full hover:bg-primary/90 transition-colors"
               aria-label="Facebook"
             >
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -201,7 +201,7 @@ export default function QuickLinks() {
               href="https://twitter.com" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="bg-blue-400 text-white p-3 rounded-full hover:bg-blue-500 transition-colors"
+              className="bg-primary/80 text-white p-3 rounded-full hover:bg-primary/70 transition-colors"
               aria-label="Twitter"
             >
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -213,7 +213,7 @@ export default function QuickLinks() {
               href="https://linkedin.com" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="bg-blue-700 text-white p-3 rounded-full hover:bg-blue-800 transition-colors"
+              className="bg-primary/90 text-white p-3 rounded-full hover:bg-primary/80 transition-colors"
               aria-label="LinkedIn"
             >
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -226,7 +226,7 @@ export default function QuickLinks() {
               href="https://instagram.com" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white p-3 rounded-full hover:from-purple-600 hover:via-pink-600 hover:to-orange-600 transition-colors"
+              className="bg-gradient-to-r from-primary/90 via-primary/80 to-primary/70 text-white p-3 rounded-full hover:from-primary hover:via-primary/90 hover:to-primary/80 transition-colors"
               aria-label="Instagram"
             >
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
