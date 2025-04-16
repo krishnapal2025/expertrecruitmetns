@@ -42,7 +42,7 @@ const trendingIndustries = [
     id: 5,
     title: "Education Evolution",
     description: "EdTech and online learning specialists among the fastest-growing education roles",
-    image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=800&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?q=80&w=800&h=450&fit=crop",
     icon: <GraduationCap className="h-5 w-5" />,
     link: "/sectors/education"
   },
