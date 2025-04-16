@@ -276,11 +276,11 @@ export default function SEOInsightsPage() {
                     <CardContent className="p-6">
                       <div className="space-y-4">
                         {[
-                          { keyword: "AI Engineer", growth: "+125%", volume: "8.5k" },
-                          { keyword: "Remote Data Analyst", growth: "+85%", volume: "6.3k" },
-                          { keyword: "Cloud Architect", growth: "+72%", volume: "5.8k" },
-                          { keyword: "Cybersecurity Specialist", growth: "+65%", volume: "7.2k" },
-                          { keyword: "Full Stack Developer", growth: "+58%", volume: "12.1k" },
+                          { keyword: "Google AI Engineer", growth: "+125%", volume: "8.5k" },
+                          { keyword: "Amazon Remote Data Analyst", growth: "+85%", volume: "6.3k" },
+                          { keyword: "Microsoft Cloud Architect", growth: "+72%", volume: "5.8k" },
+                          { keyword: "Cisco Cybersecurity Specialist", growth: "+65%", volume: "7.2k" },
+                          { keyword: "Meta Full Stack Developer", growth: "+58%", volume: "12.1k" },
                         ].map((item, index) => (
                           <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div className="flex items-center">
@@ -543,11 +543,11 @@ export default function SEOInsightsPage() {
                     <CardContent className="p-6">
                       <div className="space-y-4">
                         {[
-                          { tip: "Use industry-specific keywords", description: "Include relevant terms that match job descriptions" },
-                          { tip: "Quantify achievements", description: "Use numbers and percentages to highlight results" },
-                          { tip: "Optimize for ATS systems", description: "Ensure your resume can pass automated screening" },
-                          { tip: "Include trending skills", description: "Highlight in-demand skills relevant to your field" },
-                          { tip: "Tailor for each application", description: "Customize keywords for specific job postings" },
+                          { tip: "Use Google-specific keywords", description: "Include terms from Google job descriptions" },
+                          { tip: "Quantify Amazon-style achievements", description: "Use numbers like Amazon's leadership principles" },
+                          { tip: "Optimize for Microsoft ATS", description: "Format resume to pass Microsoft's screening systems" },
+                          { tip: "Include Apple's trending skills", description: "Highlight skills mentioned in Apple job posts" },
+                          { tip: "Tailor for each tech company", description: "Customize keywords for specific companies like Meta" },
                         ].map((item, index) => (
                           <div key={index} className="bg-gray-50 rounded-lg p-4">
                             <div className="flex items-start">
