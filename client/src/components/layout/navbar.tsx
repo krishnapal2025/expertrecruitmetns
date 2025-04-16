@@ -77,9 +77,9 @@ export default function Navbar() {
         { name: "Sectors", href: "/sectors" },
         { name: "Blogs", href: "/blogs" },
         { name: "Insights", href: "/seo-insights" },
+        { name: "Contact Us", href: "/contact-us" },
       ]
     },
-    { name: "Contact Us", href: "/contact-us" },
   ];
 
   return (
