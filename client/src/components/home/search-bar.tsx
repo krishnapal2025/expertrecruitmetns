@@ -38,14 +38,14 @@ export default function SearchBar() {
   };
 
   return (
-    <section className="py-10 bg-white dark:bg-gray-950 z-10 relative">
+    <section className="py-16 bg-white dark:bg-gray-950 z-10 relative border-t border-gray-100 dark:border-gray-800">
       <div className="container mx-auto px-4">
         {/* Main search form */}
         <motion.div
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="relative -mt-16 lg:-mt-24 max-w-4xl mx-auto"
+          className="relative max-w-4xl mx-auto"
         >
           <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 border border-gray-100 dark:border-gray-800">
             <h2 className="text-2xl font-bold mb-6 text-center">Find Your Dream Job</h2>
