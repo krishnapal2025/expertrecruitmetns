@@ -19,7 +19,7 @@ const slides = [
     tagline: "FIND OPPORTUNITIES",
     description: "Connect with forward-thinking companies seeking your unique talents",
     image: "https://images.unsplash.com/photo-1568992687947-868a62a9f521?q=80&w=1600&auto=format&fit=crop",
-    color: "bg-blue-500",
+    color: "bg-primary",
     stats: [
       { value: "15k+", label: "Google & Amazon Jobs" },
       { value: "1.2k", label: "Fortune 500 Companies" },
@@ -132,7 +132,7 @@ export default function Banner() {
                 transition={{ delay: 0.1, duration: 0.5 }}
                 className="mb-6"
               >
-                <span className={`inline-block ${slides[currentSlide].color} bg-opacity-10 text-xs font-semibold tracking-wider px-3 py-1 rounded-sm text-${slides[currentSlide].color.split('-')[1]}-600 dark:text-${slides[currentSlide].color.split('-')[1]}-400`}>
+                <span className={`inline-block ${slides[currentSlide].color} bg-opacity-10 text-xs font-semibold tracking-wider px-3 py-1 rounded-sm ${currentSlide === 0 ? 'text-primary dark:text-primary/80' : `text-${slides[currentSlide].color.split('-')[1]}-600 dark:text-${slides[currentSlide].color.split('-')[1]}-400`}`}>
                   {slides[currentSlide].tagline}
                 </span>
               </motion.div>
@@ -168,7 +168,7 @@ export default function Banner() {
               >
                 {slides[currentSlide].stats.map((stat, index) => (
                   <div key={index}>
-                    <div className={`text-3xl font-bold mb-1 text-${slides[currentSlide].color.split('-')[1]}-500`}>
+                    <div className={`text-3xl font-bold mb-1 ${currentSlide === 0 ? 'text-primary' : `text-${slides[currentSlide].color.split('-')[1]}-500`}`}>
                       {stat.value}
                     </div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
