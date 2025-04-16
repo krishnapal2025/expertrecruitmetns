@@ -59,6 +59,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/hire-talent" className="text-gray-400 hover:text-white transition-colors">
+                  Hire Talent
+                </Link>
+              </li>
+              <li>
                 <Link href="/sectors" className="text-gray-400 hover:text-white transition-colors">
                   Sectors
                 </Link>
@@ -102,6 +107,32 @@ export default function Footer() {
               <li>
                 <Link href="/careers" className="text-gray-400 hover:text-white transition-colors">
                   Join Our Team
+                </Link>
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-bold mb-4">For Employers</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/auth?type=employer" className="text-gray-400 hover:text-white transition-colors">
+                  Register
+                </Link>
+              </li>
+              <li>
+                <Link href="/hire-talent" className="text-gray-400 hover:text-white transition-colors">
+                  Hire Talent
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="text-gray-400 hover:text-white transition-colors">
+                  Our Services
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact-us" className="text-gray-400 hover:text-white transition-colors">
+                  Request a Consultation
                 </Link>
               </li>
               <li>
