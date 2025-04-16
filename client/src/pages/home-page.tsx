@@ -102,12 +102,20 @@ export default function HomePage() {
                   <p className="text-gray-600 mb-6 text-lg">
                     Post jobs and find the perfect candidates for your organization
                   </p>
-                  <Link href="/auth?type=employer">
-                    <Button size="lg" className="w-full font-semibold">
-                      Post a Job
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
+                  <div className="space-y-3">
+                    <Link href="/auth?type=employer">
+                      <Button size="lg" className="w-full font-semibold">
+                        Post a Job
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Button>
+                    </Link>
+                    <Link href="/hire-talent">
+                      <Button size="lg" variant="outline" className="w-full font-semibold">
+                        Or Hire Talent
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
