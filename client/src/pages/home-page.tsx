@@ -42,7 +42,7 @@ export default function HomePage() {
       
       <HiringTrends />
       
-      <section className="py-24 bg-gradient-to-b from-primary/5 to-white">
+      <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
             <motion.h2 
@@ -67,7 +67,7 @@ export default function HomePage() {
               transition={{ delay: 0.1, duration: 0.5 }}
             >
               <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden flex flex-col">
-                <div className="relative h-48 bg-gradient-to-r from-primary/10 to-primary/5 flex items-center justify-center">
+                <div className="relative h-48 bg-gradient-to-r from-blue-100 to-blue-50 flex items-center justify-center">
                   <div className="absolute inset-0 opacity-10 bg-pattern-grid"></div>
                   <BriefcaseIcon className="w-24 h-24 text-primary relative z-10" />
                 </div>
@@ -93,9 +93,9 @@ export default function HomePage() {
               transition={{ delay: 0.2, duration: 0.5 }}
             >
               <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden flex flex-col">
-                <div className="relative h-48 bg-gradient-to-r from-primary/15 to-primary/8 flex items-center justify-center">
+                <div className="relative h-48 bg-gradient-to-r from-purple-100 to-purple-50 flex items-center justify-center">
                   <div className="absolute inset-0 opacity-10 bg-pattern-grid"></div>
-                  <BuildingIcon className="w-24 h-24 text-primary relative z-10" />
+                  <BuildingIcon className="w-24 h-24 text-purple-500 relative z-10" />
                 </div>
                 <CardContent className="p-6 md:p-8 text-center flex-grow flex flex-col">
                   <h3 className="text-2xl font-bold mb-4">Hire Talent</h3>
@@ -119,9 +119,9 @@ export default function HomePage() {
               transition={{ delay: 0.25, duration: 0.5 }}
             >
               <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden flex flex-col">
-                <div className="relative h-48 bg-gradient-to-r from-primary/20 to-primary/10 flex items-center justify-center">
+                <div className="relative h-48 bg-gradient-to-r from-indigo-100 to-indigo-50 flex items-center justify-center">
                   <div className="absolute inset-0 opacity-10 bg-pattern-grid"></div>
-                  <span className="w-24 h-24 text-primary relative z-10 flex items-center justify-center">
+                  <span className="w-24 h-24 text-indigo-500 relative z-10 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
                       <polyline points="14 2 14 8 20 8"></polyline>
@@ -153,9 +153,9 @@ export default function HomePage() {
               transition={{ delay: 0.3, duration: 0.5 }}
             >
               <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden flex flex-col">
-                <div className="relative h-48 bg-gradient-to-r from-primary/25 to-primary/15 flex items-center justify-center">
+                <div className="relative h-48 bg-gradient-to-r from-green-100 to-green-50 flex items-center justify-center">
                   <div className="absolute inset-0 opacity-10 bg-pattern-grid"></div>
-                  <GraduationCapIcon className="w-24 h-24 text-primary relative z-10" />
+                  <GraduationCapIcon className="w-24 h-24 text-green-500 relative z-10" />
                 </div>
                 <CardContent className="p-6 md:p-8 text-center flex-grow flex flex-col">
                   <h3 className="text-2xl font-bold mb-4">Career Resources</h3>
@@ -203,7 +203,7 @@ export default function HomePage() {
         href="https://wa.me/1234567890" 
         target="_blank" 
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 bg-primary text-white p-4 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50"
+        className="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors z-50"
         aria-label="Contact us on MessageSquareShare"
       >
         <MessageSquareShare size={24} />
