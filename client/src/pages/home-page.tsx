@@ -44,18 +44,19 @@ export default function HomePage() {
       
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4 relative inline-block">
+          <div className="text-center mb-16">
+            <motion.h2 
+              className="text-4xl font-bold mb-6 relative inline-block"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
               Explore <span className="text-primary">Opportunities</span>
-              <motion.div 
-                className="absolute bottom-0 left-0 h-1 bg-orange-200 dark:bg-orange-800"
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ delay: 0.2, duration: 0.8 }}
-              />
-            </h2>
-            <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300 text-lg">
-              Whether you're looking for your next career move or seeking top talent, we have all the tools you need.
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary/30 rounded-full"></div>
+            </motion.h2>
+            <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              Whether you're looking for your next career move or seeking top talent, 
+              we have all the tools you need to succeed.
             </p>
           </div>
           
