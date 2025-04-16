@@ -83,7 +83,7 @@ export default function AnimatedTestimonials() {
           className="mb-16 text-center"
         >
           <div className="inline-block mb-3">
-            <span className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 px-4 py-1.5 rounded-full text-sm font-semibold">
+            <span className="bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary/90 px-4 py-1.5 rounded-full text-sm font-semibold">
               Success Stories
             </span>
           </div>
@@ -91,7 +91,7 @@ export default function AnimatedTestimonials() {
             <span className="relative inline-block">
               What Our Users Say
               <motion.div 
-                className="absolute -bottom-2 left-0 w-full h-1 bg-green-200 dark:bg-green-800"
+                className="absolute -bottom-2 left-0 w-full h-1 bg-primary/20 dark:bg-primary/30"
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ delay: 0.3, duration: 0.8 }}
