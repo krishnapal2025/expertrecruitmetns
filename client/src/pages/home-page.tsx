@@ -105,13 +105,7 @@ export default function HomePage() {
                   <div className="space-y-2">
                     <Link href="/hire-talent">
                       <Button size="lg" className="w-full font-semibold">
-                        Hire Talent
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                      </Button>
-                    </Link>
-                    <Link href="/auth?type=employer">
-                      <Button size="lg" variant="outline" className="w-full font-semibold">
-                        Or Post a Job
+                        Hire Talent / Post a Job
                         <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>
                     </Link>
