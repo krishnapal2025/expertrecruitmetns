@@ -118,7 +118,7 @@ export default function QuickLinks() {
                     <li>
                       <Link href="/job-board">
                         <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
-                          Browse All Jobs
+                          Find Jobs
                         </div>
                       </Link>
                     </li>
