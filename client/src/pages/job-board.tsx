@@ -18,7 +18,8 @@ export default function JobBoardPage() {
   const [filters, setFilters] = useState({
     category: "",
     location: "",
-    jobType: ""
+    jobType: "",
+    specialization: ""
   });
 
   // Fetch all jobs
@@ -87,7 +88,7 @@ export default function JobBoardPage() {
   return (
     <>
       <Helmet>
-        <title>Job Board | RH Job Portal</title>
+        <title>Find Job | RH Job Portal</title>
         <meta name="description" content="Browse through our extensive collection of job listings across various sectors and locations. Find your perfect career opportunity today." />
       </Helmet>
 

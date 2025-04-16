@@ -14,6 +14,7 @@ interface JobFilterProps {
     category: string;
     location: string;
     jobType: string;
+    specialization?: string;
   }) => void;
 }
 
@@ -29,6 +30,23 @@ const categories = [
   "Hospitality",
   "Retail",
   "All Categories"
+];
+
+// Specializations
+const specializations = [
+  "Software Development",
+  "Data Analysis",
+  "UX/UI Design",
+  "Project Management",
+  "Digital Marketing",
+  "Customer Support",
+  "Sales",
+  "Human Resources",
+  "Finance & Accounting",
+  "Healthcare & Medicine",
+  "Education & Training",
+  "Legal & Compliance",
+  "All Specializations"
 ];
 
 // Job locations
@@ -58,13 +76,15 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const [selectedJobType, setSelectedJobType] = useState("All Types");
+  const [selectedSpecialization, setSelectedSpecialization] = useState("All Specializations");
   
   // Handle filter application
   const applyFilters = () => {
     onFilterChange({
       category: selectedCategory === "All Categories" ? "" : selectedCategory,
       location: selectedLocation === "All Locations" ? "" : selectedLocation,
-      jobType: selectedJobType === "All Types" ? "" : selectedJobType
+      jobType: selectedJobType === "All Types" ? "" : selectedJobType,
+      specialization: selectedSpecialization === "All Specializations" ? "" : selectedSpecialization
     });
   };
   
@@ -73,11 +93,13 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
     setSelectedCategory("All Categories");
     setSelectedLocation("All Locations");
     setSelectedJobType("All Types");
+    setSelectedSpecialization("All Specializations");
     
     onFilterChange({
       category: "",
       location: "",
-      jobType: ""
+      jobType: "",
+      specialization: ""
     });
   };
   
@@ -166,6 +188,24 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
                   <div key={type} className="flex items-center space-x-2">
                     <RadioGroupItem value={type} id={`type-${type}`} />
                     <Label htmlFor={`type-${type}`}>{type}</Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+          </div>
+
+          {/* Specialization */}
+          <div>
+            <h3 className="font-medium mb-3">Specialization</h3>
+            <div className="space-y-2">
+              <RadioGroup 
+                value={selectedSpecialization}
+                onValueChange={setSelectedSpecialization}
+              >
+                {specializations.map((specialization) => (
+                  <div key={specialization} className="flex items-center space-x-2">
+                    <RadioGroupItem value={specialization} id={`specialization-${specialization}`} />
+                    <Label htmlFor={`specialization-${specialization}`}>{specialization}</Label>
                   </div>
                 ))}
               </RadioGroup>
