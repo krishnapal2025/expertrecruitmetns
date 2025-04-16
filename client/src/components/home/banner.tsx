@@ -203,8 +203,7 @@ export default function Banner() {
                   <Link href="/hire-talent">
                     <Button 
                       size="lg" 
-                      variant="outline" 
-                      className="font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      className="font-medium bg-blue-500 hover:bg-blue-600 text-white"
                     >
                       Hire Talent
                     </Button>
