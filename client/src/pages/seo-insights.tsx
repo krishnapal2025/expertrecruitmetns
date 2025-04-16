@@ -51,42 +51,49 @@ export default function SEOInsightsPage() {
     { month: 'May', remote_work: 1700, hybrid_work: 1050, office_based: 450 },
     { month: 'Jun', remote_work: 1600, hybrid_work: 1100, office_based: 400 },
   ];
+  
+  // Company names for chart labels
+  const workTypeCompanies = {
+    remote_work: "Google & GitLab Remote",
+    hybrid_work: "Microsoft & Apple Hybrid",
+    office_based: "Goldman Sachs & JP Morgan Office"
+  };
 
   const industryGrowthData = [
-    { name: 'Technology', value: 35 },
-    { name: 'Healthcare', value: 25 },
-    { name: 'Finance', value: 20 },
-    { name: 'Marketing', value: 15 },
-    { name: 'Others', value: 5 },
+    { name: 'Technology (Google/NVIDIA)', value: 35 },
+    { name: 'Healthcare (Mayo/CVS)', value: 25 },
+    { name: 'Finance (Goldman/JP Morgan)', value: 20 },
+    { name: 'Marketing (Adobe/Salesforce)', value: 15 },
+    { name: 'Others (Various)', value: 5 },
   ];
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
   const competitiveAnalysisData = [
-    { job_title: 'Software Engineer', volume: 8500, difficulty: 65, opportunity: 85 },
-    { job_title: 'Marketing Manager', volume: 5600, difficulty: 45, opportunity: 78 },
-    { job_title: 'Data Scientist', volume: 7800, difficulty: 70, opportunity: 90 },
-    { job_title: 'UX Designer', volume: 4500, difficulty: 40, opportunity: 75 },
-    { job_title: 'Product Manager', volume: 6700, difficulty: 60, opportunity: 82 },
+    { job_title: 'Google Software Engineer', volume: 8500, difficulty: 65, opportunity: 85 },
+    { job_title: 'Salesforce Marketing Manager', volume: 5600, difficulty: 45, opportunity: 78 },
+    { job_title: 'Amazon Data Scientist', volume: 7800, difficulty: 70, opportunity: 90 },
+    { job_title: 'Apple UX Designer', volume: 4500, difficulty: 40, opportunity: 75 },
+    { job_title: 'Microsoft Product Manager', volume: 6700, difficulty: 60, opportunity: 82 },
   ];
 
   const resumeOptimizationData = [
-    { skill: 'JavaScript', frequency: 85, trending: true },
-    { skill: 'Python', frequency: 75, trending: true },
-    { skill: 'React', frequency: 70, trending: true },
-    { skill: 'SQL', frequency: 65, trending: false },
-    { skill: 'AWS', frequency: 60, trending: true },
-    { skill: 'Machine Learning', frequency: 55, trending: true },
-    { skill: 'Node.js', frequency: 50, trending: false },
-    { skill: 'Docker', frequency: 45, trending: true },
+    { skill: 'JavaScript (Google/Meta)', frequency: 85, trending: true },
+    { skill: 'Python (Amazon/IBM)', frequency: 75, trending: true },
+    { skill: 'React (Facebook/Airbnb)', frequency: 70, trending: true },
+    { skill: 'SQL (Oracle/Microsoft)', frequency: 65, trending: false },
+    { skill: 'AWS (Amazon/Netflix)', frequency: 60, trending: true },
+    { skill: 'Machine Learning (NVIDIA/Tesla)', frequency: 55, trending: true },
+    { skill: 'Node.js (PayPal/LinkedIn)', frequency: 50, trending: false },
+    { skill: 'Docker (Uber/Spotify)', frequency: 45, trending: true },
   ];
 
   // Insights data for quick metrics
   const insightsData = [
-    { title: "Top Keywords", value: "Remote Work, AI, Cloud", icon: Search, color: "bg-blue-500" },
-    { title: "Average Searches", value: "15.3k monthly", icon: BarChart2, color: "bg-green-500" },
-    { title: "Trending Industries", value: "Tech, Healthcare", icon: TrendingUp, color: "bg-purple-500" },
-    { title: "Keyword Difficulty", value: "Medium (45/100)", icon: Award, color: "bg-amber-500" },
+    { title: "Top Keywords", value: "Google Remote, AWS Cloud, Microsoft AI", icon: Search, color: "bg-blue-500" },
+    { title: "Average Searches", value: "15.3k monthly on LinkedIn & Indeed", icon: BarChart2, color: "bg-green-500" },
+    { title: "Trending Industries", value: "NVIDIA AI, Mayo Healthcare", icon: TrendingUp, color: "bg-purple-500" },
+    { title: "Keyword Difficulty", value: "Medium (45/100) for Amazon roles", icon: Award, color: "bg-amber-500" },
   ];
 
   return (
