@@ -52,7 +52,7 @@ export default function SEOInsightsPage() {
     { month: 'Jun', remote_work: 1600, hybrid_work: 1100, office_based: 400 },
   ];
   
-  // Company names for chart labels
+  // Company names for chart labels - Google (remote), Microsoft (hybrid), Amazon (office)
   const workTypeCompanies = {
     remote_work: "Google & GitLab Remote",
     hybrid_work: "Microsoft & Apple Hybrid",
@@ -361,11 +361,11 @@ export default function SEOInsightsPage() {
                     <CardContent className="p-6">
                       <div className="space-y-4">
                         {[
-                          { company: "Tech Innovations Inc.", growth: "+12%", postings: "152" },
-                          { company: "Global Solutions Ltd.", growth: "+8%", postings: "127" },
-                          { company: "Future Systems", growth: "+15%", postings: "118" },
-                          { company: "Data Dynamics", growth: "-3%", postings: "96" },
-                          { company: "Cloud Enterprises", growth: "+10%", postings: "89" },
+                          { company: "Google", growth: "+12%", postings: "152" },
+                          { company: "Amazon", growth: "+8%", postings: "127" },
+                          { company: "Microsoft", growth: "+15%", postings: "118" },
+                          { company: "IBM", growth: "-3%", postings: "96" },
+                          { company: "Salesforce", growth: "+10%", postings: "89" },
                         ].map((item, index) => (
                           <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div className="flex items-center">
@@ -459,11 +459,11 @@ export default function SEOInsightsPage() {
                     <CardContent className="p-6">
                       <div className="space-y-4">
                         {[
-                          { role: "AI Ethics Officer", industry: "Technology", growth: "New" },
-                          { role: "Remote Work Coordinator", industry: "HR", growth: "New" },
-                          { role: "Digital Health Consultant", industry: "Healthcare", growth: "New" },
-                          { role: "Sustainability Manager", industry: "Various", growth: "+215%" },
-                          { role: "Customer Experience Lead", industry: "Various", growth: "+180%" },
+                          { role: "Google AI Ethics Officer", industry: "Technology", growth: "New" },
+                          { role: "Spotify Remote Work Coordinator", industry: "HR", growth: "New" },
+                          { role: "Mayo Clinic Digital Health Consultant", industry: "Healthcare", growth: "New" },
+                          { role: "Tesla Sustainability Manager", industry: "Automotive", growth: "+215%" },
+                          { role: "Amazon Customer Experience Lead", industry: "Retail", growth: "+180%" },
                         ].map((item, index) => (
                           <div key={index} className="p-3 bg-gray-50 rounded-lg">
                             <div className="flex justify-between items-start mb-2">
