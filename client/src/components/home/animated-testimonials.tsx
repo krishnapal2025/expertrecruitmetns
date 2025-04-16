@@ -87,11 +87,11 @@ export default function AnimatedTestimonials() {
               Success Stories
             </span>
           </div>
-          <h2 className="mb-4 text-3xl font-bold md:text-5xl">
+          <h2 className="mb-4 text-3xl font-bold md:text-5xl text-gradient-cosmic dark:text-gradient-cosmic">
             <span className="relative inline-block">
               What Our Users Say
               <motion.div 
-                className="absolute -bottom-2 left-0 w-full h-1 bg-primary/20 dark:bg-primary/30"
+                className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-secondary dark:bg-gradient-secondary"
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ delay: 0.3, duration: 0.8 }}
