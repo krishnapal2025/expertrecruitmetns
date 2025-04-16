@@ -8,6 +8,14 @@ import { motion } from "framer-motion";
 const trendingIndustries = [
   {
     id: 1,
+    title: "SEO Market Insights",
+    description: "Analyze job market trends, keyword research, and search visibility to boost your career",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&h=450&fit=crop",
+    icon: <TrendingUp className="h-5 w-5" />,
+    link: "/seo-insights"
+  },
+  {
+    id: 2,
     title: "Tech Growth Outlook",
     description: "AI, machine learning, and data science professionals see 35% higher demand in 2025",
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&h=450&fit=crop",
@@ -176,9 +184,16 @@ export default function HiringTrends() {
           <h2 className="mb-4 text-3xl font-bold md:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
             Hiring Trends & Insights
           </h2>
-          <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300 text-lg">
+          <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300 text-lg mb-6">
             Stay ahead with the latest job market data, emerging career paths, and industry forecasts to navigate your professional journey.
           </p>
+          <Link href="/seo-insights">
+            <button className="px-6 py-3 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors flex items-center mx-auto">
+              <TrendingUp className="mr-2 h-5 w-5" /> 
+              Explore SEO Insights
+              <ArrowUpRight className="ml-2 h-5 w-5" />
+            </button>
+          </Link>
         </motion.div>
 
         {/* Statistics section */}
