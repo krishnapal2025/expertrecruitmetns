@@ -9,7 +9,7 @@ const categories = [
   {
     id: 1,
     name: "Technology",
-    icon: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=400&h=300",
+    icon: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=600&h=400&auto=format&fit=crop",
     color: "bg-blue-500",
     count: 1286,
     link: "/job-board?category=technology"
@@ -17,7 +17,7 @@ const categories = [
   {
     id: 2,
     name: "Healthcare",
-    icon: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=400&h=300",
+    icon: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=600&h=400&auto=format&fit=crop",
     color: "bg-green-500",
     count: 879,
     link: "/job-board?category=healthcare"
@@ -25,7 +25,7 @@ const categories = [
   {
     id: 3,
     name: "Finance",
-    icon: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?q=80&w=400&h=300",
+    icon: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?q=80&w=600&h=400&auto=format&fit=crop",
     color: "bg-purple-500",
     count: 754,
     link: "/job-board?category=finance"
@@ -33,7 +33,7 @@ const categories = [
   {
     id: 4,
     name: "Marketing",
-    icon: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=400&h=300",
+    icon: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&h=400&auto=format&fit=crop",
     color: "bg-red-500",
     count: 621,
     link: "/job-board?category=marketing"
@@ -41,7 +41,7 @@ const categories = [
   {
     id: 5,
     name: "Education",
-    icon: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=400&h=300",
+    icon: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=600&h=400&auto=format&fit=crop",
     color: "bg-amber-500",
     count: 512,
     link: "/job-board?category=education"
@@ -49,7 +49,7 @@ const categories = [
   {
     id: 6,
     name: "Engineering",
-    icon: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=400&h=300",
+    icon: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=600&h=400&auto=format&fit=crop",
     color: "bg-teal-500",
     count: 489,
     link: "/job-board?category=engineering"
@@ -57,7 +57,7 @@ const categories = [
   {
     id: 7,
     name: "Retail",
-    icon: "https://images.unsplash.com/photo-1481437156560-3205f6a55735?q=80&w=400&h=300",
+    icon: "https://images.unsplash.com/photo-1481437156560-3205f6a55735?q=80&w=600&h=400&auto=format&fit=crop",
     color: "bg-indigo-500",
     count: 378,
     link: "/job-board?category=retail"
@@ -65,7 +65,7 @@ const categories = [
   {
     id: 8,
     name: "Legal",
-    icon: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=400&h=300",
+    icon: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=600&h=400&auto=format&fit=crop",
     color: "bg-gray-600",
     count: 264,
     link: "/job-board?category=legal"
@@ -143,20 +143,21 @@ export default function FeaturedCategories() {
               whileHover={{ y: -10, transition: { duration: 0.2 } }}
               onMouseEnter={() => setHoveredId(category.id)}
               onMouseLeave={() => setHoveredId(null)}
-              className="group relative overflow-hidden rounded-xl shadow-md transition-all hover:shadow-lg"
+              className="group relative overflow-hidden rounded-xl shadow-lg transition-all hover:shadow-xl border border-gray-100 dark:border-gray-700"
             >
               <Link href={category.link}>
-                <div className="relative aspect-w-4 aspect-h-3">
+                <div className="relative h-48 w-full overflow-hidden">
                   <img
                     src={category.icon}
                     alt={`${category.name} jobs`}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="h-48 w-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div className={`absolute inset-0 opacity-60 ${category.color}`}></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20"></div>
+                  <div className={`absolute inset-0 ${category.color} opacity-40`}></div>
                   
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-white">
-                    <h3 className="mb-2 text-xl font-bold text-center">{category.name}</h3>
-                    <p className="text-sm">{category.count} open positions</p>
+                    <h3 className="mb-2 text-2xl font-bold text-center drop-shadow-md">{category.name}</h3>
+                    <p className="text-sm bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm">{category.count} open positions</p>
                     
                     <motion.div 
                       className="mt-4 flex items-center rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm"
