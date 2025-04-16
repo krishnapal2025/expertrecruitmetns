@@ -15,6 +15,7 @@ interface JobFilterProps {
     location: string;
     jobType: string;
     specialization: string;
+    experience: string;
   }) => void;
 }
 
@@ -71,12 +72,23 @@ const jobTypes = [
   "All Types"
 ];
 
+// Experience levels
+const experienceLevels = [
+  "Entry Level (0-1 years)",
+  "Junior (1-3 years)",
+  "Mid-Level (3-5 years)",
+  "Senior (5-10 years)",
+  "Expert (10+ years)",
+  "All Experience Levels"
+];
+
 export default function JobFilter({ onFilterChange }: JobFilterProps) {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const [selectedJobType, setSelectedJobType] = useState("All Types");
   const [selectedSpecialization, setSelectedSpecialization] = useState("All Specializations");
+  const [selectedExperience, setSelectedExperience] = useState("All Experience Levels");
   
   // Handle filter application
   const applyFilters = () => {
@@ -84,7 +96,8 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
       category: selectedCategory === "All Categories" ? "" : selectedCategory,
       location: selectedLocation === "All Locations" ? "" : selectedLocation,
       jobType: selectedJobType === "All Types" ? "" : selectedJobType,
-      specialization: selectedSpecialization === "All Specializations" ? "" : selectedSpecialization
+      specialization: selectedSpecialization === "All Specializations" ? "" : selectedSpecialization,
+      experience: selectedExperience === "All Experience Levels" ? "" : selectedExperience
     });
   };
   
@@ -94,12 +107,14 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
     setSelectedLocation("All Locations");
     setSelectedJobType("All Types");
     setSelectedSpecialization("All Specializations");
+    setSelectedExperience("All Experience Levels");
     
     onFilterChange({
       category: "",
       location: "",
       jobType: "",
-      specialization: ""
+      specialization: "",
+      experience: ""
     });
   };
   
@@ -107,7 +122,7 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
   useEffect(() => {
     // We can enable this for automatic filtering without button click
     // applyFilters();
-  }, [selectedCategory, selectedLocation, selectedJobType, selectedSpecialization]);
+  }, [selectedCategory, selectedLocation, selectedJobType, selectedSpecialization, selectedExperience]);
   
   return (
     <>
@@ -206,6 +221,24 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
                   <div key={specialization} className="flex items-center space-x-2">
                     <RadioGroupItem value={specialization} id={`specialization-${specialization}`} />
                     <Label htmlFor={`specialization-${specialization}`}>{specialization}</Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+          </div>
+          
+          {/* Experience Level */}
+          <div>
+            <h3 className="font-medium mb-3">Experience Level</h3>
+            <div className="space-y-2">
+              <RadioGroup 
+                value={selectedExperience}
+                onValueChange={setSelectedExperience}
+              >
+                {experienceLevels.map((experience) => (
+                  <div key={experience} className="flex items-center space-x-2">
+                    <RadioGroupItem value={experience} id={`experience-${experience}`} />
+                    <Label htmlFor={`experience-${experience}`}>{experience}</Label>
                   </div>
                 ))}
               </RadioGroup>

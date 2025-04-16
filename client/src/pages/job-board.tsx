@@ -19,7 +19,8 @@ export default function JobBoardPage() {
     category: "",
     location: "",
     jobType: "",
-    specialization: ""
+    specialization: "",
+    experience: ""
   });
 
   // Fetch all jobs
@@ -31,6 +32,7 @@ export default function JobBoardPage() {
       if (filters.location) queryParams.append("location", filters.location);
       if (filters.jobType) queryParams.append("jobType", filters.jobType);
       if (filters.specialization) queryParams.append("specialization", filters.specialization);
+      if (filters.experience) queryParams.append("experience", filters.experience);
       
       const response = await fetch(`/api/jobs?${queryParams.toString()}`);
       if (!response.ok) {
