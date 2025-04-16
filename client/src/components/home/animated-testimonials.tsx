@@ -200,7 +200,7 @@ export default function AnimatedTestimonials() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-gradient-primary rounded-2xl p-8 shadow-md border border-primary/10 dark:border-primary/20 relative overflow-hidden"
+              className="bg-gradient-cosmic rounded-2xl p-8 shadow-md border border-primary/10 dark:border-primary/20 relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-dot-pattern opacity-10"></div>
               <div className="relative z-10">
