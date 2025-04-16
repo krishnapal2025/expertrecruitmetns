@@ -97,8 +97,9 @@ export default function Banner() {
                 </Link>
                 {index === 0 && !currentUser && (
                   <Link href="/auth?type=jobseeker">
-                    <Button size="lg" variant="outline" className="text-lg border-white text-white hover:bg-white hover:text-gray-900">
+                    <Button size="lg" className="text-lg group">
                       Register Now
+                      <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                     </Button>
                   </Link>
                 )}

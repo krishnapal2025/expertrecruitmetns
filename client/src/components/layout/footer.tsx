@@ -39,38 +39,38 @@ export default function Footer() {
             <h3 className="text-lg font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/">
-                  <a className="text-gray-400 hover:text-white transition-colors">Home</a>
+                <Link href="/" className="text-gray-400 hover:text-white transition-colors">
+                  Home
                 </Link>
               </li>
               <li>
-                <Link href="/about-us">
-                  <a className="text-gray-400 hover:text-white transition-colors">About Us</a>
+                <Link href="/about-us" className="text-gray-400 hover:text-white transition-colors">
+                  About Us
                 </Link>
               </li>
               <li>
-                <Link href="/services">
-                  <a className="text-gray-400 hover:text-white transition-colors">Services</a>
+                <Link href="/services" className="text-gray-400 hover:text-white transition-colors">
+                  Services
                 </Link>
               </li>
               <li>
-                <Link href="/job-board">
-                  <a className="text-gray-400 hover:text-white transition-colors">Job Board</a>
+                <Link href="/job-board" className="text-gray-400 hover:text-white transition-colors">
+                  Job Board
                 </Link>
               </li>
               <li>
-                <Link href="/sectors">
-                  <a className="text-gray-400 hover:text-white transition-colors">Sectors</a>
+                <Link href="/sectors" className="text-gray-400 hover:text-white transition-colors">
+                  Sectors
                 </Link>
               </li>
               <li>
-                <Link href="/blogs">
-                  <a className="text-gray-400 hover:text-white transition-colors">Blogs</a>
+                <Link href="/blogs" className="text-gray-400 hover:text-white transition-colors">
+                  Blogs
                 </Link>
               </li>
               <li>
-                <Link href="/contact-us">
-                  <a className="text-gray-400 hover:text-white transition-colors">Contact Us</a>
+                <Link href="/contact-us" className="text-gray-400 hover:text-white transition-colors">
+                  Contact Us
                 </Link>
               </li>
             </ul>
@@ -80,33 +80,33 @@ export default function Footer() {
             <h3 className="text-lg font-bold mb-4">For Job Seekers</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/auth?type=jobseeker">
-                  <a className="text-gray-400 hover:text-white transition-colors">Register</a>
+                <Link href="/auth?type=jobseeker" className="text-gray-400 hover:text-white transition-colors">
+                  Register
                 </Link>
               </li>
               <li>
-                <Link href="/job-board">
-                  <a className="text-gray-400 hover:text-white transition-colors">Browse Jobs</a>
+                <Link href="/job-board" className="text-gray-400 hover:text-white transition-colors">
+                  Browse Jobs
                 </Link>
               </li>
               <li>
-                <Link href="/sectors">
-                  <a className="text-gray-400 hover:text-white transition-colors">Career Sectors</a>
+                <Link href="/sectors" className="text-gray-400 hover:text-white transition-colors">
+                  Career Sectors
                 </Link>
               </li>
               <li>
-                <Link href="/blogs">
-                  <a className="text-gray-400 hover:text-white transition-colors">Career Advice</a>
+                <Link href="/blogs" className="text-gray-400 hover:text-white transition-colors">
+                  Career Advice
                 </Link>
               </li>
               <li>
-                <Link href="/careers">
-                  <a className="text-gray-400 hover:text-white transition-colors">Join Our Team</a>
+                <Link href="/careers" className="text-gray-400 hover:text-white transition-colors">
+                  Join Our Team
                 </Link>
               </li>
               <li>
-                <Link href="/privacy-policy">
-                  <a className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+                <Link href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">
+                  Privacy Policy
                 </Link>
               </li>
             </ul>
@@ -151,20 +151,14 @@ export default function Footer() {
             © {currentYear} RH Job Portal. All rights reserved.
           </div>
           <div className="flex space-x-6">
-            <Link href="/privacy-policy">
-              <a className="text-gray-400 hover:text-white transition-colors text-sm">
-                Privacy Policy
-              </a>
+            <Link href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors text-sm">
+              Privacy Policy
             </Link>
-            <Link href="/terms">
-              <a className="text-gray-400 hover:text-white transition-colors text-sm">
-                Terms of Service
-              </a>
+            <Link href="/terms" className="text-gray-400 hover:text-white transition-colors text-sm">
+              Terms of Service
             </Link>
-            <Link href="/accessibility">
-              <a className="text-gray-400 hover:text-white transition-colors text-sm">
-                Accessibility
-              </a>
+            <Link href="/accessibility" className="text-gray-400 hover:text-white transition-colors text-sm">
+              Accessibility
             </Link>
           </div>
         </div>
