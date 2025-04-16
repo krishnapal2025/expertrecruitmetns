@@ -249,7 +249,7 @@ export default function Banner() {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
-              className="absolute bottom-8 right-8 left-8 md:left-auto md:right-8 md:bottom-8 md:w-64 glass-effect rounded-lg p-4 shadow-lg hover-lift"
+              className="absolute bottom-8 right-8 left-8 md:left-auto md:right-8 md:bottom-8 md:w-64 glass-effect-crescent rounded-lg p-4 shadow-lg hover-lift"
             >
               <div className="flex items-start">
                 <div className={`${slides[currentSlide].color} rounded-full p-2 mr-3 text-white`}>
@@ -283,7 +283,7 @@ export default function Banner() {
       
       {/* Slide counter */}
       <div className="absolute right-8 md:right-16 bottom-6 z-30">
-        <div className="glass-effect rounded-full px-3 py-1 font-mono text-sm text-gray-600 dark:text-gray-400">
+        <div className="glass-effect-fullmoon rounded-full px-3 py-1 font-mono text-sm text-gray-600 dark:text-gray-400">
           {currentSlide + 1}/{slides.length}
         </div>
       </div>
