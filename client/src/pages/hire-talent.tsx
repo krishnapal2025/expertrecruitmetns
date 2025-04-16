@@ -23,9 +23,6 @@ export default function HireTalentPage() {
               Our specialist recruiters have a deep understanding of your industry's talent needs.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Button size="lg" asChild>
-                <Link href="#preview-candidates">Preview Candidates</Link>
-              </Button>
               <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20" asChild>
                 <Link href="/contact-us">Speak to a Consultant</Link>
               </Button>
