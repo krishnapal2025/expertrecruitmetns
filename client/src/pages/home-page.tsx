@@ -59,12 +59,13 @@ export default function HomePage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-4 gap-8">
             <motion.div
               whileHover={{ y: -10, transition: { duration: 0.3 } }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.5 }}
+              className="md:col-span-1"
             >
               <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden">
                 <div className="relative h-40 bg-gradient-to-r from-blue-100 to-blue-50 flex items-center justify-center">
@@ -91,6 +92,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
+              className="md:col-span-1"
             >
               <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden">
                 <div className="relative h-40 bg-gradient-to-r from-purple-100 to-purple-50 flex items-center justify-center">
@@ -98,18 +100,51 @@ export default function HomePage() {
                   <BuildingIcon className="w-20 h-20 text-purple-500 relative z-10" />
                 </div>
                 <CardContent className="p-8 text-center">
-                  <h3 className="text-2xl font-bold mb-4">For Employers</h3>
+                  <h3 className="text-2xl font-bold mb-4">Hire Talent</h3>
                   <p className="text-gray-600 mb-6 text-lg">
-                    Find qualified candidates or post job openings for your organization
+                    Find qualified professionals to drive your business forward
                   </p>
-                  <div className="space-y-2">
-                    <Link href="/hire-talent">
-                      <Button size="lg" className="w-full font-semibold">
-                        Hire Talent / Post a Job
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                      </Button>
-                    </Link>
-                  </div>
+                  <Link href="/hire-talent">
+                    <Button size="lg" className="w-full font-semibold">
+                      Hire Talent
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+            
+            <motion.div
+              whileHover={{ y: -10, transition: { duration: 0.3 } }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25, duration: 0.5 }}
+              className="md:col-span-1"
+            >
+              <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden">
+                <div className="relative h-40 bg-gradient-to-r from-indigo-100 to-indigo-50 flex items-center justify-center">
+                  <div className="absolute inset-0 opacity-10 bg-pattern-grid"></div>
+                  <span className="w-20 h-20 text-indigo-500 relative z-10 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                      <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                  </span>
+                </div>
+                <CardContent className="p-8 text-center">
+                  <h3 className="text-2xl font-bold mb-4">Post a Job</h3>
+                  <p className="text-gray-600 mb-6 text-lg">
+                    Create a job listing and reach thousands of qualified candidates
+                  </p>
+                  <Link href="/auth?type=employer">
+                    <Button size="lg" className="w-full font-semibold">
+                      Post a Job
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </motion.div>
@@ -119,6 +154,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
+              className="md:col-span-1"
             >
               <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden">
                 <div className="relative h-40 bg-gradient-to-r from-green-100 to-green-50 flex items-center justify-center">
