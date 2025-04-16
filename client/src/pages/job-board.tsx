@@ -89,7 +89,7 @@ export default function JobBoardPage() {
   return (
     <>
       <Helmet>
-        <title>Find Job | RH Job Portal</title>
+        <title>Find Jobs | RH Job Portal</title>
         <meta name="description" content="Browse through our extensive collection of job listings across various sectors and locations. Find your perfect career opportunity today." />
       </Helmet>
 

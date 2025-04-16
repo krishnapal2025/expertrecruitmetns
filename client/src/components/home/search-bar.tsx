@@ -34,7 +34,7 @@ export default function SearchBar() {
     if (location) params.append("location", location);
     
     // Navigate to the search results page with the search parameters
-    window.location.href = `/job-board?${params.toString()}`;
+    window.location.href = `/job-board?${params.toString()}`; // Points to Find Jobs page
   };
 
   return (
