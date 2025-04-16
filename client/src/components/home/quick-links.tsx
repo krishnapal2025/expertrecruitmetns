@@ -34,18 +34,18 @@ export default function QuickLinks() {
         
         <div className="grid md:grid-cols-3 gap-8">
           {/* Job Categories */}
-          <div>
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="flex items-center mb-4">
-                <Briefcase className="h-6 w-6 text-primary mr-2" />
+          <div className="flex flex-col h-full">
+            <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col h-full">
+              <div className="flex items-center mb-5">
+                <Briefcase className="h-6 w-6 text-primary mr-3" />
                 <h3 className="text-xl font-bold">Job Categories</h3>
               </div>
               
-              <ul className="space-y-2">
+              <ul className="space-y-3 flex-grow">
                 {jobCategories.map((category, index) => (
                   <li key={index}>
                     <Link href={`/job-board?category=${category.toLowerCase()}`}>
-                      <div className="flex items-center justify-between py-2 text-gray-700 hover:text-primary transition-colors group cursor-pointer">
+                      <div className="flex items-center justify-between py-2 px-1 text-gray-700 hover:text-primary transition-colors group cursor-pointer">
                         <span>{category}</span>
                         <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
@@ -55,7 +55,7 @@ export default function QuickLinks() {
               </ul>
               
               <Link href="/sectors">
-                <Button variant="link" className="mt-4 px-0 flex items-center">
+                <Button variant="link" className="mt-6 px-0 flex items-center">
                   Find Jobs By Category
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -64,18 +64,18 @@ export default function QuickLinks() {
           </div>
           
           {/* Locations */}
-          <div>
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="flex items-center mb-4">
-                <Building className="h-6 w-6 text-primary mr-2" />
+          <div className="flex flex-col h-full">
+            <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col h-full">
+              <div className="flex items-center mb-5">
+                <Building className="h-6 w-6 text-primary mr-3" />
                 <h3 className="text-xl font-bold">Popular Locations</h3>
               </div>
               
-              <ul className="space-y-2">
+              <ul className="space-y-3 flex-grow">
                 {popularLocations.map((location, index) => (
                   <li key={index}>
                     <Link href={`/job-board?location=${location.toLowerCase()}`}>
-                      <div className="flex items-center justify-between py-2 text-gray-700 hover:text-primary transition-colors group cursor-pointer">
+                      <div className="flex items-center justify-between py-2 px-1 text-gray-700 hover:text-primary transition-colors group cursor-pointer">
                         <span>{location}</span>
                         <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
@@ -85,7 +85,7 @@ export default function QuickLinks() {
               </ul>
               
               <Link href="/job-board">
-                <Button variant="link" className="mt-4 px-0 flex items-center">
+                <Button variant="link" className="mt-6 px-0 flex items-center">
                   Find Jobs By Location
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -94,37 +94,37 @@ export default function QuickLinks() {
           </div>
           
           {/* For Employers & Job Seekers */}
-          <div>
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="flex items-center mb-4">
-                <Users className="h-6 w-6 text-primary mr-2" />
+          <div className="flex flex-col h-full">
+            <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col h-full">
+              <div className="flex items-center mb-5">
+                <Users className="h-6 w-6 text-primary mr-3" />
                 <h3 className="text-xl font-bold">Quick Access</h3>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-5 flex-grow">
                 <div>
-                  <h4 className="font-medium text-lg mb-2 flex items-center">
+                  <h4 className="font-medium text-lg mb-3 flex items-center">
                     <User className="h-5 w-5 mr-2 text-gray-500" />
                     For Job Seekers
                   </h4>
-                  <ul className="space-y-2 pl-7">
+                  <ul className="space-y-3 pl-7">
                     <li>
                       <Link href="/auth?type=jobseeker">
-                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer py-1">
                           Register an Account
                         </div>
                       </Link>
                     </li>
                     <li>
                       <Link href="/job-board">
-                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer py-1">
                           Find Jobs
                         </div>
                       </Link>
                     </li>
                     <li>
                       <Link href="/blogs">
-                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer py-1">
                           Career Resources
                         </div>
                       </Link>
@@ -133,28 +133,28 @@ export default function QuickLinks() {
                 </div>
                 
                 <div>
-                  <h4 className="font-medium text-lg mb-2 flex items-center">
+                  <h4 className="font-medium text-lg mb-3 flex items-center">
                     <Briefcase className="h-5 w-5 mr-2 text-gray-500" />
                     For Employers
                   </h4>
-                  <ul className="space-y-2 pl-7">
+                  <ul className="space-y-3 pl-7">
                     <li>
                       <Link href="/auth?type=employer">
-                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer py-1">
                           Post a Job
                         </div>
                       </Link>
                     </li>
                     <li>
                       <Link href="/services">
-                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer py-1">
                           Our Services
                         </div>
                       </Link>
                     </li>
                     <li>
                       <Link href="/contact-us">
-                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer py-1">
                           Contact Us
                         </div>
                       </Link>
