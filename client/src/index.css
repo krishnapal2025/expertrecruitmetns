@@ -24,39 +24,39 @@
   background-size: 100px 100px, 120px 120px, 170px 170px, 150px 150px, 200px 200px;
 }
 
-/* Moon Phases Cosmic Artistry Gradients */
+/* Corporate Blue Professional Gradients */
 .bg-gradient-primary {
-  background: linear-gradient(135deg, hsl(230, 60%, 40%) 0%, hsl(240, 50%, 25%) 100%);
+  background: linear-gradient(135deg, #0D47A1 0%, #1565C0 100%);
   background-size: 200% 200%;
   animation: gradientShift 15s ease infinite;
 }
 
 .bg-gradient-secondary {
-  background: linear-gradient(135deg, hsl(210, 40%, 90%) 0%, hsl(220, 30%, 75%) 100%);
+  background: linear-gradient(135deg, #BBDEFB 0%, #E3F2FD 100%);
   background-size: 200% 200%;
   animation: gradientShift 12s ease infinite;
 }
 
 .bg-gradient-accent {
-  background: linear-gradient(135deg, hsl(0, 0%, 95%) 0%, hsl(220, 20%, 85%) 100%);
+  background: linear-gradient(135deg, #FFC107 0%, #FFCA28 100%);
   background-size: 200% 200%;
   animation: gradientShift 10s ease infinite;
 }
 
 .bg-gradient-cosmic {
-  background: linear-gradient(135deg, hsl(240, 30%, 15%) 0%, hsl(230, 40%, 30%) 100%);
+  background: linear-gradient(135deg, #0A2472 0%, #0D47A1 100%);
   background-size: 200% 200%;
   animation: gradientShift 20s ease infinite;
 }
 
 .bg-gradient-lunar {
-  background: linear-gradient(135deg, hsl(0, 0%, 100%) 0%, hsl(220, 15%, 85%) 100%);
+  background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
   background-size: 200% 200%;
   animation: gradientShift 18s ease infinite;
 }
 
 .bg-gradient-eclipse {
-  background: linear-gradient(135deg, hsl(240, 30%, 15%) 0%, hsl(260, 20%, 20%) 50%, hsl(270, 15%, 25%) 100%);
+  background: linear-gradient(135deg, #0D47A1 0%, #01579B 50%, #004D40 100%);
   background-size: 200% 200%;
   animation: gradientShift 25s ease infinite;
 }
