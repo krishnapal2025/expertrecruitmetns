@@ -77,6 +77,39 @@
   box-shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.2);
 }
 
+/* Metallic Text Gradients */
+.text-gradient-metallic {
+  background: linear-gradient(to right, #c0c0c0, #e0e0e0, #a0a0a0, #d0d0d0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.text-gradient-cosmic {
+  background: linear-gradient(to right, #6a11cb, #2575fc, #6a11cb);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.text-gradient-lunar {
+  background: linear-gradient(to bottom right, #e0e0e0, #b0b0ff, #808080);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.text-gradient-eclipse {
+  background: linear-gradient(to right, #4a00e0, #8e2de2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+}
+
 /* Lunar glass morphism */
 .glass-effect {
   background: rgba(245, 245, 250, 0.7);

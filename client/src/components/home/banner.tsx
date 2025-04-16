@@ -19,7 +19,7 @@ const slides = [
     tagline: "FIND OPPORTUNITIES",
     description: "Connect with forward-thinking companies seeking your unique talents",
     image: "https://images.unsplash.com/photo-1568992687947-868a62a9f521?q=80&w=1600&auto=format&fit=crop",
-    color: "bg-gradient-primary",
+    color: "bg-gradient-cosmic",
     stats: [
       { value: "15k+", label: "Google & Amazon Jobs" },
       { value: "1.2k", label: "Fortune 500 Companies" },
@@ -33,7 +33,7 @@ const slides = [
     tagline: "HIRE PROFESSIONALS",
     description: "Connect with exceptional candidates ready to transform your business",
     image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1600&auto=format&fit=crop",
-    color: "bg-gradient-secondary",
+    color: "bg-gradient-lunar",
     stats: [
       { value: "90k+", label: "Microsoft & Apple Candidates" },
       { value: "48hr", label: "Meta & Salesforce Hire Time" },
@@ -47,7 +47,7 @@ const slides = [
     tagline: "CAREER RESOURCES",
     description: "Unlock industry insights and professional development resources",
     image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1600&auto=format&fit=crop",
-    color: "bg-gradient-accent",
+    color: "bg-gradient-eclipse",
     stats: [
       { value: "200+", label: "Google & Adobe Career Guides" },
       { value: "45%", label: "Deloitte & McKinsey Salary Growth" },
@@ -142,7 +142,7 @@ export default function Banner() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
-                className="text-4xl md:text-6xl xl:text-7xl font-extrabold mb-6 leading-tight text-gray-900 dark:text-white"
+                className="text-4xl md:text-6xl xl:text-7xl font-extrabold mb-6 leading-tight text-gradient-metallic dark:text-gradient-cosmic"
               >
                 {slides[currentSlide].title.split('\n').map((line, i) => (
                   <span key={i} className="block">{line}</span>
@@ -168,10 +168,16 @@ export default function Banner() {
               >
                 {slides[currentSlide].stats.map((stat, index) => (
                   <div key={index}>
-                    <div className={`text-3xl font-bold mb-1 ${currentSlide === 0 ? 'text-primary' : `text-${slides[currentSlide].color.split('-')[1]}-500`}`}>
+                    <div className={`text-3xl font-bold mb-1 ${
+                      currentSlide === 0 
+                        ? 'text-gradient-metallic' 
+                        : currentSlide === 1
+                          ? 'text-gradient-lunar' 
+                          : 'text-gradient-eclipse'
+                    }`}>
                       {stat.value}
                     </div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                    <div className="text-sm font-medium text-slate-600 dark:text-slate-300">
                       {stat.label}
                     </div>
                   </div>
