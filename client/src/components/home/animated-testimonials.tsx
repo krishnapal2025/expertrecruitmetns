@@ -1,38 +1,10 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
+import { ChevronLeft, ChevronRight, Star, Quote, ArrowRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { Testimonial } from "@shared/schema";
-
-// Animation variants
-const testimonialVariants = {
-  initial: (direction: number) => ({
-    x: direction > 0 ? 200 : -200,
-    opacity: 0,
-    scale: 0.8,
-  }),
-  animate: {
-    x: 0,
-    opacity: 1,
-    scale: 1,
-    transition: {
-      x: { type: "spring", stiffness: 300, damping: 30 },
-      opacity: { duration: 0.4 },
-      scale: { duration: 0.4 },
-    },
-  },
-  exit: (direction: number) => ({
-    x: direction > 0 ? -200 : 200,
-    opacity: 0,
-    scale: 0.8,
-    transition: {
-      x: { type: "spring", stiffness: 300, damping: 30 },
-      opacity: { duration: 0.4 },
-      scale: { duration: 0.4 },
-    },
-  }),
-};
 
 // Helper function to generate initials from a name
 const getInitials = (name: string) => {
@@ -43,9 +15,18 @@ const getInitials = (name: string) => {
     .toUpperCase();
 };
 
+// Pre-defined colors for avatar backgrounds
+const avatarColors = [
+  "bg-blue-500",
+  "bg-green-500",
+  "bg-amber-500",
+  "bg-pink-500",
+  "bg-violet-500",
+  "bg-teal-500"
+];
+
 export default function AnimatedTestimonials() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   const { data: testimonials = [] } = useQuery<Testimonial[]>({
@@ -57,25 +38,11 @@ export default function AnimatedTestimonials() {
     if (testimonials.length <= 1 || isPaused) return;
 
     const interval = setInterval(() => {
-      setDirection(1);
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
-    }, 5000);
+      setActiveIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
+    }, 7000);
 
     return () => clearInterval(interval);
   }, [testimonials, isPaused]);
-
-  // Handle navigation
-  const handlePrev = () => {
-    if (testimonials.length <= 1) return;
-    setDirection(-1);
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length);
-  };
-
-  const handleNext = () => {
-    if (testimonials.length <= 1) return;
-    setDirection(1);
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
-  };
 
   if (!testimonials.length) {
     return null;
@@ -93,17 +60,27 @@ export default function AnimatedTestimonials() {
   };
 
   return (
-    <section className="relative overflow-hidden py-20 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
-      {/* Decorative elements */}
-      <div className="absolute -top-64 -left-64 w-96 h-96 rounded-full bg-primary/5 mix-blend-multiply filter blur-3xl"></div>
-      <div className="absolute -bottom-64 -right-64 w-96 h-96 rounded-full bg-blue-400/5 mix-blend-multiply filter blur-3xl"></div>
+    <section className="py-20 bg-white dark:bg-gray-900">
+      {/* Grid pattern background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 opacity-[0.03] [mask-image:linear-gradient(to_bottom,white,transparent)]">
+          <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse" x="50%" y="100%" patternTransform="translate(0, -16)">
+                <path d="M0 32V.5H32" fill="none" stroke="currentColor" strokeWidth="0.5"></path>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)"></rect>
+          </svg>
+        </div>
+      </div>
       
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-12 text-center"
+          className="mb-16 text-center"
         >
           <div className="inline-block mb-3">
             <span className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 px-4 py-1.5 rounded-full text-sm font-semibold">
@@ -111,123 +88,157 @@ export default function AnimatedTestimonials() {
             </span>
           </div>
           <h2 className="mb-4 text-3xl font-bold md:text-5xl">
-            <span className="relative">
+            <span className="relative inline-block">
               What Our Users Say
-              <motion.span 
-                className="absolute -bottom-2 left-0 w-full h-1 bg-primary/30"
+              <motion.div 
+                className="absolute -bottom-2 left-0 w-full h-1 bg-green-200 dark:bg-green-800"
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-              ></motion.span>
+                transition={{ delay: 0.3, duration: 0.8 }}
+              />
             </span>
           </h2>
           <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300 text-lg">
-            Hear from job seekers and employers who have successfully connected through our platform.
+            Join thousands who have found success through our platform
           </p>
         </motion.div>
 
-        <div 
-          className="relative mx-auto max-w-4xl"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          {/* Testimonial Slider */}
-          <div className="mx-auto overflow-hidden rounded-xl bg-white p-1 shadow-lg dark:bg-gray-900">
-            <div className="relative h-[400px] w-full">
-              <AnimatePresence initial={false} custom={direction} mode="wait">
-                <motion.div
-                  key={currentIndex}
-                  custom={direction}
-                  variants={testimonialVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  className="absolute inset-0 flex h-full w-full flex-col md:flex-row"
-                >
-                  {/* Image Container */}
-                  <div className="relative h-48 w-full shrink-0 overflow-hidden md:h-full md:w-2/5">
-                    <img
-                      src={"https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=400&h=600"}
-                      alt={testimonials[currentIndex].name}
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex flex-1 flex-col justify-center p-6 md:p-10">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2, duration: 0.5 }}
-                    >
-                      <Quote className="mb-4 h-12 w-12 text-primary/20" />
-                      <div className="mb-6 flex">
-                        {renderStars(testimonials[currentIndex].rating || 5)}
+        <div className="grid md:grid-cols-12 gap-8 items-center">
+          {/* Minimalist Testimonial Card */}
+          <div className="md:col-span-7">
+            <div 
+              className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl shadow-lg min-h-[300px]"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+            >
+              {/* Decorative elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 bg-primary/10 rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 w-32 h-32 -mb-16 -ml-16 bg-green-400/10 rounded-full blur-2xl"></div>
+              
+              <div className="z-10 relative p-8 md:p-10">
+                <Quote className="h-10 w-10 text-green-200 dark:text-green-800 absolute top-6 left-6 opacity-80" />
+                
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIndex}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5 }}
+                    className="pt-10"
+                  >
+                    <div className="mb-4 flex">
+                      {renderStars(testimonials[activeIndex].rating || 5)}
+                    </div>
+                    
+                    <p className="text-xl md:text-2xl font-light leading-relaxed text-gray-700 dark:text-gray-200 mb-6 italic">
+                      "{testimonials[activeIndex].content}"
+                    </p>
+                    
+                    <div className="flex items-center">
+                      <Avatar className="mr-4 h-14 w-14 border-2 border-white shadow-md">
+                        <AvatarFallback className={`${avatarColors[activeIndex % avatarColors.length]} text-white`}>
+                          {getInitials(testimonials[activeIndex].name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h4 className="font-bold text-lg">{testimonials[activeIndex].name}</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {testimonials[activeIndex].role}
+                        </p>
                       </div>
-                      <p className="mb-6 text-lg italic leading-relaxed text-gray-700 dark:text-gray-300">
-                        "{testimonials[currentIndex].content}"
-                      </p>
-                      <div className="flex items-center">
-                        <Avatar className="mr-4 h-12 w-12">
-                          <AvatarImage src={"https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=400&h=600"} />
-                          <AvatarFallback>{getInitials(testimonials[currentIndex].name)}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <h4 className="font-bold">{testimonials[currentIndex].name}</h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {testimonials[currentIndex].role}
-                          </p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+              
+              {/* Progress bar */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-100 dark:bg-gray-700">
+                <motion.div 
+                  className="h-full bg-green-500"
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 7, ease: "linear", repeat: Infinity }}
+                  key={activeIndex}
+                />
+              </div>
+            </div>
+            
+            {/* Navigation */}
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={() => setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)}
+                className="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              
+              <div className="flex items-center space-x-2">
+                {testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveIndex(index)}
+                    className={`w-8 h-1.5 rounded-full transition-all ${
+                      activeIndex === index 
+                        ? "bg-green-500 w-12" 
+                        : "bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    }`}
+                    aria-label={`Go to testimonial ${index + 1}`}
+                  />
+                ))}
+              </div>
+              
+              <button
+                onClick={() => setActiveIndex((prev) => (prev + 1) % testimonials.length)}
+                className="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
             </div>
           </div>
-
-          {/* Navigation buttons */}
-          <div className="mt-6 flex justify-center space-x-2">
-            <button
-              onClick={handlePrev}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md transition-all hover:bg-primary hover:text-white dark:bg-gray-800 dark:hover:bg-primary"
-              aria-label="Previous testimonial"
+          
+          {/* Stats and CTA Column */}
+          <div className="md:col-span-5">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700"
             >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            {/* Dots Indicators */}
-            <div className="flex items-center space-x-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    setDirection(index > currentIndex ? 1 : -1);
-                    setCurrentIndex(index);
-                  }}
-                  className={`h-2 w-2 rounded-full ${
-                    currentIndex === index
-                      ? "bg-primary"
-                      : "bg-gray-300 dark:bg-gray-700"
-                  }`}
-                  aria-label={`Go to testimonial ${index + 1}`}
-                />
-              ))}
-            </div>
-            <button
-              onClick={handleNext}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md transition-all hover:bg-primary hover:text-white dark:bg-gray-800 dark:hover:bg-primary"
-              aria-label="Next testimonial"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
+              <h3 className="text-2xl font-bold mb-6">Join Our Success Stories</h3>
+              
+              <div className="grid grid-cols-2 gap-6 mb-8">
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
+                  <div className="text-3xl font-bold text-green-500 dark:text-green-400">94%</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Placement Rate</div>
+                </div>
+                
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
+                  <div className="text-3xl font-bold text-green-500 dark:text-green-400">+32%</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Salary Increase</div>
+                </div>
+                
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
+                  <div className="text-3xl font-bold text-green-500 dark:text-green-400">14K+</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Happy Clients</div>
+                </div>
+                
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
+                  <div className="text-3xl font-bold text-green-500 dark:text-green-400">4.8/5</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Client Rating</div>
+                </div>
+              </div>
+              
+              <Button 
+                className="w-full bg-green-500 hover:bg-green-600 group mt-2"
+                size="lg"
+              >
+                Start Your Success Story
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </motion.div>
           </div>
         </div>
-      </div>
-
-      {/* Background pattern */}
-      <div className="absolute -top-24 left-0 right-0 z-0 opacity-5">
-        <Quote className="mx-auto h-48 w-48 rotate-12 transform text-primary" />
       </div>
     </section>
   );

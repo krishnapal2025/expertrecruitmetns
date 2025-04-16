@@ -5,6 +5,7 @@ import QuickLinks from "@/components/home/quick-links";
 import HiringTrends from "@/components/home/hiring-trends";
 import FeaturedCategories from "@/components/home/featured-categories";
 import AnimatedTestimonials from "@/components/home/animated-testimonials";
+import SearchBar from "@/components/home/search-bar";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,6 +27,8 @@ export default function HomePage() {
       </Helmet>
 
       <Banner />
+      
+      <SearchBar />
       
       <Welcome />
       
