@@ -18,7 +18,7 @@ const slides = [
     title: "Your Career,\nRedefined",
     tagline: "FIND OPPORTUNITIES",
     description: "Connect with forward-thinking companies seeking your unique talents",
-    image: "https://images.unsplash.com/photo-1587614387466-0a72ca909e16?q=80&w=1600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1579389083078-4e7018379f7e?q=80&w=1600&auto=format&fit=crop",
     color: "bg-primary",
     stats: [
       { value: "15k+", label: "Google & Amazon Jobs" },
