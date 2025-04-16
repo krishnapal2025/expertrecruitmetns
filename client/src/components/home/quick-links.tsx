@@ -56,7 +56,7 @@ export default function QuickLinks() {
               
               <Link href="/sectors">
                 <Button variant="link" className="mt-4 px-0 flex items-center">
-                  View All Categories
+                  Find Jobs By Category
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -86,7 +86,7 @@ export default function QuickLinks() {
               
               <Link href="/job-board">
                 <Button variant="link" className="mt-4 px-0 flex items-center">
-                  Explore All Locations
+                  Find Jobs By Location
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
