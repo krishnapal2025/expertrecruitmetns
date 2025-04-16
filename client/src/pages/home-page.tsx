@@ -52,7 +52,6 @@ export default function HomePage() {
               transition={{ duration: 0.6 }}
             >
               Explore <span className="text-primary">Opportunities</span>
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary/30 rounded-full"></div>
             </motion.h2>
             <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
               Whether you're looking for your next career move or seeking top talent, 
