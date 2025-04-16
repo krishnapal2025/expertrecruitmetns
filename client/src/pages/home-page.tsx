@@ -100,18 +100,18 @@ export default function HomePage() {
                 <CardContent className="p-8 text-center">
                   <h3 className="text-2xl font-bold mb-4">For Employers</h3>
                   <p className="text-gray-600 mb-6 text-lg">
-                    Post jobs and find the perfect candidates for your organization
+                    Find qualified candidates or post job openings for your organization
                   </p>
                   <div className="space-y-2">
-                    <Link href="/auth?type=employer">
+                    <Link href="/hire-talent">
                       <Button size="lg" className="w-full font-semibold">
-                        Post a Job
+                        Hire Talent
                         <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>
                     </Link>
-                    <Link href="/hire-talent">
+                    <Link href="/auth?type=employer">
                       <Button size="lg" variant="outline" className="w-full font-semibold">
-                        Or Hire Talent
+                        Or Post a Job
                         <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>
                     </Link>
