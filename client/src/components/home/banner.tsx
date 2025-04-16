@@ -19,7 +19,7 @@ const slides = [
     tagline: "FIND OPPORTUNITIES",
     description: "Connect with forward-thinking companies seeking your unique talents",
     image: "https://images.unsplash.com/photo-1568992687947-868a62a9f521?q=80&w=1600&auto=format&fit=crop",
-    color: "bg-gradient-primary",
+    color: "bg-primary",
     stats: [
       { value: "15k+", label: "Google & Amazon Jobs" },
       { value: "1.2k", label: "Fortune 500 Companies" },
@@ -33,7 +33,7 @@ const slides = [
     tagline: "HIRE PROFESSIONALS",
     description: "Connect with exceptional candidates ready to transform your business",
     image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1600&auto=format&fit=crop",
-    color: "bg-gradient-secondary",
+    color: "bg-violet-500",
     stats: [
       { value: "90k+", label: "Microsoft & Apple Candidates" },
       { value: "48hr", label: "Meta & Salesforce Hire Time" },
@@ -47,7 +47,7 @@ const slides = [
     tagline: "CAREER RESOURCES",
     description: "Unlock industry insights and professional development resources",
     image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1600&auto=format&fit=crop",
-    color: "bg-gradient-accent",
+    color: "bg-emerald-500",
     stats: [
       { value: "200+", label: "Google & Adobe Career Guides" },
       { value: "45%", label: "Deloitte & McKinsey Salary Growth" },
@@ -203,7 +203,7 @@ export default function Banner() {
                   <Link href="/hire-talent">
                     <Button 
                       size="lg" 
-                      className="font-medium bg-gradient-secondary hover:opacity-90 transition-opacity text-white"
+                      className="font-medium bg-blue-500 hover:bg-blue-600 text-white"
                     >
                       Hire Talent
                     </Button>
@@ -249,7 +249,7 @@ export default function Banner() {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
-              className="absolute bottom-8 right-8 left-8 md:left-auto md:right-8 md:bottom-8 md:w-64 glass-effect rounded-lg p-4 shadow-lg hover-lift"
+              className="absolute bottom-8 right-8 left-8 md:left-auto md:right-8 md:bottom-8 md:w-64 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-lg p-4 shadow-lg"
             >
               <div className="flex items-start">
                 <div className={`${slides[currentSlide].color} rounded-full p-2 mr-3 text-white`}>
@@ -283,7 +283,7 @@ export default function Banner() {
       
       {/* Slide counter */}
       <div className="absolute right-8 md:right-16 bottom-6 z-30">
-        <div className="glass-effect rounded-full px-3 py-1 font-mono text-sm text-gray-600 dark:text-gray-400">
+        <div className="bg-white/10 dark:bg-gray-900/10 backdrop-blur-md rounded-full px-3 py-1 font-mono text-sm text-gray-600 dark:text-gray-400">
           {currentSlide + 1}/{slides.length}
         </div>
       </div>
