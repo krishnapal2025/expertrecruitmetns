@@ -18,7 +18,7 @@ const trendingIndustries = [
     id: 2,
     title: "Remote Work Trends",
     description: "76% of companies now offer permanent remote positions across all departments",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1593642634367-d91a135587b5?q=80&w=800&h=450&fit=crop",
     icon: <Globe className="h-5 w-5" />,
     link: "/blogs/remote-work"
   },
