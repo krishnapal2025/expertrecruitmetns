@@ -3,8 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
-import { ArrowRight, BriefcaseIcon, Clock, DollarSign, FileCheck, FileText, Search, ShieldCheck, Users, Zap, Award, BarChart4, Briefcase } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowRight, BriefcaseIcon, Clock, DollarSign, FileCheck, FileText, Search, ShieldCheck, Users } from "lucide-react";
 
 export default function HireTalentPage() {
   return (
@@ -15,105 +14,18 @@ export default function HireTalentPage() {
       </Helmet>
 
       {/* Hero Section */}
-      <div className="bg-primary text-white py-20 overflow-hidden relative">
+      <div className="bg-primary text-white py-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <motion.h1 
-                className="text-5xl font-bold mb-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                Hire Top Talent For Your Business
-              </motion.h1>
-              <motion.p 
-                className="text-xl mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                Connect with qualified professionals who will drive your business forward.
-                Our specialist recruiters have a deep understanding of your industry's talent needs.
-              </motion.p>
-              <motion.div 
-                className="flex flex-wrap gap-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-              >
-                <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20" asChild>
-                  <Link href="/contact-us">Speak to a Consultant</Link>
-                </Button>
-              </motion.div>
-            </div>
-            
-            {/* Simple compact animation */}
-            <div className="hidden lg:flex justify-center">
-              <div className="relative h-64 w-64">
-                {/* Center circle with icon */}
-                <motion.div 
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-white/20 p-5 rounded-full w-24 h-24 flex items-center justify-center shadow-lg"
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
-                >
-                  <Users className="h-12 w-12 text-white" />
-                </motion.div>
-                
-                {/* Small floating icons */}
-                <div className="absolute top-1/4 left-1/4">
-                  <motion.div 
-                    className="bg-white/20 p-2 rounded-lg shadow-md"
-                    initial={{ y: 0, opacity: 0 }}
-                    animate={{ y: [-5, 5, -5], opacity: 1 }}
-                    transition={{ y: { repeat: Infinity, duration: 2 }, opacity: { duration: 0.3 } }}
-                  >
-                    <Briefcase className="h-5 w-5 text-white" />
-                  </motion.div>
-                </div>
-                
-                <div className="absolute bottom-1/4 left-1/4">
-                  <motion.div 
-                    className="bg-white/20 p-2 rounded-lg shadow-md"
-                    initial={{ y: 0, opacity: 0 }}
-                    animate={{ y: [5, -5, 5], opacity: 1 }}
-                    transition={{ y: { repeat: Infinity, duration: 2.5, delay: 0.5 }, opacity: { duration: 0.3, delay: 0.1 } }}
-                  >
-                    <Award className="h-5 w-5 text-white" />
-                  </motion.div>
-                </div>
-                
-                <div className="absolute top-1/4 right-1/4">
-                  <motion.div 
-                    className="bg-white/20 p-2 rounded-lg shadow-md"
-                    initial={{ y: 0, opacity: 0 }}
-                    animate={{ y: [-5, 5, -5], opacity: 1 }}
-                    transition={{ y: { repeat: Infinity, duration: 2.2, delay: 0.3 }, opacity: { duration: 0.3, delay: 0.2 } }}
-                  >
-                    <BarChart4 className="h-5 w-5 text-white" />
-                  </motion.div>
-                </div>
-                
-                <div className="absolute bottom-1/4 right-1/4">
-                  <motion.div 
-                    className="bg-white/20 p-2 rounded-lg shadow-md"
-                    initial={{ y: 0, opacity: 0 }}
-                    animate={{ y: [5, -5, 5], opacity: 1 }}
-                    transition={{ y: { repeat: Infinity, duration: 1.8, delay: 0.7 }, opacity: { duration: 0.3, delay: 0.3 } }}
-                  >
-                    <Zap className="h-5 w-5 text-white" />
-                  </motion.div>
-                </div>
-                
-                {/* Pulse circle */}
-                <motion.div 
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full border border-white/30"
-                  initial={{ scale: 1, opacity: 0 }}
-                  animate={{ scale: [1, 1.5, 1], opacity: [0.7, 0.2, 0.7] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                />
-              </div>
+          <div className="max-w-3xl">
+            <h1 className="text-5xl font-bold mb-6">Hire Top Talent For Your Business</h1>
+            <p className="text-xl mb-8">
+              Connect with qualified professionals who will drive your business forward.
+              Our specialist recruiters have a deep understanding of your industry's talent needs.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20" asChild>
+                <Link href="/contact-us">Speak to a Consultant</Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -363,138 +275,213 @@ export default function HireTalentPage() {
           
           {/* Permanent Talent Tab */}
           <TabsContent value="permanent">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-3 mb-8">
-                <h2 className="text-3xl font-bold mb-6">Build Your Dream Team with Permanent Hires</h2>
-                <p className="text-lg text-gray-700 mb-8 max-w-4xl">
-                  Find exceptional talent who will contribute to your company's long-term success and growth. 
-                  Our permanent staffing solutions connect you with professionals who align with your company's culture and goals.
-                </p>
+            <div>
+              <h2 className="text-3xl font-bold mb-6">Build Your Dream Team with Permanent Hires</h2>
+              <p className="text-lg text-gray-700 mb-8">
+                Find exceptional talent who will contribute to your company's long-term success and growth. 
+                Our permanent staffing solutions connect you with professionals who align with your company's culture and goals.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <Card>
+                  <CardHeader>
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                      <Users className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle>Executive Search</CardTitle>
+                    <CardDescription>Leadership talent acquisition</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 mb-4">
+                      Our executive search service identifies and attracts top-tier leadership talent who will drive your organization forward.
+                    </p>
+                    <ul className="space-y-2 text-sm text-gray-600">
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5">•</div>
+                        <span>C-Suite and Director-level recruitment</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5">•</div>
+                        <span>Leadership assessment and evaluation</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5">•</div>
+                        <span>Succession planning</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                  <CardFooter>
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link href="/contact-us?service=executive">Learn More</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                      <BriefcaseIcon className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle>Professional Staffing</CardTitle>
+                    <CardDescription>Mid to senior-level professionals</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 mb-4">
+                      Find experienced professionals with the specialized skills and industry knowledge your business needs to excel.
+                    </p>
+                    <ul className="space-y-2 text-sm text-gray-600">
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5">•</div>
+                        <span>Technical and specialized roles</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5">•</div>
+                        <span>Industry-specific expertise</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5">•</div>
+                        <span>Role customization and definition</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                  <CardFooter>
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link href="/contact-us?service=professional">Learn More</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                      <DollarSign className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle>Volume Hiring</CardTitle>
+                    <CardDescription>Scaling teams efficiently</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 mb-4">
+                      Build entire teams or departments with our efficient volume hiring solutions designed for growth and expansion.
+                    </p>
+                    <ul className="space-y-2 text-sm text-gray-600">
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5">•</div>
+                        <span>Multi-position filling strategies</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5">•</div>
+                        <span>Streamlined assessment processes</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5">•</div>
+                        <span>Onboarding coordination</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                  <CardFooter>
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link href="/contact-us?service=volume">Learn More</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
               </div>
               
-              <Card>
-                <CardHeader>
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                    <Users className="h-6 w-6 text-primary" />
-                  </div>
-                  <CardTitle>Executive Search</CardTitle>
-                  <CardDescription>Leadership talent acquisition</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Our executive search service identifies and attracts top-tier leadership talent who will drive your organization forward.
+              <div className="bg-gray-50 p-8 rounded-lg">
+                <div className="max-w-3xl mx-auto text-center">
+                  <h3 className="text-2xl font-bold mb-4">Our Recruitment Process</h3>
+                  <p className="text-gray-600 mb-8">
+                    We follow a thorough, transparent process to ensure we find the perfect match for your permanent positions.
                   </p>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start">
-                      <div className="mr-2 mt-0.5">•</div>
-                      <span>C-Suite and Director-level recruitment</span>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="mr-2 mt-0.5">•</div>
-                      <span>Leadership assessment and evaluation</span>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="mr-2 mt-0.5">•</div>
-                      <span>Succession planning</span>
-                    </li>
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button variant="outline" className="w-full" asChild>
-                    <Link href="/contact-us?service=executive">Learn More</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                    <BriefcaseIcon className="h-6 w-6 text-primary" />
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="bg-white p-4 rounded-lg shadow-sm">
+                      <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-3">1</div>
+                      <h4 className="font-semibold mb-2">Needs Analysis</h4>
+                      <p className="text-sm text-gray-600">We thoroughly understand your requirements and company culture.</p>
+                    </div>
+                    
+                    <div className="bg-white p-4 rounded-lg shadow-sm">
+                      <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-3">2</div>
+                      <h4 className="font-semibold mb-2">Candidate Sourcing</h4>
+                      <p className="text-sm text-gray-600">We identify qualified candidates through our extensive network.</p>
+                    </div>
+                    
+                    <div className="bg-white p-4 rounded-lg shadow-sm">
+                      <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-3">3</div>
+                      <h4 className="font-semibold mb-2">Screening & Assessment</h4>
+                      <p className="text-sm text-gray-600">We evaluate technical skills, experience, and cultural fit.</p>
+                    </div>
+                    
+                    <div className="bg-white p-4 rounded-lg shadow-sm">
+                      <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-3">4</div>
+                      <h4 className="font-semibold mb-2">Placement & Support</h4>
+                      <p className="text-sm text-gray-600">We assist with offers and provide ongoing support.</p>
+                    </div>
                   </div>
-                  <CardTitle>Professional Staffing</CardTitle>
-                  <CardDescription>Mid to senior-level professionals</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Find experienced professionals with the specialized skills and industry knowledge your business needs to excel.
-                  </p>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start">
-                      <div className="mr-2 mt-0.5">•</div>
-                      <span>Technical and specialized roles</span>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="mr-2 mt-0.5">•</div>
-                      <span>Industry-specific recruitment</span>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="mr-2 mt-0.5">•</div>
-                      <span>Proven professional track records</span>
-                    </li>
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button variant="outline" className="w-full" asChild>
-                    <Link href="/contact-us?service=professional">Learn More</Link>
+                  
+                  <Button size="lg" className="mt-8" asChild>
+                    <Link href="/contact-us?service=permanent">Start Hiring Permanent Talent</Link>
                   </Button>
-                </CardFooter>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                    <DollarSign className="h-6 w-6 text-primary" />
-                  </div>
-                  <CardTitle>Volume Hiring</CardTitle>
-                  <CardDescription>Scale your team efficiently</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Quickly build teams of qualified professionals to support rapid growth, new projects, or expansion into new markets.
-                  </p>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start">
-                      <div className="mr-2 mt-0.5">•</div>
-                      <span>Bulk hiring campaigns</span>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="mr-2 mt-0.5">•</div>
-                      <span>Streamlined assessment processes</span>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="mr-2 mt-0.5">•</div>
-                      <span>Team cohesion and cultural alignment</span>
-                    </li>
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button variant="outline" className="w-full" asChild>
-                    <Link href="/contact-us?service=volume">Learn More</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
+                </div>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
       </div>
       
-      {/* CTA Section */}
-      <div className="bg-gray-50 py-20">
+      {/* Testimonials Section */}
+      <div className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6">Ready to Build Your Dream Team?</h2>
-            <p className="text-lg text-gray-700 mb-8">
-              Whether you need to preview our candidate pool, hire contract talent, or build your permanent team, 
-              we're here to help you find the perfect match for your business needs.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" asChild>
-                <Link href="/auth?type=employer">Create Employer Account</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/contact-us">Talk to a Recruitment Specialist</Link>
-              </Button>
-            </div>
+          <h2 className="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                quote: "RH Job Portal helped us find exceptional talent quickly. Their understanding of our industry and company culture made all the difference.",
+                author: "Sarah Johnson",
+                title: "HR Director, Tech Innovations Inc."
+              },
+              {
+                quote: "The quality of candidates provided by RH Job Portal exceeded our expectations. We've built a stronger team thanks to their recruitment expertise.",
+                author: "Michael Chen",
+                title: "CEO, Financial Solutions Group"
+              },
+              {
+                quote: "Their contract staffing solutions allowed us to scale efficiently during our peak season. Professional service from start to finish.",
+                author: "Priya Patel",
+                title: "Operations Manager, Retail Excellence"
+              }
+            ].map((testimonial, index) => (
+              <Card key={index} className="bg-white">
+                <CardContent className="pt-6">
+                  <div className="text-4xl text-primary mb-4">"</div>
+                  <p className="text-gray-700 mb-6 italic">{testimonial.quote}</p>
+                  <div>
+                    <p className="font-semibold">{testimonial.author}</p>
+                    <p className="text-sm text-gray-600">{testimonial.title}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      {/* CTA Section */}
+      <div className="bg-primary text-white py-16">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">Ready to Find Your Perfect Hire?</h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Whether you need contract professionals, permanent team members, or want to preview our candidate pool,
+            we're here to help you find the right talent for your business.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Button size="lg" variant="outline" className="bg-white text-primary hover:bg-gray-100" asChild>
+              <Link href="/auth?type=employer">Create Employer Account</Link>
+            </Button>
+            <Button size="lg" className="bg-white/20 hover:bg-white/30" asChild>
+              <Link href="/contact-us">Contact a Recruitment Specialist</Link>
+            </Button>
           </div>
         </div>
       </div>
