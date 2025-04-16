@@ -15,6 +15,7 @@ import CareersPage from "@/pages/careers";
 import AuthPage from "@/pages/auth-page";
 import JobDetailsPage from "@/pages/job-details";
 import HireTalentPage from "@/pages/hire-talent";
+import SEOInsightsPage from "@/pages/seo-insights";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import Navbar from "@/components/layout/navbar";
