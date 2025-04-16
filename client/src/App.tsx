@@ -14,6 +14,7 @@ import BlogsPage from "@/pages/blogs";
 import CareersPage from "@/pages/careers";
 import AuthPage from "@/pages/auth-page";
 import JobDetailsPage from "@/pages/job-details";
+import HireTalentPage from "@/pages/hire-talent";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import Navbar from "@/components/layout/navbar";
@@ -48,6 +49,7 @@ function Router() {
       <Route path="/blogs" component={BlogsPage} />
       <Route path="/careers" component={CareersPage} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/hire-talent" component={HireTalentPage} />
       <Route component={NotFound} />
     </Switch>
   );

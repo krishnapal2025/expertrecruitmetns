@@ -198,6 +198,19 @@ export default function Banner() {
                     <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </Link>
+                
+                {currentSlide === 1 && (
+                  <Link href="/hire-talent">
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      Hire Talent
+                    </Button>
+                  </Link>
+                )}
+                
                 {currentSlide === 0 && !currentUser && (
                   <Link href="/auth?type=jobseeker">
                     <Button 
