@@ -60,7 +60,7 @@ export default function JobBoardPage() {
     
     setFilteredJobs(result);
     setCurrentPage(1); // Reset to first page when filters change
-  }, [jobs, searchTerm, filters.specialization]);
+  }, [jobs, searchTerm, filters.specialization, filters.experience]);
 
   // Calculate pagination
   const totalPages = Math.ceil((filteredJobs?.length || 0) / JOBS_PER_PAGE);
@@ -196,7 +196,13 @@ export default function JobBoardPage() {
                 </p>
                 <Button onClick={() => {
                   setSearchTerm("");
-                  setFilters({ category: "", location: "", jobType: "", specialization: "" });
+                  setFilters({ 
+                    category: "", 
+                    location: "", 
+                    jobType: "", 
+                    specialization: "",
+                    experience: ""
+                  });
                 }}>
                   Clear Filters
                 </Button>
