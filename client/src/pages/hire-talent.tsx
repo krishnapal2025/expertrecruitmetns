@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { ArrowRight, BriefcaseIcon, Clock, DollarSign, FileCheck, FileText, Search, ShieldCheck, Users, Zap, Award, BarChart4, Briefcase } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function HireTalentPage() {
   return (
@@ -49,130 +49,197 @@ export default function HireTalentPage() {
             </div>
             
             <div className="hidden lg:flex justify-center">
-              <div className="relative h-96 w-96">
-                {/* Animated icons floating around */}
-                <motion.div 
-                  className="absolute"
-                  initial={{ x: 0, y: 0, rotate: 0 }}
-                  animate={{ 
-                    x: [0, 30, 0],
-                    y: [0, -30, 0],
-                    rotate: [0, 10, 0]
-                  }}
-                  transition={{ 
-                    duration: 4, 
-                    repeat: Infinity, 
-                    repeatType: "reverse",
-                    ease: "easeInOut" 
-                  }}
-                  style={{ top: '10%', left: '20%' }}
-                >
-                  <div className="bg-white/20 p-4 rounded-xl shadow-lg">
-                    <Briefcase className="h-8 w-8 text-white" />
-                  </div>
-                </motion.div>
+              <div className="relative h-[450px] w-full max-w-[500px]">
+                <AnimatePresence>
+                  {/* Icon 1 - Briefcase */}
+                  <motion.div 
+                    className="absolute"
+                    initial={{ x: 0, y: 0, opacity: 0 }}
+                    animate={{ 
+                      x: [0, 30, 0], 
+                      y: [0, -30, 0], 
+                      opacity: 1,
+                      rotate: [0, 10, 0]
+                    }}
+                    transition={{ 
+                      x: { 
+                        duration: 8, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      },
+                      y: { 
+                        duration: 8, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      },
+                      rotate: { 
+                        duration: 10, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      },
+                      opacity: { duration: 0.5 }
+                    }}
+                    style={{ top: '10%', left: '20%' }}
+                  >
+                    <div className="bg-white/20 p-4 rounded-xl shadow-lg">
+                      <Briefcase className="h-8 w-8 text-white" />
+                    </div>
+                  </motion.div>
+                  
+                  {/* Icon 2 - Award */}
+                  <motion.div 
+                    className="absolute"
+                    initial={{ x: 0, y: 0, opacity: 0 }}
+                    animate={{ 
+                      x: [0, -20, 0], 
+                      y: [0, 20, 0], 
+                      opacity: 1,
+                      rotate: [0, -5, 0]
+                    }}
+                    transition={{ 
+                      x: { 
+                        duration: 7, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      },
+                      y: { 
+                        duration: 7, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      },
+                      rotate: { 
+                        duration: 9, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      },
+                      opacity: { duration: 0.5, delay: 0.1 }
+                    }}
+                    style={{ top: '20%', right: '20%' }}
+                  >
+                    <div className="bg-white/20 p-4 rounded-xl shadow-lg">
+                      <Award className="h-8 w-8 text-white" />
+                    </div>
+                  </motion.div>
+                  
+                  {/* Icon 3 - BarChart */}
+                  <motion.div 
+                    className="absolute"
+                    initial={{ x: 0, y: 0, opacity: 0 }}
+                    animate={{ 
+                      x: [0, 25, 0], 
+                      y: [0, 25, 0], 
+                      opacity: 1,
+                      rotate: [0, 15, 0]
+                    }}
+                    transition={{ 
+                      x: { 
+                        duration: 9, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      },
+                      y: { 
+                        duration: 9, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      },
+                      rotate: { 
+                        duration: 11, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      },
+                      opacity: { duration: 0.5, delay: 0.2 }
+                    }}
+                    style={{ bottom: '25%', left: '15%' }}
+                  >
+                    <div className="bg-white/20 p-4 rounded-xl shadow-lg">
+                      <BarChart4 className="h-8 w-8 text-white" />
+                    </div>
+                  </motion.div>
+                  
+                  {/* Icon 4 - Zap */}
+                  <motion.div 
+                    className="absolute"
+                    initial={{ x: 0, y: 0, opacity: 0 }}
+                    animate={{ 
+                      x: [0, -15, 0], 
+                      y: [0, -15, 0], 
+                      opacity: 1,
+                      rotate: [0, -10, 0]
+                    }}
+                    transition={{ 
+                      x: { 
+                        duration: 6.5, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      },
+                      y: { 
+                        duration: 6.5, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      },
+                      rotate: { 
+                        duration: 8, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      },
+                      opacity: { duration: 0.5, delay: 0.3 }
+                    }}
+                    style={{ bottom: '15%', right: '25%' }}
+                  >
+                    <div className="bg-white/20 p-4 rounded-xl shadow-lg">
+                      <Zap className="h-8 w-8 text-white" />
+                    </div>
+                  </motion.div>
                 
-                <motion.div 
-                  className="absolute"
-                  initial={{ x: 0, y: 0, rotate: 0 }}
-                  animate={{ 
-                    x: [0, -20, 0],
-                    y: [0, 20, 0],
-                    rotate: [0, -5, 0]
-                  }}
-                  transition={{ 
-                    duration: 5, 
-                    repeat: Infinity, 
-                    repeatType: "reverse",
-                    ease: "easeInOut"
-                  }}
-                  style={{ top: '30%', right: '10%' }}
-                >
-                  <div className="bg-white/20 p-4 rounded-xl shadow-lg">
-                    <Award className="h-8 w-8 text-white" />
-                  </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="absolute"
-                  initial={{ x: 0, y: 0, rotate: 0 }}
-                  animate={{ 
-                    x: [0, 25, 0],
-                    y: [0, 25, 0],
-                    rotate: [0, 15, 0]
-                  }}
-                  transition={{ 
-                    duration: 6, 
-                    repeat: Infinity, 
-                    repeatType: "reverse",
-                    ease: "easeInOut"
-                  }}
-                  style={{ bottom: '15%', left: '15%' }}
-                >
-                  <div className="bg-white/20 p-4 rounded-xl shadow-lg">
-                    <BarChart4 className="h-8 w-8 text-white" />
-                  </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="absolute"
-                  initial={{ x: 0, y: 0, rotate: 0 }}
-                  animate={{ 
-                    x: [0, -15, 0],
-                    y: [0, -15, 0],
-                    rotate: [0, -10, 0]
-                  }}
-                  transition={{ 
-                    duration: 4.5, 
-                    repeat: Infinity, 
-                    repeatType: "reverse",
-                    ease: "easeInOut"
-                  }}
-                  style={{ bottom: '25%', right: '20%' }}
-                >
-                  <div className="bg-white/20 p-4 rounded-xl shadow-lg">
-                    <Zap className="h-8 w-8 text-white" />
-                  </div>
-                </motion.div>
-                
-                {/* Center image */}
-                <motion.div 
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-white/10 p-8 rounded-full w-48 h-48 flex items-center justify-center shadow-xl"
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ 
-                    duration: 0.7, 
-                    delay: 0.3,
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                >
-                  <Users className="h-24 w-24 text-white" />
-                </motion.div>
-                
-                {/* Pulsing circle animation */}
-                <motion.div 
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full border-2 border-white/20"
-                  initial={{ scale: 1, opacity: 1 }}
-                  animate={{ scale: [1, 1.5, 1], opacity: [0.7, 0.2, 0.7] }}
-                  transition={{ 
-                    duration: 3, 
-                    repeat: Infinity,
-                    ease: "easeInOut" 
-                  }}
-                />
-                
-                <motion.div 
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full border-2 border-white/10"
-                  initial={{ scale: 1, opacity: 0.5 }}
-                  animate={{ scale: [1, 1.7, 1], opacity: [0.5, 0.1, 0.5] }}
-                  transition={{ 
-                    duration: 3, 
-                    delay: 0.5, 
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
+                  {/* Center image */}
+                  <motion.div 
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-white/10 p-8 rounded-full w-40 h-40 flex items-center justify-center shadow-xl"
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.8, type: "spring", stiffness: 90, damping: 10 }}
+                  >
+                    <Users className="h-20 w-20 text-white" />
+                  </motion.div>
+                  
+                  {/* Pulse circles */}
+                  <motion.div 
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border-2 border-white/20"
+                    initial={{ scale: 1, opacity: 0 }}
+                    animate={{ scale: [1, 1.3, 1], opacity: [0.7, 0.2, 0.7] }}
+                    transition={{ 
+                      scale: {
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      },
+                      opacity: {
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }
+                    }}
+                  />
+                  
+                  <motion.div 
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-52 h-52 rounded-full border-2 border-white/10"
+                    initial={{ scale: 1, opacity: 0 }}
+                    animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0.1, 0.5] }}
+                    transition={{ 
+                      scale: {
+                        duration: 3.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: 0.5
+                      },
+                      opacity: {
+                        duration: 3.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: 0.5
+                      }
+                    }}
+                  />
+                </AnimatePresence>
               </div>
             </div>
           </div>
