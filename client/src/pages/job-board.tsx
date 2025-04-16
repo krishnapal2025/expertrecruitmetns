@@ -30,6 +30,7 @@ export default function JobBoardPage() {
       if (filters.category) queryParams.append("category", filters.category);
       if (filters.location) queryParams.append("location", filters.location);
       if (filters.jobType) queryParams.append("jobType", filters.jobType);
+      if (filters.specialization) queryParams.append("specialization", filters.specialization);
       
       const response = await fetch(`/api/jobs?${queryParams.toString()}`);
       if (!response.ok) {
@@ -57,7 +58,7 @@ export default function JobBoardPage() {
     
     setFilteredJobs(result);
     setCurrentPage(1); // Reset to first page when filters change
-  }, [jobs, searchTerm]);
+  }, [jobs, searchTerm, filters.specialization]);
 
   // Calculate pagination
   const totalPages = Math.ceil((filteredJobs?.length || 0) / JOBS_PER_PAGE);
@@ -147,10 +148,14 @@ export default function JobBoardPage() {
                   <Pagination className="mt-8">
                     <PaginationContent>
                       <PaginationItem>
-                        <PaginationPrevious 
+                        <Button 
+                          variant="outline"
                           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                           disabled={currentPage === 1}
-                        />
+                          className="h-8 w-8 p-0 flex items-center justify-center"
+                        >
+                          &lt;
+                        </Button>
                       </PaginationItem>
                       
                       {/* Page numbers */}
@@ -167,10 +172,14 @@ export default function JobBoardPage() {
                       ))}
                       
                       <PaginationItem>
-                        <PaginationNext 
+                        <Button 
+                          variant="outline"
                           onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                           disabled={currentPage === totalPages}
-                        />
+                          className="h-8 w-8 p-0 flex items-center justify-center"
+                        >
+                          &gt;
+                        </Button>
                       </PaginationItem>
                     </PaginationContent>
                   </Pagination>
@@ -185,7 +194,7 @@ export default function JobBoardPage() {
                 </p>
                 <Button onClick={() => {
                   setSearchTerm("");
-                  setFilters({ category: "", location: "", jobType: "" });
+                  setFilters({ category: "", location: "", jobType: "", specialization: "" });
                 }}>
                   Clear Filters
                 </Button>

@@ -14,7 +14,7 @@ interface JobFilterProps {
     category: string;
     location: string;
     jobType: string;
-    specialization?: string;
+    specialization: string;
   }) => void;
 }
 
@@ -107,7 +107,7 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
   useEffect(() => {
     // We can enable this for automatic filtering without button click
     // applyFilters();
-  }, [selectedCategory, selectedLocation, selectedJobType]);
+  }, [selectedCategory, selectedLocation, selectedJobType, selectedSpecialization]);
   
   return (
     <>
