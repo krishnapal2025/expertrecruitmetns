@@ -42,9 +42,9 @@ export default function HomePage() {
       
       <HiringTrends />
       
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-20">
             <motion.h2 
               className="text-4xl font-bold mb-6 relative inline-block"
               initial={{ opacity: 0, y: 20 }}
@@ -59,25 +59,24 @@ export default function HomePage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
             <motion.div
               whileHover={{ y: -10, transition: { duration: 0.3 } }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.5 }}
-              className="md:col-span-1"
             >
-              <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden">
-                <div className="relative h-40 bg-gradient-to-r from-blue-100 to-blue-50 flex items-center justify-center">
+              <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden flex flex-col">
+                <div className="relative h-48 bg-gradient-to-r from-blue-100 to-blue-50 flex items-center justify-center">
                   <div className="absolute inset-0 opacity-10 bg-pattern-grid"></div>
-                  <BriefcaseIcon className="w-20 h-20 text-primary relative z-10" />
+                  <BriefcaseIcon className="w-24 h-24 text-primary relative z-10" />
                 </div>
-                <CardContent className="p-8 text-center">
+                <CardContent className="p-6 md:p-8 text-center flex-grow flex flex-col">
                   <h3 className="text-2xl font-bold mb-4">Find Jobs</h3>
-                  <p className="text-gray-600 mb-6 text-lg">
+                  <p className="text-gray-600 mb-6 text-lg flex-grow">
                     Browse thousands of opportunities across various industries and locations
                   </p>
-                  <Link href="/job-board">
+                  <Link href="/job-board" className="mt-auto">
                     <Button size="lg" className="w-full font-semibold">
                       Browse Jobs
                       <ArrowRight className="ml-2 h-5 w-5" />
@@ -92,19 +91,18 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="md:col-span-1"
             >
-              <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden">
-                <div className="relative h-40 bg-gradient-to-r from-purple-100 to-purple-50 flex items-center justify-center">
+              <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden flex flex-col">
+                <div className="relative h-48 bg-gradient-to-r from-purple-100 to-purple-50 flex items-center justify-center">
                   <div className="absolute inset-0 opacity-10 bg-pattern-grid"></div>
-                  <BuildingIcon className="w-20 h-20 text-purple-500 relative z-10" />
+                  <BuildingIcon className="w-24 h-24 text-purple-500 relative z-10" />
                 </div>
-                <CardContent className="p-8 text-center">
+                <CardContent className="p-6 md:p-8 text-center flex-grow flex flex-col">
                   <h3 className="text-2xl font-bold mb-4">Hire Talent</h3>
-                  <p className="text-gray-600 mb-6 text-lg">
+                  <p className="text-gray-600 mb-6 text-lg flex-grow">
                     Find qualified professionals to drive your business forward
                   </p>
-                  <Link href="/hire-talent">
+                  <Link href="/hire-talent" className="mt-auto">
                     <Button size="lg" className="w-full font-semibold">
                       Hire Talent
                       <ArrowRight className="ml-2 h-5 w-5" />
@@ -119,12 +117,11 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25, duration: 0.5 }}
-              className="md:col-span-1"
             >
-              <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden">
-                <div className="relative h-40 bg-gradient-to-r from-indigo-100 to-indigo-50 flex items-center justify-center">
+              <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden flex flex-col">
+                <div className="relative h-48 bg-gradient-to-r from-indigo-100 to-indigo-50 flex items-center justify-center">
                   <div className="absolute inset-0 opacity-10 bg-pattern-grid"></div>
-                  <span className="w-20 h-20 text-indigo-500 relative z-10 flex items-center justify-center">
+                  <span className="w-24 h-24 text-indigo-500 relative z-10 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
                       <polyline points="14 2 14 8 20 8"></polyline>
@@ -134,12 +131,12 @@ export default function HomePage() {
                     </svg>
                   </span>
                 </div>
-                <CardContent className="p-8 text-center">
+                <CardContent className="p-6 md:p-8 text-center flex-grow flex flex-col">
                   <h3 className="text-2xl font-bold mb-4">Post a Job</h3>
-                  <p className="text-gray-600 mb-6 text-lg">
+                  <p className="text-gray-600 mb-6 text-lg flex-grow">
                     Create a job listing and reach thousands of qualified candidates
                   </p>
-                  <Link href="/auth?type=employer">
+                  <Link href="/auth?type=employer" className="mt-auto">
                     <Button size="lg" className="w-full font-semibold">
                       Post a Job
                       <ArrowRight className="ml-2 h-5 w-5" />
@@ -154,19 +151,18 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
-              className="md:col-span-1"
             >
-              <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden">
-                <div className="relative h-40 bg-gradient-to-r from-green-100 to-green-50 flex items-center justify-center">
+              <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full overflow-hidden flex flex-col">
+                <div className="relative h-48 bg-gradient-to-r from-green-100 to-green-50 flex items-center justify-center">
                   <div className="absolute inset-0 opacity-10 bg-pattern-grid"></div>
-                  <GraduationCapIcon className="w-20 h-20 text-green-500 relative z-10" />
+                  <GraduationCapIcon className="w-24 h-24 text-green-500 relative z-10" />
                 </div>
-                <CardContent className="p-8 text-center">
+                <CardContent className="p-6 md:p-8 text-center flex-grow flex flex-col">
                   <h3 className="text-2xl font-bold mb-4">Career Resources</h3>
-                  <p className="text-gray-600 mb-6 text-lg">
+                  <p className="text-gray-600 mb-6 text-lg flex-grow">
                     Access valuable tools and advice to advance your career
                   </p>
-                  <Link href="/blogs">
+                  <Link href="/blogs" className="mt-auto">
                     <Button size="lg" className="w-full font-semibold">
                       View Resources
                       <ArrowRight className="ml-2 h-5 w-5" />
