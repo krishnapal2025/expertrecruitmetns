@@ -20,7 +20,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, Briefcase, User, LogOut } from "lucide-react";
+import { Menu, Briefcase, User, LogOut, ChevronDown } from "lucide-react";
 import NotificationsPopover from "@/components/common/notifications";
 
 export default function Navbar() {
@@ -66,10 +66,17 @@ export default function Navbar() {
   const navigationLinks = [
     { name: "Home", href: "/" },
     { name: "About Us", href: "/about-us" },
-    { name: "Services", href: "/services" },
+    { 
+      name: "Solutions", 
+      href: "#",
+      isDropdown: true,
+      dropdownItems: [
+        { name: "Services", href: "/services" },
+        { name: "Sectors", href: "/sectors" },
+      ]
+    },
     { name: "Find Jobs", href: "/job-board" },
     { name: "Hire Talent", href: "/hire-talent" },
-    { name: "Sectors", href: "/sectors" },
     { name: "Contact Us", href: "/contact-us" },
     { name: "Blogs", href: "/blogs" },
   ];
@@ -91,11 +98,35 @@ export default function Navbar() {
           {/* Desktop navigation */}
           <nav className="hidden md:flex space-x-8 items-center">
             {navigationLinks.map((link) => (
-              <Link key={link.name} href={link.href}>
-                <div className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer ${location === link.href ? "text-primary" : "text-gray-700"}`}>
-                  {link.name}
-                </div>
-              </Link>
+              link.isDropdown ? (
+                <DropdownMenu key={link.name}>
+                  <DropdownMenuTrigger className="flex items-center focus:outline-none">
+                    <div className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer flex items-center ${
+                      link.dropdownItems?.some(item => location === item.href) ? "text-primary" : "text-gray-700"
+                    }`}>
+                      {link.name}
+                      <ChevronDown className="h-4 w-4 ml-1" />
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="center" className="min-w-[140px]">
+                    {link.dropdownItems?.map((item) => (
+                      <Link key={item.name} href={item.href}>
+                        <DropdownMenuItem className="cursor-pointer">
+                          <div className={`${location === item.href ? "text-primary" : ""}`}>
+                            {item.name}
+                          </div>
+                        </DropdownMenuItem>
+                      </Link>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link key={link.name} href={link.href}>
+                  <div className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer ${location === link.href ? "text-primary" : "text-gray-700"}`}>
+                    {link.name}
+                  </div>
+                </Link>
+              )
             ))}
           </nav>
 
@@ -170,15 +201,34 @@ export default function Navbar() {
                   </SheetDescription>
                 </SheetHeader>
                 <div className="flex flex-col space-y-4 py-4">
-                  {navigationLinks.map((link) => (
-                    <SheetClose asChild key={link.name}>
-                      <Link href={link.href}>
-                        <div className={`px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}>
+                  {navigationLinks.map((link) => 
+                    link.isDropdown ? (
+                      <div key={link.name} className="flex flex-col">
+                        <div className="px-4 py-2 font-medium text-gray-800">
                           {link.name}
                         </div>
-                      </Link>
-                    </SheetClose>
-                  ))}
+                        <div className="ml-4 flex flex-col space-y-2 mt-2">
+                          {link.dropdownItems?.map((item) => (
+                            <SheetClose asChild key={item.name}>
+                              <Link href={item.href}>
+                                <div className={`px-4 py-2 rounded-md cursor-pointer ${location === item.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}>
+                                  {item.name}
+                                </div>
+                              </Link>
+                            </SheetClose>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <SheetClose asChild key={link.name}>
+                        <Link href={link.href}>
+                          <div className={`px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}>
+                            {link.name}
+                          </div>
+                        </Link>
+                      </SheetClose>
+                    )
+                  )}
                   
                   <div className="border-t border-gray-200 pt-4 mt-4">
                     {currentUser ? (
