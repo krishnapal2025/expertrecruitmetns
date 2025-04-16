@@ -2,7 +2,9 @@ import { Helmet } from "react-helmet";
 import Banner from "@/components/home/banner";
 import Welcome from "@/components/home/welcome";
 import QuickLinks from "@/components/home/quick-links";
-import Testimonials from "@/components/home/testimonials";
+import HiringTrends from "@/components/home/hiring-trends";
+import FeaturedCategories from "@/components/home/featured-categories";
+import AnimatedTestimonials from "@/components/home/animated-testimonials";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,6 +12,7 @@ import { BriefcaseIcon, BuildingIcon, GraduationCapIcon } from "@/assets/icons";
 import { MessageSquareShare } from "lucide-react";
 import RealtimeJobs from "@/components/job/real-time-jobs";
 import RealtimeApplications from "@/components/job/real-time-applications";
+import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function HomePage() {
@@ -81,9 +84,13 @@ export default function HomePage() {
         </div>
       </section>
       
+      <FeaturedCategories />
+      
       <QuickLinks />
       
-      <Testimonials />
+      <AnimatedTestimonials />
+      
+      <HiringTrends />
       
       <section className="py-16 bg-primary text-white">
         <div className="container mx-auto px-4 text-center">
