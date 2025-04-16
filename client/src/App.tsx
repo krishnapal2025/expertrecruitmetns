@@ -20,8 +20,9 @@ import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { initializeAnalytics, trackPageView } from "@/lib/analytics";
+import { ArrowUp } from "lucide-react";
 
 // Track page views
 function PageViewTracker() {
@@ -63,6 +64,31 @@ function App() {
     initializeAnalytics();
   }, []);
 
+  // Back to top button state
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  // Handle scroll to show/hide back to top button
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 400) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -73,6 +99,17 @@ function App() {
             <Router />
           </main>
           <Footer />
+          
+          {/* Back to top button */}
+          {showBackToTop && (
+            <button 
+              onClick={scrollToTop}
+              aria-label="Back to top"
+              className="fixed bottom-6 right-6 p-3 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg transition-all duration-300 animate-fade-in z-50"
+            >
+              <ArrowUp className="h-5 w-5" />
+            </button>
+          )}
         </div>
         <Toaster />
       </AuthProvider>
