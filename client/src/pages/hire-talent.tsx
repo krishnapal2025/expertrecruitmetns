@@ -36,11 +36,31 @@ export default function HireTalentPage() {
 
       {/* Services Tabs */}
       <div className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Our Talent Solutions</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">Choose the talent solution that best fits your business needs</p>
+        </div>
+        
         <Tabs defaultValue="preview" className="w-full">
-          <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 mb-8">
-            <TabsTrigger value="preview" className="text-lg py-3">Preview Candidates</TabsTrigger>
-            <TabsTrigger value="contract" className="text-lg py-3">Contract Talent</TabsTrigger>
-            <TabsTrigger value="permanent" className="text-lg py-3">Permanent Talent</TabsTrigger>
+          <TabsList className="flex w-full justify-center gap-2 mb-12">
+            <TabsTrigger 
+              value="preview" 
+              className="text-lg px-6 py-3 rounded-full data-[state=active]:bg-primary data-[state=active]:text-white"
+            >
+              Preview Candidates
+            </TabsTrigger>
+            <TabsTrigger 
+              value="contract" 
+              className="text-lg px-6 py-3 rounded-full data-[state=active]:bg-primary data-[state=active]:text-white"
+            >
+              Contract Talent
+            </TabsTrigger>
+            <TabsTrigger 
+              value="permanent" 
+              className="text-lg px-6 py-3 rounded-full data-[state=active]:bg-primary data-[state=active]:text-white"
+            >
+              Permanent Talent
+            </TabsTrigger>
           </TabsList>
           
           {/* Preview Candidates Tab */}
