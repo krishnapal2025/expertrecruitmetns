@@ -51,6 +51,7 @@ function Router() {
       <Route path="/careers" component={CareersPage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/hire-talent" component={HireTalentPage} />
+      <Route path="/seo-insights" component={SEOInsightsPage} />
       <Route component={NotFound} />
     </Switch>
   );

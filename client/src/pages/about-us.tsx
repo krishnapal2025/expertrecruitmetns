@@ -42,7 +42,7 @@ export default function AboutUsPage() {
     transition: {
       duration: 2,
       repeat: Infinity,
-      repeatType: "reverse"
+      repeatType: "reverse" as const
     }
   };
 
@@ -69,7 +69,7 @@ export default function AboutUsPage() {
             <motion.h1 
               className="text-4xl md:text-5xl font-bold mb-6"
               animate={{ opacity: [0.8, 1], y: [10, 0] }}
-              transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
+              transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" as const }}
             >
               About Us
             </motion.h1>

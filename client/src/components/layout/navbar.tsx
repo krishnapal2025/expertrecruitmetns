@@ -68,6 +68,7 @@ export default function Navbar() {
     { name: "About Us", href: "/about-us" },
     { name: "Services", href: "/services" },
     { name: "Find Jobs", href: "/job-board" },
+    { name: "SEO Insights", href: "/seo-insights" },
     { name: "Hire Talent", href: "/hire-talent" },
     { name: "Sectors", href: "/sectors" },
     { name: "Contact Us", href: "/contact-us" },
