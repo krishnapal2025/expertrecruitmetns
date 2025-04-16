@@ -2,40 +2,59 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Banner slide data
+// Add the keyframes for the zoom effect in CSS
+const slowZoomKeyframes = `
+@keyframes slowZoom {
+  from { transform: scale(1.05); }
+  to { transform: scale(1.15); }
+}`;
+
+// Banner slide data with a new minimalist aesthetic
 const slides = [
   {
-    title: "Elevate Your Career Journey",
-    subtitle: "Find Your Perfect Match",
-    description: "Connect with innovative companies and opportunities that align with your skills and ambitions",
-    bgImage: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop",
-    accent: "from-blue-600 to-indigo-600",
+    title: "Your Career,\nRedefined",
+    tagline: "FIND OPPORTUNITIES",
+    description: "Connect with forward-thinking companies seeking your unique talents",
+    image: "https://images.unsplash.com/photo-1568992687947-868a62a9f521?q=80&w=1600&auto=format&fit=crop",
+    color: "bg-blue-500",
+    stats: [
+      { value: "15k+", label: "Jobs" },
+      { value: "1.2k", label: "Companies" },
+      { value: "24/7", label: "Support" }
+    ],
     ctaText: "Browse Jobs",
     ctaLink: "/job-board",
-    iconPath: "M20 7.5v9l-5-2.25L10 12l-5 2.25v-9h15zm0-1.5H5c-.553 0-1 .448-1 1v10c0 .553.447 1 1 1h15c.553 0 1-.447 1-1V7c0-.552-.447-1-1-1zm-5 4H8v-1h7v1zm0 2H8v-1h7v1zm0 2H8v-1h7v1z",
   },
   {
-    title: "Build Exceptional Teams",
-    subtitle: "Connect with Top Talent",
-    description: "Discover skilled professionals across all industries ready to bring expertise to your organization",
-    bgImage: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop",
-    accent: "from-purple-600 to-pink-600",
+    title: "Talent\nAcquisition",
+    tagline: "HIRE PROFESSIONALS",
+    description: "Connect with exceptional candidates ready to transform your business",
+    image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1600&auto=format&fit=crop",
+    color: "bg-violet-500",
+    stats: [
+      { value: "90k+", label: "Candidates" },
+      { value: "48hr", label: "Avg. Hire Time" },
+      { value: "92%", label: "Success Rate" }
+    ],
     ctaText: "Post a Job",
     ctaLink: "/auth?type=employer",
-    iconPath: "M12.75 11.75a1.75 1.75 0 1 0 0-3.5 1.75 1.75 0 0 0 0 3.5zM7 9a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm14 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM7.757 12.757a3.001 3.001 0 0 0-5.514 0 .5.5 0 0 0 .5.743h4.514a.5.5 0 0 0 .5-.743zm9.486 0a3.001 3.001 0 0 0-5.514 0 .5.5 0 0 0 .5.743h4.514a.5.5 0 0 0 .5-.743z",
   },
   {
-    title: "Shape Your Future Success",
-    subtitle: "Expert Resources & Guidance",
-    description: "Access specialized industry insights, career advice, and professional development tools",
-    bgImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop",
-    accent: "from-teal-600 to-emerald-600",
+    title: "Strategic\nGrowth",
+    tagline: "CAREER RESOURCES",
+    description: "Unlock industry insights and professional development resources",
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1600&auto=format&fit=crop",
+    color: "bg-emerald-500",
+    stats: [
+      { value: "200+", label: "Expert Guides" },
+      { value: "45%", label: "Salary Growth" },
+      { value: "8k+", label: "Success Stories" }
+    ],
     ctaText: "Career Resources",
     ctaLink: "/blogs",
-    iconPath: "M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm6 9.09c0 4-2.55 7.7-6 8.83-3.45-1.13-6-4.82-6-8.83v-4.7l6-2.25 6 2.25v4.7zM9.91 8.5L8.5 9.91 10.59 12 8.5 14.09l1.41 1.41L12 13.41l2.09 2.09 1.41-1.41L13.41 12l2.09-2.09-1.41-1.41L12 10.59 9.91 8.5z",
   },
 ];
 
@@ -82,167 +101,178 @@ export default function Banner() {
   };
 
   return (
-    <div className="relative h-[650px] overflow-hidden bg-black">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-5 z-10"></div>
-      <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary/20 filter blur-3xl z-0"></div>
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-blue-600/20 filter blur-3xl z-0"></div>
-      
-      {/* Navigation buttons */}
-      <button 
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 z-30 transform -translate-y-1/2 bg-white/10 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/20 transition-all"
-        aria-label="Previous slide"
-      >
-        <ChevronLeft className="h-6 w-6" />
-      </button>
-      
-      <button 
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 z-30 transform -translate-y-1/2 bg-white/10 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/20 transition-all"
-        aria-label="Next slide"
-      >
-        <ChevronRight className="h-6 w-6" />
-      </button>
-      
+    <div className="relative h-[650px] overflow-hidden">
       {/* Slides */}
-      <AnimatePresence initial={false} mode="wait">
+      <AnimatePresence initial={false}>
         <motion.div
           key={currentSlide}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.7 }}
-          className="absolute inset-0 z-20"
+          className="absolute inset-0 flex flex-col md:flex-row"
+          initial="initial"
+          animate="animate"
+          exit="exit"
         >
-          <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: `url(${slides[currentSlide].bgImage})`,
+          {/* Left content panel */}
+          <motion.div 
+            className="w-full md:w-7/12 bg-white dark:bg-gray-900 h-1/2 md:h-full relative overflow-hidden p-8 md:p-16 flex flex-col justify-center"
+            variants={{
+              initial: { opacity: 0, x: -50 },
+              animate: { opacity: 1, x: 0, transition: { duration: 0.5 } },
+              exit: { opacity: 0, x: -50, transition: { duration: 0.3 } }
             }}
           >
-            {/* Overlay gradient */}
-            <div className={`absolute inset-0 bg-gradient-to-r ${slides[currentSlide].accent} opacity-10`}></div>
-            <div className="absolute inset-0 bg-black/50"></div>
-          </div>
-          
-          <div className="relative h-full z-20">
-            <div className="container mx-auto px-4 h-full flex items-center">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                {/* Content */}
-                <motion.div
-                  initial={{ opacity: 0, x: -40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.7, delay: 0.2 }}
-                  className="text-white"
-                >
-                  <div className="mb-3 inline-block">
-                    <span className={`bg-gradient-to-r ${slides[currentSlide].accent} px-4 py-1.5 rounded-full text-sm font-semibold text-white`}>
-                      {slides[currentSlide].subtitle}
-                    </span>
-                  </div>
-                  <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
-                    {slides[currentSlide].title}
-                  </h1>
-                  <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-xl">
-                    {slides[currentSlide].description}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-4">
-                    <Link href={
-                      slides[currentSlide].ctaText === "Post a Job" && 
-                      currentUser?.user.userType === "employer" ? 
-                      "/post-job" : slides[currentSlide].ctaLink
-                    }>
-                      <Button 
-                        size="lg" 
-                        className={`text-lg font-semibold group bg-gradient-to-r ${slides[currentSlide].accent} hover:shadow-lg hover:shadow-primary/20 transition-all`}
-                      >
-                        {slides[currentSlide].ctaText}
-                        <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                      </Button>
-                    </Link>
-                    {currentSlide === 0 && !currentUser && (
-                      <Link href="/auth?type=jobseeker">
-                        <Button size="lg" variant="outline" className="text-lg font-semibold border-white text-white hover:bg-white/10">
-                          Register Now
-                        </Button>
-                      </Link>
-                    )}
-                  </div>
-                </motion.div>
-                
-                {/* Decorative element/icon */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.7, delay: 0.4 }}
-                  className="hidden md:flex justify-center"
-                >
-                  <div className="relative">
-                    <div className={`absolute inset-0 bg-gradient-to-r ${slides[currentSlide].accent} rounded-full opacity-20 blur-2xl transform -translate-x-10 -translate-y-10 scale-90`}></div>
-                    <div className="w-64 h-64 rounded-3xl backdrop-blur-sm bg-white/10 flex items-center justify-center border border-white/20 shadow-xl">
-                      <svg 
-                        viewBox="0 0 24 24" 
-                        fill="currentColor" 
-                        className="w-24 h-24 text-white/80"
-                      >
-                        <path d={slides[currentSlide].iconPath} />
-                      </svg>
+            {/* Decorative element */}
+            <div className={`absolute -right-24 -top-24 w-48 h-48 rounded-full ${slides[currentSlide].color} opacity-10 blur-3xl`}></div>
+            <div className="absolute right-0 bottom-0 w-1/3 h-1/3 bg-dot-pattern opacity-5"></div>
+            
+            <div className="relative z-10 max-w-xl">
+              {/* Tagline */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1, duration: 0.5 }}
+                className="mb-6"
+              >
+                <span className={`inline-block ${slides[currentSlide].color} bg-opacity-10 text-xs font-semibold tracking-wider px-3 py-1 rounded-sm text-${slides[currentSlide].color.split('-')[1]}-600 dark:text-${slides[currentSlide].color.split('-')[1]}-400`}>
+                  {slides[currentSlide].tagline}
+                </span>
+              </motion.div>
+              
+              {/* Title with line break preserved */}
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="text-4xl md:text-6xl xl:text-7xl font-extrabold mb-6 leading-tight text-gray-900 dark:text-white"
+              >
+                {slides[currentSlide].title.split('\n').map((line, i) => (
+                  <span key={i} className="block">{line}</span>
+                ))}
+              </motion.h1>
+              
+              {/* Description */}
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-lg"
+              >
+                {slides[currentSlide].description}
+              </motion.p>
+              
+              {/* Statistics */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="grid grid-cols-3 gap-6 mb-10"
+              >
+                {slides[currentSlide].stats.map((stat, index) => (
+                  <div key={index}>
+                    <div className={`text-3xl font-bold mb-1 text-${slides[currentSlide].color.split('-')[1]}-500`}>
+                      {stat.value}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      {stat.label}
                     </div>
                   </div>
-                </motion.div>
-              </div>
+                ))}
+              </motion.div>
+              
+              {/* Call to action buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className="flex flex-wrap gap-4"
+              >
+                <Link href={
+                  slides[currentSlide].ctaText === "Post a Job" && 
+                  currentUser?.user.userType === "employer" ? 
+                  "/post-job" : slides[currentSlide].ctaLink
+                }>
+                  <Button 
+                    size="lg" 
+                    className={`${slides[currentSlide].color} font-medium group hover:opacity-90 transition-all`}
+                  >
+                    {slides[currentSlide].ctaText}
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+                {currentSlide === 0 && !currentUser && (
+                  <Link href="/auth?type=jobseeker">
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      Register Now
+                    </Button>
+                  </Link>
+                )}
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
+          
+          {/* Right image panel */}
+          <motion.div 
+            className="w-full md:w-5/12 h-1/2 md:h-full relative overflow-hidden"
+            variants={{
+              initial: { opacity: 0, scale: 1.1 },
+              animate: { opacity: 1, scale: 1, transition: { duration: 0.7 } },
+              exit: { opacity: 0, scale: 1.1, transition: { duration: 0.3 } }
+            }}
+          >
+            <div 
+              className="absolute inset-0 bg-cover bg-center transition-transform duration-10000 ease-in-out"
+              style={{
+                backgroundImage: `url(${slides[currentSlide].image})`,
+                transform: 'scale(1.05)',
+                animation: 'slowZoom 15s infinite alternate ease-in-out'
+              }}
+            ></div>
+            <div className={`absolute inset-0 ${slides[currentSlide].color} opacity-30 mix-blend-multiply`}></div>
+            
+            {/* Floating card with call-to-action */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+              className="absolute bottom-8 right-8 left-8 md:left-auto md:right-8 md:bottom-8 md:w-64 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-lg p-4 shadow-lg"
+            >
+              <div className="flex items-start">
+                <div className={`${slides[currentSlide].color} rounded-full p-2 mr-3 text-white`}>
+                  <ArrowUpRight className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900 dark:text-white mb-1">Ready to start?</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-300">Join thousands who have already found their perfect career match.</div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
         </motion.div>
       </AnimatePresence>
-
-      {/* Progress indicator */}
-      <div className="absolute bottom-10 left-0 right-0 z-30">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between max-w-4xl">
-            <div className="flex space-x-3">
-              {slides.map((slide, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className="group flex flex-col items-center focus:outline-none"
-                  aria-label={`Go to slide ${index + 1}`}
-                >
-                  <span className={`transition-colors font-medium text-sm mb-2 ${
-                    index === currentSlide ? "text-white" : "text-white/40 group-hover:text-white/70"
-                  }`}>
-                    0{index + 1}
-                  </span>
-                  <div className="w-16 h-1 rounded-full overflow-hidden bg-white/20">
-                    <div 
-                      className={`h-full transition-all bg-white ${
-                        index === currentSlide ? "w-full" : "w-0 group-hover:w-1/4"
-                      }`}
-                    />
-                  </div>
-                </button>
-              ))}
-            </div>
-            
-            <div className="flex space-x-4">
-              <button 
-                onClick={prevSlide}
-                className="text-white/60 hover:text-white focus:outline-none transition-colors"
-                aria-label="Previous slide"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button 
-                onClick={nextSlide}
-                className="text-white/60 hover:text-white focus:outline-none transition-colors"
-                aria-label="Next slide"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
+      
+      {/* Slide navigation */}
+      <div className="absolute left-8 md:left-16 bottom-6 z-30 flex space-x-2">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+              index === currentSlide 
+                ? `${slides[currentSlide].color} scale-125` 
+                : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500'
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+      
+      {/* Slide counter */}
+      <div className="absolute right-8 md:right-16 bottom-6 z-30">
+        <div className="bg-white/10 dark:bg-gray-900/10 backdrop-blur-md rounded-full px-3 py-1 font-mono text-sm text-gray-600 dark:text-gray-400">
+          {currentSlide + 1}/{slides.length}
         </div>
       </div>
     </div>
