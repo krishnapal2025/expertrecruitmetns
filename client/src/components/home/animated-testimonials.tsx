@@ -209,28 +209,28 @@ export default function AnimatedTestimonials() {
               
               <div className="grid grid-cols-2 gap-6 mb-8">
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                  <div className="text-3xl font-bold text-green-500 dark:text-green-400">94%</div>
+                  <div className="text-3xl font-bold text-primary dark:text-primary/90">94%</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Placement Rate</div>
                 </div>
                 
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                  <div className="text-3xl font-bold text-green-500 dark:text-green-400">+32%</div>
+                  <div className="text-3xl font-bold text-primary dark:text-primary/90">+32%</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Salary Increase</div>
                 </div>
                 
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                  <div className="text-3xl font-bold text-green-500 dark:text-green-400">14K+</div>
+                  <div className="text-3xl font-bold text-primary dark:text-primary/90">14K+</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Happy Clients</div>
                 </div>
                 
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                  <div className="text-3xl font-bold text-green-500 dark:text-green-400">4.8/5</div>
+                  <div className="text-3xl font-bold text-primary dark:text-primary/90">4.8/5</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Client Rating</div>
                 </div>
               </div>
               
               <Button 
-                className="w-full bg-green-500 hover:bg-green-600 group mt-2"
+                className="w-full bg-primary hover:bg-primary/90 group mt-2"
                 size="lg"
               >
                 Start Your Success Story
