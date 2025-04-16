@@ -111,7 +111,7 @@ export default function QuickLinks() {
                     <li>
                       <Link href="/auth?type=jobseeker">
                         <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer py-1">
-                          Register an Account
+                          Register as Job Seeker
                         </div>
                       </Link>
                     </li>
@@ -141,7 +141,21 @@ export default function QuickLinks() {
                     <li>
                       <Link href="/auth?type=employer">
                         <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer py-1">
+                          Register as Employer
+                        </div>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/auth?type=employer">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer py-1">
                           Post a Job
+                        </div>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/hire-talent">
+                        <div className="text-gray-700 hover:text-primary transition-colors cursor-pointer py-1">
+                          Hire Talent
                         </div>
                       </Link>
                     </li>
