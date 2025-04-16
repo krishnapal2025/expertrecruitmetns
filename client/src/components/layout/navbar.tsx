@@ -66,6 +66,8 @@ export default function Navbar() {
   const navigationLinks = [
     { name: "Home", href: "/" },
     { name: "About Us", href: "/about-us" },
+    { name: "Find Jobs", href: "/job-board" },
+    { name: "Hire Talent", href: "/hire-talent" },
     { 
       name: "Solutions", 
       href: "#",
@@ -73,12 +75,10 @@ export default function Navbar() {
       dropdownItems: [
         { name: "Services", href: "/services" },
         { name: "Sectors", href: "/sectors" },
+        { name: "Blogs", href: "/blogs" },
       ]
     },
-    { name: "Find Jobs", href: "/job-board" },
-    { name: "Hire Talent", href: "/hire-talent" },
     { name: "Contact Us", href: "/contact-us" },
-    { name: "Blogs", href: "/blogs" },
   ];
 
   return (
