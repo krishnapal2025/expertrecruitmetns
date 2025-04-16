@@ -17,12 +17,12 @@ const getInitials = (name: string) => {
 
 // Pre-defined colors for avatar backgrounds
 const avatarColors = [
-  "bg-blue-500",
-  "bg-green-500",
-  "bg-amber-500",
-  "bg-pink-500",
-  "bg-violet-500",
-  "bg-teal-500"
+  "bg-primary",
+  "bg-primary/90",
+  "bg-primary/80",
+  "bg-primary/70",
+  "bg-primary/85",
+  "bg-primary/75"
 ];
 
 export default function AnimatedTestimonials() {
@@ -83,7 +83,7 @@ export default function AnimatedTestimonials() {
           className="mb-16 text-center"
         >
           <div className="inline-block mb-3">
-            <span className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 px-4 py-1.5 rounded-full text-sm font-semibold">
+            <span className="bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary/80 px-4 py-1.5 rounded-full text-sm font-semibold">
               Success Stories
             </span>
           </div>
@@ -91,7 +91,7 @@ export default function AnimatedTestimonials() {
             <span className="relative inline-block">
               What Our Users Say
               <motion.div 
-                className="absolute -bottom-2 left-0 w-full h-1 bg-green-200 dark:bg-green-800"
+                className="absolute -bottom-2 left-0 w-full h-1 bg-primary/20 dark:bg-primary/30"
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ delay: 0.3, duration: 0.8 }}
@@ -113,10 +113,10 @@ export default function AnimatedTestimonials() {
             >
               {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 bg-primary/10 rounded-full blur-2xl"></div>
-              <div className="absolute bottom-0 left-0 w-32 h-32 -mb-16 -ml-16 bg-green-400/10 rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 w-32 h-32 -mb-16 -ml-16 bg-primary/10 rounded-full blur-2xl"></div>
               
               <div className="z-10 relative p-8 md:p-10">
-                <Quote className="h-10 w-10 text-green-200 dark:text-green-800 absolute top-6 left-6 opacity-80" />
+                <Quote className="h-10 w-10 text-primary/20 dark:text-primary/30 absolute top-6 left-6 opacity-80" />
                 
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -155,7 +155,7 @@ export default function AnimatedTestimonials() {
               {/* Progress bar */}
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-100 dark:bg-gray-700">
                 <motion.div 
-                  className="h-full bg-green-500"
+                  className="h-full bg-primary"
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
                   transition={{ duration: 7, ease: "linear", repeat: Infinity }}
@@ -180,7 +180,7 @@ export default function AnimatedTestimonials() {
                     onClick={() => setActiveIndex(index)}
                     className={`w-8 h-1.5 rounded-full transition-all ${
                       activeIndex === index 
-                        ? "bg-green-500 w-12" 
+                        ? "bg-primary w-12" 
                         : "bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
                     }`}
                     aria-label={`Go to testimonial ${index + 1}`}
