@@ -3,7 +3,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import careerMeetingImage from "@/assets/career-meeting.png";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Add the keyframes for the zoom effect in CSS
@@ -19,7 +18,7 @@ const slides = [
     title: "Your Career,\nRedefined",
     tagline: "FIND OPPORTUNITIES",
     description: "Connect with forward-thinking companies seeking your unique talents",
-    image: careerMeetingImage,
+    image: "https://images.unsplash.com/photo-1587614387466-0a72ca909e16?q=80&w=1600&auto=format&fit=crop",
     color: "bg-primary",
     stats: [
       { value: "15k+", label: "Google & Amazon Jobs" },
@@ -238,7 +237,7 @@ export default function Banner() {
             <div 
               className="absolute inset-0 bg-cover bg-center transition-transform duration-10000 ease-in-out"
               style={{
-                backgroundImage: currentSlide === 0 ? `url(${careerMeetingImage})` : `url(${slides[currentSlide].image})`,
+                backgroundImage: `url(${slides[currentSlide].image})`,
                 transform: 'scale(1.05)',
                 animation: 'slowZoom 15s infinite alternate ease-in-out'
               }}
