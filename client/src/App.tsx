@@ -105,7 +105,7 @@ function App() {
             <button 
               onClick={scrollToTop}
               aria-label="Back to top"
-              className="fixed bottom-6 right-6 p-3 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg transition-all duration-300 animate-fade-in z-50"
+              className="fixed bottom-6 left-6 p-3 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg transition-all duration-300 animate-fade-in z-50"
             >
               <ArrowUp className="h-5 w-5" />
             </button>
