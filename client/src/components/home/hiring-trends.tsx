@@ -4,13 +4,13 @@ import { Link } from "wouter";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
 
-// Sample hiring trends data
+// Sample hiring trends data with consistent image dimensions (800x450, 16:9 aspect ratio)
 const trendingIndustries = [
   {
     id: 1,
     title: "Tech Growth Outlook",
     description: "AI, machine learning, and data science professionals see 35% higher demand in 2025",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=500&h=350",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&h=450&fit=crop",
     icon: <Code className="h-5 w-5" />,
     link: "/sectors/tech"
   },
@@ -18,7 +18,7 @@ const trendingIndustries = [
     id: 2,
     title: "Remote Work Trends",
     description: "76% of companies now offer permanent remote positions across all departments",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=500&h=350",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&h=450&fit=crop",
     icon: <Globe className="h-5 w-5" />,
     link: "/blogs/remote-work"
   },
@@ -26,7 +26,7 @@ const trendingIndustries = [
     id: 3,
     title: "Healthcare Expansion",
     description: "Healthcare sector projected to add 1.5 million new jobs over the next five years",
-    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=500&h=350",
+    image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&h=450&fit=crop",
     icon: <Users className="h-5 w-5" />,
     link: "/sectors/healthcare"
   },
@@ -34,7 +34,7 @@ const trendingIndustries = [
     id: 4,
     title: "Sustainability Roles",
     description: "ESG and sustainability positions increased by 45% in Fortune 500 companies",
-    image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=500&h=350",
+    image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=800&h=450&fit=crop",
     icon: <TrendingUp className="h-5 w-5" />,
     link: "/sectors/sustainability"
   },
@@ -42,7 +42,7 @@ const trendingIndustries = [
     id: 5,
     title: "Education Evolution",
     description: "EdTech and online learning specialists among the fastest-growing education roles",
-    image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=500&h=350",
+    image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=800&h=450&fit=crop",
     icon: <GraduationCap className="h-5 w-5" />,
     link: "/sectors/education"
   },
@@ -50,7 +50,7 @@ const trendingIndustries = [
     id: 6,
     title: "Gig Economy Expansion",
     description: "Freelance marketplace expected to represent 50% of the workforce by 2027",
-    image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=500&h=350",
+    image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=800&h=450&fit=crop",
     icon: <Briefcase className="h-5 w-5" />,
     link: "/blogs/gig-economy"
   }
@@ -92,31 +92,33 @@ const InsightCard = ({ trend, index }: { trend: typeof trendingIndustries[0], in
       variants={itemVariants}
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
-      className="group relative overflow-hidden rounded-xl bg-white shadow-lg transition-all hover:shadow-xl dark:bg-gray-800 border border-gray-100 dark:border-gray-700"
+      className="group relative overflow-hidden rounded-xl bg-white shadow-lg transition-all hover:shadow-xl dark:bg-gray-800 border border-gray-100 dark:border-gray-700 h-full flex flex-col"
       whileHover={{ 
         y: -8,
         transition: { duration: 0.3 },
       }}
     >
-      <div className="aspect-w-16 aspect-h-9 relative overflow-hidden">
+      <div className="relative overflow-hidden h-48">
+        {/* Fixed height image container */}
         <img 
           src={trend.image} 
           alt={trend.title} 
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          style={{ objectPosition: "center" }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
         <div className="absolute bottom-3 left-3 flex items-center justify-center rounded-full bg-primary p-2.5 text-white shadow-lg transform transition-transform duration-300 group-hover:scale-110">
           {trend.icon}
         </div>
       </div>
-      <div className="p-6">
+      <div className="p-6 flex-grow flex flex-col">
         <h3 className="mb-2 text-xl font-bold group-hover:text-primary transition-colors duration-300">
           {trend.title}
         </h3>
-        <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
+        <p className="mb-4 text-sm text-gray-600 dark:text-gray-300 flex-grow">
           {trend.description}
         </p>
-        <Link href={trend.link} className="group/link inline-flex items-center text-sm font-medium text-primary bg-primary/5 px-3 py-1.5 rounded-full hover:bg-primary/10 transition-colors">
+        <Link href={trend.link} className="group/link inline-flex items-center text-sm font-medium text-primary bg-primary/5 px-3 py-1.5 rounded-full hover:bg-primary/10 transition-colors self-start mt-auto">
           Read more 
           <ArrowUpRight className="ml-1.5 h-4 w-4 transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
         </Link>
