@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
-import { ArrowRight, BriefcaseIcon, Clock, DollarSign, FileCheck, FileText, Search, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, BriefcaseIcon, Clock, DollarSign, FileCheck, FileText, Search, ShieldCheck, Users, Zap, Award, BarChart4, Briefcase } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function HireTalentPage() {
   return (
@@ -14,18 +15,125 @@ export default function HireTalentPage() {
       </Helmet>
 
       {/* Hero Section */}
-      <div className="bg-primary text-white py-20">
+      <div className="bg-primary text-white py-20 overflow-hidden relative">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl font-bold mb-6">Hire Top Talent For Your Business</h1>
-            <p className="text-xl mb-8">
-              Connect with qualified professionals who will drive your business forward.
-              Our specialist recruiters have a deep understanding of your industry's talent needs.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20" asChild>
-                <Link href="/contact-us">Speak to a Consultant</Link>
-              </Button>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <motion.h1 
+                className="text-5xl font-bold mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                Hire Top Talent For Your Business
+              </motion.h1>
+              <motion.p 
+                className="text-xl mb-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                Connect with qualified professionals who will drive your business forward.
+                Our specialist recruiters have a deep understanding of your industry's talent needs.
+              </motion.p>
+              <motion.div 
+                className="flex flex-wrap gap-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20" asChild>
+                  <Link href="/contact-us">Speak to a Consultant</Link>
+                </Button>
+              </motion.div>
+            </div>
+            
+            <div className="hidden lg:flex justify-center">
+              <div className="relative">
+                {/* Animated icons floating around */}
+                <motion.div 
+                  className="absolute"
+                  animate={{ 
+                    x: [0, 30, 0],
+                    y: [0, -30, 0],
+                    rotate: [0, 10, 0]
+                  }}
+                  transition={{ duration: 4, repeat: Infinity, repeatType: "reverse" }}
+                  style={{ top: '10%', left: '20%' }}
+                >
+                  <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
+                    <Briefcase className="h-8 w-8 text-white" />
+                  </div>
+                </motion.div>
+                
+                <motion.div 
+                  className="absolute"
+                  animate={{ 
+                    x: [0, -20, 0],
+                    y: [0, 20, 0],
+                    rotate: [0, -5, 0]
+                  }}
+                  transition={{ duration: 5, repeat: Infinity, repeatType: "reverse" }}
+                  style={{ top: '30%', right: '10%' }}
+                >
+                  <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
+                    <Award className="h-8 w-8 text-white" />
+                  </div>
+                </motion.div>
+                
+                <motion.div 
+                  className="absolute"
+                  animate={{ 
+                    x: [0, 25, 0],
+                    y: [0, 25, 0],
+                    rotate: [0, 15, 0]
+                  }}
+                  transition={{ duration: 6, repeat: Infinity, repeatType: "reverse" }}
+                  style={{ bottom: '15%', left: '15%' }}
+                >
+                  <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
+                    <BarChart4 className="h-8 w-8 text-white" />
+                  </div>
+                </motion.div>
+                
+                <motion.div 
+                  className="absolute"
+                  animate={{ 
+                    x: [0, -15, 0],
+                    y: [0, -15, 0],
+                    rotate: [0, -10, 0]
+                  }}
+                  transition={{ duration: 4.5, repeat: Infinity, repeatType: "reverse" }}
+                  style={{ bottom: '25%', right: '20%' }}
+                >
+                  <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
+                    <Zap className="h-8 w-8 text-white" />
+                  </div>
+                </motion.div>
+                
+                {/* Center image */}
+                <motion.div 
+                  className="relative z-10 bg-white/10 backdrop-blur-md p-8 rounded-full w-64 h-64 flex items-center justify-center"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                  <Users className="h-28 w-28 text-white" />
+                </motion.div>
+                
+                {/* Pulsing circle animation */}
+                <motion.div 
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full border-2 border-white/20"
+                  animate={{ scale: [1, 1.5, 1], opacity: [1, 0, 1] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
+                
+                <motion.div 
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full border-2 border-white/10"
+                  animate={{ scale: [1, 1.7, 1], opacity: [1, 0, 1] }}
+                  transition={{ duration: 3, delay: 0.5, repeat: Infinity }}
+                />
+              </div>
             </div>
           </div>
         </div>
