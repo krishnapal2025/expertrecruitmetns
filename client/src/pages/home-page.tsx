@@ -45,11 +45,6 @@ export default function HomePage() {
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <div className="inline-block mb-3">
-              <span className="bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300 px-4 py-1.5 rounded-full text-sm font-semibold">
-                For Everyone
-              </span>
-            </div>
             <h2 className="text-4xl font-bold mb-4 relative inline-block">
               Explore <span className="text-primary">Opportunities</span>
               <motion.div 
