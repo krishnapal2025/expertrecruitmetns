@@ -55,7 +55,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/job-board" className="text-gray-400 hover:text-white transition-colors">
-                  Job Board
+                  Find Jobs
                 </Link>
               </li>
               <li>
@@ -86,7 +86,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/job-board" className="text-gray-400 hover:text-white transition-colors">
-                  Browse Jobs
+                  Find Jobs
                 </Link>
               </li>
               <li>
