@@ -93,16 +93,35 @@ export default function AnimatedTestimonials() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gray-50 py-16 dark:bg-gray-800">
-      <div className="container mx-auto px-4">
+    <section className="relative overflow-hidden py-20 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+      {/* Decorative elements */}
+      <div className="absolute -top-64 -left-64 w-96 h-96 rounded-full bg-primary/5 mix-blend-multiply filter blur-3xl"></div>
+      <div className="absolute -bottom-64 -right-64 w-96 h-96 rounded-full bg-blue-400/5 mix-blend-multiply filter blur-3xl"></div>
+      
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="mb-12 text-center"
         >
-          <h2 className="mb-4 text-3xl font-bold md:text-4xl">What Our Users Say</h2>
-          <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300">
+          <div className="inline-block mb-3">
+            <span className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 px-4 py-1.5 rounded-full text-sm font-semibold">
+              Success Stories
+            </span>
+          </div>
+          <h2 className="mb-4 text-3xl font-bold md:text-5xl">
+            <span className="relative">
+              What Our Users Say
+              <motion.span 
+                className="absolute -bottom-2 left-0 w-full h-1 bg-primary/30"
+                initial={{ width: 0 }}
+                animate={{ width: "100%" }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+              ></motion.span>
+            </span>
+          </h2>
+          <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300 text-lg">
             Hear from job seekers and employers who have successfully connected through our platform.
           </p>
         </motion.div>

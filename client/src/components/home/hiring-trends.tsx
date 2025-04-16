@@ -92,29 +92,33 @@ const InsightCard = ({ trend, index }: { trend: typeof trendingIndustries[0], in
       variants={itemVariants}
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
-      className="group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg dark:bg-gray-800"
+      className="group relative overflow-hidden rounded-xl bg-white shadow-lg transition-all hover:shadow-xl dark:bg-gray-800 border border-gray-100 dark:border-gray-700"
+      whileHover={{ 
+        y: -8,
+        transition: { duration: 0.3 },
+      }}
     >
       <div className="aspect-w-16 aspect-h-9 relative overflow-hidden">
         <img 
           src={trend.image} 
           alt={trend.title} 
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-        <div className="absolute bottom-3 left-3 flex items-center justify-center rounded-full bg-primary p-2 text-white">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+        <div className="absolute bottom-3 left-3 flex items-center justify-center rounded-full bg-primary p-2.5 text-white shadow-lg transform transition-transform duration-300 group-hover:scale-110">
           {trend.icon}
         </div>
       </div>
-      <div className="p-4">
-        <h3 className="mb-2 text-lg font-bold">
+      <div className="p-6">
+        <h3 className="mb-2 text-xl font-bold group-hover:text-primary transition-colors duration-300">
           {trend.title}
         </h3>
-        <p className="mb-3 text-sm text-gray-600 dark:text-gray-300">
+        <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
           {trend.description}
         </p>
-        <Link href={trend.link} className="group/link inline-flex items-center text-sm font-medium text-primary">
+        <Link href={trend.link} className="group/link inline-flex items-center text-sm font-medium text-primary bg-primary/5 px-3 py-1.5 rounded-full hover:bg-primary/10 transition-colors">
           Read more 
-          <ArrowUpRight className="ml-1 h-4 w-4 transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+          <ArrowUpRight className="ml-1.5 h-4 w-4 transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
         </Link>
       </div>
     </motion.div>
@@ -154,7 +158,7 @@ export default function HiringTrends() {
   }, [inView]);
 
   return (
-    <section className="py-16 bg-gray-50 dark:bg-gray-900">
+    <section className="py-16 bg-gradient-to-br from-primary/5 to-primary/20 dark:from-gray-800 dark:to-gray-900">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -162,8 +166,15 @@ export default function HiringTrends() {
           transition={{ duration: 0.5 }}
           className="mb-12 text-center"
         >
-          <h2 className="mb-4 text-3xl font-bold md:text-4xl">Hiring Trends & Insights</h2>
-          <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300">
+          <div className="inline-block mb-3">
+            <span className="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-semibold">
+              Market Intelligence
+            </span>
+          </div>
+          <h2 className="mb-4 text-3xl font-bold md:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+            Hiring Trends & Insights
+          </h2>
+          <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300 text-lg">
             Stay ahead with the latest job market data, emerging career paths, and industry forecasts to navigate your professional journey.
           </p>
         </motion.div>

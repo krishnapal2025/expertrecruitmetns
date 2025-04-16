@@ -103,16 +103,27 @@ export default function FeaturedCategories() {
   });
 
   return (
-    <section className="py-16 bg-white dark:bg-gray-900">
-      <div className="container mx-auto px-4">
+    <section className="py-20 bg-white dark:bg-gray-900 overflow-hidden relative">
+      {/* Background decorative elements */}
+      <div className="absolute -left-32 top-1/3 w-64 h-64 rounded-full bg-primary/5 filter blur-3xl"></div>
+      <div className="absolute -right-32 top-2/3 w-80 h-80 rounded-full bg-blue-400/5 filter blur-3xl"></div>
+      
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-12 text-center"
+          className="mb-16 text-center"
         >
-          <h2 className="mb-4 text-3xl font-bold md:text-4xl">Explore Job Categories</h2>
-          <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300">
+          <div className="inline-block mb-3">
+            <span className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 px-4 py-1.5 rounded-full text-sm font-semibold">
+              Discover Opportunities
+            </span>
+          </div>
+          <h2 className="mb-4 text-3xl font-bold md:text-5xl">
+            Explore <span className="text-primary">Job Categories</span>
+          </h2>
+          <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300 text-lg">
             Browse through our extensive range of job categories to find your perfect role
             across different industries and specializations.
           </p>
