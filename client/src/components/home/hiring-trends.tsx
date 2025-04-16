@@ -23,7 +23,7 @@ const trendingIndustries = [
     link: "/sectors/tech"
   },
   {
-    id: 2,
+    id: 3,
     title: "Remote Work Trends",
     description: "76% of companies now offer permanent remote positions across all departments",
     image: "https://images.unsplash.com/photo-1593642634367-d91a135587b5?q=80&w=800&h=450&fit=crop",
@@ -31,7 +31,7 @@ const trendingIndustries = [
     link: "/blogs/remote-work"
   },
   {
-    id: 3,
+    id: 4,
     title: "Healthcare Expansion",
     description: "Healthcare sector projected to add 1.5 million new jobs over the next five years",
     image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&h=450&fit=crop",
@@ -39,7 +39,7 @@ const trendingIndustries = [
     link: "/sectors/healthcare"
   },
   {
-    id: 4,
+    id: 5,
     title: "Sustainability Roles",
     description: "ESG and sustainability positions increased by 45% in Fortune 500 companies",
     image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=800&h=450&fit=crop",
@@ -47,7 +47,7 @@ const trendingIndustries = [
     link: "/sectors/sustainability"
   },
   {
-    id: 5,
+    id: 6,
     title: "Education Evolution",
     description: "EdTech and online learning specialists among the fastest-growing education roles",
     image: "https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?q=80&w=800&h=450&fit=crop",
@@ -55,7 +55,7 @@ const trendingIndustries = [
     link: "/sectors/education"
   },
   {
-    id: 6,
+    id: 7,
     title: "Gig Economy Expansion",
     description: "Freelance marketplace expected to represent 50% of the workforce by 2027",
     image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=800&h=450&fit=crop",
