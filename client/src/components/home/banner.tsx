@@ -32,7 +32,7 @@ const slides = [
     title: "Talent\nAcquisition",
     tagline: "HIRE PROFESSIONALS",
     description: "Connect with exceptional candidates ready to transform your business",
-    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=1600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1600&auto=format&fit=crop",
     color: "bg-violet-500",
     stats: [
       { value: "90k+", label: "Microsoft & Apple Candidates" },
