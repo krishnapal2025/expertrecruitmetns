@@ -99,27 +99,25 @@ export default function Navbar() {
           <nav className="hidden md:flex space-x-8 items-center">
             {navigationLinks.map((link) => (
               link.isDropdown ? (
-                <DropdownMenu key={link.name}>
-                  <DropdownMenuTrigger className="flex items-center focus:outline-none">
-                    <div className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer flex items-center ${
-                      link.dropdownItems?.some(item => location === item.href) ? "text-primary" : "text-gray-700"
-                    }`}>
-                      {link.name}
-                      <ChevronDown className="h-4 w-4 ml-1" />
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="center" className="min-w-[140px]">
-                    {link.dropdownItems?.map((item) => (
-                      <Link key={item.name} href={item.href}>
-                        <DropdownMenuItem className="cursor-pointer">
-                          <div className={`${location === item.href ? "text-primary" : ""}`}>
+                <div key={link.name} className="relative group">
+                  <div className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer flex items-center ${
+                    link.dropdownItems?.some(item => location === item.href) ? "text-primary" : "text-gray-700"
+                  }`}>
+                    {link.name}
+                    <ChevronDown className="h-4 w-4 ml-1 transition-transform group-hover:rotate-180" />
+                  </div>
+                  <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                    <div className="py-1 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                      {link.dropdownItems?.map((item) => (
+                        <Link key={item.name} href={item.href}>
+                          <div className={`block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${location === item.href ? "text-primary dark:text-primary bg-primary/5" : ""}`}>
                             {item.name}
                           </div>
-                        </DropdownMenuItem>
-                      </Link>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               ) : (
                 <Link key={link.name} href={link.href}>
                   <div className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer ${location === link.href ? "text-primary" : "text-gray-700"}`}>
