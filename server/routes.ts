@@ -95,12 +95,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all job listings with optional filters
   app.get("/api/jobs", async (req, res) => {
     try {
-      const { category, location, jobType } = req.query;
+      const { 
+        category, 
+        location, 
+        jobType, 
+        specialization, 
+        minSalary, 
+        maxSalary,
+        keyword
+      } = req.query;
       
       const filters: any = {};
-      if (category) filters.category = category as string;
-      if (location) filters.location = location as string;
-      if (jobType) filters.jobType = jobType as string;
+      if (category && category !== 'All Categories') filters.category = category as string;
+      if (location && location !== 'All Locations') filters.location = location as string;
+      if (jobType && jobType !== 'All Types') filters.jobType = jobType as string;
+      if (specialization && specialization !== 'All Specializations') filters.specialization = specialization as string;
+      if (minSalary) filters.minSalary = parseInt(minSalary as string);
+      if (maxSalary) filters.maxSalary = parseInt(maxSalary as string);
+      if (keyword) filters.keyword = keyword as string;
       
       const jobs = await storage.getJobs(Object.keys(filters).length > 0 ? filters : undefined);
       

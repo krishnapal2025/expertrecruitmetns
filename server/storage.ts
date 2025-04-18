@@ -227,15 +227,65 @@ export class MemStorage implements IStorage {
     category?: string;
     location?: string;
     jobType?: string;
+    specialization?: string;
+    minSalary?: number;
+    maxSalary?: number;
+    keyword?: string;
   }): Promise<Job[]> {
     let allJobs = Array.from(this.jobs.values()).filter(job => job.isActive);
     
     if (!filters) return allJobs;
     
     return allJobs.filter(job => {
-      if (filters.category && job.category !== filters.category) return false;
-      if (filters.location && job.location !== filters.location) return false;
-      if (filters.jobType && job.jobType !== filters.jobType) return false;
+      // Filter by category
+      if (filters.category && filters.category !== "All Categories" && job.category !== filters.category) return false;
+      
+      // Filter by location
+      if (filters.location && filters.location !== "All Locations") {
+        // Allow partial match on location
+        if (!job.location.includes(filters.location)) return false;
+      }
+      
+      // Filter by job type
+      if (filters.jobType && filters.jobType !== "All Types" && job.jobType !== filters.jobType) return false;
+      
+      // Filter by specialization (checking in description)
+      if (filters.specialization && filters.specialization !== "All Specializations") {
+        if (!job.description.includes(filters.specialization)) return false;
+      }
+      
+      // Filter by salary range
+      if (filters.minSalary || filters.maxSalary) {
+        // Extract numeric salary from string like "$120,000 - $150,000"
+        const salaryMatch = job.salary?.match(/[\d,]+/g);
+        if (salaryMatch && salaryMatch.length >= 1) {
+          const minSalaryStr = salaryMatch[0].replace(/,/g, '');
+          const minSalaryValue = parseInt(minSalaryStr);
+          
+          if (filters.minSalary && !isNaN(minSalaryValue) && minSalaryValue < filters.minSalary) {
+            return false;
+          }
+          
+          if (filters.maxSalary && salaryMatch.length >= 2) {
+            const maxSalaryStr = salaryMatch[1].replace(/,/g, '');
+            const maxSalaryValue = parseInt(maxSalaryStr);
+            
+            if (!isNaN(maxSalaryValue) && maxSalaryValue > filters.maxSalary) {
+              return false;
+            }
+          }
+        }
+      }
+      
+      // Filter by keyword (search in title and description)
+      if (filters.keyword) {
+        const keyword = filters.keyword.toLowerCase();
+        if (!job.title.toLowerCase().includes(keyword) && 
+            !job.description.toLowerCase().includes(keyword)) {
+          return false;
+        }
+      }
+      
       return true;
     });
   }
