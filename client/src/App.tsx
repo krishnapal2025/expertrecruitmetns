@@ -13,6 +13,8 @@ import PrivacyPolicyPage from "@/pages/privacy-policy";
 import BlogsPage from "@/pages/blogs";
 import CareersPage from "@/pages/careers";
 import AuthPage from "@/pages/auth-page";
+import ForgotPasswordPage from "@/pages/forgot-password";
+import ResetPasswordPage from "@/pages/reset-password";
 import JobDetailsPage from "@/pages/job-details";
 import HireTalentPage from "@/pages/hire-talent";
 import SEOInsightsPage from "@/pages/seo-insights";
@@ -52,6 +54,8 @@ function Router() {
       <Route path="/blogs" component={BlogsPage} />
       <Route path="/careers" component={CareersPage} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/auth/forgot-password" component={ForgotPasswordPage} />
+      <Route path="/auth/reset-password" component={ResetPasswordPage} />
       <Route path="/hire-talent" component={HireTalentPage} />
       <Route path="/seo-insights" component={SEOInsightsPage} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
