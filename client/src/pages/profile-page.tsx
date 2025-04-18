@@ -115,17 +115,6 @@ export default function ProfilePage() {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [skillsFilter, setSkillsFilter] = useState("");
   
-  // Initialize selected skills from user profile
-  useEffect(() => {
-    if (currentUser && currentUser.user.userType === 'jobseeker' && 'skills' in currentUser.profile) {
-      const skillsString = currentUser.profile.skills || '';
-      if (skillsString) {
-        const skillsArray = skillsString.split(',').map((skill: string) => skill.trim());
-        setSelectedSkills(skillsArray);
-      }
-    }
-  }, [currentUser]);
-  
   // Initialize forms with current user data
   const jobSeekerForm = useForm<JobSeekerProfileFormValues>({
     resolver: zodResolver(jobSeekerProfileSchema),
@@ -180,6 +169,20 @@ export default function ProfilePage() {
           foundedYear: ''
         }
   });
+  
+  // Initialize selected skills from user profile
+  useEffect(() => {
+    if (currentUser && currentUser.user.userType === 'jobseeker') {
+      const profile = currentUser.profile as any;
+      const skillsString = profile.skills || '';
+      if (skillsString) {
+        const skillsArray = skillsString.split(',').map((skill: string) => skill.trim());
+        setSelectedSkills(skillsArray);
+        // Also initialize the form field
+        jobSeekerForm.setValue('skills', skillsString);
+      }
+    }
+  }, [currentUser, jobSeekerForm]);
 
   // Helper functions for skill management
   const handleSkillToggle = (skill: string) => {
