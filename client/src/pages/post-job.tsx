@@ -294,7 +294,6 @@ export default function PostJobPage() {
               <Button
                 variant={isPreview ? "default" : "outline"}
                 onClick={() => setIsPreview(true)}
-                disabled={!form.formState.isValid}
               >
                 Preview
               </Button>
@@ -307,15 +306,19 @@ export default function PostJobPage() {
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <div>
-                        <CardTitle className="text-2xl font-bold">{formValues.title}</CardTitle>
+                        <CardTitle className="text-2xl font-bold">
+                          {formValues.title || "[Job Title]"}
+                        </CardTitle>
                         <div className="flex items-center mt-2">
                           <Building className="h-4 w-4 mr-1 text-gray-500" />
-                          <span className="text-gray-600">{formValues.company}</span>
+                          <span className="text-gray-600">
+                            {formValues.company || "[Company Name]"}
+                          </span>
                         </div>
                       </div>
                       <div className="text-right">
                         <span className="inline-flex items-center bg-primary/10 text-primary rounded-full px-3 py-1 text-sm font-medium">
-                          {formValues.jobType}
+                          {formValues.jobType || "Job Type"}
                         </span>
                       </div>
                     </div>
@@ -324,19 +327,22 @@ export default function PostJobPage() {
                     <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                       <div className="flex items-center">
                         <MapPin className="h-4 w-4 mr-1" />
-                        {formValues.location}
+                        {formValues.location || "Location"}
                       </div>
                       <div className="flex items-center">
                         <Briefcase className="h-4 w-4 mr-1" />
-                        {formValues.category}
+                        {formValues.category || "Category"}
                       </div>
                       <div className="flex items-center">
                         <Clock className="h-4 w-4 mr-1" />
-                        {formValues.experience}
+                        {formValues.experience || "Experience Level"}
                       </div>
                       <div className="flex items-center">
                         <DollarSign className="h-4 w-4 mr-1" />
-                        {getCurrencySymbol(formValues.location)}{formValues.minSalary.toLocaleString()} - {getCurrencySymbol(formValues.location)}{formValues.maxSalary.toLocaleString()} per year
+                        {formValues.location ? getCurrencySymbol(formValues.location) : "$"}
+                        {(formValues.minSalary > 0 ? formValues.minSalary.toLocaleString() : "Min")} - 
+                        {formValues.location ? getCurrencySymbol(formValues.location) : "$"}
+                        {(formValues.maxSalary > 0 ? formValues.maxSalary.toLocaleString() : "Max")} per year
                       </div>
                     </div>
                     
@@ -370,7 +376,18 @@ export default function PostJobPage() {
                   <CardFooter>
                     <Button 
                       className="w-full" 
-                      onClick={() => onSubmit(form.getValues())}
+                      onClick={() => {
+                        if (form.formState.isValid) {
+                          onSubmit(form.getValues());
+                        } else {
+                          toast({
+                            title: "Form not complete",
+                            description: "Please fill out all required fields before submitting",
+                            variant: "destructive"
+                          });
+                          setIsPreview(false);
+                        }
+                      }}
                       disabled={createJobMutation.isPending}
                     >
                       {createJobMutation.isPending ? "Posting..." : "Post Job Now"}
