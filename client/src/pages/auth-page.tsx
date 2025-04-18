@@ -173,7 +173,7 @@ export default function AuthPage() {
                 // LOGIN MODE
                 <>
                   <div className="mb-4">
-                    <h2 className="text-2xl font-semibold">Login</h2>
+                    {/* No header text for login page */}
                   </div>
                   
                   <Card>
@@ -239,9 +239,9 @@ export default function AuthPage() {
                 // REGISTER MODE
                 <>
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-2xl font-semibold">Registration</h2>
+                    {/* No header text for registration page */}
                     
-                    <div className="space-x-2">
+                    <div className="ml-auto space-x-2">
                       <Button
                         variant={userType === "jobseeker" ? "default" : "outline"}
                         size="sm"
