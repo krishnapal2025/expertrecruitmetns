@@ -20,7 +20,10 @@ export default function JobBoardPage() {
     location: "",
     jobType: "",
     specialization: "",
-    experience: ""
+    experience: "",
+    minSalary: undefined as number | undefined,
+    maxSalary: undefined as number | undefined,
+    keyword: undefined as string | undefined
   });
 
   // Fetch all jobs
@@ -33,6 +36,9 @@ export default function JobBoardPage() {
       if (filters.jobType) queryParams.append("jobType", filters.jobType);
       if (filters.specialization) queryParams.append("specialization", filters.specialization);
       if (filters.experience) queryParams.append("experience", filters.experience);
+      if (filters.minSalary) queryParams.append("minSalary", filters.minSalary.toString());
+      if (filters.maxSalary) queryParams.append("maxSalary", filters.maxSalary.toString());
+      if (filters.keyword) queryParams.append("keyword", filters.keyword);
       
       const response = await fetch(`/api/jobs?${queryParams.toString()}`);
       if (!response.ok) {
@@ -48,7 +54,7 @@ export default function JobBoardPage() {
 
     let result = [...jobs];
     
-    // Apply search term filter
+    // Apply search term filter (only for client-side filtering)
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter(job => 
@@ -60,7 +66,18 @@ export default function JobBoardPage() {
     
     setFilteredJobs(result);
     setCurrentPage(1); // Reset to first page when filters change
-  }, [jobs, searchTerm, filters.specialization, filters.experience]);
+  }, [
+    jobs, 
+    searchTerm, 
+    filters.category, 
+    filters.location, 
+    filters.jobType, 
+    filters.specialization, 
+    filters.experience,
+    filters.minSalary,
+    filters.maxSalary,
+    filters.keyword
+  ]);
 
   // Calculate pagination
   const totalPages = Math.ceil((filteredJobs?.length || 0) / JOBS_PER_PAGE);
@@ -70,8 +87,20 @@ export default function JobBoardPage() {
   );
 
   // Apply filters
-  const applyFilters = (newFilters: typeof filters) => {
-    setFilters(newFilters);
+  const applyFilters = (newFilters: {
+    category: string;
+    location: string;
+    jobType: string;
+    specialization: string;
+    experience: string;
+    minSalary?: number;
+    maxSalary?: number;
+    keyword?: string;
+  }) => {
+    setFilters({
+      ...filters,
+      ...newFilters
+    });
   };
 
   if (error) {
@@ -201,7 +230,10 @@ export default function JobBoardPage() {
                     location: "", 
                     jobType: "", 
                     specialization: "",
-                    experience: ""
+                    experience: "",
+                    minSalary: undefined,
+                    maxSalary: undefined,
+                    keyword: undefined
                   });
                 }}>
                   Clear Filters
