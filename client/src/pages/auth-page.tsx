@@ -442,10 +442,21 @@ export default function AuthPage() {
                                     <FormItem>
                                       <FormLabel>Phone Number</FormLabel>
                                       <FormControl>
-                                        <Input 
-                                          placeholder={selectedJobSeekerCountryCode ? `${selectedJobSeekerCountryCode} phone number` : "Phone number"} 
-                                          {...field} 
-                                        />
+                                        <div className="flex">
+                                          <div className="bg-gray-100 px-3 py-2 border rounded-l-md text-gray-600">
+                                            {selectedJobSeekerCountryCode || "+"}
+                                          </div>
+                                          <Input 
+                                            className="rounded-l-none"
+                                            placeholder="Enter phone number" 
+                                            value={field.value.replace(/^\+\d+\s*/, '')}
+                                            onChange={(e) => {
+                                              // Only update the part after the country code
+                                              const countryCode = selectedJobSeekerCountryCode || '';
+                                              field.onChange(countryCode + ' ' + e.target.value.replace(/^\s+/, ''));
+                                            }}
+                                          />
+                                        </div>
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -638,10 +649,21 @@ export default function AuthPage() {
                                     <FormItem>
                                       <FormLabel>Phone Number</FormLabel>
                                       <FormControl>
-                                        <Input 
-                                          placeholder={selectedEmployerCountryCode ? `${selectedEmployerCountryCode} phone number` : "Phone number"} 
-                                          {...field} 
-                                        />
+                                        <div className="flex">
+                                          <div className="bg-gray-100 px-3 py-2 border rounded-l-md text-gray-600">
+                                            {selectedEmployerCountryCode || "+"}
+                                          </div>
+                                          <Input 
+                                            className="rounded-l-none"
+                                            placeholder="Enter phone number" 
+                                            value={field.value.replace(/^\+\d+\s*/, '')}
+                                            onChange={(e) => {
+                                              // Only update the part after the country code
+                                              const countryCode = selectedEmployerCountryCode || '';
+                                              field.onChange(countryCode + ' ' + e.target.value.replace(/^\s+/, ''));
+                                            }}
+                                          />
+                                        </div>
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
