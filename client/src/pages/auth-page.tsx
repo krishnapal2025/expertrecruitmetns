@@ -152,11 +152,8 @@ export default function AuthPage() {
       if (countryData) {
         setSelectedEmployerCountryCode(countryData.code);
         
-        // Only prefill the phone number if it's completely empty
-        const currentPhone = employerForm.getValues("phoneNumber");
-        if (!currentPhone) {
-          employerForm.setValue("phoneNumber", countryData.code + " ");
-        }
+        // Always update the phone number field with the country code
+        employerForm.setValue("phoneNumber", countryData.code + " ");
       }
     }
   }, [selectedEmployerCountry, employerForm]);
@@ -442,21 +439,10 @@ export default function AuthPage() {
                                     <FormItem>
                                       <FormLabel>Phone Number</FormLabel>
                                       <FormControl>
-                                        <div className="flex">
-                                          <div className="bg-gray-100 px-3 py-2 border rounded-l-md text-gray-600">
-                                            {selectedJobSeekerCountryCode || "+"}
-                                          </div>
-                                          <Input 
-                                            className="rounded-l-none"
-                                            placeholder="Enter phone number" 
-                                            value={field.value.replace(/^\+\d+\s*/, '')}
-                                            onChange={(e) => {
-                                              // Only update the part after the country code
-                                              const countryCode = selectedJobSeekerCountryCode || '';
-                                              field.onChange(countryCode + ' ' + e.target.value.replace(/^\s+/, ''));
-                                            }}
-                                          />
-                                        </div>
+                                        <Input 
+                                          placeholder={selectedJobSeekerCountryCode ? `${selectedJobSeekerCountryCode} your phone number` : "Phone number"} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -655,12 +641,12 @@ export default function AuthPage() {
                                           </div>
                                           <Input 
                                             className="rounded-l-none"
-                                            placeholder="Enter phone number" 
+                                            placeholder="Phone number"
                                             value={field.value.replace(/^\+\d+\s*/, '')}
                                             onChange={(e) => {
-                                              // Only update the part after the country code
-                                              const countryCode = selectedEmployerCountryCode || '';
-                                              field.onChange(countryCode + ' ' + e.target.value.replace(/^\s+/, ''));
+                                              // Always keep the country code and update only the number part
+                                              const countryCode = selectedEmployerCountryCode || "+";
+                                              field.onChange(countryCode + " " + e.target.value.replace(/^\s+/, ''));
                                             }}
                                           />
                                         </div>
