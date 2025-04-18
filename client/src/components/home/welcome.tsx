@@ -73,13 +73,15 @@ export default function Welcome() {
               transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
             />
             
-            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
-              <img 
-                src={hireImg} 
-                alt="Professional team in a business meeting" 
-                className="w-full h-auto object-cover rounded-xl transform scale-105 hover:scale-110 transition-transform duration-700" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+            <div className="relative z-10 rounded-xl overflow-hidden shadow-2xl">
+              <div className="aspect-[9/16] relative">
+                <img 
+                  src={hireImg} 
+                  alt="Professional team in a business meeting" 
+                  className="absolute inset-0 w-full h-full object-cover rounded-[5px] transform scale-105 hover:scale-110 transition-transform duration-700" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent rounded-[5px]"></div>
+              </div>
             </div>
           </motion.div>
           
