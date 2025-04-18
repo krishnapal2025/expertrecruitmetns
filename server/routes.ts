@@ -185,7 +185,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         realtimeStore.notifications.push({
           id: realtimeStore.notificationId++,
           userId: jobSeekerUser.id,
-          message: `New job posted: ${job.title} at ${employer.companyName}`,
+          message: `New job posted: ${job.title} at ${job.company}`,
           read: false,
           createdAt: new Date()
         });
