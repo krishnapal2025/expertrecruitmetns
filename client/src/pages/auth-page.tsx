@@ -153,8 +153,11 @@ export default function AuthPage() {
         setSelectedEmployerCountryCode(countryData.code);
         
         // Always completely reset the phone number field with just the country code
-        // This ensures old input is overwritten
-        employerForm.setValue("phoneNumber", countryData.code + " ");
+        // This ensures old input is overwritten completely
+        employerForm.setValue("phoneNumber", countryData.code + " ", { 
+          shouldValidate: true,
+          shouldDirty: true
+        });
       }
     }
   }, [selectedEmployerCountry, employerForm]);
@@ -645,11 +648,15 @@ export default function AuthPage() {
                                             placeholder="Phone number"
                                             value={field.value.replace(/^\+\d+\s*/, '')}
                                             onChange={(e) => {
-                                              // Always completely replace the phone number value
-                                              // This ensures it always overwrites the old input
+                                              // Completely replace the old input with a new phone number
                                               const countryCode = selectedEmployerCountryCode || "+";
-                                              const newPhoneValue = countryCode + " " + e.target.value.replace(/^\s+/, '').replace(/^\+\d+\s*/, '');
-                                              field.onChange(newPhoneValue);
+                                              // Extract just the user input numbers without any country code prefixes
+                                              const userInput = e.target.value.replace(/^\+\d+\s*/, '').replace(/^\s+/, '');
+                                              // Create a clean new value with the current country code
+                                              employerForm.setValue("phoneNumber", countryCode + " " + userInput, { 
+                                                shouldValidate: true,
+                                                shouldDirty: true
+                                              });
                                             }}
                                           />
                                         </div>
