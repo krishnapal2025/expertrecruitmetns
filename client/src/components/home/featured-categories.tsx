@@ -105,6 +105,7 @@ export default function FeaturedCategories() {
   
   // For slider functionality
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [activeCategory, setActiveCategory] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
   const maxVisibleItems = 4; // Max items visible in desktop view
   const maxIndex = Math.ceil(categories.length / maxVisibleItems) - 1;
@@ -118,20 +119,60 @@ export default function FeaturedCategories() {
     } else {
       setCurrentIndex(index);
     }
+    
+    // Calculate which category should be active based on the current index
+    const startingCategory = index * maxVisibleItems;
+    setActiveCategory(startingCategory < categories.length ? startingCategory : categories.length - 1);
+  };
+  
+  // Navigate to next category within the current view
+  const goToNextCategory = () => {
+    // If we're at the last visible category in the current view, go to next view
+    const isLastInCurrentView = (activeCategory + 1) % maxVisibleItems === 0;
+    const isLastCategory = activeCategory === categories.length - 1;
+    
+    if (isLastCategory) {
+      // Loop back to first category
+      setActiveCategory(0);
+      setCurrentIndex(0);
+    } else if (isLastInCurrentView) {
+      // Move to next view
+      goToIndex(currentIndex + 1);
+    } else {
+      // Just highlight next category in current view
+      setActiveCategory(activeCategory + 1);
+    }
+  };
+  
+  // Navigate to previous category within the current view
+  const goToPrevCategory = () => {
+    // If we're at the first visible category in the current view, go to previous view
+    const isFirstInCurrentView = activeCategory % maxVisibleItems === 0;
+    const isFirstCategory = activeCategory === 0;
+    
+    if (isFirstCategory) {
+      // Loop to last category
+      setActiveCategory(categories.length - 1);
+      setCurrentIndex(maxIndex);
+    } else if (isFirstInCurrentView) {
+      // Move to previous view
+      const newIndex = currentIndex - 1;
+      setCurrentIndex(newIndex);
+      setActiveCategory(newIndex * maxVisibleItems + (maxVisibleItems - 1));
+    } else {
+      // Just highlight previous category in current view
+      setActiveCategory(activeCategory - 1);
+    }
   };
   
   // Auto scroll functionality
   useEffect(() => {
     const interval = setInterval(() => {
-      if (currentIndex < maxIndex) {
-        setCurrentIndex(prev => prev + 1);
-      } else {
-        setCurrentIndex(0);
-      }
-    }, 8000); // Change slide every 8 seconds
+      goToNextCategory();
+    }, 8000); // Change category every 8 seconds
     
     return () => clearInterval(interval);
-  }, [currentIndex, maxIndex]);
+  }, [activeCategory, currentIndex]);
   
   // Apply transform when index changes
   useEffect(() => {
@@ -185,25 +226,41 @@ export default function FeaturedCategories() {
               className="flex transition-transform duration-700 ease-in-out"
               style={{ width: `${(categories.length / maxVisibleItems) * 100}%` }}
             >
-              {categories.map((category) => (
+              {categories.map((category, index) => (
                 <motion.div
                   key={category.id}
                   variants={itemVariants}
                   whileHover={{ y: -10, transition: { duration: 0.2 } }}
                   onMouseEnter={() => setHoveredId(category.id)}
                   onMouseLeave={() => setHoveredId(null)}
-                  className="group relative overflow-hidden rounded-xl shadow-lg transition-all hover:shadow-xl border border-gray-100 dark:border-gray-700 p-2"
+                  className={`group relative overflow-hidden rounded-xl transition-all p-2 ${
+                    activeCategory === index
+                      ? 'shadow-xl border-2 border-primary/50 dark:border-primary/50 scale-[1.02] z-10'
+                      : 'shadow-lg border border-gray-100 dark:border-gray-700'
+                  }`}
                   style={{ width: `${100 / categories.length * maxVisibleItems}%` }}
+                  onClick={() => setActiveCategory(index)}
                 >
                   <Link href={category.link}>
                     <div className="relative h-56 w-full overflow-hidden rounded-lg">
                       <img
                         src={category.icon}
                         alt={`${category.name} jobs`}
-                        className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
+                        className={`h-full w-full object-cover object-center transition-transform duration-500 ${
+                          activeCategory === index ? 'scale-110' : 'group-hover:scale-110'
+                        }`}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20"></div>
-                      <div className={`absolute inset-0 ${category.color} opacity-40`}></div>
+                      <div className={`absolute inset-0 ${category.color} ${
+                        activeCategory === index ? 'opacity-50' : 'opacity-40'
+                      }`}></div>
+                      
+                      {/* Active category indicator */}
+                      {activeCategory === index && (
+                        <div className="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg backdrop-blur-sm flex items-center space-x-1">
+                          <span>Active</span>
+                        </div>
+                      )}
                       
                       {/* Floating badge */}
                       <div className="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm backdrop-blur-sm">
@@ -211,7 +268,9 @@ export default function FeaturedCategories() {
                       </div>
                       
                       <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-white">
-                        <div className={`w-16 h-16 rounded-full ${category.color} bg-opacity-30 flex items-center justify-center mb-3 backdrop-blur-sm`}>
+                        <div className={`w-16 h-16 rounded-full ${category.color} ${
+                          activeCategory === index ? 'bg-opacity-50 ring-2 ring-white/70' : 'bg-opacity-30'
+                        } flex items-center justify-center mb-3 backdrop-blur-sm transition-all`}>
                           <span className="text-3xl font-bold">{category.name.charAt(0)}</span>
                         </div>
                         <h3 className="mb-2 text-2xl font-bold text-center drop-shadow-md">{category.name}</h3>
@@ -220,8 +279,8 @@ export default function FeaturedCategories() {
                           className="mt-4 flex items-center rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm"
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ 
-                            opacity: hoveredId === category.id ? 1 : 0,
-                            scale: hoveredId === category.id ? 1 : 0.8
+                            opacity: (hoveredId === category.id || activeCategory === index) ? 1 : 0,
+                            scale: (hoveredId === category.id || activeCategory === index) ? 1 : 0.8
                           }}
                           transition={{ duration: 0.2 }}
                         >
@@ -240,10 +299,9 @@ export default function FeaturedCategories() {
           <Button 
             size="sm" 
             variant="outline" 
-            onClick={() => goToIndex(currentIndex - 1)}
-            disabled={currentIndex === 0}
+            onClick={goToPrevCategory}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full h-10 w-10 p-0 opacity-80 hover:opacity-100"
-            aria-label="Previous categories"
+            aria-label="Previous category"
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>
@@ -251,27 +309,33 @@ export default function FeaturedCategories() {
           <Button 
             size="sm" 
             variant="outline" 
-            onClick={() => goToIndex(currentIndex + 1)}
-            disabled={currentIndex === maxIndex}
+            onClick={goToNextCategory}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full h-10 w-10 p-0 opacity-80 hover:opacity-100"
-            aria-label="Next categories"
+            aria-label="Next category"
           >
             <ChevronRight className="h-5 w-5" />
           </Button>
         </div>
         
-        {/* Slide indicators */}
+        {/* Slide indicators - now showing per category */}
         <div className="flex justify-center gap-2 mb-8">
-          {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+          {categories.map((category, index) => (
             <button
               key={index}
-              onClick={() => goToIndex(index)}
+              onClick={() => {
+                // Calculate which view this category is in
+                const viewIndex = Math.floor(index / maxVisibleItems);
+                // Set current view
+                setCurrentIndex(viewIndex);
+                // Highlight the specific category
+                setActiveCategory(index);
+              }}
               className={`w-2.5 h-2.5 rounded-full transition-all ${
-                index === currentIndex 
+                index === activeCategory 
                   ? 'bg-primary scale-125' 
                   : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400'
               }`}
-              aria-label={`Go to slide ${index + 1}`}
+              aria-label={`Go to ${category.name} category`}
             />
           ))}
         </div>
