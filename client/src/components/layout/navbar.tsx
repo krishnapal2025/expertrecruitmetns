@@ -187,12 +187,31 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link href="/auth?tab=login">
+                <Link href="/auth">
                   <Button variant="ghost">Sign In</Button>
                 </Link>
-                <Link href="/auth?type=jobseeker">
-                  <Button>Sign Up</Button>
-                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="flex items-center justify-center">
+                      Sign Up
+                      <ChevronDown className="ml-1 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <Link href="/job-seeker-register">
+                      <DropdownMenuItem>
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Register as Job Seeker</span>
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/employer-register">
+                      <DropdownMenuItem>
+                        <Briefcase className="mr-2 h-4 w-4" />
+                        <span>Register as Employer</span>
+                      </DropdownMenuItem>
+                    </Link>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </>
             )}
           </div>
@@ -310,19 +329,33 @@ export default function Navbar() {
                     ) : (
                       <>
                         <SheetClose asChild>
-                          <Link href="/auth?tab=login">
+                          <Link href="/auth">
                             <Button variant="outline" className="w-full mb-2">
                               Sign In
                             </Button>
                           </Link>
                         </SheetClose>
-                        <SheetClose asChild>
-                          <Link href="/auth?type=jobseeker">
-                            <Button className="w-full">
-                              Sign Up
-                            </Button>
-                          </Link>
-                        </SheetClose>
+                        <div className="mb-2">
+                          <div className="font-medium text-sm mb-2">Sign Up as:</div>
+                          <div className="space-y-2">
+                            <SheetClose asChild>
+                              <Link href="/job-seeker-register">
+                                <Button variant="secondary" className="w-full flex items-center">
+                                  <User className="mr-2 h-4 w-4" />
+                                  Job Seeker
+                                </Button>
+                              </Link>
+                            </SheetClose>
+                            <SheetClose asChild>
+                              <Link href="/employer-register">
+                                <Button variant="secondary" className="w-full flex items-center">
+                                  <Briefcase className="mr-2 h-4 w-4" />
+                                  Employer
+                                </Button>
+                              </Link>
+                            </SheetClose>
+                          </div>
+                        </div>
                       </>
                     )}
                   </div>

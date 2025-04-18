@@ -8,7 +8,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function AuthPage() {
   const [, navigate] = useLocation();
@@ -110,19 +116,12 @@ export default function AuthPage() {
                     </form>
                   </Form>
                 </CardContent>
-                <CardFooter className="flex flex-col space-y-3">
-                  <p className="text-sm text-gray-500">
-                    Looking for a job?{" "}
-                    <Link href="/job-seeker-register" className="text-primary font-medium hover:underline">
-                      Register as Job Seeker
-                    </Link>
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Hiring talent?{" "}
-                    <Link href="/employer-register" className="text-primary font-medium hover:underline">
-                      Register as Employer
-                    </Link>
-                  </p>
+                <CardFooter>
+                  <div className="w-full flex justify-center">
+                    <div className="text-sm text-gray-500 text-center">
+                      Don't have an account? Use the <span className="font-semibold">Sign Up</span> button in the main menu.
+                    </div>
+                  </div>
                 </CardFooter>
               </Card>
             </div>
