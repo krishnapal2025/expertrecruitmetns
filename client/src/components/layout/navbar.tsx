@@ -154,16 +154,28 @@ export default function Navbar() {
                       </DropdownMenuItem>
                     </Link>
                     {currentUser.user.userType === "jobseeker" && (
-                      <DropdownMenuItem>
-                        <Briefcase className="mr-2 h-4 w-4" />
-                        <span>My Applications</span>
-                      </DropdownMenuItem>
+                      <Link href="/my-applications">
+                        <DropdownMenuItem>
+                          <Briefcase className="mr-2 h-4 w-4" />
+                          <span>My Applications</span>
+                        </DropdownMenuItem>
+                      </Link>
                     )}
                     {currentUser.user.userType === "employer" && (
-                      <DropdownMenuItem>
-                        <Briefcase className="mr-2 h-4 w-4" />
-                        <span>Posted Jobs</span>
-                      </DropdownMenuItem>
+                      <>
+                        <Link href="/my-jobs">
+                          <DropdownMenuItem>
+                            <Briefcase className="mr-2 h-4 w-4" />
+                            <span>Posted Jobs</span>
+                          </DropdownMenuItem>
+                        </Link>
+                        <Link href="/post-job">
+                          <DropdownMenuItem>
+                            <Briefcase className="mr-2 h-4 w-4" />
+                            <span>Post New Job</span>
+                          </DropdownMenuItem>
+                        </Link>
+                      </>
                     )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout}>
@@ -254,6 +266,39 @@ export default function Navbar() {
                             </div>
                           </Link>
                         </SheetClose>
+                        
+                        {currentUser.user.userType === "jobseeker" && (
+                          <SheetClose asChild>
+                            <Link href="/my-applications">
+                              <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
+                                <Briefcase className="mr-2 h-4 w-4" />
+                                My Applications
+                              </div>
+                            </Link>
+                          </SheetClose>
+                        )}
+                        
+                        {currentUser.user.userType === "employer" && (
+                          <>
+                            <SheetClose asChild>
+                              <Link href="/my-jobs">
+                                <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
+                                  <Briefcase className="mr-2 h-4 w-4" />
+                                  Posted Jobs
+                                </div>
+                              </Link>
+                            </SheetClose>
+                            <SheetClose asChild>
+                              <Link href="/post-job">
+                                <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
+                                  <Briefcase className="mr-2 h-4 w-4" />
+                                  Post New Job
+                                </div>
+                              </Link>
+                            </SheetClose>
+                          </>
+                        )}
+                        
                         <button
                           onClick={handleLogout}
                           className="w-full text-left px-4 py-2 rounded-md hover:bg-gray-100 flex items-center"
