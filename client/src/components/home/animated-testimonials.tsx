@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Star, Quote, ArrowRight } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ChevronLeft, ChevronRight, Star, Quote, ArrowRight, CheckCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { Testimonial } from "@shared/schema";
+import { Link } from "wouter";
 
 // Helper function to generate initials from a name
 const getInitials = (name: string) => {
@@ -28,10 +29,43 @@ const avatarColors = [
 export default function AnimatedTestimonials() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: false, amount: 0.2 });
 
-  const { data: testimonials = [] } = useQuery<Testimonial[]>({
+  // Use this when no testimonials are available in the database
+  const defaultTestimonials = [
+    {
+      id: 1,
+      name: "Sarah Johnson",
+      role: "Senior UX Designer at TechCorp",
+      content: "I found my dream job through RH Job Portal. Their matching algorithm is incredible - the job opportunities I was presented with were spot-on for my skills and career goals.",
+      rating: 5,
+      userId: null
+    },
+    {
+      id: 2,
+      name: "Michael Chen",
+      role: "Software Engineer",
+      content: "After struggling with my job search for months, I turned to RH Job Portal and landed three interviews in the first week. The platform is intuitive and the career resources are invaluable.",
+      rating: 5,
+      userId: null
+    },
+    {
+      id: 3,
+      name: "Priya Patel",
+      role: "Finance Manager",
+      content: "As someone transitioning to a new industry, I was worried about finding the right opportunity. RH Job Portal made it easy with their specialized industry insights and personalized job recommendations.",
+      rating: 4,
+      userId: null
+    }
+  ] as Testimonial[];
+
+  const { data: apiTestimonials = [] } = useQuery<Testimonial[]>({
     queryKey: ["/api/testimonials"],
   });
+
+  // Use API testimonials if available, otherwise use defaults
+  const testimonials = apiTestimonials.length > 0 ? apiTestimonials : defaultTestimonials;
 
   // Handle automatic slider
   useEffect(() => {
@@ -44,10 +78,6 @@ export default function AnimatedTestimonials() {
     return () => clearInterval(interval);
   }, [testimonials, isPaused]);
 
-  if (!testimonials.length) {
-    return null;
-  }
-
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }).map((_, index) => (
       <Star
@@ -57,6 +87,22 @@ export default function AnimatedTestimonials() {
         }`}
       />
     ));
+  };
+  
+  // Animation variants for benefits list
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { opacity: 0, x: -10 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
   };
 
   return (
@@ -198,44 +244,123 @@ export default function AnimatedTestimonials() {
           </div>
           
           {/* Stats and CTA Column */}
-          <div className="md:col-span-5">
+          <div className="md:col-span-5" ref={sectionRef}>
             <motion.div
               initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
+              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700"
+              className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden"
             >
-              <h3 className="text-2xl font-bold mb-6">Join Our Success Stories</h3>
+              {/* Decorative elements */}
+              <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-blue-100/30 dark:bg-blue-900/10 rounded-full blur-3xl"></div>
               
-              <div className="grid grid-cols-2 gap-6 mb-8">
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                  <div className="text-3xl font-bold text-primary dark:text-primary/90">94%</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Placement Rate</div>
+              <div className="relative">
+                <h3 className="text-2xl font-bold mb-6 flex items-center">
+                  <span className="bg-primary/10 text-primary w-10 h-10 rounded-full flex items-center justify-center mr-3">
+                    <CheckCircle className="h-5 w-5" />
+                  </span>
+                  Join Our Success Stories
+                </h3>
+                
+                <div className="grid grid-cols-2 gap-6 mb-8">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                    transition={{ duration: 0.3, delay: 0.3 }}
+                    className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow group"
+                  >
+                    <div className="flex items-center">
+                      <div className="w-2 h-10 bg-primary/20 rounded-full mr-3 group-hover:h-12 transition-all duration-300"></div>
+                      <div>
+                        <div className="text-3xl font-bold text-primary dark:text-primary/90">94%</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Placement Rate</div>
+                      </div>
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                    transition={{ duration: 0.3, delay: 0.4 }}
+                    className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow group"
+                  >
+                    <div className="flex items-center">
+                      <div className="w-2 h-10 bg-violet-400/20 rounded-full mr-3 group-hover:h-12 transition-all duration-300"></div>
+                      <div>
+                        <div className="text-3xl font-bold text-violet-500 dark:text-violet-400">+32%</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Salary Increase</div>
+                      </div>
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                    transition={{ duration: 0.3, delay: 0.5 }}
+                    className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow group"
+                  >
+                    <div className="flex items-center">
+                      <div className="w-2 h-10 bg-emerald-400/20 rounded-full mr-3 group-hover:h-12 transition-all duration-300"></div>
+                      <div>
+                        <div className="text-3xl font-bold text-emerald-500 dark:text-emerald-400">14K+</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Happy Clients</div>
+                      </div>
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                    transition={{ duration: 0.3, delay: 0.6 }}
+                    className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow group"
+                  >
+                    <div className="flex items-center">
+                      <div className="w-2 h-10 bg-amber-400/20 rounded-full mr-3 group-hover:h-12 transition-all duration-300"></div>
+                      <div>
+                        <div className="text-3xl font-bold text-amber-500 dark:text-amber-400">4.8/5</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Client Rating</div>
+                      </div>
+                    </div>
+                  </motion.div>
                 </div>
                 
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                  <div className="text-3xl font-bold text-primary dark:text-primary/90">+32%</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Salary Increase</div>
-                </div>
+                <motion.div
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  className="mb-8"
+                >
+                  <h4 className="text-lg font-semibold mb-3">Why join our platform?</h4>
+                  <ul className="space-y-2">
+                    <motion.li variants={itemVariants} className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Access to exclusive job opportunities</span>
+                    </motion.li>
+                    <motion.li variants={itemVariants} className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Profile visibility to top employers</span>
+                    </motion.li>
+                    <motion.li variants={itemVariants} className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Career guidance and resources</span>
+                    </motion.li>
+                  </ul>
+                </motion.div>
                 
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                  <div className="text-3xl font-bold text-primary dark:text-primary/90">14K+</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Happy Clients</div>
-                </div>
-                
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                  <div className="text-3xl font-bold text-primary dark:text-primary/90">4.8/5</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Client Rating</div>
-                </div>
+                <Link href="/job-seeker-register">
+                  <Button 
+                    className="w-full bg-primary hover:bg-primary/90 group relative overflow-hidden"
+                    size="lg"
+                  >
+                    <span className="relative z-10 flex items-center justify-center">
+                      Start Your Success Story
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                  </Button>
+                </Link>
               </div>
-              
-              <Button 
-                className="w-full bg-primary hover:bg-primary/90 group mt-2"
-                size="lg"
-              >
-                Start Your Success Story
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Button>
             </motion.div>
           </div>
         </div>
