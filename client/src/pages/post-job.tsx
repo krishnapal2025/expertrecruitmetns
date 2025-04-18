@@ -32,8 +32,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { Briefcase, Building, Clock, DollarSign, MapPin, Save } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiRequest } from "@/lib/queryClient";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -370,7 +375,6 @@ export default function PostJobPage() {
           </Alert>
         ) : (
           <>
-            {/* Form type selection */}
             <Tabs defaultValue="notification" className="w-full" onValueChange={(value) => setFormType(value as "full" | "notification")}>
               <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="notification">Quick Job Notification</TabsTrigger>
@@ -624,99 +628,97 @@ export default function PostJobPage() {
                     Preview
                   </Button>
                 </div>
-              </TabsContent>
-            </Tabs>
-            
-            {formType === "full" && isPreview ? (
-              // Job Preview
-              <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-2xl font-bold">{formValues.title}</CardTitle>
-                        <div className="flex items-center mt-2">
-                          <Building className="h-4 w-4 mr-1 text-gray-500" />
-                          <span className="text-gray-600">{formValues.company}</span>
+                
+                {isPreview ? (
+                  // Job Preview
+                  <div className="space-y-6">
+                    <Card>
+                      <CardHeader>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <CardTitle className="text-2xl font-bold">{formValues.title}</CardTitle>
+                            <div className="flex items-center mt-2">
+                              <Building className="h-4 w-4 mr-1 text-gray-500" />
+                              <span className="text-gray-600">{formValues.company}</span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <span className="inline-flex items-center bg-primary/10 text-primary rounded-full px-3 py-1 text-sm font-medium">
+                              {formValues.jobType}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <span className="inline-flex items-center bg-primary/10 text-primary rounded-full px-3 py-1 text-sm font-medium">
-                          {formValues.jobType}
-                        </span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                      <div className="flex items-center">
-                        <MapPin className="h-4 w-4 mr-1" />
-                        {formValues.location}
-                      </div>
-                      <div className="flex items-center">
-                        <Briefcase className="h-4 w-4 mr-1" />
-                        {formValues.category}
-                      </div>
-                      <div className="flex items-center">
-                        <Clock className="h-4 w-4 mr-1" />
-                        {formValues.experience}
-                      </div>
-                      <div className="flex items-center">
-                        <DollarSign className="h-4 w-4 mr-1" />
-                        {getCurrencySymbol(formValues.location)}{formValues.minSalary.toLocaleString()} - {getCurrencySymbol(formValues.location)}{formValues.maxSalary.toLocaleString()} per year
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">Job Description</h3>
-                      <p className="whitespace-pre-line">{formValues.description}</p>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">Requirements</h3>
-                      <p className="whitespace-pre-line">{formValues.requirements}</p>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">Benefits</h3>
-                      <p className="whitespace-pre-line">{formValues.benefits}</p>
-                    </div>
-                    
-                    <div className="rounded-lg bg-gray-50 p-4 border">
-                      <div className="font-medium mb-2">Application Information</div>
-                      <div className="text-sm">
-                        <p>
-                          <span className="font-medium">Deadline:</span> {new Date(formValues.applicationDeadline).toLocaleDateString()}
-                        </p>
-                        <p>
-                          <span className="font-medium">Contact:</span> {formValues.contactEmail}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button 
-                      className="w-full" 
-                      onClick={() => onSubmit(form.getValues())}
-                      disabled={createJobMutation.isPending}
-                    >
-                      {createJobMutation.isPending ? "Posting..." : "Post Job Now"}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </div>
-            ) : formType === "full" && !isPreview ? (
-              // Job Post Form
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Job Details</CardTitle>
-                      <CardDescription>
-                        Enter the basic information about the job position
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                          <div className="flex items-center">
+                            <MapPin className="h-4 w-4 mr-1" />
+                            {formValues.location}
+                          </div>
+                          <div className="flex items-center">
+                            <Briefcase className="h-4 w-4 mr-1" />
+                            {formValues.category}
+                          </div>
+                          <div className="flex items-center">
+                            <Clock className="h-4 w-4 mr-1" />
+                            {formValues.experience}
+                          </div>
+                          <div className="flex items-center">
+                            <DollarSign className="h-4 w-4 mr-1" />
+                            {getCurrencySymbol(formValues.location)}{formValues.minSalary.toLocaleString()} - {getCurrencySymbol(formValues.location)}{formValues.maxSalary.toLocaleString()} per year
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2">Job Description</h3>
+                          <p className="whitespace-pre-line">{formValues.description}</p>
+                        </div>
+                        
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2">Requirements</h3>
+                          <p className="whitespace-pre-line">{formValues.requirements}</p>
+                        </div>
+                        
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2">Benefits</h3>
+                          <p className="whitespace-pre-line">{formValues.benefits}</p>
+                        </div>
+                        
+                        <div className="rounded-lg bg-gray-50 p-4 border">
+                          <div className="font-medium mb-2">Application Information</div>
+                          <div className="text-sm">
+                            <p>
+                              <span className="font-medium">Deadline:</span> {new Date(formValues.applicationDeadline).toLocaleDateString()}
+                            </p>
+                            <p>
+                              <span className="font-medium">Contact:</span> {formValues.contactEmail}
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <Button 
+                          className="w-full" 
+                          onClick={() => onSubmit(form.getValues())}
+                          disabled={createJobMutation.isPending}
+                        >
+                          {createJobMutation.isPending ? "Posting..." : "Post Job Now"}
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </div>
+                ) : (
+                  // Job Post Form
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>Job Details</CardTitle>
+                          <CardDescription>
+                            Enter the basic information about the job position
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
                       <FormField
                         control={form.control}
                         name="title"
