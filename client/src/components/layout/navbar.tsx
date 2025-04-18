@@ -171,7 +171,20 @@ export default function Navbar() {
                         </Link>
                         <Link href="/post-job">
                           <DropdownMenuItem>
-                            <Briefcase className="mr-2 h-4 w-4" />
+                            <svg
+                              className="mr-2 h-4 w-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 4v16m8-8H4"
+                              />
+                            </svg>
                             <span>Post New Job</span>
                           </DropdownMenuItem>
                         </Link>
@@ -300,18 +313,31 @@ export default function Navbar() {
                         {currentUser.user.userType === "employer" && (
                           <>
                             <SheetClose asChild>
-                              <Link href="/my-jobs">
-                                <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
-                                  <Briefcase className="mr-2 h-4 w-4" />
-                                  Posted Jobs
+                              <Link href="/post-job">
+                                <div className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer">
+                                  <svg
+                                    className="mr-2 h-4 w-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M12 4v16m8-8H4"
+                                    />
+                                  </svg>
+                                  Post New Job
                                 </div>
                               </Link>
                             </SheetClose>
                             <SheetClose asChild>
-                              <Link href="/post-job">
+                              <Link href="/my-jobs">
                                 <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
                                   <Briefcase className="mr-2 h-4 w-4" />
-                                  Post New Job
+                                  Posted Jobs
                                 </div>
                               </Link>
                             </SheetClose>
