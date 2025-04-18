@@ -138,8 +138,24 @@ export default function JobBoardPage() {
               className="pl-10 py-6 text-gray-900 border-0 rounded-md shadow-lg"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setFilters({
+                    ...filters,
+                    keyword: searchTerm.trim() || undefined
+                  });
+                }
+              }}
             />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Search 
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer" 
+              onClick={() => {
+                setFilters({
+                  ...filters,
+                  keyword: searchTerm.trim() || undefined
+                });
+              }}
+            />
           </div>
         </div>
       </div>

@@ -97,14 +97,23 @@ const locations = [
   "Miami, FL",
   "Denver, CO",
   "Washington, DC",
-  // International
+  // UAE
+  "Dubai, UAE",
+  "Abu Dhabi, UAE",
+  // India
+  "Mumbai, India",
+  "Delhi, India",
+  "Bangalore, India",
+  "Hyderabad, India",
+  "Chennai, India",
+  "Pune, India",
+  // Other International
   "London, UK",
   "Toronto, Canada",
   "Sydney, Australia",
   "Paris, France",
   "Munich, Germany",
   "Dublin, Ireland",
-  "Dubai, UAE",
   // Remote
   "Remote",
   "All Locations"
@@ -142,12 +151,37 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
   const [keyword, setKeyword] = useState("");
   const [displaySalary, setDisplaySalary] = useState<string>("$0 - $200,000+");
   
-  // Format salary for display
-  const formatSalary = (value: number): string => {
-    if (value >= 1000) {
-      return `$${Math.floor(value/1000)}k`;
+  // Get currency symbol based on selected location
+  const getCurrencySymbol = (): string => {
+    if (selectedLocation.includes("India")) {
+      return "₹"; // Indian Rupee
+    } else if (selectedLocation.includes("UAE")) {
+      return "AED "; // UAE Dirham
+    } else if (selectedLocation.includes("UK")) {
+      return "£"; // British Pound
+    } else if (selectedLocation.includes("Europe") || selectedLocation.includes("France") || selectedLocation.includes("Germany")) {
+      return "€"; // Euro
+    } else if (selectedLocation.includes("Canada")) {
+      return "C$"; // Canadian Dollar
+    } else if (selectedLocation.includes("Australia")) {
+      return "A$"; // Australian Dollar
+    } else {
+      return "$"; // Default to US Dollar
     }
-    return `$${value}`;
+  };
+  
+  // Format salary for display with appropriate currency
+  const formatSalary = (value: number): string => {
+    const currencySymbol = getCurrencySymbol();
+    const isUAE = selectedLocation.includes("UAE");
+    
+    if (isUAE) {
+      // For UAE, we don't abbreviate with 'k'
+      return `${currencySymbol}${value.toLocaleString()}`;
+    } else if (value >= 1000) {
+      return `${currencySymbol}${Math.floor(value/1000)}k`;
+    }
+    return `${currencySymbol}${value}`;
   };
   
   // Update displayed salary when slider changes
@@ -157,9 +191,15 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
     
     // Format for display
     let displayText = "";
+    const currencySymbol = getCurrencySymbol();
+    const isUAE = selectedLocation.includes("UAE");
     
     if (max >= 200000) {
-      displayText = `${formatSalary(min)} - $200,000+`;
+      if (isUAE) {
+        displayText = `${formatSalary(min)} - ${currencySymbol}200,000+`;
+      } else {
+        displayText = `${formatSalary(min)} - ${currencySymbol}200,000+`;
+      }
     } else {
       displayText = `${formatSalary(min)} - ${formatSalary(max)}`;
     }
@@ -207,26 +247,14 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
     // applyFilters();
   }, [selectedCategory, selectedLocation, selectedJobType, selectedSpecialization, selectedExperience, salaryRange]);
   
+  // Update salary display when location changes
+  useEffect(() => {
+    // Update the display format with the new currency when location changes
+    handleSalaryChange(salaryRange);
+  }, [selectedLocation]);
+  
   return (
-    <>
-      {/* Keyword search */}
-      <div className="mb-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search for job title, skills, or company..."
-            className="pl-10 pr-4"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                applyFilters();
-              }
-            }}
-          />
-        </div>
-      </div>
-      
+    <>      
       {/* Mobile filter toggle */}
       <div className="md:hidden mb-4">
         <Button 
@@ -308,12 +336,6 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
       </div>
     
       <Card className={`${showFilters ? 'block' : 'hidden'} md:block transition-all duration-300 ease-in-out`}>
-        <CardHeader className="pb-3 border-b">
-          <CardTitle className="text-lg font-bold flex items-center">
-            <Filter className="mr-2 h-5 w-5" />
-            Refine Search
-          </CardTitle>
-        </CardHeader>
         <CardContent className="space-y-6 pt-5">
           {/* Job Categories */}
           <div>
@@ -445,11 +467,11 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
                 className="mb-6"
               />
               <div className="flex justify-between text-sm text-gray-500">
-                <span>$0</span>
-                <span>$50k</span>
-                <span>$100k</span>
-                <span>$150k</span>
-                <span>$200k+</span>
+                <span>{getCurrencySymbol()}0</span>
+                <span>{getCurrencySymbol()}{selectedLocation.includes("UAE") ? "50,000" : "50k"}</span>
+                <span>{getCurrencySymbol()}{selectedLocation.includes("UAE") ? "100,000" : "100k"}</span>
+                <span>{getCurrencySymbol()}{selectedLocation.includes("UAE") ? "150,000" : "150k"}</span>
+                <span>{getCurrencySymbol()}{selectedLocation.includes("UAE") ? "200,000+" : "200k+"}</span>
               </div>
             </div>
           </div>
