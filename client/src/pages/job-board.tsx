@@ -26,7 +26,7 @@ export default function JobBoardPage() {
     keyword: undefined as string | undefined
   });
 
-  // Fetch all jobs
+  // Fetch all jobs - with frequent refetching to ensure newly posted jobs appear immediately
   const { data: jobs, isLoading, error } = useQuery<Job[]>({
     queryKey: ["/api/jobs", filters],
     queryFn: async () => {
@@ -45,7 +45,11 @@ export default function JobBoardPage() {
         throw new Error("Failed to fetch jobs");
       }
       return response.json();
-    }
+    },
+    // Refetch job data frequently to show new jobs immediately
+    refetchInterval: 2000, // Refetch every 2 seconds
+    refetchOnMount: true, 
+    refetchOnWindowFocus: true
   });
 
   // Update filtered jobs when search term or filters change

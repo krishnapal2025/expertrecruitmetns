@@ -213,16 +213,17 @@ export default function PostJobPage() {
       });
       return await res.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Job Posted Successfully",
-        description: "Your job has been posted and is now visible to job seekers.",
+        description: "Your job has been posted and is now visible in the Jobs Found section.",
       });
       
-      // Invalidate the jobs query to refresh job listings
+      // Invalidate all queries related to jobs to ensure immediate visibility
       queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/realtime/jobs"] });
       
-      // Redirect to jobs page
+      // Immediately redirect to job board to see the newly posted job
       setLocation("/job-board");
     },
     onError: (error: Error) => {
