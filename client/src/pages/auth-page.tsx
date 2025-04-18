@@ -20,10 +20,19 @@ import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, BriefcaseIcon, UserIcon } from "lucide-react";
 
+// Country list with their calling codes
 const countries = [
-  "United States", "United Kingdom", "Canada", "Australia", 
-  "Germany", "France", "Japan", "China", "India", "Brazil",
-  "United Arab Emirates"
+  { name: "United States", code: "+1" },
+  { name: "United Kingdom", code: "+44" },
+  { name: "Canada", code: "+1" },
+  { name: "Australia", code: "+61" },
+  { name: "Germany", code: "+49" },
+  { name: "France", code: "+33" },
+  { name: "Japan", code: "+81" },
+  { name: "China", code: "+86" },
+  { name: "India", code: "+91" },
+  { name: "Brazil", code: "+55" },
+  { name: "United Arab Emirates", code: "+971" }
 ];
 
 const industries = [
@@ -107,6 +116,28 @@ export default function AuthPage() {
       userType: "employer"
     }
   });
+  
+  // Track selected country to update phone number field
+  const [selectedCountryCode, setSelectedCountryCode] = useState<string>("");
+  
+  // Watch the country field to update the phone prefix
+  const selectedCountry = employerForm.watch("country");
+  
+  // Update country code when country changes
+  useEffect(() => {
+    if (selectedCountry) {
+      const countryData = countries.find(c => c.name === selectedCountry);
+      if (countryData) {
+        setSelectedCountryCode(countryData.code);
+        
+        // Update phone number field if it's empty or only contains a previous country code
+        const currentPhone = employerForm.getValues("phoneNumber");
+        if (!currentPhone || currentPhone.match(/^\+\d+\s*$/)) {
+          employerForm.setValue("phoneNumber", countryData.code + " ");
+        }
+      }
+    }
+  }, [selectedCountry, employerForm]);
   
   // Handle login submission
   const onLoginSubmit = (data: LoginCredentials) => {
