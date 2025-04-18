@@ -158,34 +158,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only employers can post jobs" });
       }
       
+      // Validate job data
+      const validatedData = insertJobSchema.parse(req.body);
+      
       // Get employer profile
       const employer = await storage.getEmployerByUserId(user.id);
       if (!employer) {
         return res.status(404).json({ message: "Employer profile not found" });
       }
       
-      // Set default values for any missing fields
-      const jobData = {
-        employerId: employer.id,
-        title: req.body.title || "Untitled Job",
-        company: req.body.company || employer.companyName || "Company Name",
-        description: req.body.description || "No description provided",
-        requirements: req.body.requirements || "No requirements specified",
-        benefits: req.body.benefits || "No benefits specified",
-        category: req.body.category || "Other",
-        location: req.body.location || "Location not specified",
-        jobType: req.body.jobType || "Full-time",
-        specialization: req.body.specialization || null,
-        experience: req.body.experience || "Not specified",
-        minSalary: req.body.minSalary || 0,
-        maxSalary: req.body.maxSalary || 0,
-        contactEmail: req.body.contactEmail || user.email,
-        applicationDeadline: req.body.applicationDeadline ? new Date(req.body.applicationDeadline) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
-        salary: req.body.salary || null
-      };
-      
       // Create the job
-      const job = await storage.createJob(jobData);
+      const job = await storage.createJob({
+        ...validatedData,
+        employerId: employer.id
+      });
       
       // Update real-time store and create notifications for job seekers
       realtimeStore.lastJobId = Math.max(realtimeStore.lastJobId, job.id);
