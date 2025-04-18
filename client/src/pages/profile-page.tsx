@@ -430,12 +430,82 @@ export default function ProfilePage() {
                   name="bio"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Professional Bio</FormLabel>
+                      <FormLabel>Professional Summary</FormLabel>
                       <FormControl>
-                        <Textarea
-                          placeholder="I am a software engineer with experience in..."
-                          className="min-h-[120px]"
-                          {...field}
+                        <Textarea 
+                          placeholder="Write about your background, skills, and career goals" 
+                          className="resize-none h-32"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div>
+                  <FormLabel>Skills</FormLabel>
+                  <FormDescription className="mb-2">
+                    Select skills that best represent your expertise
+                  </FormDescription>
+                  
+                  <div className="mb-4">
+                    <Input
+                      placeholder="Search skills..."
+                      value={skillsFilter}
+                      onChange={(e) => setSkillsFilter(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="border rounded-md p-3 space-y-3">
+                    {selectedSkills.length > 0 && (
+                      <div className="flex flex-wrap gap-2 pb-3 border-b">
+                        {selectedSkills.map((skill) => (
+                          <Badge key={skill} variant="outline" className="flex items-center gap-1">
+                            {skill}
+                            <button 
+                              type="button" 
+                              onClick={() => handleSkillToggle(skill)}
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              ×
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                    
+                    <div className="flex flex-col space-y-2 max-h-60 overflow-y-auto">
+                      {getFilteredSkills().map((skill) => (
+                        <div key={skill} className="flex items-center space-x-2">
+                          <Checkbox 
+                            id={`skill-${skill}`}
+                            checked={selectedSkills.includes(skill)}
+                            onCheckedChange={() => handleSkillToggle(skill)}
+                          />
+                          <label 
+                            htmlFor={`skill-${skill}`}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                          >
+                            {skill}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <FormField
+                  control={jobSeekerForm.control}
+                  name="experience"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Work Experience</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Describe your work experience, starting with the most recent position" 
+                          className="resize-none h-32"
+                          {...field} 
                         />
                       </FormControl>
                       <FormMessage />
@@ -445,114 +515,21 @@ export default function ProfilePage() {
 
                 <FormField
                   control={jobSeekerForm.control}
-                  name="skills"
+                  name="education"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Skills</FormLabel>
-                      <div className="space-y-4">
-                        {/* Selected skills badges */}
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {selectedSkills.map((skill) => (
-                            <Badge key={skill} className="flex items-center gap-1 px-3 py-1">
-                              {skill}
-                              <button 
-                                type="button"
-                                className="text-xs bg-primary-foreground rounded-full w-4 h-4 flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground"
-                                onClick={() => handleSkillToggle(skill)}
-                              >
-                                ×
-                              </button>
-                            </Badge>
-                          ))}
-                          {selectedSkills.length === 0 && (
-                            <p className="text-sm text-muted-foreground">No skills selected</p>
-                          )}
-                        </div>
-                        
-                        <Select
-                          onValueChange={(value) => {
-                            if (!selectedSkills.includes(value)) {
-                              handleSkillToggle(value);
-                            }
-                          }}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a skill to add" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="max-h-[300px]">
-                            <Input
-                              placeholder="Search skills..."
-                              value={skillsFilter}
-                              onChange={(e) => setSkillsFilter(e.target.value)}
-                              className="mb-2 mx-1"
-                            />
-                            {getFilteredSkills().map((skill) => (
-                              <SelectItem 
-                                key={skill} 
-                                value={skill}
-                                disabled={selectedSkills.includes(skill)}
-                              >
-                                {skill}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        
-                        {/* Hidden input to store the actual value */}
-                        <input type="hidden" {...field} />
-                      </div>
-                      <FormDescription>
-                        Select skills from the dropdown menu
-                      </FormDescription>
+                      <FormLabel>Education</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="List your educational background, degrees, certifications, etc." 
+                          className="resize-none h-32"
+                          {...field} 
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
-                <div className="grid gap-6 md:grid-cols-2">
-                  <FormField
-                    control={jobSeekerForm.control}
-                    name="experience"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Experience</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Company Name: Position (Year - Year)"
-                            className="min-h-[120px]"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          List your work experience
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={jobSeekerForm.control}
-                    name="education"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Education</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="University Name: Degree (Year - Year)"
-                            className="min-h-[120px]"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          List your educational background
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
 
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? (
@@ -565,84 +542,149 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle>Employer Profile</CardTitle>
-            <CardDescription>
-              Update your company profile to attract the best talent
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...employerForm}>
-              <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-6">
-                <FormField
-                  control={employerForm.control}
-                  name="companyName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Company Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Acme Corporation" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid gap-6 md:grid-cols-2">
+        <div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Employer Profile</CardTitle>
+              <CardDescription>
+                Update your company profile to attract the best talent
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...employerForm}>
+                <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-6">
                   <FormField
                     control={employerForm.control}
-                    name="industry"
+                    name="companyName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Industry</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormLabel>Company Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Acme Corporation" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={employerForm.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Company Description</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Write a brief description about your company" 
+                            className="resize-none h-20"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <FormField
+                      control={employerForm.control}
+                      name="industry"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Industry</FormLabel>
+                          <Select 
+                            onValueChange={field.onChange} 
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select industry" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {industries.map((industry) => (
+                                <SelectItem key={industry} value={industry}>
+                                  {industry}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={employerForm.control}
+                      name="companyType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Company Type</FormLabel>
+                          <Select 
+                            onValueChange={field.onChange} 
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select company type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Public">Public</SelectItem>
+                              <SelectItem value="Private">Private</SelectItem>
+                              <SelectItem value="Startup">Startup</SelectItem>
+                              <SelectItem value="Non-profit">Non-profit</SelectItem>
+                              <SelectItem value="Government">Government</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <FormField
+                      control={employerForm.control}
+                      name="country"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Country</FormLabel>
+                          <Select 
+                            onValueChange={field.onChange} 
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select country" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {countries.map((country) => (
+                                <SelectItem key={country} value={country}>
+                                  {country}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={employerForm.control}
+                      name="phoneNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone Number</FormLabel>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select industry" />
-                            </SelectTrigger>
+                            <Input placeholder="+1 (555) 123-4567" {...field} />
                           </FormControl>
-                          <SelectContent>
-                            {industries.map((industry) => (
-                              <SelectItem key={industry} value={industry}>
-                                {industry}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={employerForm.control}
-                    name="companyType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Company Type</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Corporation, LLC, etc." {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid gap-6 md:grid-cols-2">
-                  <FormField
-                    control={employerForm.control}
-                    name="phoneNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Contact Phone</FormLabel>
-                        <FormControl>
-                          <Input placeholder="+1 (555) 000-0000" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
                   <FormField
                     control={employerForm.control}
                     name="website"
@@ -656,115 +698,71 @@ export default function ProfilePage() {
                       </FormItem>
                     )}
                   />
+
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <FormField
+                      control={employerForm.control}
+                      name="employeeCount"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Number of Employees</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. 50-100" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={employerForm.control}
+                      name="foundedYear"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Founded Year</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. 2010" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    ) : null}
+                    Save Company Profile
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle>Post a New Job</CardTitle>
+              <CardDescription>Create a job listing to find the right talent</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-gray-50 p-8 rounded-lg border border-gray-200">
+                <div className="flex flex-col items-center text-center">
+                  <Briefcase className="h-16 w-16 text-primary mb-4" />
+                  <h3 className="text-xl font-medium mb-2">Create a Job Listing</h3>
+                  <p className="text-gray-500 mb-6 max-w-lg">
+                    Post a new job opportunity to find qualified candidates for your company. You can specify job requirements, 
+                    responsibilities, qualifications, and other details to attract the right talent.
+                  </p>
+                  <Button asChild size="lg">
+                    <Link href="/post-job">
+                      Post New Job
+                    </Link>
+                  </Button>
                 </div>
-
-                <FormField
-                  control={employerForm.control}
-                  name="country"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Country</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select country" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {countries.map((country) => (
-                            <SelectItem key={country} value={country}>
-                              {country}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={employerForm.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Company Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="We are a leading company in..."
-                          className="min-h-[120px]"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid gap-6 md:grid-cols-2">
-                  <FormField
-                    control={employerForm.control}
-                    name="employeeCount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Number of Employees</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g. 50-100" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={employerForm.control}
-                    name="foundedYear"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Founded Year</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g. 2010" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  ) : null}
-                  Save Company Profile
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-
-        /* Post Job Section Below Profile */
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Post a New Job</CardTitle>
-            <CardDescription>Create a job listing to find the right talent</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-gray-50 p-8 rounded-lg border border-gray-200">
-              <div className="flex flex-col items-center text-center">
-                <Briefcase className="h-16 w-16 text-primary mb-4" />
-                <h3 className="text-xl font-medium mb-2">Create a Job Listing</h3>
-                <p className="text-gray-500 mb-6 max-w-lg">
-                  Post a new job opportunity to find qualified candidates for your company. You can specify job requirements, 
-                  responsibilities, qualifications, and other details to attract the right talent.
-                </p>
-                <Button asChild size="lg">
-                  <Link href="/post-job">
-                    Post New Job
-                  </Link>
-                </Button>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   );
