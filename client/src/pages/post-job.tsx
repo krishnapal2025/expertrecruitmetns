@@ -38,7 +38,7 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InsertJob } from "@shared/schema";
 
-// Form schema for job posting
+// Form schema for job posting (Full version)
 const jobPostSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
   company: z.string().min(2, "Company name is required"),
@@ -56,7 +56,22 @@ const jobPostSchema = z.object({
   contactEmail: z.string().email("Must be a valid email address"),
 });
 
+// Form schema for simple job notification
+const jobNotificationSchema = z.object({
+  title: z.string().min(5, "Title must be at least 5 characters"),
+  company: z.string().min(2, "Company name is required"),
+  location: z.string().min(2, "Location is required"),
+  jobType: z.string().min(2, "Job type is required"),
+  specialization: z.string().optional(),
+  experience: z.string().min(2, "Experience level is required"),
+  minSalary: z.coerce.number().min(0, "Minimum salary is required"),
+  maxSalary: z.coerce.number().min(0, "Maximum salary is required"),
+  applicationDeadline: z.string().min(1, "Application deadline is required"),
+  contactEmail: z.string().email("Must be a valid email address"),
+});
+
 type JobPostFormValues = z.infer<typeof jobPostSchema>;
+type JobNotificationFormValues = z.infer<typeof jobNotificationSchema>;
 
 // Job categories
 const categories = [
@@ -174,9 +189,10 @@ export default function PostJobPage() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isPreview, setIsPreview] = useState(false);
+  const [formType, setFormType] = useState<"full" | "notification">("full");
   const queryClient = useQueryClient();
   
-  // Set up form with validation
+  // Set up full job form with validation
   const form = useForm<JobPostFormValues>({
     resolver: zodResolver(jobPostSchema),
     defaultValues: {
@@ -198,10 +214,28 @@ export default function PostJobPage() {
     },
   });
   
+  // Set up job notification form with validation
+  const notificationForm = useForm<JobNotificationFormValues>({
+    resolver: zodResolver(jobNotificationSchema),
+    defaultValues: {
+      title: "",
+      company: currentUser?.user.userType === "employer" ? 
+        (currentUser?.profile as any).companyName || "" : "",
+      location: "",
+      jobType: "",
+      specialization: "",
+      experience: "",
+      minSalary: 0,
+      maxSalary: 0,
+      applicationDeadline: new Date().toISOString().split('T')[0],
+      contactEmail: currentUser?.user.email || "",
+    },
+  });
+  
   // Watch form values for preview
   const formValues = form.watch();
   
-  // Create job mutation
+  // Create job mutation (full job form)
   const createJobMutation = useMutation({
     mutationFn: async (data: JobPostFormValues) => {
       const res = await apiRequest("POST", "/api/jobs", {
@@ -219,8 +253,8 @@ export default function PostJobPage() {
       // Invalidate the jobs query to refresh job listings
       queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
       
-      // Redirect to jobs page
-      setLocation("/job-board");
+      // Redirect to job management page
+      setLocation("/my-jobs");
     },
     onError: (error: Error) => {
       toast({
@@ -231,9 +265,62 @@ export default function PostJobPage() {
     },
   });
   
-  // Handle form submission
+  // Create job notification mutation (simplified job form)
+  const createJobNotificationMutation = useMutation({
+    mutationFn: async (data: JobNotificationFormValues) => {
+      // Add default values for the required fields that are not in the notification form
+      const fullJobData: JobPostFormValues = {
+        ...data,
+        category: data.specialization ? (
+          specializations.indexOf(data.specialization) >= 9 && specializations.indexOf(data.specialization) < 15 ? "Finance" : 
+          specializations.indexOf(data.specialization) >= 15 && specializations.indexOf(data.specialization) < 20 ? "Healthcare" : 
+          specializations.indexOf(data.specialization) >= 20 && specializations.indexOf(data.specialization) < 25 ? "Marketing" : 
+          specializations.indexOf(data.specialization) >= 25 && specializations.indexOf(data.specialization) < 29 ? "Engineering" : 
+          specializations.indexOf(data.specialization) >= 30 && specializations.indexOf(data.specialization) < 33 ? "Education" : "Technology"
+        ) : "Technology",
+        description: `We are looking for a ${data.title} at ${data.company}. This is a ${data.jobType} position.`,
+        requirements: `Experience level: ${data.experience}`,
+        benefits: "Competitive salary and benefits package.",
+      };
+      
+      const res = await apiRequest("POST", "/api/jobs", {
+        ...fullJobData,
+        employerId: currentUser?.profile.id,
+      });
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Job Notification Posted",
+        description: "Your job notification has been posted successfully.",
+      });
+      
+      // Invalidate the jobs query to refresh job listings
+      queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+      
+      // Reset the form
+      notificationForm.reset();
+      
+      // Redirect to job management page
+      setLocation("/my-jobs");
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to Post Job Notification",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // Handle full form submission
   const onSubmit = (data: JobPostFormValues) => {
     createJobMutation.mutate(data);
+  };
+  
+  // Handle notification form submission
+  const onSubmitNotification = (data: JobNotificationFormValues) => {
+    createJobNotificationMutation.mutate(data);
   };
   
   // Get currency symbol based on selected location
@@ -282,23 +369,35 @@ export default function PostJobPage() {
           </Alert>
         ) : (
           <>
-            {/* Toggle between form and preview */}
+            {/* Form type selection */}
             <div className="flex mb-6 border-b pb-4">
-              <Button
-                variant={isPreview ? "outline" : "default"}
-                className="mr-2"
-                onClick={() => setIsPreview(false)}
-              >
-                Edit Job
-              </Button>
-              <Button
-                variant={isPreview ? "default" : "outline"}
-                onClick={() => setIsPreview(true)}
-                disabled={!form.formState.isValid}
-              >
-                Preview
-              </Button>
+              <Tabs defaultValue="notification" className="w-full" onValueChange={(value) => setFormType(value as "full" | "notification")}>
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="notification">Quick Job Notification</TabsTrigger>
+                  <TabsTrigger value="full">Detailed Job Posting</TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
+            
+            {/* Toggle between form and preview for detailed job */}
+            {formType === "full" && (
+              <div className="flex mb-6 border-b pb-4">
+                <Button
+                  variant={isPreview ? "outline" : "default"}
+                  className="mr-2"
+                  onClick={() => setIsPreview(false)}
+                >
+                  Edit Job
+                </Button>
+                <Button
+                  variant={isPreview ? "default" : "outline"}
+                  onClick={() => setIsPreview(true)}
+                  disabled={!form.formState.isValid}
+                >
+                  Preview
+                </Button>
+              </div>
+            )}
             
             {isPreview ? (
               // Job Preview
