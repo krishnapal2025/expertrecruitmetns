@@ -132,38 +132,11 @@ export default function AuthPage() {
       companyName: "",
       industry: "",
       companyType: "",
-      phoneNumber: "",
       country: "",
       website: "",
       userType: "employer"
     }
   });
-  
-  // Track selected country for employer to update phone number field
-  const [selectedEmployerCountryCode, setSelectedEmployerCountryCode] = useState<string>("");
-  
-  // Watch the employer country field to update the phone prefix
-  const selectedEmployerCountry = employerForm.watch("country");
-  
-  // Update employer country code when country changes
-  useEffect(() => {
-    if (selectedEmployerCountry) {
-      const countryData = countries.find(c => c.name === selectedEmployerCountry);
-      if (countryData) {
-        // Set the country code
-        setSelectedEmployerCountryCode(countryData.code);
-        
-        // Always completely reset the phone number field with just the country code
-        // This ensures old input is overwritten completely when country changes
-        // Use all flags to ensure proper form state updates
-        employerForm.setValue("phoneNumber", countryData.code + " ", { 
-          shouldValidate: true,
-          shouldDirty: true,
-          shouldTouch: true
-        });
-      }
-    }
-  }, [selectedEmployerCountry, employerForm]);
   
   // Handle login submission
   const onLoginSubmit = (data: LoginCredentials) => {
@@ -635,49 +608,7 @@ export default function AuthPage() {
                                   )}
                                 />
                                 
-                                <FormField
-                                  control={employerForm.control}
-                                  name="phoneNumber"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Phone Number</FormLabel>
-                                      <FormControl>
-                                        <div className="flex">
-                                          <div className="bg-gray-100 px-3 py-2 border rounded-l-md text-gray-600">
-                                            {selectedEmployerCountryCode || "+"}
-                                          </div>
-                                          <Input 
-                                            className="rounded-l-none"
-                                            placeholder="Phone number"
-                                            // Strip out the country code prefix from display
-                                            value={field.value.replace(/^\+\d+\s*/, '')}
-                                            onChange={(e) => {
-                                              // Get the current country code
-                                              const countryCode = selectedEmployerCountryCode || "+";
-                                              
-                                              // Extract clean user input (remove any country code or leading spaces)
-                                              // This ensures we're not duplicating the country code
-                                              const userInput = e.target.value.replace(/^\+\d+\s*/, '').replace(/^\s+/, '');
-                                              
-                                              // Force a complete overwrite of the phone number field
-                                              // This approach ensures any old input is fully replaced
-                                              const newValue = countryCode + " " + userInput;
-                                              
-                                              // Use the form's setValue method to update the field
-                                              // Using shouldValidate, shouldDirty, and shouldTouch ensures form state is updated properly
-                                              employerForm.setValue("phoneNumber", newValue, {
-                                                shouldValidate: true,
-                                                shouldDirty: true,
-                                                shouldTouch: true
-                                              });
-                                            }}
-                                          />
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
+
                               </div>
                               
                               <FormField
