@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, BriefcaseIcon, UserIcon } from "lucide-react";
@@ -112,18 +112,9 @@ export default function AuthPage() {
       const countryData = countries.find(c => c.name === selectedJobSeekerCountry);
       if (countryData) {
         setSelectedJobSeekerCountryCode(countryData.code);
-        
-        // Only prefill the phone number if it's completely empty or if it doesn't include a country code
-        const currentPhone = jobSeekerForm.getValues("phoneNumber") || "";
-        
-        // Don't overwrite the entire field, just make the country code available in the placeholder
-        if (currentPhone.trim() === "") {
-          // We just set the code as a prefix that doesn't interfere with input
-          jobSeekerForm.setValue("phoneNumber", "", { shouldValidate: false });
-        }
       }
     }
-  }, [selectedJobSeekerCountry, jobSeekerForm]);
+  }, [selectedJobSeekerCountry]);
   
   // Employer registration form
   const employerForm = useForm<EmployerRegister>({
@@ -154,18 +145,9 @@ export default function AuthPage() {
       const countryData = countries.find(c => c.name === selectedEmployerCountry);
       if (countryData) {
         setSelectedEmployerCountryCode(countryData.code);
-        
-        // Only prefill the phone number if it's completely empty or if it doesn't include a country code
-        const currentPhone = employerForm.getValues("phoneNumber") || "";
-        
-        // Don't overwrite the entire field, just make the country code available in the placeholder
-        if (currentPhone.trim() === "") {
-          // We just set the code as a prefix that doesn't interfere with input
-          employerForm.setValue("phoneNumber", "", { shouldValidate: false });
-        }
       }
     }
-  }, [selectedEmployerCountry, employerForm]);
+  }, [selectedEmployerCountry]);
   
   // Handle login submission
   const onLoginSubmit = (data: LoginCredentials) => {
@@ -447,19 +429,18 @@ export default function AuthPage() {
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormLabel>Phone Number</FormLabel>
-                                      <div className="flex items-center">
-                                        {selectedJobSeekerCountryCode && (
-                                          <span className="mr-2 text-sm text-gray-500">
-                                            {selectedJobSeekerCountryCode}
-                                          </span>
-                                        )}
-                                        <FormControl className="flex-1">
-                                          <Input 
-                                            placeholder="Enter your phone number" 
-                                            {...field} 
-                                          />
-                                        </FormControl>
-                                      </div>
+                                      <FormControl>
+                                        <Input 
+                                          type="tel"
+                                          placeholder="Enter your phone number" 
+                                          {...field} 
+                                        />
+                                      </FormControl>
+                                      {selectedJobSeekerCountryCode && (
+                                        <FormDescription>
+                                          Include country code: {selectedJobSeekerCountryCode}
+                                        </FormDescription>
+                                      )}
                                       <FormMessage />
                                     </FormItem>
                                   )}
@@ -650,19 +631,18 @@ export default function AuthPage() {
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormLabel>Phone Number</FormLabel>
-                                      <div className="flex items-center">
-                                        {selectedEmployerCountryCode && (
-                                          <span className="mr-2 text-sm text-gray-500">
-                                            {selectedEmployerCountryCode}
-                                          </span>
-                                        )}
-                                        <FormControl className="flex-1">
-                                          <Input 
-                                            placeholder="Enter your phone number" 
-                                            {...field} 
-                                          />
-                                        </FormControl>
-                                      </div>
+                                      <FormControl>
+                                        <Input 
+                                          type="tel"
+                                          placeholder="Enter your phone number" 
+                                          {...field} 
+                                        />
+                                      </FormControl>
+                                      {selectedEmployerCountryCode && (
+                                        <FormDescription>
+                                          Include country code: {selectedEmployerCountryCode}
+                                        </FormDescription>
+                                      )}
                                       <FormMessage />
                                     </FormItem>
                                   )}
