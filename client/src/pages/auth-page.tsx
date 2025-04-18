@@ -152,7 +152,8 @@ export default function AuthPage() {
       if (countryData) {
         setSelectedEmployerCountryCode(countryData.code);
         
-        // Always update the phone number field with the country code
+        // Always completely reset the phone number field with just the country code
+        // This ensures old input is overwritten
         employerForm.setValue("phoneNumber", countryData.code + " ");
       }
     }
@@ -644,9 +645,11 @@ export default function AuthPage() {
                                             placeholder="Phone number"
                                             value={field.value.replace(/^\+\d+\s*/, '')}
                                             onChange={(e) => {
-                                              // Always keep the country code and update only the number part
+                                              // Always completely replace the phone number value
+                                              // This ensures it always overwrites the old input
                                               const countryCode = selectedEmployerCountryCode || "+";
-                                              field.onChange(countryCode + " " + e.target.value.replace(/^\s+/, ''));
+                                              const newPhoneValue = countryCode + " " + e.target.value.replace(/^\s+/, '').replace(/^\+\d+\s*/, '');
+                                              field.onChange(newPhoneValue);
                                             }}
                                           />
                                         </div>
