@@ -158,14 +158,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only employers can post jobs" });
       }
       
-      // Parse date string to Date object for application deadline
-      const jobData = {
-        ...req.body,
-        applicationDeadline: req.body.applicationDeadline ? new Date(req.body.applicationDeadline) : new Date()
-      };
-      
-      // Validate job data
-      const validatedData = insertJobSchema.parse(jobData);
+      // Validate job data - the schema will handle date conversion
+      const validatedData = insertJobSchema.parse(req.body);
       
       // Get employer profile
       const employer = await storage.getEmployerByUserId(user.id);

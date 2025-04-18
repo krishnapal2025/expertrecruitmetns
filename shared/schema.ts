@@ -96,19 +96,21 @@ export const insertEmployerSchema = createInsertSchema(employers).omit({
   id: true,
 });
 
-export const insertJobSchema = createInsertSchema(jobs).omit({
-  id: true,
-  postedDate: true,
-  isActive: true,
-  createdAt: true,
-  applicationCount: true,
-}).transform((data) => {
-  // Ensure applicationDeadline is a Date object
-  if (data.applicationDeadline && !(data.applicationDeadline instanceof Date)) {
-    data.applicationDeadline = new Date(data.applicationDeadline);
-  }
-  return data;
-});
+// Create a modified schema to handle string dates from the frontend
+export const insertJobSchema = createInsertSchema(jobs)
+  .omit({
+    id: true,
+    postedDate: true,
+    isActive: true,
+    createdAt: true,
+    applicationCount: true,
+  })
+  .extend({
+    // Override the applicationDeadline field to accept string
+    applicationDeadline: z.string()
+      .min(1, "Application deadline is required")
+      .transform((val) => new Date(val))
+  });
 
 export const insertApplicationSchema = createInsertSchema(applications).omit({
   id: true,
