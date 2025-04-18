@@ -383,16 +383,8 @@ export default function PostJobPage() {
                     <Button 
                       className="w-full" 
                       onClick={() => {
-                        if (form.formState.isValid) {
-                          onSubmit(form.getValues());
-                        } else {
-                          toast({
-                            title: "Form not complete",
-                            description: "Please fill out all required fields before submitting",
-                            variant: "destructive"
-                          });
-                          setIsPreview(false);
-                        }
+                        // Just submit the form with whatever values we have
+                        onSubmit(form.getValues());
                       }}
                       disabled={createJobMutation.isPending}
                     >
@@ -748,13 +740,12 @@ export default function PostJobPage() {
                     <Button 
                       type="button" 
                       onClick={() => setIsPreview(true)}
-                      disabled={!form.formState.isValid}
                     >
                       Preview
                     </Button>
                     <Button 
                       type="submit"
-                      disabled={!form.formState.isValid || createJobMutation.isPending}
+                      disabled={createJobMutation.isPending}
                     >
                       <Save className="mr-2 h-4 w-4" />
                       {createJobMutation.isPending ? "Posting..." : "Post Job"}
