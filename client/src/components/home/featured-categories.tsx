@@ -199,7 +199,7 @@ export default function FeaturedCategories() {
           variants={titleVariants}
           initial="hidden"
           animate="visible"
-          className="mb-20 text-center max-w-3xl mx-auto"
+          className="mb-10 text-center max-w-3xl mx-auto"
         >
           <div className="inline-block mb-4">
             <span className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 text-blue-700 dark:text-blue-300 px-5 py-2 rounded-full text-sm font-semibold shadow-sm">
@@ -216,6 +216,56 @@ export default function FeaturedCategories() {
             Browse through our extensive range of job categories to find your perfect role
             across different industries and specializations.
           </p>
+        </motion.div>
+        
+        {/* Banner Image with Call-to-Action */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative mb-16 rounded-2xl overflow-hidden shadow-2xl"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-indigo-600/90 mix-blend-multiply"></div>
+          <img 
+            src="https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?q=80&w=1920&auto=format&fit=crop" 
+            alt="Professionals collaborating" 
+            className="w-full h-80 object-cover object-center"
+          />
+          <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-6">
+            <div className="max-w-3xl">
+              <h3 className="text-white text-3xl md:text-4xl font-bold mb-4 drop-shadow-md">
+                Find Your Dream Career Path
+              </h3>
+              <p className="text-white/90 text-lg md:text-xl mb-6 max-w-2xl mx-auto">
+                Join thousands of professionals who have found their ideal job through our platform
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Link href="/job-board">
+                  <Button 
+                    size="lg" 
+                    className="bg-white hover:bg-white/90 text-primary hover:text-primary/90 border-0"
+                  >
+                    Browse All Jobs
+                  </Button>
+                </Link>
+                <Link href="/post-job">
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="border-white text-white hover:bg-white/10"
+                  >
+                    Post a Job
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+          
+          {/* Decorative Elements */}
+          <div className="absolute top-0 left-0 w-full h-8 bg-gradient-to-r from-blue-500/30 to-transparent"></div>
+          <div className="absolute bottom-0 right-0 w-full h-8 bg-gradient-to-l from-indigo-500/30 to-transparent"></div>
+          <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full border-4 border-white/20"></div>
+          <div className="absolute -top-4 -left-4 w-24 h-24 rounded-full border-4 border-white/20"></div>
         </motion.div>
 
         {/* Artistic featured categories */}
