@@ -449,15 +449,6 @@ export default function ProfilePage() {
                     <FormItem>
                       <FormLabel>Skills</FormLabel>
                       <div className="space-y-4">
-                        <FormControl>
-                          <Input
-                            placeholder="Filter skills..."
-                            value={skillsFilter}
-                            onChange={(e) => setSkillsFilter(e.target.value)}
-                            className="mb-2"
-                          />
-                        </FormControl>
-                        
                         {/* Selected skills badges */}
                         <div className="flex flex-wrap gap-2 mb-4">
                           {selectedSkills.map((skill) => (
@@ -477,31 +468,42 @@ export default function ProfilePage() {
                           )}
                         </div>
                         
-                        <div className="border rounded-md p-4 max-h-[200px] overflow-y-auto">
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        <Select
+                          onValueChange={(value) => {
+                            if (!selectedSkills.includes(value)) {
+                              handleSkillToggle(value);
+                            }
+                          }}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a skill to add" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="max-h-[300px]">
+                            <Input
+                              placeholder="Search skills..."
+                              value={skillsFilter}
+                              onChange={(e) => setSkillsFilter(e.target.value)}
+                              className="mb-2 mx-1"
+                            />
                             {getFilteredSkills().map((skill) => (
-                              <div key={skill} className="flex items-center space-x-2">
-                                <Checkbox 
-                                  id={`skill-${skill}`} 
-                                  checked={selectedSkills.includes(skill)}
-                                  onCheckedChange={() => handleSkillToggle(skill)}
-                                />
-                                <label
-                                  htmlFor={`skill-${skill}`}
-                                  className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                >
-                                  {skill}
-                                </label>
-                              </div>
+                              <SelectItem 
+                                key={skill} 
+                                value={skill}
+                                disabled={selectedSkills.includes(skill)}
+                              >
+                                {skill}
+                              </SelectItem>
                             ))}
-                          </div>
-                        </div>
+                          </SelectContent>
+                        </Select>
                         
-                        {/* Hidden textarea to store the actual value */}
+                        {/* Hidden input to store the actual value */}
                         <input type="hidden" {...field} />
                       </div>
                       <FormDescription>
-                        Select your skills from the list or type to search
+                        Select skills from the dropdown menu
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
