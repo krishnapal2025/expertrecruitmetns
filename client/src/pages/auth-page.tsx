@@ -11,6 +11,7 @@ import {
   type LoginCredentials 
 } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,7 @@ export default function AuthPage() {
     registerJobSeekerMutation, 
     registerEmployerMutation 
   } = useAuth();
+  const { toast } = useToast();
   
   // Redirect if already logged in
   useEffect(() => {
@@ -120,6 +122,21 @@ export default function AuthPage() {
     registerJobSeekerMutation.mutate(data, {
       onSuccess: () => {
         navigate("/");
+      },
+      onError: (error) => {
+        // If the error message indicates email is already in use
+        if (error.message?.includes("already in use") || error.message?.includes("already exists")) {
+          // Switch to login tab
+          setAuthType("login");
+          // Pre-fill the email field in login form
+          loginForm.setValue("email", data.email);
+          // Show toast notification
+          toast({
+            title: "Email already registered",
+            description: "This email is already registered. Please sign in instead.",
+            variant: "default",
+          });
+        }
       }
     });
   };
@@ -129,6 +146,21 @@ export default function AuthPage() {
     registerEmployerMutation.mutate(data, {
       onSuccess: () => {
         navigate("/");
+      },
+      onError: (error) => {
+        // If the error message indicates email is already in use
+        if (error.message?.includes("already in use") || error.message?.includes("already exists")) {
+          // Switch to login tab
+          setAuthType("login");
+          // Pre-fill the email field in login form
+          loginForm.setValue("email", data.email);
+          // Show toast notification
+          toast({
+            title: "Email already registered",
+            description: "This email is already registered. Please sign in instead.",
+            variant: "default",
+          });
+        }
       }
     });
   };
