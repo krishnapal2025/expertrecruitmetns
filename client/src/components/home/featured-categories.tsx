@@ -139,7 +139,11 @@ export default function FeaturedCategories() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
   const maxVisibleItems = 4; // Max items visible in desktop view
-  const maxIndex = Math.ceil(categories.length / maxVisibleItems) - 1;
+  
+  // Ensure we have perfect groups of 4 categories (no partially filled slides)
+  // If we don't have a multiple of 4, the last page might not fill all slots
+  const totalSlides = Math.ceil(categories.length / maxVisibleItems);
+  const maxIndex = totalSlides - 1;
   
   // Move slider to specific index
   const goToIndex = (index: number) => {
@@ -224,8 +228,8 @@ export default function FeaturedCategories() {
                   whileHover={{ y: -10, transition: { duration: 0.2 } }}
                   onMouseEnter={() => setHoveredId(category.id)}
                   onMouseLeave={() => setHoveredId(null)}
-                  className="group relative overflow-hidden rounded-xl shadow-lg transition-all hover:shadow-xl border border-gray-100 dark:border-gray-700 p-2"
-                  style={{ width: `${100 / categories.length * maxVisibleItems}%` }}
+                  className="group relative overflow-hidden rounded-xl shadow-lg transition-all hover:shadow-xl border border-gray-100 dark:border-gray-700 p-2 mx-2"
+                  style={{ width: `calc(${100 / maxVisibleItems}% - 1rem)` }}
                 >
                   <Link href={category.link}>
                     <div className="relative h-56 w-full overflow-hidden rounded-lg">
