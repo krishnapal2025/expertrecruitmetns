@@ -79,36 +79,7 @@ export default function Welcome() {
                 alt="Professional team in a business meeting" 
                 className="w-full h-auto object-cover rounded-xl transform scale-105 hover:scale-110 transition-transform duration-700" 
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/5"></div>
-              
-              {/* Floating information cards on the image */}
-              <motion.div 
-                className="absolute bottom-6 left-6 right-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-4 shadow-lg"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.6 }}
-              >
-                <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white flex items-center">
-                  <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3">
-                    <TrendingUp className="h-4 w-4 text-primary" />
-                  </span>
-                  RH Job Portal Success
-                </h3>
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div>
-                    <div className="text-xl font-bold text-primary">10k+</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Active Jobs</div>
-                  </div>
-                  <div>
-                    <div className="text-xl font-bold text-primary">80k+</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Candidates</div>
-                  </div>
-                  <div>
-                    <div className="text-xl font-bold text-primary">95%</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Success Rate</div>
-                  </div>
-                </div>
-              </motion.div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
             </div>
           </motion.div>
           
