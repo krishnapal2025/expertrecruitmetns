@@ -2,6 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom styles for full-width slider */
+.full-width-slider {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.slick-dots.custom-dots li {
+  margin: 0 5px;
+}
+
+.slick-dots.custom-dots li.slick-active div {
+  background-color: white;
+  transform: scale(1.2);
+}
+
+.slick-slide {
+  margin: 0;
+}
+
+/* Fix for slider arrow z-index */
+.slick-arrow {
+  z-index: 20;
+}
+
+/* Fix for dots container */
+.slick-dots.custom-dots {
+  bottom: 30px;
+}
+
 /* Custom pattern backgrounds */
 .bg-grid-pattern {
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),

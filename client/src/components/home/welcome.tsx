@@ -1,7 +1,147 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Briefcase, Users, Award, TrendingUp } from "lucide-react";
+import { Briefcase, Users, Award, TrendingUp, ArrowRight, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import hireImg from "@assets/3603649b-9dbb-4079-b5eb-c95af0e719b7.png";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+// Custom arrow components for the slider
+const NextArrow = (props: any) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className="absolute right-4 top-1/2 -mt-5 z-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full p-2 cursor-pointer shadow-lg hover:bg-white hover:shadow-xl transition-all duration-300"
+      style={{ ...style }}
+      onClick={onClick}
+    >
+      <ArrowRight className="h-6 w-6 text-primary" />
+    </div>
+  );
+};
+
+const PrevArrow = (props: any) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className="absolute left-4 top-1/2 -mt-5 z-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full p-2 cursor-pointer shadow-lg hover:bg-white hover:shadow-xl transition-all duration-300"
+      style={{ ...style }}
+      onClick={onClick}
+    >
+      <ArrowLeft className="h-6 w-6 text-primary" />
+    </div>
+  );
+};
+
+// Custom slider component with the slides
+function CustomSlider() {
+  // Slides data with images, titles and descriptions
+  const slides = [
+    {
+      id: 1,
+      image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1920&auto=format&fit=crop",
+      title: "Connecting Talent with Opportunity",
+      subtitle: "Welcome to RH Job Portal",
+      description: "We connect talented professionals with great companies. Whether you're looking for your next career move or seeking outstanding talent, we're here to help you succeed."
+    },
+    {
+      id: 2,
+      image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1920&auto=format&fit=crop",
+      title: "Building Careers Together",
+      subtitle: "Your Success is Our Mission",
+      description: "Find your dream job or the perfect candidate with our advanced matching technology and personalized support every step of the way."
+    },
+    {
+      id: 3,
+      image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1920&auto=format&fit=crop",
+      title: "Empowering Professional Growth",
+      subtitle: "Discover New Possibilities",
+      description: "Access thousands of opportunities and top talent across industries. Our platform is designed to make your job search or hiring process seamless and effective."
+    }
+  ];
+
+  // Slider settings
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 800,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 6000,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+    dotsClass: "slick-dots custom-dots",
+    appendDots: (dots: React.ReactNode) => (
+      <div className="absolute bottom-8 left-0 right-0">
+        <ul className="m-0 p-0 flex justify-center gap-2"> {dots} </ul>
+      </div>
+    ),
+    customPaging: () => (
+      <div className="w-3 h-3 bg-white/40 rounded-full hover:bg-white/60 transition-all"></div>
+    ),
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          arrows: false,
+        }
+      }
+    ]
+  };
+
+  return (
+    <div className="w-full relative overflow-hidden">
+      <Slider {...settings} className="full-width-slider">
+        {slides.map((slide) => (
+          <div key={slide.id} className="relative h-[500px] md:h-[550px] lg:h-[600px] overflow-hidden">
+            {/* Background Image with Parallax Effect */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center scale-110"
+              style={{ 
+                backgroundImage: `url(${slide.image})`,
+                transform: 'scale(1.05)'
+              }}
+            ></div>
+            
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/60 to-black/30"></div>
+            
+            {/* Content */}
+            <div className="container mx-auto h-full flex items-center relative z-10 px-4">
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="max-w-3xl text-white"
+              >
+                <span className="bg-primary/90 text-white px-4 py-1.5 rounded-full text-sm font-medium inline-block mb-4">
+                  {slide.title}
+                </span>
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white drop-shadow-lg">
+                  {slide.subtitle}
+                </h2>
+                <p className="text-lg md:text-xl mb-8 text-white/90 max-w-2xl">
+                  {slide.description}
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <button className="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center transition-colors shadow-lg">
+                    <Users className="mr-2 h-5 w-5" />
+                    Find a Job
+                  </button>
+                  <button className="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full flex items-center transition-colors shadow-lg">
+                    <Briefcase className="mr-2 h-5 w-5" />
+                    Post a Job
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        ))}
+      </Slider>
+    </div>
+  );
+}
 
 export default function Welcome() {
   return (
@@ -28,24 +168,20 @@ export default function Welcome() {
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
       />
       
+      {/* Full-width slideshow section */}
+      <div className="w-full relative mb-24 z-20">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="relative"
+        >
+          {/* Custom Arrows for Slider */}
+          <CustomSlider />
+        </motion.div>
+      </div>
+      
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-4xl mx-auto text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <span className="bg-gradient-to-r from-primary/10 to-indigo-500/10 text-primary px-4 py-1.5 rounded-full text-sm font-semibold shadow-sm inline-block mb-3">
-              Connecting Talent with Opportunity
-            </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300">
-              Welcome to RH Job Portal
-            </h2>
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              We connect talented professionals with great companies. Whether you're looking for your next career move or seeking outstanding talent, we're here to help you succeed in today's competitive job market.
-            </p>
-          </motion.div>
-        </div>
 
         <div className="grid md:grid-cols-2 gap-12 mb-24 items-center">
           {/* Left side - Image with floating elements */}
