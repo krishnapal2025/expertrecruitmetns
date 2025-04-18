@@ -33,6 +33,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Briefcase, Building, Clock, DollarSign, MapPin, Save } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiRequest } from "@/lib/queryClient";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -370,36 +371,263 @@ export default function PostJobPage() {
         ) : (
           <>
             {/* Form type selection */}
-            <div className="flex mb-6 border-b pb-4">
-              <Tabs defaultValue="notification" className="w-full" onValueChange={(value) => setFormType(value as "full" | "notification")}>
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="notification">Quick Job Notification</TabsTrigger>
-                  <TabsTrigger value="full">Detailed Job Posting</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
+            <Tabs defaultValue="notification" className="w-full" onValueChange={(value) => setFormType(value as "full" | "notification")}>
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="notification">Quick Job Notification</TabsTrigger>
+                <TabsTrigger value="full">Detailed Job Posting</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="notification">
+                {/* Quick job notification form */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Quick Job Notification</CardTitle>
+                    <CardDescription>
+                      Create a simple job notification with just the essential details
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Form {...notificationForm}>
+                      <form onSubmit={notificationForm.handleSubmit(onSubmitNotification)} className="space-y-4">
+                        <FormField
+                          control={notificationForm.control}
+                          name="title"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Job Title</FormLabel>
+                              <FormControl>
+                                <Input placeholder="e.g., Senior Frontend Developer" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={notificationForm.control}
+                          name="company"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Company Name</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Your company name" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={notificationForm.control}
+                            name="location"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Location</FormLabel>
+                                <Select 
+                                  onValueChange={field.onChange} 
+                                  defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select location" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {locations.map((location) => (
+                                      <SelectItem key={location} value={location}>
+                                        {location}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={notificationForm.control}
+                            name="jobType"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Job Type</FormLabel>
+                                <Select 
+                                  onValueChange={field.onChange} 
+                                  defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select job type" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {jobTypes.map((type) => (
+                                      <SelectItem key={type} value={type}>
+                                        {type}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={notificationForm.control}
+                            name="specialization"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Specialization</FormLabel>
+                                <Select 
+                                  onValueChange={field.onChange} 
+                                  defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select specialization" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {specializations.map((specialization) => (
+                                      <SelectItem key={specialization} value={specialization}>
+                                        {specialization}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={notificationForm.control}
+                            name="experience"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Experience Level</FormLabel>
+                                <Select 
+                                  onValueChange={field.onChange} 
+                                  defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select experience level" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {experienceLevels.map((level) => (
+                                      <SelectItem key={level} value={level}>
+                                        {level}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={notificationForm.control}
+                            name="minSalary"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Minimum Salary</FormLabel>
+                                <FormControl>
+                                  <Input type="number" placeholder="e.g., 50000" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={notificationForm.control}
+                            name="maxSalary"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Maximum Salary</FormLabel>
+                                <FormControl>
+                                  <Input type="number" placeholder="e.g., 80000" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={notificationForm.control}
+                            name="applicationDeadline"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Application Deadline</FormLabel>
+                                <FormControl>
+                                  <Input type="date" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={notificationForm.control}
+                            name="contactEmail"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Contact Email</FormLabel>
+                                <FormControl>
+                                  <Input type="email" placeholder="contact@example.com" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        
+                        <Button 
+                          type="submit" 
+                          className="w-full"
+                          disabled={createJobNotificationMutation.isPending}
+                        >
+                          {createJobNotificationMutation.isPending ? "Posting..." : "Post Job Notification"}
+                        </Button>
+                      </form>
+                    </Form>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              <TabsContent value="full">
+                {/* Toggle between form and preview for detailed job */}
+                <div className="flex mb-6 border-b pb-4">
+                  <Button
+                    variant={isPreview ? "outline" : "default"}
+                    className="mr-2"
+                    onClick={() => setIsPreview(false)}
+                  >
+                    Edit Job
+                  </Button>
+                  <Button
+                    variant={isPreview ? "default" : "outline"}
+                    onClick={() => setIsPreview(true)}
+                    disabled={!form.formState.isValid}
+                  >
+                    Preview
+                  </Button>
+                </div>
+              </TabsContent>
+            </Tabs>
             
-            {/* Toggle between form and preview for detailed job */}
-            {formType === "full" && (
-              <div className="flex mb-6 border-b pb-4">
-                <Button
-                  variant={isPreview ? "outline" : "default"}
-                  className="mr-2"
-                  onClick={() => setIsPreview(false)}
-                >
-                  Edit Job
-                </Button>
-                <Button
-                  variant={isPreview ? "default" : "outline"}
-                  onClick={() => setIsPreview(true)}
-                  disabled={!form.formState.isValid}
-                >
-                  Preview
-                </Button>
-              </div>
-            )}
-            
-            {isPreview ? (
+            {formType === "full" && isPreview ? (
               // Job Preview
               <div className="space-y-6">
                 <Card>
@@ -477,7 +705,7 @@ export default function PostJobPage() {
                   </CardFooter>
                 </Card>
               </div>
-            ) : (
+            ) : formType === "full" && !isPreview ? (
               // Job Post Form
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
