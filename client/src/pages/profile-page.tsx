@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Briefcase, Building, Globe, Phone, MapPin, AtSign, User as UserIcon } from "lucide-react";
+import { Loader2, Briefcase, Building, Globe, Phone, MapPin, AtSign, User as UserIcon, Check } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -13,6 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import {
   Tabs,
   TabsContent,
@@ -48,6 +50,35 @@ const industries = [
   "Hospitality", "Media", "Professional Services"
 ];
 
+// Skills list for selection
+const skillsList = [
+  // Technical/Programming
+  "JavaScript", "TypeScript", "Python", "Java", "C#", "C++", "Ruby", "PHP", "Go", "Swift",
+  "React", "Angular", "Vue.js", "Node.js", "Express.js", "Django", "Flask", "Spring Boot",
+  "AWS", "Azure", "Google Cloud", "Docker", "Kubernetes", "Jenkins", "Git", "GitHub",
+  "SQL", "MongoDB", "PostgreSQL", "MySQL", "Redis", "Elasticsearch",
+  "HTML", "CSS", "SASS", "LESS", "Tailwind CSS", "Bootstrap", "Material UI",
+  "REST API", "GraphQL", "WebSockets", "OAuth", "JWT",
+  "Machine Learning", "AI", "Data Science", "Big Data", "Apache Spark", "TensorFlow", "PyTorch",
+  
+  // Business/Professional
+  "Project Management", "Agile", "Scrum", "Kanban", "Lean", "Six Sigma",
+  "Leadership", "Team Management", "Strategic Planning", "Business Analysis",
+  "Marketing", "SEO", "SEM", "Social Media Marketing", "Content Marketing", "Email Marketing",
+  "Sales", "CRM", "Customer Service", "Account Management", "Negotiation",
+  "Financial Analysis", "Budgeting", "Forecasting", "Risk Management", "Investment Analysis",
+  "Human Resources", "Talent Acquisition", "Performance Management", "Employee Relations",
+  "Legal", "Contract Management", "Compliance", "Corporate Law", "Intellectual Property",
+  
+  // Creative
+  "Graphic Design", "UI/UX Design", "Figma", "Adobe Photoshop", "Adobe Illustrator",
+  "Video Editing", "Motion Graphics", "3D Modeling", "Animation", "Photography",
+  "Content Writing", "Copywriting", "Technical Writing", "Editing", "Proofreading",
+  
+  // Languages
+  "English", "Spanish", "French", "German", "Chinese", "Japanese", "Arabic", "Russian", "Portuguese"
+];
+
 // Job seeker profile form schema
 const jobSeekerProfileSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -81,6 +112,19 @@ export default function ProfilePage() {
   const { currentUser, isLoading } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [skillsFilter, setSkillsFilter] = useState("");
+  
+  // Initialize selected skills from user profile
+  useEffect(() => {
+    if (currentUser && currentUser.user.userType === 'jobseeker' && 'skills' in currentUser.profile) {
+      const skillsString = currentUser.profile.skills || '';
+      if (skillsString) {
+        const skillsArray = skillsString.split(',').map((skill: string) => skill.trim());
+        setSelectedSkills(skillsArray);
+      }
+    }
+  }, [currentUser]);
   
   // Initialize forms with current user data
   const jobSeekerForm = useForm<JobSeekerProfileFormValues>({
@@ -137,6 +181,29 @@ export default function ProfilePage() {
         }
   });
 
+  // Helper functions for skill management
+  const handleSkillToggle = (skill: string) => {
+    if (selectedSkills.includes(skill)) {
+      setSelectedSkills(selectedSkills.filter(s => s !== skill));
+    } else {
+      setSelectedSkills([...selectedSkills, skill]);
+    }
+    
+    // Update the form field
+    const newSkillsString = [...selectedSkills, skill]
+      .filter(s => s !== skill ? selectedSkills.includes(s) : !selectedSkills.includes(s))
+      .join(', ');
+    
+    jobSeekerForm.setValue('skills', newSkillsString);
+  };
+  
+  const getFilteredSkills = () => {
+    if (!skillsFilter) return skillsList;
+    return skillsList.filter(skill => 
+      skill.toLowerCase().includes(skillsFilter.toLowerCase())
+    );
+  };
+  
   const getUserInitials = () => {
     if (!currentUser) return '';
     
@@ -378,14 +445,60 @@ export default function ProfilePage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Skills</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="JavaScript, React, Node.js, TypeScript..."
-                          {...field}
-                        />
-                      </FormControl>
+                      <div className="space-y-4">
+                        <FormControl>
+                          <Input
+                            placeholder="Filter skills..."
+                            value={skillsFilter}
+                            onChange={(e) => setSkillsFilter(e.target.value)}
+                            className="mb-2"
+                          />
+                        </FormControl>
+                        
+                        {/* Selected skills badges */}
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {selectedSkills.map((skill) => (
+                            <Badge key={skill} className="flex items-center gap-1 px-3 py-1">
+                              {skill}
+                              <button 
+                                type="button"
+                                className="text-xs bg-primary-foreground rounded-full w-4 h-4 flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground"
+                                onClick={() => handleSkillToggle(skill)}
+                              >
+                                ×
+                              </button>
+                            </Badge>
+                          ))}
+                          {selectedSkills.length === 0 && (
+                            <p className="text-sm text-muted-foreground">No skills selected</p>
+                          )}
+                        </div>
+                        
+                        <div className="border rounded-md p-4 max-h-[200px] overflow-y-auto">
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                            {getFilteredSkills().map((skill) => (
+                              <div key={skill} className="flex items-center space-x-2">
+                                <Checkbox 
+                                  id={`skill-${skill}`} 
+                                  checked={selectedSkills.includes(skill)}
+                                  onCheckedChange={() => handleSkillToggle(skill)}
+                                />
+                                <label
+                                  htmlFor={`skill-${skill}`}
+                                  className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                  {skill}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        {/* Hidden textarea to store the actual value */}
+                        <input type="hidden" {...field} />
+                      </div>
                       <FormDescription>
-                        List your key skills, separated by commas
+                        Select your skills from the list or type to search
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
