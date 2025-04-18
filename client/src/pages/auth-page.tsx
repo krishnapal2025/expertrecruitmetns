@@ -155,9 +155,11 @@ export default function AuthPage() {
         
         // Always completely reset the phone number field with just the country code
         // This ensures old input is overwritten completely when country changes
+        // Use all flags to ensure proper form state updates
         employerForm.setValue("phoneNumber", countryData.code + " ", { 
           shouldValidate: true,
-          shouldDirty: true
+          shouldDirty: true,
+          shouldTouch: true
         });
       }
     }
@@ -647,18 +649,26 @@ export default function AuthPage() {
                                           <Input 
                                             className="rounded-l-none"
                                             placeholder="Phone number"
+                                            // Strip out the country code prefix from display
                                             value={field.value.replace(/^\+\d+\s*/, '')}
                                             onChange={(e) => {
-                                              // Completely replace the old input with a new phone number
+                                              // Get the current country code
                                               const countryCode = selectedEmployerCountryCode || "+";
-                                              // Extract just the user input without any country code prefixes
+                                              
+                                              // Extract clean user input (remove any country code or leading spaces)
+                                              // This ensures we're not duplicating the country code
                                               const userInput = e.target.value.replace(/^\+\d+\s*/, '').replace(/^\s+/, '');
                                               
-                                              // Use setValue to completely overwrite the field value
-                                              // This ensures old input is properly replaced
-                                              employerForm.setValue("phoneNumber", countryCode + " " + userInput, { 
+                                              // Force a complete overwrite of the phone number field
+                                              // This approach ensures any old input is fully replaced
+                                              const newValue = countryCode + " " + userInput;
+                                              
+                                              // Use the form's setValue method to update the field
+                                              // Using shouldValidate, shouldDirty, and shouldTouch ensures form state is updated properly
+                                              employerForm.setValue("phoneNumber", newValue, {
                                                 shouldValidate: true,
-                                                shouldDirty: true
+                                                shouldDirty: true,
+                                                shouldTouch: true
                                               });
                                             }}
                                           />
