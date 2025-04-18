@@ -5,6 +5,7 @@ import { setupAuth } from "./auth";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { insertJobSchema, insertApplicationSchema, User } from "@shared/schema";
+import { seedJobs } from "./seed-jobs";
 
 // In-memory store for real-time updates
 const realtimeStore = {
@@ -17,6 +18,9 @@ const realtimeStore = {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication routes
   setupAuth(app);
+  
+  // Seed jobs data
+  await seedJobs();
 
   // API routes
   

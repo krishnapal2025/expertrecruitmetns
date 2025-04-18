@@ -35,128 +35,88 @@ async function seedJobs() {
   // TECHNOLOGY JOBS
   const techJobs: InsertJob[] = [
     {
-      title: 'Senior Software Engineer',
-      company: 'Google',
+      title: 'Senior Software Engineer at Google',
       location: 'Mountain View, CA',
       jobType: 'Full-time',
       salary: '$150,000 - $180,000',
       category: 'Technology',
-      description: "We are looking for a Senior Software Engineer to join our Cloud Infrastructure team. You will design, develop, and maintain critical backend services and infrastructure supporting Google's core products.",
+      description: "We are looking for a Senior Software Engineer to join our Cloud Infrastructure team at Google. You will design, develop, and maintain critical backend services and infrastructure supporting Google's core products.\n\nRequirements:\n- BS/MS in Computer Science, 5+ years experience, proficiency in Java/Go/Python\n\nBenefits:\n- Competitive salary, comprehensive benefits, stock options, free meals, unlimited PTO\n\nSkills Needed:\n- Java, Go, Python, Kubernetes, Distributed Systems, Cloud Infrastructure",
       employerId: 1,
-      createdAt: new Date(),
-      requirements: 'BS/MS in Computer Science, 5+ years experience, proficiency in Java/Go/Python',
-      benefits: 'Competitive salary, comprehensive benefits, stock options, free meals, unlimited PTO',
-      skills: 'Java, Go, Python, Kubernetes, Distributed Systems, Cloud Infrastructure',
     },
     {
-      title: 'Data Scientist',
-      company: 'Meta',
+      title: 'Data Scientist at Meta',
       location: 'Menlo Park, CA',
       jobType: 'Full-time',
       salary: '$140,000 - $170,000',
       category: 'Technology',
-      description: "Meta is seeking a Data Scientist to work with product teams to extract insights from our vast datasets. This role will help drive product decisions through data analysis and experimentation.",
+      description: "Meta is seeking a Data Scientist to work with product teams to extract insights from our vast datasets. This role will help drive product decisions through data analysis and experimentation.\n\nRequirements:\n- MS/PhD in Statistics, Computer Science, or related field, 3+ years experience\n\nBenefits:\n- Competitive compensation, comprehensive benefits, remote work options\n\nSkills Needed:\n- Python, SQL, R, Machine Learning, Statistical Analysis, A/B Testing",
       employerId: 2,
-      createdAt: new Date(),
-      requirements: 'MS/PhD in Statistics, Computer Science, or related field, 3+ years experience',
-      benefits: 'Competitive compensation, comprehensive benefits, remote work options',
-      skills: 'Python, SQL, R, Machine Learning, Statistical Analysis, A/B Testing',
     }
   ];
 
   // HEALTHCARE JOBS
   const healthcareJobs: InsertJob[] = [
     {
-      title: 'Registered Nurse',
-      company: 'Mayo Clinic',
+      title: 'Registered Nurse at Mayo Clinic',
       location: 'Rochester, MN',
       jobType: 'Full-time',
       salary: '$75,000 - $95,000',
       category: 'Healthcare',
-      description: "Join our nursing team at Mayo Clinic, one of the top-ranked hospitals in the nation. As a Registered Nurse, you will provide direct patient care and support our mission of integrated clinical practice, education, and research.",
+      description: "Join our nursing team at Mayo Clinic, one of the top-ranked hospitals in the nation. As a Registered Nurse, you will provide direct patient care and support our mission of integrated clinical practice, education, and research.\n\nRequirements:\n- BSN required, RN license, BLS certification, 2+ years clinical experience\n\nBenefits:\n- Competitive salary, health benefits, pension plan, continuing education support\n\nSkills Needed:\n- Patient Care, Electronic Medical Records, Medication Administration, Critical Thinking",
       employerId: 3,
-      createdAt: new Date(),
-      requirements: 'BSN required, RN license, BLS certification, 2+ years clinical experience',
-      benefits: 'Competitive salary, health benefits, pension plan, continuing education support',
-      skills: 'Patient Care, Electronic Medical Records, Medication Administration, Critical Thinking',
     },
     {
-      title: 'Pharmacist',
-      company: 'CVS Health',
+      title: 'Pharmacist at CVS Health',
       location: 'Chicago, IL',
       jobType: 'Full-time',
       salary: '$120,000 - $140,000',
       category: 'Healthcare',
-      description: "CVS Health is seeking a licensed Pharmacist to join our retail pharmacy team. You will be responsible for ensuring safe and accurate medication dispensing while providing excellent patient counseling.",
+      description: "CVS Health is seeking a licensed Pharmacist to join our retail pharmacy team. You will be responsible for ensuring safe and accurate medication dispensing while providing excellent patient counseling.\n\nRequirements:\n- Doctor of Pharmacy degree, active pharmacist license, retail experience preferred\n\nBenefits:\n- Competitive pay, health insurance, retirement plans, employee discounts, paid time off\n\nSkills Needed:\n- Medication Dispensing, Patient Counseling, Pharmacy Law, Immunizations",
       employerId: 4,
-      createdAt: new Date(),
-      requirements: 'Doctor of Pharmacy degree, active pharmacist license, retail experience preferred',
-      benefits: 'Competitive pay, health insurance, retirement plans, employee discounts, paid time off',
-      skills: 'Medication Dispensing, Patient Counseling, Pharmacy Law, Immunizations',
     }
   ];
 
   // MARKETING JOBS
   const marketingJobs: InsertJob[] = [
     {
-      title: 'Marketing Director',
-      company: 'Procter & Gamble',
+      title: 'Marketing Director at Procter & Gamble',
       location: 'Cincinnati, OH',
       jobType: 'Full-time',
       salary: '$130,000 - $160,000',
       category: 'Marketing',
-      description: "Lead brand strategy and marketing initiatives for P&G's consumer products. Develop and execute comprehensive marketing plans to drive brand growth and market share.",
+      description: "Lead brand strategy and marketing initiatives for P&G's consumer products. Develop and execute comprehensive marketing plans to drive brand growth and market share.\n\nRequirements:\n- MBA preferred, 8+ years marketing experience, proven leadership skills\n\nBenefits:\n- Competitive salary, bonus structure, company car, comprehensive benefits package\n\nSkills Needed:\n- Brand Management, Market Research, Digital Marketing, Team Leadership",
       employerId: 5,
-      createdAt: new Date(),
-      requirements: 'MBA preferred, 8+ years marketing experience, proven leadership skills',
-      benefits: 'Competitive salary, bonus structure, company car, comprehensive benefits package',
-      skills: 'Brand Management, Market Research, Digital Marketing, Team Leadership',
     },
     {
-      title: 'Social Media Manager',
-      company: 'Nike',
+      title: 'Social Media Manager at Nike',
       location: 'Portland, OR',
       jobType: 'Full-time',
       salary: '$70,000 - $90,000',
       category: 'Marketing',
-      description: "Nike is looking for a creative Social Media Manager to develop and implement social media strategies across multiple platforms. This role will help elevate our brand presence and engage with our global community.",
+      description: "Nike is looking for a creative Social Media Manager to develop and implement social media strategies across multiple platforms. This role will help elevate our brand presence and engage with our global community.\n\nRequirements:\n- Bachelor's degree in Marketing or Communications, 3+ years social media experience\n\nBenefits:\n- Competitive salary, product discounts, health benefits, fitness center access\n\nSkills Needed:\n- Content Creation, Campaign Management, Analytics, Community Management",
       employerId: 6,
-      createdAt: new Date(),
-      requirements: "Bachelor's degree in Marketing or Communications, 3+ years social media experience",
-      benefits: 'Competitive salary, product discounts, health benefits, fitness center access',
-      skills: 'Content Creation, Campaign Management, Analytics, Community Management',
     }
   ];
 
   // SALES JOBS
   const salesJobs: InsertJob[] = [
     {
-      title: 'Enterprise Sales Executive',
-      company: 'Salesforce',
+      title: 'Enterprise Sales Executive at Salesforce',
       location: 'San Francisco, CA',
       jobType: 'Full-time',
       salary: '$120,000 - $200,000 (Base + Commission)',
       category: 'Sales',
-      description: "Drive new business and expand existing relationships within enterprise accounts. Develop and execute strategic sales plans to maximize revenue growth in assigned territory.",
+      description: "Drive new business and expand existing relationships within enterprise accounts at Salesforce. Develop and execute strategic sales plans to maximize revenue growth in assigned territory.\n\nRequirements:\n- Bachelor's degree, 5+ years enterprise software sales experience, proven track record\n\nBenefits:\n- Competitive base + uncapped commission, stock options, comprehensive benefits\n\nSkills Needed:\n- Solution Selling, Account Management, CRM, Contract Negotiation",
       employerId: 7,
-      createdAt: new Date(),
-      requirements: "Bachelor's degree, 5+ years enterprise software sales experience, proven track record",
-      benefits: 'Competitive base + uncapped commission, stock options, comprehensive benefits',
-      skills: 'Solution Selling, Account Management, CRM, Contract Negotiation',
     },
     {
-      title: 'Inside Sales Representative',
-      company: 'Adobe',
+      title: 'Inside Sales Representative at Adobe',
       location: 'San Jose, CA',
       jobType: 'Full-time',
       salary: '$60,000 - $85,000 (Base + Commission)',
       category: 'Sales',
-      description: "Adobe is seeking an energetic Inside Sales Representative to drive sales of our Creative Cloud products to small and medium businesses through phone and web-based channels.",
+      description: "Adobe is seeking an energetic Inside Sales Representative to drive sales of our Creative Cloud products to small and medium businesses through phone and web-based channels.\n\nRequirements:\n- Bachelor's degree, 1-3 years sales experience, strong communication skills\n\nBenefits:\n- Competitive base salary, commission structure, product discounts, health benefits\n\nSkills Needed:\n- Prospecting, Cold Calling, CRM Software, Consultative Selling",
       employerId: 8,
-      createdAt: new Date(),
-      requirements: "Bachelor's degree, 1-3 years sales experience, strong communication skills",
-      benefits: 'Competitive base salary, commission structure, product discounts, health benefits',
-      skills: 'Prospecting, Cold Calling, CRM Software, Consultative Selling',
     }
   ];
 
