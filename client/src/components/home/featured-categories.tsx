@@ -260,19 +260,42 @@ export default function FeaturedCategories() {
           </Button>
         </div>
         
-        {/* Slide indicators */}
-        <div className="flex justify-center gap-2 mb-8">
+        {/* Slide indicators with banner preview */}
+        <div className="flex justify-center gap-4 mb-8">
           {Array.from({ length: maxIndex + 1 }).map((_, index) => (
             <button
               key={index}
               onClick={() => goToIndex(index)}
-              className={`w-2.5 h-2.5 rounded-full transition-all ${
+              className="relative group"
+              aria-label={`Go to slide ${index + 1}`}
+            >
+              <div className={`w-3 h-3 rounded-full transition-all ${
                 index === currentIndex 
                   ? 'bg-primary scale-125' 
                   : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400'
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
+              }`} />
+              
+              {/* Banner preview on hover */}
+              <div className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 -top-16 left-1/2 transform -translate-x-1/2 pointer-events-none">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-1 relative">
+                  {/* Small arrow pointing down */}
+                  <div className="absolute w-2 h-2 bg-white dark:bg-gray-800 transform rotate-45 left-1/2 -bottom-1 -ml-1"></div>
+                  
+                  {/* Preview image with gradient overlay */}
+                  <div className="w-36 h-12 rounded overflow-hidden relative">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <img 
+                      src={categories[index * maxVisibleItems]?.icon || categories[0].icon} 
+                      alt={`Preview of slide ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <span className="absolute bottom-1 left-0 right-0 text-center text-xs text-white font-medium drop-shadow-md">
+                      Slide {index + 1}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </button>
           ))}
         </div>
         
