@@ -1,9 +1,50 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Briefcase, Users, Award, TrendingUp } from "lucide-react";
-import { motion } from "framer-motion";
+import { Briefcase, Users, Award, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import hireImg from "@assets/3603649b-9dbb-4079-b5eb-c95af0e719b7.png";
 
+// Sample slideshow images - in a real app, these would be stored properly
+const slideImages = [
+  {
+    url: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=600&h=900&fit=crop",
+    alt: "Professional team in a business meeting"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?q=80&w=600&h=900&fit=crop",
+    alt: "Business professionals collaborating on project"
+  },
+  {
+    url: hireImg,
+    alt: "Team discussing recruitment strategy"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1573497620053-ea5300f94f21?q=80&w=600&h=900&fit=crop",
+    alt: "Job interview in progress"
+  }
+];
+
 export default function Welcome() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // Auto slideshow functionality
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slideImages.length);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Navigation functions
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? slideImages.length - 1 : prev - 1));
+  };
+  
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slideImages.length);
+  };
+  
   return (
     <section className="py-16 relative overflow-hidden">
       {/* Decorative background elements */}
@@ -74,13 +115,64 @@ export default function Welcome() {
             />
             
             <div className="relative z-10 rounded-xl overflow-hidden shadow-2xl">
-              <div className="aspect-[9/16] relative">
-                <img 
-                  src={hireImg} 
-                  alt="Professional team in a business meeting" 
-                  className="absolute inset-0 w-full h-full object-cover rounded-[5px] transform scale-105 hover:scale-110 transition-transform duration-700" 
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent rounded-[5px]"></div>
+              <div className="aspect-[9/16] relative overflow-hidden">
+                {/* Connect to left corner design */}
+                <div className="absolute top-0 left-0 w-24 h-24 bg-primary/80 z-10">
+                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary to-indigo-600"></div>
+                  <div className="absolute -bottom-5 -right-5 w-10 h-10 bg-white rounded-full"></div>
+                </div>
+                
+                {/* Image slideshow */}
+                <div className="relative w-full h-full">
+                  <AnimatePresence initial={false}>
+                    <motion.img 
+                      key={currentSlide}
+                      src={slideImages[currentSlide].url}
+                      alt={slideImages[currentSlide].alt}
+                      initial={{ opacity: 0, scale: 1.05 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.7 }}
+                      className="absolute inset-0 w-full h-full object-cover rounded-[5px]"
+                    />
+                  </AnimatePresence>
+                  
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent rounded-[5px]"></div>
+                </div>
+                
+                {/* Navigation buttons */}
+                <button 
+                  onClick={prevSlide}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 bg-white/80 dark:bg-gray-800/80 rounded-full flex items-center justify-center text-gray-800 dark:text-white shadow-md hover:bg-white dark:hover:bg-gray-800 transition-colors"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                
+                <button 
+                  onClick={nextSlide}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 bg-white/80 dark:bg-gray-800/80 rounded-full flex items-center justify-center text-gray-800 dark:text-white shadow-md hover:bg-white dark:hover:bg-gray-800 transition-colors"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+                
+                {/* Slide indicators */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex space-x-2">
+                  {slideImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`w-2 h-2 rounded-full transition-all ${
+                        index === currentSlide 
+                          ? "bg-white w-6" 
+                          : "bg-white/60 hover:bg-white/80"
+                      }`}
+                      aria-label={`Go to slide ${index + 1}`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
