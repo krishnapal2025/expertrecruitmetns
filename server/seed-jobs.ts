@@ -1,13 +1,60 @@
 import { storage } from './storage';
-import { InsertJob } from '@shared/schema';
+import { InsertJob, InsertUser, InsertEmployer } from '@shared/schema';
 
 // Create mock jobs for all categories
 async function seedJobs() {
   // First check if we already have jobs to avoid duplicates
-  const existingJobs = await storage.getJobs();
-  if (existingJobs.length > 0) {
-    console.log('Jobs already exist in the database, skipping seed.');
-    return;
+  try {
+    const existingJobs = await storage.getJobs();
+    if (existingJobs.length > 0) {
+      console.log('Jobs already exist in the database, skipping seed.');
+      return;
+    }
+  } catch (error) {
+    console.log('Error checking for existing jobs, continuing with seed operation');
+  }
+  
+  // Create a demo employer first
+  let employerId = 1;
+  
+  // Check if employer already exists
+  try {
+    const existingEmployer = await storage.getEmployer(employerId);
+    if (!existingEmployer) {
+      // Check if the user already exists
+      let user = await storage.getUserByEmail('demo@employer.com');
+      
+      if (!user) {
+        // Create demo user for employer
+        user = await storage.createUser({
+          email: 'demo@employer.com',
+          password: '$2b$10$vCeMRZ.hpIyEvHe1qqrVTuGsXSHEjvkS48zNvGnR5WBR4hFKU3Nru', // hashed 'password123'
+          userType: 'employer'
+        });
+        console.log('Created demo user for employer');
+      } else {
+        console.log('Using existing user for employer');
+      }
+      
+      // Create employer profile
+      const employer = await storage.createEmployer({
+        userId: user.id,
+        companyName: 'Demo Recruiting Company',
+        industry: 'Staffing & Recruiting',
+        companyType: 'Corporation',
+        phoneNumber: '+1234567890',
+        country: 'United States',
+        website: 'https://demorecruiter.example.com'
+      });
+      
+      employerId = employer.id;
+      console.log(`Created demo employer with ID: ${employerId}`);
+    } else {
+      console.log(`Using existing employer with ID: ${employerId}`);
+    }
+  } catch (error) {
+    console.error('Error creating demo employer:', error);
+    throw error;
   }
 
   // FINANCE JOBS
@@ -396,10 +443,91 @@ async function seedJobs() {
     ...hospitalityJobs
   ];
 
-  // Add all jobs to the database
-  for (const job of allJobs) {
-    await storage.createJob(job);
-    console.log(`Created job: ${job.title} (${job.category})`);
+  // Helper function to create a complete job from partial data
+  const createCompleteJob = (job: Partial<InsertJob>): InsertJob => {
+    const now = new Date();
+    const deadline = new Date();
+    deadline.setDate(now.getDate() + 30);
+    
+    // Extract company name from title if not provided
+    let company = job.company;
+    if (!company && job.title?.includes("at ")) {
+      const parts = job.title.split(" at ");
+      if (parts.length >= 2) {
+        company = parts[1];
+      }
+    }
+    
+    // Build default requirements and benefits from description
+    const description = job.description || "";
+    let requirements = job.requirements;
+    let benefits = job.benefits;
+    
+    if (!requirements && description.includes("Requirements:")) {
+      const reqParts = description.split("Requirements:");
+      if (reqParts.length >= 2) {
+        const reqSection = reqParts[1].split("\n\n")[0];
+        requirements = reqSection.trim();
+      }
+    }
+    
+    if (!benefits && description.includes("Benefits:")) {
+      const benParts = description.split("Benefits:");
+      if (benParts.length >= 2) {
+        const benSection = benParts[1].split("\n\n")[0];
+        benefits = benSection.trim();
+      }
+    }
+    
+    // Parse salary range from text format
+    let minSalary = job.minSalary;
+    let maxSalary = job.maxSalary;
+    
+    if ((!minSalary || !maxSalary) && job.salary) {
+      const salaryText = job.salary;
+      const numbers = salaryText.match(/[\d,]+/g);
+      if (numbers && numbers.length >= 2) {
+        minSalary = parseInt(numbers[0].replace(/,/g, ''));
+        maxSalary = parseInt(numbers[1].replace(/,/g, ''));
+      } else if (numbers && numbers.length === 1) {
+        const value = parseInt(numbers[0].replace(/,/g, ''));
+        minSalary = Math.floor(value * 0.9);
+        maxSalary = Math.floor(value * 1.1);
+      }
+    }
+    
+    // Set a default deadline if not provided
+    const applicationDeadline = job.applicationDeadline || deadline;
+    
+    // Defaults for all required fields
+    return {
+      employerId: employerId,
+      title: job.title || "Untitled Position",
+      company: company || "Demo Recruiting Company",
+      description: job.description || "No description provided",
+      requirements: requirements || "Please contact employer for detailed requirements",
+      benefits: benefits || "Please contact employer for detailed benefits information",
+      category: job.category || "General",
+      location: job.location || "Remote",
+      jobType: job.jobType || "Full-time",
+      experience: job.experience || "Not specified",
+      minSalary: minSalary || 0,
+      maxSalary: maxSalary || 0,
+      isActive: true,
+      applicationCount: 0,
+      postedDate: new Date(),
+      applicationDeadline: applicationDeadline,
+      contactEmail: job.contactEmail || "contact@example.com",
+      specialization: job.specialization || null,
+      salary: job.salary || null
+    };
+  };
+  
+  // Add all jobs to the database with complete data
+  for (const jobData of allJobs) {
+    const completeJob = createCompleteJob(jobData);
+    await storage.createJob(completeJob);
+    console.log(`Created job: ${completeJob.title} (${completeJob.category})`);
   }
 
   console.log(`Successfully seeded ${allJobs.length} jobs across multiple categories!`);

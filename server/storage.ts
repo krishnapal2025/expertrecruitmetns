@@ -6,10 +6,14 @@ import {
   applications, Application, InsertApplication,
   testimonials, Testimonial, InsertTestimonial
 } from "@shared/schema";
-import * as session from "express-session";
+import session from "express-session";
 import createMemoryStore from "memorystore";
+import connectPg from "connect-pg-simple";
+import { db, pool } from "./db";
+import { eq, like, gte, lte, or, and, sql } from "drizzle-orm";
 
 const MemoryStore = createMemoryStore(session);
+const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
   // User methods
@@ -61,7 +65,242 @@ export interface IStorage {
   createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial>;
   
   // Session store
-  sessionStore: session.SessionStore;
+  sessionStore: session.Store;
+}
+
+// Database storage using PostgreSQL
+export class DatabaseStorage implements IStorage {
+  sessionStore: session.Store;
+  
+  constructor() {
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true,
+      tableName: 'sessions'
+    });
+  }
+  
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+  
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+  
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
+  }
+  
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users);
+  }
+  
+  async getUserByEmployerId(employerId: number): Promise<User | undefined> {
+    const [employer] = await db.select().from(employers).where(eq(employers.id, employerId));
+    if (!employer) return undefined;
+    
+    return this.getUser(employer.userId);
+  }
+  
+  async getUserByJobSeekerId(jobSeekerId: number): Promise<User | undefined> {
+    const [jobSeeker] = await db.select().from(jobSeekers).where(eq(jobSeekers.id, jobSeekerId));
+    if (!jobSeeker) return undefined;
+    
+    return this.getUser(jobSeeker.userId);
+  }
+  
+  // JobSeeker methods
+  async getJobSeeker(id: number): Promise<JobSeeker | undefined> {
+    const [jobSeeker] = await db.select().from(jobSeekers).where(eq(jobSeekers.id, id));
+    return jobSeeker;
+  }
+  
+  async getJobSeekerByUserId(userId: number): Promise<JobSeeker | undefined> {
+    const [jobSeeker] = await db.select().from(jobSeekers).where(eq(jobSeekers.userId, userId));
+    return jobSeeker;
+  }
+  
+  async createJobSeeker(insertJobSeeker: InsertJobSeeker): Promise<JobSeeker> {
+    const [jobSeeker] = await db.insert(jobSeekers).values(insertJobSeeker).returning();
+    return jobSeeker;
+  }
+  
+  async updateJobSeeker(updatedJobSeeker: JobSeeker): Promise<JobSeeker> {
+    const [jobSeeker] = await db
+      .update(jobSeekers)
+      .set(updatedJobSeeker)
+      .where(eq(jobSeekers.id, updatedJobSeeker.id))
+      .returning();
+    return jobSeeker;
+  }
+  
+  // Employer methods
+  async getEmployer(id: number): Promise<Employer | undefined> {
+    const [employer] = await db.select().from(employers).where(eq(employers.id, id));
+    return employer;
+  }
+  
+  async getEmployerByUserId(userId: number): Promise<Employer | undefined> {
+    const [employer] = await db.select().from(employers).where(eq(employers.userId, userId));
+    return employer;
+  }
+  
+  async createEmployer(insertEmployer: InsertEmployer): Promise<Employer> {
+    const [employer] = await db.insert(employers).values(insertEmployer).returning();
+    return employer;
+  }
+  
+  async updateEmployer(updatedEmployer: Employer): Promise<Employer> {
+    const [employer] = await db
+      .update(employers)
+      .set(updatedEmployer)
+      .where(eq(employers.id, updatedEmployer.id))
+      .returning();
+    return employer;
+  }
+  
+  // Job methods
+  async getJob(id: number): Promise<Job | undefined> {
+    const [job] = await db.select().from(jobs).where(eq(jobs.id, id));
+    return job;
+  }
+  
+  async getJobs(filters?: {
+    category?: string;
+    location?: string;
+    jobType?: string;
+    specialization?: string;
+    experience?: string;
+    minSalary?: number;
+    maxSalary?: number;
+    keyword?: string;
+  }): Promise<Job[]> {
+    let query = db.select().from(jobs).where(eq(jobs.isActive, true));
+    
+    if (filters) {
+      if (filters.category && filters.category !== "All Categories") {
+        query = query.where(eq(jobs.category, filters.category));
+      }
+      
+      if (filters.location && filters.location !== "All Locations") {
+        query = query.where(like(jobs.location, `%${filters.location}%`));
+      }
+      
+      if (filters.jobType && filters.jobType !== "All Types") {
+        query = query.where(eq(jobs.jobType, filters.jobType));
+      }
+      
+      if (filters.specialization && filters.specialization !== "All Specializations") {
+        query = query.where(like(jobs.description, `%${filters.specialization}%`));
+      }
+      
+      if (filters.experience) {
+        query = query.where(eq(jobs.experience, filters.experience));
+      }
+      
+      if (filters.minSalary !== undefined) {
+        query = query.where(gte(jobs.minSalary, filters.minSalary));
+      }
+      
+      if (filters.maxSalary !== undefined) {
+        query = query.where(lte(jobs.maxSalary, filters.maxSalary));
+      }
+      
+      if (filters.keyword) {
+        const keyword = `%${filters.keyword}%`;
+        query = query.where(
+          or(
+            like(jobs.title, keyword),
+            like(jobs.description, keyword)
+          )
+        );
+      }
+    }
+    
+    return await query;
+  }
+  
+  async getJobsByEmployerId(employerId: number): Promise<Job[]> {
+    return await db.select().from(jobs).where(eq(jobs.employerId, employerId));
+  }
+  
+  async createJob(insertJob: InsertJob): Promise<Job> {
+    const [job] = await db.insert(jobs).values(insertJob).returning();
+    return job;
+  }
+  
+  async updateJob(updatedJob: Job): Promise<Job> {
+    const [job] = await db
+      .update(jobs)
+      .set({ ...updatedJob, updatedAt: new Date() })
+      .where(eq(jobs.id, updatedJob.id))
+      .returning();
+    return job;
+  }
+  
+  async deleteJob(id: number): Promise<boolean> {
+    const result = await db.delete(jobs).where(eq(jobs.id, id));
+    return result.rowCount > 0;
+  }
+  
+  // Application methods
+  async getApplication(id: number): Promise<Application | undefined> {
+    const [application] = await db.select().from(applications).where(eq(applications.id, id));
+    return application;
+  }
+  
+  async getApplicationsByJobId(jobId: number): Promise<Application[]> {
+    return await db.select().from(applications).where(eq(applications.jobId, jobId));
+  }
+  
+  async getApplicationsByJobSeekerId(jobSeekerId: number): Promise<Application[]> {
+    return await db.select().from(applications).where(eq(applications.jobSeekerId, jobSeekerId));
+  }
+  
+  async createApplication(insertApplication: InsertApplication): Promise<Application> {
+    // Start a transaction to update both the application and job
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      
+      // Insert application
+      const [application] = await db.insert(applications).values(insertApplication).returning();
+      
+      // Update job application count
+      await db
+        .update(jobs)
+        .set({ applications: sql`${jobs.applications} + 1` })
+        .where(eq(jobs.id, insertApplication.jobId));
+      
+      await client.query('COMMIT');
+      return application;
+    } catch (e) {
+      await client.query('ROLLBACK');
+      throw e;
+    } finally {
+      client.release();
+    }
+  }
+  
+  // Testimonial methods
+  async getTestimonial(id: number): Promise<Testimonial | undefined> {
+    const [testimonial] = await db.select().from(testimonials).where(eq(testimonials.id, id));
+    return testimonial;
+  }
+  
+  async getTestimonials(): Promise<Testimonial[]> {
+    return await db.select().from(testimonials);
+  }
+  
+  async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
+    const [testimonial] = await db.insert(testimonials).values(insertTestimonial).returning();
+    return testimonial;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -72,7 +311,7 @@ export class MemStorage implements IStorage {
   private applications: Map<number, Application>;
   private testimonials: Map<number, Testimonial>;
   
-  sessionStore: session.SessionStore;
+  sessionStore: session.Store;
   
   // ID counters
   private userIdCounter: number;
@@ -454,4 +693,5 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Use Database storage for persistent data
+export const storage = new DatabaseStorage();
