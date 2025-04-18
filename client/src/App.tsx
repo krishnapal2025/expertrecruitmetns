@@ -16,6 +16,7 @@ import AuthPage from "@/pages/auth-page";
 import JobDetailsPage from "@/pages/job-details";
 import HireTalentPage from "@/pages/hire-talent";
 import SEOInsightsPage from "@/pages/seo-insights";
+import ProfilePage from "@/pages/profile-page";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import Navbar from "@/components/layout/navbar";
@@ -53,6 +54,7 @@ function Router() {
       <Route path="/auth" component={AuthPage} />
       <Route path="/hire-talent" component={HireTalentPage} />
       <Route path="/seo-insights" component={SEOInsightsPage} />
+      <ProtectedRoute path="/profile" component={ProfilePage} />
       <Route component={NotFound} />
     </Switch>
   );
