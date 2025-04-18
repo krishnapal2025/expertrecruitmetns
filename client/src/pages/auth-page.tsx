@@ -113,10 +113,13 @@ export default function AuthPage() {
       if (countryData) {
         setSelectedJobSeekerCountryCode(countryData.code);
         
-        // Only prefill the phone number if it's completely empty
-        const currentPhone = jobSeekerForm.getValues("phoneNumber");
-        if (!currentPhone) {
-          jobSeekerForm.setValue("phoneNumber", countryData.code + " ");
+        // Only prefill the phone number if it's completely empty or if it doesn't include a country code
+        const currentPhone = jobSeekerForm.getValues("phoneNumber") || "";
+        
+        // Don't overwrite the entire field, just make the country code available in the placeholder
+        if (currentPhone.trim() === "") {
+          // We just set the code as a prefix that doesn't interfere with input
+          jobSeekerForm.setValue("phoneNumber", "", { shouldValidate: false });
         }
       }
     }
@@ -152,10 +155,13 @@ export default function AuthPage() {
       if (countryData) {
         setSelectedEmployerCountryCode(countryData.code);
         
-        // Only prefill the phone number if it's completely empty
-        const currentPhone = employerForm.getValues("phoneNumber");
-        if (!currentPhone) {
-          employerForm.setValue("phoneNumber", countryData.code + " ");
+        // Only prefill the phone number if it's completely empty or if it doesn't include a country code
+        const currentPhone = employerForm.getValues("phoneNumber") || "";
+        
+        // Don't overwrite the entire field, just make the country code available in the placeholder
+        if (currentPhone.trim() === "") {
+          // We just set the code as a prefix that doesn't interfere with input
+          employerForm.setValue("phoneNumber", "", { shouldValidate: false });
         }
       }
     }
@@ -441,12 +447,19 @@ export default function AuthPage() {
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormLabel>Phone Number</FormLabel>
-                                      <FormControl>
-                                        <Input 
-                                          placeholder={selectedJobSeekerCountryCode ? `${selectedJobSeekerCountryCode} your phone number` : "Phone number"} 
-                                          {...field} 
-                                        />
-                                      </FormControl>
+                                      <div className="flex items-center">
+                                        {selectedJobSeekerCountryCode && (
+                                          <span className="mr-2 text-sm text-gray-500">
+                                            {selectedJobSeekerCountryCode}
+                                          </span>
+                                        )}
+                                        <FormControl className="flex-1">
+                                          <Input 
+                                            placeholder="Enter your phone number" 
+                                            {...field} 
+                                          />
+                                        </FormControl>
+                                      </div>
                                       <FormMessage />
                                     </FormItem>
                                   )}
@@ -637,12 +650,19 @@ export default function AuthPage() {
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormLabel>Phone Number</FormLabel>
-                                      <FormControl>
-                                        <Input 
-                                          placeholder={selectedEmployerCountryCode ? `${selectedEmployerCountryCode} your phone number` : "Phone number"} 
-                                          {...field} 
-                                        />
-                                      </FormControl>
+                                      <div className="flex items-center">
+                                        {selectedEmployerCountryCode && (
+                                          <span className="mr-2 text-sm text-gray-500">
+                                            {selectedEmployerCountryCode}
+                                          </span>
+                                        )}
+                                        <FormControl className="flex-1">
+                                          <Input 
+                                            placeholder="Enter your phone number" 
+                                            {...field} 
+                                          />
+                                        </FormControl>
+                                      </div>
                                       <FormMessage />
                                     </FormItem>
                                   )}
