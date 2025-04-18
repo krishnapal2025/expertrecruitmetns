@@ -348,27 +348,33 @@ export default function PostJobPage() {
                     
                     <div>
                       <h3 className="text-lg font-semibold mb-2">Job Description</h3>
-                      <p className="whitespace-pre-line">{formValues.description}</p>
+                      <p className="whitespace-pre-line">
+                        {formValues.description || "Add a detailed description of the job responsibilities and expectations."}
+                      </p>
                     </div>
                     
                     <div>
                       <h3 className="text-lg font-semibold mb-2">Requirements</h3>
-                      <p className="whitespace-pre-line">{formValues.requirements}</p>
+                      <p className="whitespace-pre-line">
+                        {formValues.requirements || "List the skills, qualifications, and experience required for this position."}
+                      </p>
                     </div>
                     
                     <div>
                       <h3 className="text-lg font-semibold mb-2">Benefits</h3>
-                      <p className="whitespace-pre-line">{formValues.benefits}</p>
+                      <p className="whitespace-pre-line">
+                        {formValues.benefits || "Describe the benefits, perks, and advantages of working in this role."}
+                      </p>
                     </div>
                     
                     <div className="rounded-lg bg-gray-50 p-4 border">
                       <div className="font-medium mb-2">Application Information</div>
                       <div className="text-sm">
                         <p>
-                          <span className="font-medium">Deadline:</span> {new Date(formValues.applicationDeadline).toLocaleDateString()}
+                          <span className="font-medium">Deadline:</span> {formValues.applicationDeadline ? new Date(formValues.applicationDeadline).toLocaleDateString() : "Not specified"}
                         </p>
                         <p>
-                          <span className="font-medium">Contact:</span> {formValues.contactEmail}
+                          <span className="font-medium">Contact:</span> {formValues.contactEmail || "Not specified"}
                         </p>
                       </div>
                     </div>
