@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
-import { Filter, X, Search, Briefcase, MapPin, Clock } from "lucide-react";
+import { Filter, X, Search, Briefcase, MapPin, Clock, DollarSign } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -277,63 +277,84 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
       </div>
       
       {/* Active filters (desktop) */}
-      <div className="hidden md:flex flex-wrap gap-2 mb-4">
-        {selectedCategory !== "All Categories" && (
-          <Badge variant="secondary" className="flex items-center gap-1">
-            <Briefcase className="h-3 w-3" />
-            {selectedCategory}
-            <X 
-              className="h-3 w-3 ml-1 cursor-pointer" 
-              onClick={() => setSelectedCategory("All Categories")}
-            />
-          </Badge>
-        )}
-        
-        {selectedLocation !== "All Locations" && (
-          <Badge variant="secondary" className="flex items-center gap-1">
-            <MapPin className="h-3 w-3" />
-            {selectedLocation}
-            <X 
-              className="h-3 w-3 ml-1 cursor-pointer" 
-              onClick={() => setSelectedLocation("All Locations")}
-            />
-          </Badge>
-        )}
-        
-        {selectedJobType !== "All Types" && (
-          <Badge variant="secondary" className="flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            {selectedJobType}
-            <X 
-              className="h-3 w-3 ml-1 cursor-pointer" 
-              onClick={() => setSelectedJobType("All Types")}
-            />
-          </Badge>
-        )}
-        
-        {selectedSpecialization !== "All Specializations" && (
-          <Badge variant="secondary" className="flex items-center gap-1">
-            {selectedSpecialization}
-            <X 
-              className="h-3 w-3 ml-1 cursor-pointer" 
-              onClick={() => setSelectedSpecialization("All Specializations")}
-            />
-          </Badge>
-        )}
-        
-        {(salaryRange[0] > 0 || salaryRange[1] < 200000) && (
-          <Badge variant="secondary" className="flex items-center gap-1">
-            {displaySalary}
-            <X 
-              className="h-3 w-3 ml-1 cursor-pointer" 
-              onClick={() => {
-                setSalaryRange([0, 200000]);
-                setDisplaySalary("$0 - $200,000+");
-              }}
-            />
-          </Badge>
-        )}
-      </div>
+      {(selectedCategory !== "All Categories" || 
+        selectedLocation !== "All Locations" || 
+        selectedJobType !== "All Types" || 
+        selectedSpecialization !== "All Specializations" || 
+        salaryRange[0] > 0 || 
+        salaryRange[1] < 200000) && (
+          <div className="hidden md:block mb-4 bg-gray-50 rounded-lg p-3 border border-gray-100">
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-sm font-medium text-gray-700">Active Filters</h3>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-7 text-xs text-gray-500 hover:text-primary"
+                onClick={resetFilters}
+              >
+                Clear All
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {selectedCategory !== "All Categories" && (
+                <Badge variant="outline" className="bg-white flex items-center gap-1 px-3 py-1 border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
+                  <Briefcase className="h-3 w-3 text-primary" />
+                  <span className="mx-1">{selectedCategory}</span>
+                  <X 
+                    className="h-3 w-3 text-gray-400 hover:text-gray-700 cursor-pointer" 
+                    onClick={() => setSelectedCategory("All Categories")}
+                  />
+                </Badge>
+              )}
+              
+              {selectedLocation !== "All Locations" && (
+                <Badge variant="outline" className="bg-white flex items-center gap-1 px-3 py-1 border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
+                  <MapPin className="h-3 w-3 text-primary" />
+                  <span className="mx-1">{selectedLocation}</span>
+                  <X 
+                    className="h-3 w-3 text-gray-400 hover:text-gray-700 cursor-pointer" 
+                    onClick={() => setSelectedLocation("All Locations")}
+                  />
+                </Badge>
+              )}
+              
+              {selectedJobType !== "All Types" && (
+                <Badge variant="outline" className="bg-white flex items-center gap-1 px-3 py-1 border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
+                  <Clock className="h-3 w-3 text-primary" />
+                  <span className="mx-1">{selectedJobType}</span>
+                  <X 
+                    className="h-3 w-3 text-gray-400 hover:text-gray-700 cursor-pointer" 
+                    onClick={() => setSelectedJobType("All Types")}
+                  />
+                </Badge>
+              )}
+              
+              {selectedSpecialization !== "All Specializations" && (
+                <Badge variant="outline" className="bg-white flex items-center gap-1 px-3 py-1 border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
+                  <span className="mx-1">{selectedSpecialization}</span>
+                  <X 
+                    className="h-3 w-3 text-gray-400 hover:text-gray-700 cursor-pointer" 
+                    onClick={() => setSelectedSpecialization("All Specializations")}
+                  />
+                </Badge>
+              )}
+              
+              {(salaryRange[0] > 0 || salaryRange[1] < 200000) && (
+                <Badge variant="outline" className="bg-white flex items-center gap-1 px-3 py-1 border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
+                  <DollarSign className="h-3 w-3 text-primary" />
+                  <span className="mx-1">{displaySalary}</span>
+                  <X 
+                    className="h-3 w-3 text-gray-400 hover:text-gray-700 cursor-pointer" 
+                    onClick={() => {
+                      setSalaryRange([0, 200000]);
+                      setDisplaySalary("$0 - $200,000+");
+                    }}
+                  />
+                </Badge>
+              )}
+            </div>
+          </div>
+      )}
     
       <Card className={`${showFilters ? 'block' : 'hidden'} md:block transition-all duration-300 ease-in-out`}>
         <CardContent className="space-y-6 pt-5">
