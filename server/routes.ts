@@ -345,6 +345,138 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch testimonials" });
     }
   });
+  
+  // Get jobs posted by current employer
+  app.get("/api/employer/jobs", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to view your posted jobs" });
+      }
+      
+      const user = req.user;
+      if (user.userType !== "employer") {
+        return res.status(403).json({ message: "Only employers can access this endpoint" });
+      }
+      
+      // Get employer profile
+      const employer = await storage.getEmployerByUserId(user.id);
+      if (!employer) {
+        return res.status(404).json({ message: "Employer profile not found" });
+      }
+      
+      // Get jobs posted by this employer
+      const jobs = await storage.getJobsByEmployerId(employer.id);
+      
+      res.json(jobs);
+    } catch (error) {
+      console.error("Error fetching employer jobs:", error);
+      res.status(500).json({ message: "Failed to fetch jobs" });
+    }
+  });
+  
+  // Edit a job (requires employer authentication)
+  app.put("/api/jobs/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to edit jobs" });
+      }
+      
+      const user = req.user;
+      if (user.userType !== "employer") {
+        return res.status(403).json({ message: "Only employers can edit jobs" });
+      }
+      
+      const jobId = parseInt(req.params.id);
+      if (isNaN(jobId)) {
+        return res.status(400).json({ message: "Invalid job ID" });
+      }
+      
+      // Validate the job exists
+      const job = await storage.getJob(jobId);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+      
+      // Get employer profile
+      const employer = await storage.getEmployerByUserId(user.id);
+      if (!employer) {
+        return res.status(404).json({ message: "Employer profile not found" });
+      }
+      
+      // Check if job belongs to this employer
+      if (job.employerId !== employer.id) {
+        return res.status(403).json({ message: "You can only edit your own job listings" });
+      }
+      
+      // Validate job data
+      const validatedData = insertJobSchema.parse(req.body);
+      
+      // Update the job
+      const updatedJob = await storage.updateJob({
+        ...job,
+        ...validatedData,
+        id: jobId,
+        employerId: employer.id
+      });
+      
+      res.json(updatedJob);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      
+      console.error("Error updating job:", error);
+      res.status(500).json({ message: "Failed to update job" });
+    }
+  });
+  
+  // Delete a job (requires employer authentication)
+  app.delete("/api/jobs/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to delete jobs" });
+      }
+      
+      const user = req.user;
+      if (user.userType !== "employer") {
+        return res.status(403).json({ message: "Only employers can delete jobs" });
+      }
+      
+      const jobId = parseInt(req.params.id);
+      if (isNaN(jobId)) {
+        return res.status(400).json({ message: "Invalid job ID" });
+      }
+      
+      // Validate the job exists
+      const job = await storage.getJob(jobId);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+      
+      // Get employer profile
+      const employer = await storage.getEmployerByUserId(user.id);
+      if (!employer) {
+        return res.status(404).json({ message: "Employer profile not found" });
+      }
+      
+      // Check if job belongs to this employer
+      if (job.employerId !== employer.id) {
+        return res.status(403).json({ message: "You can only delete your own job listings" });
+      }
+      
+      // Delete the job
+      const success = await storage.deleteJob(jobId);
+      if (!success) {
+        return res.status(500).json({ message: "Failed to delete job" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting job:", error);
+      res.status(500).json({ message: "Failed to delete job" });
+    }
+  });
 
   // AJAX Real-time updates API endpoints
   

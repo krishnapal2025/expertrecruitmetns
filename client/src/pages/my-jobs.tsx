@@ -41,8 +41,7 @@ export default function MyJobsPage() {
   const { data: jobs, isLoading } = useQuery<Job[]>({
     queryKey: ["/api/employer/jobs"],
     queryFn: async () => {
-      if (!currentUser?.profile.id) return [];
-      const res = await apiRequest("GET", `/api/employer/${currentUser.profile.id}/jobs`);
+      const res = await apiRequest("GET", "/api/employer/jobs");
       if (!res.ok) throw new Error("Failed to fetch your job listings");
       return await res.json();
     },
