@@ -70,38 +70,6 @@ const categories = [
     color: "bg-gray-600",
     count: 264,
     link: "/job-board?category=legal"
-  },
-  {
-    id: 9,
-    name: "Hospitality",
-    icon: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&h=400&auto=format&fit=crop",
-    color: "bg-rose-500",
-    count: 342,
-    link: "/job-board?category=hospitality"
-  },
-  {
-    id: 10,
-    name: "Government",
-    icon: "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=600&h=400&auto=format&fit=crop",
-    color: "bg-emerald-600",
-    count: 218,
-    link: "/job-board?category=government"
-  },
-  {
-    id: 11,
-    name: "Construction",
-    icon: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=600&h=400&auto=format&fit=crop",
-    color: "bg-yellow-500",
-    count: 295,
-    link: "/job-board?category=construction"
-  },
-  {
-    id: 12,
-    name: "Automotive",
-    icon: "https://images.unsplash.com/photo-1530046339915-99de2da623c1?q=80&w=600&h=400&auto=format&fit=crop",
-    color: "bg-sky-600",
-    count: 187,
-    link: "/job-board?category=automotive"
   }
 ];
 
@@ -139,11 +107,7 @@ export default function FeaturedCategories() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
   const maxVisibleItems = 4; // Max items visible in desktop view
-  
-  // Ensure we have perfect groups of 4 categories (no partially filled slides)
-  // If we don't have a multiple of 4, the last page might not fill all slots
-  const totalSlides = Math.ceil(categories.length / maxVisibleItems);
-  const maxIndex = totalSlides - 1;
+  const maxIndex = Math.ceil(categories.length / maxVisibleItems) - 1;
   
   // Move slider to specific index
   const goToIndex = (index: number) => {
@@ -156,7 +120,7 @@ export default function FeaturedCategories() {
     }
   };
   
-  // Auto scroll functionality with longer interval
+  // Auto scroll functionality
   useEffect(() => {
     const interval = setInterval(() => {
       if (currentIndex < maxIndex) {
@@ -164,12 +128,12 @@ export default function FeaturedCategories() {
       } else {
         setCurrentIndex(0);
       }
-    }, 15000); // Change slide every 15 seconds (slowed down from 8 seconds)
+    }, 8000); // Change slide every 8 seconds
     
     return () => clearInterval(interval);
   }, [currentIndex, maxIndex]);
   
-  // Apply transform when index changes with slower transition
+  // Apply transform when index changes
   useEffect(() => {
     if (sliderRef.current) {
       const slideWidth = 100 / maxVisibleItems;
@@ -218,7 +182,7 @@ export default function FeaturedCategories() {
           >
             <div 
               ref={sliderRef}
-              className="flex transition-transform duration-1500 ease-in-out"
+              className="flex transition-transform duration-700 ease-in-out"
               style={{ width: `${(categories.length / maxVisibleItems) * 100}%` }}
             >
               {categories.map((category) => (
@@ -228,8 +192,8 @@ export default function FeaturedCategories() {
                   whileHover={{ y: -10, transition: { duration: 0.2 } }}
                   onMouseEnter={() => setHoveredId(category.id)}
                   onMouseLeave={() => setHoveredId(null)}
-                  className="group relative overflow-hidden rounded-xl shadow-lg transition-all hover:shadow-xl border border-gray-100 dark:border-gray-700 p-2 mx-2"
-                  style={{ width: `calc(${100 / maxVisibleItems}% - 1rem)` }}
+                  className="group relative overflow-hidden rounded-xl shadow-lg transition-all hover:shadow-xl border border-gray-100 dark:border-gray-700 p-2"
+                  style={{ width: `${100 / categories.length * maxVisibleItems}%` }}
                 >
                   <Link href={category.link}>
                     <div className="relative h-56 w-full overflow-hidden rounded-lg">
