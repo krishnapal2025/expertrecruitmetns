@@ -175,7 +175,7 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link href="/auth">
+                <Link href="/auth?tab=login">
                   <Button variant="ghost">Sign In</Button>
                 </Link>
                 <Link href="/auth?type=jobseeker">
@@ -265,7 +265,7 @@ export default function Navbar() {
                     ) : (
                       <>
                         <SheetClose asChild>
-                          <Link href="/auth">
+                          <Link href="/auth?tab=login">
                             <Button variant="outline" className="w-full mb-2">
                               Sign In
                             </Button>
