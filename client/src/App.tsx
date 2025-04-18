@@ -21,6 +21,8 @@ import JobDetailsPage from "@/pages/job-details";
 import HireTalentPage from "@/pages/hire-talent";
 import SEOInsightsPage from "@/pages/seo-insights";
 import ProfilePage from "@/pages/profile-page";
+import PostJobPage from "@/pages/post-job";
+import MyJobsPage from "@/pages/my-jobs";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import Navbar from "@/components/layout/navbar";
@@ -63,6 +65,8 @@ function Router() {
       <Route path="/hire-talent" component={HireTalentPage} />
       <Route path="/seo-insights" component={SEOInsightsPage} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
+      <ProtectedRoute path="/post-job" component={PostJobPage} />
+      <ProtectedRoute path="/my-jobs" component={MyJobsPage} />
       <Route component={NotFound} />
     </Switch>
   );
