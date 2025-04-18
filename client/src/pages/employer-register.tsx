@@ -306,24 +306,61 @@ export default function EmployerRegisterPage() {
                         />
                       </div>
                       
-                      <Button 
-                        type="submit" 
-                        className="w-full" 
-                        disabled={registerEmployerMutation.isPending}
-                      >
-                        {registerEmployerMutation.isPending ? (
-                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        ) : null}
-                        Create Employer Account
-                      </Button>
+                      <div className="space-y-3">
+                        <Button 
+                          type="submit" 
+                          className="w-full" 
+                          disabled={registerEmployerMutation.isPending}
+                        >
+                          {registerEmployerMutation.isPending ? (
+                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          ) : null}
+                          Create Employer Account
+                        </Button>
+                        
+                        <div className="relative">
+                          <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t" />
+                          </div>
+                          <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-card px-2 text-muted-foreground">
+                              Or if you already have an account
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <Link href="/post-job">
+                          <Button 
+                            type="button" 
+                            variant="outline"
+                            className="w-full"
+                          >
+                            <svg
+                              className="mr-2 h-4 w-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 4v16m8-8H4"
+                              />
+                            </svg>
+                            Post New Job
+                          </Button>
+                        </Link>
+                      </div>
                     </form>
                   </Form>
                 </CardContent>
                 <CardFooter className="flex justify-center">
                   <p className="text-sm text-gray-500">
-                    Already have an account?{" "}
-                    <Link href="/auth?tab=login" className="text-primary font-medium hover:underline">
-                      Sign in
+                    Need help?{" "}
+                    <Link href="/contact-us" className="text-primary font-medium hover:underline">
+                      Contact our support team
                     </Link>
                   </p>
                 </CardFooter>
