@@ -260,58 +260,19 @@ export default function FeaturedCategories() {
           </Button>
         </div>
         
-        {/* Slide indicators with banner preview - improved visibility */}
-        <div className="flex justify-center gap-4 mb-8">
+        {/* Slide indicators */}
+        <div className="flex justify-center gap-2 mb-8">
           {Array.from({ length: maxIndex + 1 }).map((_, index) => (
             <button
               key={index}
               onClick={() => goToIndex(index)}
-              className="relative group cursor-pointer"
-              aria-label={`Go to slide ${index + 1}`}
-            >
-              {/* Indicator dot */}
-              <div className={`w-5 h-5 rounded-full transition-all border-2 ${
+              className={`w-2.5 h-2.5 rounded-full transition-all ${
                 index === currentIndex 
-                  ? 'bg-primary border-primary scale-110' 
-                  : 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-600'
-              }`}>
-                {/* Mini thumbnail inside dot */}
-                <div className="w-full h-full rounded-full overflow-hidden opacity-70">
-                  <img 
-                    src={categories[index * maxVisibleItems]?.icon || categories[0].icon}
-                    alt=""
-                    className="w-full h-full object-cover"
-                    style={{ opacity: 0.3 }}
-                  />
-                </div>
-              </div>
-              
-              {/* Larger preview on hover */}
-              <div className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-20 left-1/2 transform -translate-x-1/2 pointer-events-none z-20">
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-2 relative border border-gray-200 dark:border-gray-700">
-                  {/* Small arrow pointing down */}
-                  <div className="absolute w-3 h-3 bg-white dark:bg-gray-800 transform rotate-45 left-1/2 -bottom-1.5 -ml-1.5 border-r border-b border-gray-200 dark:border-gray-700"></div>
-                  
-                  {/* Preview image with gradient overlay */}
-                  <div className="w-48 h-28 rounded overflow-hidden relative">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
-                    <img 
-                      src={categories[index * maxVisibleItems]?.icon || categories[0].icon} 
-                      alt={`Preview of slide ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 p-2 z-10">
-                      <p className="text-white text-sm font-medium text-center drop-shadow-md">
-                        {categories[index * maxVisibleItems]?.name || "Category"} & More
-                      </p>
-                      <p className="text-white/80 text-xs text-center drop-shadow-md">
-                        Slide {index + 1}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </button>
+                  ? 'bg-primary scale-125' 
+                  : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
           ))}
         </div>
         
