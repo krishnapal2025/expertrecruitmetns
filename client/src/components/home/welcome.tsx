@@ -94,7 +94,7 @@ export default function Welcome() {
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative order-2 md:order-1 md:pr-8"
+            className="relative order-2 md:order-1 md:pr-8 mx-auto w-full h-full flex items-center"
           >
             {/* Decorative elements */}
             <motion.div 
@@ -114,12 +114,12 @@ export default function Welcome() {
               transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
             />
             
-            <div className="relative z-10 rounded-xl overflow-hidden shadow-2xl">
-              <div className="aspect-[9/16] relative overflow-hidden">
+            <div className="relative z-10 rounded-xl overflow-hidden shadow-2xl w-full max-w-[280px] md:max-w-[240px] lg:max-w-[320px] mx-auto">
+              <div className="aspect-[3/4] relative overflow-hidden">
                 {/* Connect to left corner design */}
-                <div className="absolute top-0 left-0 w-24 h-24 bg-primary/80 z-10">
+                <div className="absolute top-0 left-0 w-16 h-16 bg-primary/80 z-10">
                   <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary to-indigo-600"></div>
-                  <div className="absolute -bottom-5 -right-5 w-10 h-10 bg-white rounded-full"></div>
+                  <div className="absolute -bottom-4 -right-4 w-8 h-8 bg-white rounded-full"></div>
                 </div>
                 
                 {/* Image slideshow */}
@@ -144,30 +144,30 @@ export default function Welcome() {
                 {/* Navigation buttons */}
                 <button 
                   onClick={prevSlide}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 bg-white/80 dark:bg-gray-800/80 rounded-full flex items-center justify-center text-gray-800 dark:text-white shadow-md hover:bg-white dark:hover:bg-gray-800 transition-colors"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-6 h-6 bg-white/80 dark:bg-gray-800/80 rounded-full flex items-center justify-center text-gray-800 dark:text-white shadow-md hover:bg-white dark:hover:bg-gray-800 transition-colors"
                   aria-label="Previous slide"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-4 h-4" />
                 </button>
                 
                 <button 
                   onClick={nextSlide}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 bg-white/80 dark:bg-gray-800/80 rounded-full flex items-center justify-center text-gray-800 dark:text-white shadow-md hover:bg-white dark:hover:bg-gray-800 transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-6 h-6 bg-white/80 dark:bg-gray-800/80 rounded-full flex items-center justify-center text-gray-800 dark:text-white shadow-md hover:bg-white dark:hover:bg-gray-800 transition-colors"
                   aria-label="Next slide"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-4 h-4" />
                 </button>
                 
                 {/* Slide indicators */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex space-x-2">
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex space-x-1.5">
                   {slideImages.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentSlide(index)}
-                      className={`w-2 h-2 rounded-full transition-all ${
+                      className={`h-1.5 rounded-full transition-all ${
                         index === currentSlide 
-                          ? "bg-white w-6" 
-                          : "bg-white/60 hover:bg-white/80"
+                          ? "bg-white w-4" 
+                          : "bg-white/60 hover:bg-white/80 w-1.5"
                       }`}
                       aria-label={`Go to slide ${index + 1}`}
                     />
