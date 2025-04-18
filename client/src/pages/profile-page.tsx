@@ -753,8 +753,22 @@ export default function ProfilePage() {
                     Post a new job opportunity to find qualified candidates for your company. You can specify job requirements, 
                     responsibilities, qualifications, and other details to attract the right talent.
                   </p>
-                  <Button asChild size="lg">
-                    <Link href="/post-job">
+                  <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+                    <Link href="/post-job" className="flex items-center">
+                      <svg
+                        className="mr-2 h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 4v16m8-8H4"
+                        />
+                      </svg>
                       Post New Job
                     </Link>
                   </Button>
