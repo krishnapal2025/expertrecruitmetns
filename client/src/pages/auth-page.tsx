@@ -42,7 +42,9 @@ export default function AuthPage() {
   const searchParams = new URLSearchParams(search);
   const initialUserType = searchParams.get("type") || "jobseeker";
   
-  const [authType, setAuthType] = useState<"login" | "register">("login");
+  // Determine initial auth type based on URL (if coming from a Sign Up link)
+  const initialAuthType = searchParams.get("type") ? "register" : "login";
+  const [authType, setAuthType] = useState<"login" | "register">(initialAuthType);
   const [userType, setUserType] = useState<"jobseeker" | "employer">(
     initialUserType === "employer" ? "employer" : "jobseeker"
   );
