@@ -113,9 +113,9 @@ export default function AuthPage() {
       if (countryData) {
         setSelectedJobSeekerCountryCode(countryData.code);
         
-        // Update phone number field if it's empty or only contains a previous country code
+        // Only prefill the phone number if it's completely empty
         const currentPhone = jobSeekerForm.getValues("phoneNumber");
-        if (!currentPhone || currentPhone.match(/^\+\d+\s*$/)) {
+        if (!currentPhone) {
           jobSeekerForm.setValue("phoneNumber", countryData.code + " ");
         }
       }
@@ -152,9 +152,9 @@ export default function AuthPage() {
       if (countryData) {
         setSelectedEmployerCountryCode(countryData.code);
         
-        // Update phone number field if it's empty or only contains a previous country code
+        // Only prefill the phone number if it's completely empty
         const currentPhone = employerForm.getValues("phoneNumber");
-        if (!currentPhone || currentPhone.match(/^\+\d+\s*$/)) {
+        if (!currentPhone) {
           employerForm.setValue("phoneNumber", countryData.code + " ");
         }
       }
