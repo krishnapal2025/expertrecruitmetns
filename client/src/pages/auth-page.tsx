@@ -643,11 +643,13 @@ export default function AuthPage() {
                                       <FormLabel>Phone Number</FormLabel>
                                       <FormControl>
                                         <div className="flex">
-                                          <div className="bg-gray-100 px-3 py-2 border rounded-l-md text-gray-600">
-                                            {selectedEmployerCountryCode?.replace('+', '') || ""}
-                                          </div>
+                                          {selectedEmployerCountryCode ? (
+                                            <div className="bg-gray-100 px-3 py-2 border rounded-l-md text-gray-600">
+                                              {selectedEmployerCountryCode.replace('+', '')}
+                                            </div>
+                                          ) : null}
                                           <Input 
-                                            className="rounded-l-none"
+                                            className={selectedEmployerCountryCode ? "rounded-l-none" : ""}
                                             placeholder="Phone number"
                                             value={field.value.replace(/^\+?\d+\s*/, '')}
                                             onChange={(e) => {
@@ -656,7 +658,7 @@ export default function AuthPage() {
                                               // Extract just the user input numbers without any country code prefixes
                                               const userInput = e.target.value.replace(/^\+?\d+\s*/, '').replace(/^\s+/, '');
                                               // Create a clean new value with the current country code but without '+' symbol
-                                              employerForm.setValue("phoneNumber", countryCode + " " + userInput, { 
+                                              employerForm.setValue("phoneNumber", countryCode + (countryCode ? " " : "") + userInput, { 
                                                 shouldValidate: true,
                                                 shouldDirty: true
                                               });
