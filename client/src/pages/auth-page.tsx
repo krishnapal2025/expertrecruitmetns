@@ -22,7 +22,8 @@ import { Loader2, BriefcaseIcon, UserIcon } from "lucide-react";
 
 const countries = [
   "United States", "United Kingdom", "Canada", "Australia", 
-  "Germany", "France", "Japan", "China", "India", "Brazil"
+  "Germany", "France", "Japan", "China", "India", "Brazil",
+  "United Arab Emirates"
 ];
 
 const industries = [
