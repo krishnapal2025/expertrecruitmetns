@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
@@ -737,6 +738,31 @@ export default function ProfilePage() {
                 </Button>
               </form>
             </Form>
+          </CardContent>
+        </Card>
+
+        /* Post Job Section Below Profile */
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle>Post a New Job</CardTitle>
+            <CardDescription>Create a job listing to find the right talent</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-gray-50 p-8 rounded-lg border border-gray-200">
+              <div className="flex flex-col items-center text-center">
+                <Briefcase className="h-16 w-16 text-primary mb-4" />
+                <h3 className="text-xl font-medium mb-2">Create a Job Listing</h3>
+                <p className="text-gray-500 mb-6 max-w-lg">
+                  Post a new job opportunity to find qualified candidates for your company. You can specify job requirements, 
+                  responsibilities, qualifications, and other details to attract the right talent.
+                </p>
+                <Button asChild size="lg">
+                  <Link href="/post-job">
+                    Post New Job
+                  </Link>
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
