@@ -38,22 +38,25 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InsertJob } from "@shared/schema";
 
-// Form schema for job posting
+// Form schema for job posting with validation but allowing all fields to be optional
 const jobPostSchema = z.object({
-  title: z.string().min(5, "Title must be at least 5 characters"),
-  company: z.string().min(2, "Company name is required"),
-  location: z.string().min(2, "Location is required"),
-  category: z.string().min(2, "Category is required"),
-  jobType: z.string().min(2, "Job type is required"),
-  specialization: z.string().optional(),
-  experience: z.string().min(2, "Experience level is required"),
-  minSalary: z.coerce.number().min(0, "Minimum salary is required"),
-  maxSalary: z.coerce.number().min(0, "Maximum salary is required"),
-  description: z.string().min(30, "Description must be at least 30 characters"),
-  requirements: z.string().min(20, "Requirements must be at least 20 characters"),
-  benefits: z.string().min(10, "Benefits must be at least 10 characters"),
-  applicationDeadline: z.string().min(1, "Application deadline is required"),
-  contactEmail: z.string().email("Must be a valid email address"),
+  // Required field - we'll keep title as the only required field
+  title: z.string().min(1, "Title is required").default(""),
+  
+  // All other fields are optional to allow partial submission
+  company: z.string().default(""),
+  location: z.string().default(""),
+  category: z.string().default(""),
+  jobType: z.string().default(""),
+  specialization: z.string().optional().default(""),
+  experience: z.string().default(""),
+  minSalary: z.coerce.number().nonnegative().default(0),
+  maxSalary: z.coerce.number().nonnegative().default(0),
+  description: z.string().default(""),
+  requirements: z.string().default(""),
+  benefits: z.string().default(""),
+  applicationDeadline: z.string().default(""),
+  contactEmail: z.string().email("Must be a valid email address").optional().default(""),
 });
 
 type JobPostFormValues = z.infer<typeof jobPostSchema>;
