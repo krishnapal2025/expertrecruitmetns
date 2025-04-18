@@ -16,7 +16,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, BriefcaseIcon, UserIcon } from "lucide-react";
@@ -43,11 +42,9 @@ export default function AuthPage() {
   const searchParams = new URLSearchParams(search);
   const initialUserType = searchParams.get("type") || "jobseeker";
   
-  // Determine initial auth type based on URL parameters
+  // Determine auth mode based on URL parameters
   const tabParam = searchParams.get("tab");
-  const initialAuthType = tabParam === "login" ? "login" : 
-                         searchParams.get("type") ? "register" : "login";
-  const [authType, setAuthType] = useState<"login" | "register">(initialAuthType);
+  const isLoginMode = tabParam === "login";
   const [userType, setUserType] = useState<"jobseeker" | "employer">(
     initialUserType === "employer" ? "employer" : "jobseeker"
   );
@@ -128,16 +125,15 @@ export default function AuthPage() {
       onError: (error) => {
         // If the error message indicates email is already in use
         if (error.message?.includes("already in use") || error.message?.includes("already exists")) {
-          // Switch to login tab
-          setAuthType("login");
-          // Pre-fill the email field in login form
-          loginForm.setValue("email", data.email);
           // Show toast notification
           toast({
             title: "Email already registered",
             description: "This email is already registered. Please sign in instead.",
             variant: "default",
           });
+          // Navigate to login page
+          navigate("/auth?tab=login");
+          // We'll let the login page handle showing a fresh form
         }
       }
     });
@@ -152,16 +148,15 @@ export default function AuthPage() {
       onError: (error) => {
         // If the error message indicates email is already in use
         if (error.message?.includes("already in use") || error.message?.includes("already exists")) {
-          // Switch to login tab
-          setAuthType("login");
-          // Pre-fill the email field in login form
-          loginForm.setValue("email", data.email);
           // Show toast notification
           toast({
             title: "Email already registered",
             description: "This email is already registered. Please sign in instead.",
             variant: "default",
           });
+          // Navigate to login page
+          navigate("/auth?tab=login");
+          // We'll let the login page handle showing a fresh form
         }
       }
     });
@@ -174,9 +169,9 @@ export default function AuthPage() {
           <div className="grid md:grid-cols-5 gap-8">
             {/* Left side: Auth forms */}
             <div className="md:col-span-3">
-              {tabParam === "login" ? (
+              {isLoginMode ? (
+                // LOGIN MODE
                 <>
-                  {/* Login only page when accessed via Sign In button */}
                   <div className="mb-4">
                     <h2 className="text-2xl font-semibold">Login</h2>
                   </div>
@@ -241,53 +236,161 @@ export default function AuthPage() {
                   </Card>
                 </>
               ) : (
+                // REGISTER MODE
                 <>
-                  {/* Regular tabs for both login and register */}
-                  <Tabs
-                    defaultValue={authType}
-                    onValueChange={(v) => setAuthType(v as "login" | "register")}
-                    className="w-full"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <TabsList>
-                        <TabsTrigger value="login">Login</TabsTrigger>
-                        <TabsTrigger value="register">Register</TabsTrigger>
-                      </TabsList>
-                      
-                      {authType === "register" && (
-                        <div className="space-x-2">
-                          <Button
-                            variant={userType === "jobseeker" ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setUserType("jobseeker")}
-                          >
-                            <UserIcon className="w-4 h-4 mr-2" />
-                            Job Seeker
-                          </Button>
-                          <Button
-                            variant={userType === "employer" ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setUserType("employer")}
-                          >
-                            <BriefcaseIcon className="w-4 h-4 mr-2" />
-                            Employer
-                          </Button>
-                        </div>
-                      )}
-                    </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-2xl font-semibold">Registration</h2>
                     
-                    <Card>
-                      {/* Login Form */}
-                      <TabsContent value="login">
+                    <div className="space-x-2">
+                      <Button
+                        variant={userType === "jobseeker" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setUserType("jobseeker")}
+                      >
+                        <UserIcon className="w-4 h-4 mr-2" />
+                        Job Seeker
+                      </Button>
+                      <Button
+                        variant={userType === "employer" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setUserType("employer")}
+                      >
+                        <BriefcaseIcon className="w-4 h-4 mr-2" />
+                        Employer
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <Card>
+                    {userType === "jobseeker" ? (
+                      <>
                         <CardHeader>
-                          <CardTitle>Welcome Back</CardTitle>
-                          <CardDescription>Sign in to access your account</CardDescription>
+                          <CardTitle>Job Seeker Registration</CardTitle>
+                          <CardDescription>Create your job seeker account</CardDescription>
                         </CardHeader>
                         <CardContent>
-                          <Form {...loginForm}>
-                            <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+                          <Form {...jobSeekerForm}>
+                            <form onSubmit={jobSeekerForm.handleSubmit(onJobSeekerSubmit)} className="space-y-4">
+                              <div className="grid md:grid-cols-2 gap-4">
+                                <FormField
+                                  control={jobSeekerForm.control}
+                                  name="firstName"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>First Name</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="John" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                
+                                <FormField
+                                  control={jobSeekerForm.control}
+                                  name="lastName"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Last Name</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="Doe" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                              
+                              <div className="grid md:grid-cols-2 gap-4">
+                                <FormField
+                                  control={jobSeekerForm.control}
+                                  name="gender"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Gender</FormLabel>
+                                      <Select 
+                                        onValueChange={field.onChange} 
+                                        defaultValue={field.value}
+                                      >
+                                        <FormControl>
+                                          <SelectTrigger>
+                                            <SelectValue placeholder="Select gender" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          <SelectItem value="male">Male</SelectItem>
+                                          <SelectItem value="female">Female</SelectItem>
+                                          <SelectItem value="other">Other</SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                
+                                <FormField
+                                  control={jobSeekerForm.control}
+                                  name="dateOfBirth"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Date of Birth</FormLabel>
+                                      <FormControl>
+                                        <Input type="date" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                              
+                              <div className="grid md:grid-cols-2 gap-4">
+                                <FormField
+                                  control={jobSeekerForm.control}
+                                  name="country"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Country</FormLabel>
+                                      <Select 
+                                        onValueChange={field.onChange} 
+                                        defaultValue={field.value}
+                                      >
+                                        <FormControl>
+                                          <SelectTrigger>
+                                            <SelectValue placeholder="Select country" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {countries.map((country) => (
+                                            <SelectItem key={country} value={country}>
+                                              {country}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                
+                                <FormField
+                                  control={jobSeekerForm.control}
+                                  name="phoneNumber"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Phone Number</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="+1 (555) 000-0000" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                              
+                              <Separator className="my-4" />
+                              
                               <FormField
-                                control={loginForm.control}
+                                control={jobSeekerForm.control}
                                 name="email"
                                 render={({ field }) => (
                                   <FormItem>
@@ -300,425 +403,267 @@ export default function AuthPage() {
                                 )}
                               />
                               
+                              <div className="grid md:grid-cols-2 gap-4">
+                                <FormField
+                                  control={jobSeekerForm.control}
+                                  name="password"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Password</FormLabel>
+                                      <FormControl>
+                                        <Input type="password" placeholder="••••••••" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                
+                                <FormField
+                                  control={jobSeekerForm.control}
+                                  name="confirmPassword"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Confirm Password</FormLabel>
+                                      <FormControl>
+                                        <Input type="password" placeholder="••••••••" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                              
+                              <Button 
+                                type="submit" 
+                                className="w-full" 
+                                disabled={registerJobSeekerMutation.isPending}
+                              >
+                                {registerJobSeekerMutation.isPending ? (
+                                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                ) : null}
+                                Create Account
+                              </Button>
+                            </form>
+                          </Form>
+                        </CardContent>
+                        <CardFooter className="flex justify-center">
+                          <p className="text-sm text-gray-500">
+                            Already have an account?{" "}
+                            <Link href="/auth?tab=login" className="text-primary font-medium hover:underline">
+                              Sign in
+                            </Link>
+                          </p>
+                        </CardFooter>
+                      </>
+                    ) : (
+                      <>
+                        <CardHeader>
+                          <CardTitle>Employer Registration</CardTitle>
+                          <CardDescription>Create your employer account</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Form {...employerForm}>
+                            <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-4">
                               <FormField
-                                control={loginForm.control}
-                                name="password"
+                                control={employerForm.control}
+                                name="companyName"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>Password</FormLabel>
+                                    <FormLabel>Company Name</FormLabel>
                                     <FormControl>
-                                      <Input type="password" placeholder="••••••••" {...field} />
+                                      <Input placeholder="Acme Inc." {...field} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
                                 )}
                               />
                               
+                              <div className="grid md:grid-cols-2 gap-4">
+                                <FormField
+                                  control={employerForm.control}
+                                  name="industry"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Industry</FormLabel>
+                                      <Select 
+                                        onValueChange={field.onChange} 
+                                        defaultValue={field.value}
+                                      >
+                                        <FormControl>
+                                          <SelectTrigger>
+                                            <SelectValue placeholder="Select industry" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {industries.map((industry) => (
+                                            <SelectItem key={industry} value={industry}>
+                                              {industry}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                
+                                <FormField
+                                  control={employerForm.control}
+                                  name="companyType"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Company Type</FormLabel>
+                                      <Select 
+                                        onValueChange={field.onChange} 
+                                        defaultValue={field.value}
+                                      >
+                                        <FormControl>
+                                          <SelectTrigger>
+                                            <SelectValue placeholder="Select company type" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {companyTypes.map((type) => (
+                                            <SelectItem key={type} value={type}>
+                                              {type}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                              
+                              <div className="grid md:grid-cols-2 gap-4">
+                                <FormField
+                                  control={employerForm.control}
+                                  name="country"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Country</FormLabel>
+                                      <Select 
+                                        onValueChange={field.onChange} 
+                                        defaultValue={field.value}
+                                      >
+                                        <FormControl>
+                                          <SelectTrigger>
+                                            <SelectValue placeholder="Select country" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {countries.map((country) => (
+                                            <SelectItem key={country} value={country}>
+                                              {country}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                
+                                <FormField
+                                  control={employerForm.control}
+                                  name="phoneNumber"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Phone Number</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="+1 (555) 000-0000" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                              
+                              <FormField
+                                control={employerForm.control}
+                                name="website"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Website</FormLabel>
+                                    <FormControl>
+                                      <Input placeholder="https://www.example.com" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              
+                              <Separator className="my-4" />
+                              
+                              <FormField
+                                control={employerForm.control}
+                                name="email"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Email Address</FormLabel>
+                                    <FormControl>
+                                      <Input placeholder="email@example.com" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              
+                              <div className="grid md:grid-cols-2 gap-4">
+                                <FormField
+                                  control={employerForm.control}
+                                  name="password"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Password</FormLabel>
+                                      <FormControl>
+                                        <Input type="password" placeholder="••••••••" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                
+                                <FormField
+                                  control={employerForm.control}
+                                  name="confirmPassword"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Confirm Password</FormLabel>
+                                      <FormControl>
+                                        <Input type="password" placeholder="••••••••" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                              
                               <Button 
                                 type="submit" 
                                 className="w-full" 
-                                disabled={loginMutation.isPending}
+                                disabled={registerEmployerMutation.isPending}
                               >
-                                {loginMutation.isPending ? (
+                                {registerEmployerMutation.isPending ? (
                                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                                 ) : null}
-                                Sign In
+                                Create Account
                               </Button>
                             </form>
                           </Form>
                         </CardContent>
-                      </TabsContent>
-                      
-                      {/* Registration Forms */}
-                      <TabsContent value="register">
-                        {userType === "jobseeker" ? (
-                          <>
-                            <CardHeader>
-                              <CardTitle>Job Seeker Registration</CardTitle>
-                              <CardDescription>Create your job seeker account</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                              <Form {...jobSeekerForm}>
-                                <form onSubmit={jobSeekerForm.handleSubmit(onJobSeekerSubmit)} className="space-y-4">
-                                  <div className="grid md:grid-cols-2 gap-4">
-                                    <FormField
-                                      control={jobSeekerForm.control}
-                                      name="firstName"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>First Name</FormLabel>
-                                          <FormControl>
-                                            <Input placeholder="John" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                    
-                                    <FormField
-                                      control={jobSeekerForm.control}
-                                      name="lastName"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Last Name</FormLabel>
-                                          <FormControl>
-                                            <Input placeholder="Doe" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                  </div>
-                                  
-                                  <div className="grid md:grid-cols-2 gap-4">
-                                    <FormField
-                                      control={jobSeekerForm.control}
-                                      name="gender"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Gender</FormLabel>
-                                          <Select 
-                                            onValueChange={field.onChange} 
-                                            defaultValue={field.value}
-                                          >
-                                            <FormControl>
-                                              <SelectTrigger>
-                                                <SelectValue placeholder="Select gender" />
-                                              </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                              <SelectItem value="male">Male</SelectItem>
-                                              <SelectItem value="female">Female</SelectItem>
-                                              <SelectItem value="other">Other</SelectItem>
-                                            </SelectContent>
-                                          </Select>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                    
-                                    <FormField
-                                      control={jobSeekerForm.control}
-                                      name="dateOfBirth"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Date of Birth</FormLabel>
-                                          <FormControl>
-                                            <Input type="date" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                  </div>
-                                  
-                                  <div className="grid md:grid-cols-2 gap-4">
-                                    <FormField
-                                      control={jobSeekerForm.control}
-                                      name="country"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Country</FormLabel>
-                                          <Select 
-                                            onValueChange={field.onChange} 
-                                            defaultValue={field.value}
-                                          >
-                                            <FormControl>
-                                              <SelectTrigger>
-                                                <SelectValue placeholder="Select country" />
-                                              </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                              {countries.map((country) => (
-                                                <SelectItem key={country} value={country}>
-                                                  {country}
-                                                </SelectItem>
-                                              ))}
-                                            </SelectContent>
-                                          </Select>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                    
-                                    <FormField
-                                      control={jobSeekerForm.control}
-                                      name="phoneNumber"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Phone Number</FormLabel>
-                                          <FormControl>
-                                            <Input placeholder="+1 (555) 000-0000" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                  </div>
-                                  
-                                  <Separator className="my-4" />
-                                  
-                                  <FormField
-                                    control={jobSeekerForm.control}
-                                    name="email"
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel>Email Address</FormLabel>
-                                        <FormControl>
-                                          <Input placeholder="email@example.com" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  
-                                  <div className="grid md:grid-cols-2 gap-4">
-                                    <FormField
-                                      control={jobSeekerForm.control}
-                                      name="password"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Password</FormLabel>
-                                          <FormControl>
-                                            <Input type="password" placeholder="••••••••" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                    
-                                    <FormField
-                                      control={jobSeekerForm.control}
-                                      name="confirmPassword"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Confirm Password</FormLabel>
-                                          <FormControl>
-                                            <Input type="password" placeholder="••••••••" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                  </div>
-                                  
-                                  <Button 
-                                    type="submit" 
-                                    className="w-full" 
-                                    disabled={registerJobSeekerMutation.isPending}
-                                  >
-                                    {registerJobSeekerMutation.isPending ? (
-                                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                    ) : null}
-                                    Create Account
-                                  </Button>
-                                </form>
-                              </Form>
-                            </CardContent>
-                          </>
-                        ) : (
-                          <>
-                            <CardHeader>
-                              <CardTitle>Employer Registration</CardTitle>
-                              <CardDescription>Create your employer account</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                              <Form {...employerForm}>
-                                <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-4">
-                                  <FormField
-                                    control={employerForm.control}
-                                    name="companyName"
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel>Company Name</FormLabel>
-                                        <FormControl>
-                                          <Input placeholder="Acme Inc." {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  
-                                  <div className="grid md:grid-cols-2 gap-4">
-                                    <FormField
-                                      control={employerForm.control}
-                                      name="industry"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Industry</FormLabel>
-                                          <Select 
-                                            onValueChange={field.onChange} 
-                                            defaultValue={field.value}
-                                          >
-                                            <FormControl>
-                                              <SelectTrigger>
-                                                <SelectValue placeholder="Select industry" />
-                                              </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                              {industries.map((industry) => (
-                                                <SelectItem key={industry} value={industry}>
-                                                  {industry}
-                                                </SelectItem>
-                                              ))}
-                                            </SelectContent>
-                                          </Select>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                    
-                                    <FormField
-                                      control={employerForm.control}
-                                      name="companyType"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Company Type</FormLabel>
-                                          <Select 
-                                            onValueChange={field.onChange} 
-                                            defaultValue={field.value}
-                                          >
-                                            <FormControl>
-                                              <SelectTrigger>
-                                                <SelectValue placeholder="Select company type" />
-                                              </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                              {companyTypes.map((type) => (
-                                                <SelectItem key={type} value={type}>
-                                                  {type}
-                                                </SelectItem>
-                                              ))}
-                                            </SelectContent>
-                                          </Select>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                  </div>
-                                  
-                                  <div className="grid md:grid-cols-2 gap-4">
-                                    <FormField
-                                      control={employerForm.control}
-                                      name="country"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Country</FormLabel>
-                                          <Select 
-                                            onValueChange={field.onChange} 
-                                            defaultValue={field.value}
-                                          >
-                                            <FormControl>
-                                              <SelectTrigger>
-                                                <SelectValue placeholder="Select country" />
-                                              </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                              {countries.map((country) => (
-                                                <SelectItem key={country} value={country}>
-                                                  {country}
-                                                </SelectItem>
-                                              ))}
-                                            </SelectContent>
-                                          </Select>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                    
-                                    <FormField
-                                      control={employerForm.control}
-                                      name="phoneNumber"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Phone Number</FormLabel>
-                                          <FormControl>
-                                            <Input placeholder="+1 (555) 000-0000" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                  </div>
-                                  
-                                  <FormField
-                                    control={employerForm.control}
-                                    name="website"
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel>Website</FormLabel>
-                                        <FormControl>
-                                          <Input placeholder="https://www.example.com" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  
-                                  <Separator className="my-4" />
-                                  
-                                  <FormField
-                                    control={employerForm.control}
-                                    name="email"
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel>Email Address</FormLabel>
-                                        <FormControl>
-                                          <Input placeholder="email@example.com" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  
-                                  <div className="grid md:grid-cols-2 gap-4">
-                                    <FormField
-                                      control={employerForm.control}
-                                      name="password"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Password</FormLabel>
-                                          <FormControl>
-                                            <Input type="password" placeholder="••••••••" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                    
-                                    <FormField
-                                      control={employerForm.control}
-                                      name="confirmPassword"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Confirm Password</FormLabel>
-                                          <FormControl>
-                                            <Input type="password" placeholder="••••••••" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                  </div>
-                                  
-                                  <Button 
-                                    type="submit" 
-                                    className="w-full" 
-                                    disabled={registerEmployerMutation.isPending}
-                                  >
-                                    {registerEmployerMutation.isPending ? (
-                                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                    ) : null}
-                                    Create Account
-                                  </Button>
-                                </form>
-                              </Form>
-                            </CardContent>
-                          </>
-                        )}
-                      </TabsContent>
-                    </Card>
-                  </Tabs>
+                        <CardFooter className="flex justify-center">
+                          <p className="text-sm text-gray-500">
+                            Already have an account?{" "}
+                            <Link href="/auth?tab=login" className="text-primary font-medium hover:underline">
+                              Sign in
+                            </Link>
+                          </p>
+                        </CardFooter>
+                      </>
+                    )}
+                  </Card>
                 </>
               )}
             </div>
