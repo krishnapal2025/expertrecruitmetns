@@ -38,8 +38,16 @@ export interface IStorage {
     category?: string;
     location?: string;
     jobType?: string;
+    specialization?: string;
+    experience?: string;
+    minSalary?: number;
+    maxSalary?: number;
+    keyword?: string;
   }): Promise<Job[]>;
+  getJobsByEmployerId(employerId: number): Promise<Job[]>;
   createJob(job: InsertJob): Promise<Job>;
+  updateJob(job: Job): Promise<Job>;
+  deleteJob(id: number): Promise<boolean>;
   
   // Application methods
   getApplication(id: number): Promise<Application | undefined>;
@@ -298,10 +306,39 @@ export class MemStorage implements IStorage {
       id, 
       salary: insertJob.salary || null,
       postedDate: now,
-      isActive: true
+      isActive: true,
+      applicationCount: 0,
+      createdAt: now
     };
     this.jobs.set(id, job);
     return job;
+  }
+  
+  async getJobsByEmployerId(employerId: number): Promise<Job[]> {
+    return Array.from(this.jobs.values()).filter(
+      (job) => job.employerId === employerId
+    );
+  }
+  
+  async updateJob(job: Job): Promise<Job> {
+    // Check if the job exists
+    if (!this.jobs.has(job.id)) {
+      throw new Error('Job not found');
+    }
+    
+    // Update in the Map
+    this.jobs.set(job.id, job);
+    return job;
+  }
+  
+  async deleteJob(id: number): Promise<boolean> {
+    // Check if the job exists
+    if (!this.jobs.has(id)) {
+      return false;
+    }
+    
+    // Delete the job
+    return this.jobs.delete(id);
   }
 
   // Application methods

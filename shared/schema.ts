@@ -41,13 +41,24 @@ export const jobs = pgTable("jobs", {
   id: serial("id").primaryKey(),
   employerId: integer("employer_id").notNull().references(() => employers.id),
   title: text("title").notNull(),
+  company: text("company").notNull(),
   description: text("description").notNull(),
+  requirements: text("requirements").notNull(),
+  benefits: text("benefits").notNull(),
   category: text("category").notNull(),
   location: text("location").notNull(),
   jobType: text("job_type").notNull(), // 'Full-time', 'Part-time', 'Contract', etc.
+  specialization: text("specialization"),
+  experience: text("experience").notNull(),
+  minSalary: integer("min_salary").notNull(),
+  maxSalary: integer("max_salary").notNull(),
+  contactEmail: text("contact_email").notNull(),
+  applicationDeadline: timestamp("application_deadline").notNull(),
   salary: text("salary"),
   postedDate: timestamp("posted_date").defaultNow(),
   isActive: boolean("is_active").default(true),
+  applicationCount: integer("application_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Job applications table
