@@ -108,7 +108,22 @@ export default function FeaturedCategories() {
   const [activeCategory, setActiveCategory] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
   const maxVisibleItems = 4; // Max items visible in desktop view
-  const maxIndex = Math.ceil(categories.length / maxVisibleItems) - 1;
+  const totalItems = categories.length;
+  const maxIndex = Math.ceil(totalItems / maxVisibleItems) - 1;
+  
+  // Calculate how many items to display in the last view to prevent empty spaces
+  const getItemsInLastView = () => {
+    return totalItems % maxVisibleItems === 0 
+      ? maxVisibleItems 
+      : totalItems % maxVisibleItems;
+  };
+  
+  // Get the number of items visible in the current view
+  const getVisibleItemsInCurrentView = () => {
+    return currentIndex === maxIndex 
+      ? getItemsInLastView() 
+      : maxVisibleItems;
+  };
   
   // Move slider to specific index
   const goToIndex = (index: number) => {
@@ -122,46 +137,56 @@ export default function FeaturedCategories() {
     
     // Calculate which category should be active based on the current index
     const startingCategory = index * maxVisibleItems;
-    setActiveCategory(startingCategory < categories.length ? startingCategory : categories.length - 1);
+    setActiveCategory(startingCategory < totalItems ? startingCategory : totalItems - 1);
   };
   
-  // Navigate to next category within the current view
+  // Navigate to next category
   const goToNextCategory = () => {
-    // If we're at the last visible category in the current view, go to next view
-    const isLastInCurrentView = (activeCategory + 1) % maxVisibleItems === 0;
-    const isLastCategory = activeCategory === categories.length - 1;
+    const isLastCategory = activeCategory === totalItems - 1;
     
+    // If we're at the last category, loop back to the first
     if (isLastCategory) {
-      // Loop back to first category
       setActiveCategory(0);
       setCurrentIndex(0);
-    } else if (isLastInCurrentView) {
-      // Move to next view
-      goToIndex(currentIndex + 1);
-    } else {
-      // Just highlight next category in current view
-      setActiveCategory(activeCategory + 1);
+      return;
+    }
+    
+    // Move to next category
+    const nextCategory = activeCategory + 1;
+    setActiveCategory(nextCategory);
+    
+    // Check if we need to slide to the next view
+    const currentViewStart = currentIndex * maxVisibleItems;
+    const currentViewEnd = currentViewStart + getVisibleItemsInCurrentView() - 1;
+    
+    // If next category is outside current view, move to the appropriate view
+    if (nextCategory > currentViewEnd) {
+      setCurrentIndex(Math.floor(nextCategory / maxVisibleItems));
     }
   };
   
-  // Navigate to previous category within the current view
+  // Navigate to previous category
   const goToPrevCategory = () => {
-    // If we're at the first visible category in the current view, go to previous view
-    const isFirstInCurrentView = activeCategory % maxVisibleItems === 0;
     const isFirstCategory = activeCategory === 0;
     
+    // If we're at the first category, loop to the last
     if (isFirstCategory) {
-      // Loop to last category
-      setActiveCategory(categories.length - 1);
-      setCurrentIndex(maxIndex);
-    } else if (isFirstInCurrentView) {
-      // Move to previous view
-      const newIndex = currentIndex - 1;
-      setCurrentIndex(newIndex);
-      setActiveCategory(newIndex * maxVisibleItems + (maxVisibleItems - 1));
-    } else {
-      // Just highlight previous category in current view
-      setActiveCategory(activeCategory - 1);
+      const lastCategory = totalItems - 1;
+      setActiveCategory(lastCategory);
+      setCurrentIndex(Math.floor(lastCategory / maxVisibleItems));
+      return;
+    }
+    
+    // Move to previous category
+    const prevCategory = activeCategory - 1;
+    setActiveCategory(prevCategory);
+    
+    // Check if we need to slide to the previous view
+    const currentViewStart = currentIndex * maxVisibleItems;
+    
+    // If previous category is outside current view, move to the appropriate view
+    if (prevCategory < currentViewStart) {
+      setCurrentIndex(Math.floor(prevCategory / maxVisibleItems));
     }
   };
   
@@ -180,6 +205,18 @@ export default function FeaturedCategories() {
       const slideWidth = 100 / maxVisibleItems;
       const slidePercent = currentIndex * slideWidth * maxVisibleItems;
       sliderRef.current.style.transform = `translateX(-${slidePercent}%)`;
+    }
+  }, [currentIndex]);
+  
+  // Update active category if it's out of the current view
+  useEffect(() => {
+    const startIdx = currentIndex * maxVisibleItems;
+    const visibleItems = getVisibleItemsInCurrentView();
+    const endIdx = startIdx + visibleItems - 1;
+    
+    // If activeCategory is outside current view, adjust it
+    if (activeCategory < startIdx || activeCategory > endIdx) {
+      setActiveCategory(startIdx);
     }
   }, [currentIndex]);
 
