@@ -132,11 +132,34 @@ export default function AuthPage() {
       companyName: "",
       industry: "",
       companyType: "",
+      phoneNumber: "",
       country: "",
       website: "",
       userType: "employer"
     }
   });
+  
+  // Track selected country for employer to update phone number field
+  const [selectedEmployerCountryCode, setSelectedEmployerCountryCode] = useState<string>("");
+  
+  // Watch the employer country field to update the phone prefix
+  const selectedEmployerCountry = employerForm.watch("country");
+  
+  // Update employer country code when country changes
+  useEffect(() => {
+    if (selectedEmployerCountry) {
+      const countryData = countries.find(c => c.name === selectedEmployerCountry);
+      if (countryData) {
+        setSelectedEmployerCountryCode(countryData.code);
+        
+        // Only prefill the phone number if it's completely empty
+        const currentPhone = employerForm.getValues("phoneNumber");
+        if (!currentPhone) {
+          employerForm.setValue("phoneNumber", countryData.code + " ");
+        }
+      }
+    }
+  }, [selectedEmployerCountry, employerForm]);
   
   // Handle login submission
   const onLoginSubmit = (data: LoginCredentials) => {
@@ -608,7 +631,22 @@ export default function AuthPage() {
                                   )}
                                 />
                                 
-
+                                <FormField
+                                  control={employerForm.control}
+                                  name="phoneNumber"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Phone Number</FormLabel>
+                                      <FormControl>
+                                        <Input 
+                                          placeholder={selectedEmployerCountryCode ? `${selectedEmployerCountryCode} your phone number` : "Phone number"} 
+                                          {...field} 
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
                               </div>
                               
                               <FormField

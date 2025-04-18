@@ -31,6 +31,7 @@ export const employers = pgTable("employers", {
   companyName: text("company_name").notNull(),
   industry: text("industry").notNull(),
   companyType: text("company_type").notNull(),
+  phoneNumber: text("phone_number").notNull(),
   country: text("country").notNull(),
   website: text("website").notNull(),
 });
@@ -136,6 +137,7 @@ export const employerRegisterSchema = insertUserSchema.extend({
   companyName: z.string().min(2, "Company name must be at least 2 characters"),
   industry: z.string().min(2, "Please select an industry"),
   companyType: z.string().min(2, "Please select a company type"),
+  phoneNumber: z.string().min(5, "Please enter a valid phone number"),
   country: z.string().min(2, "Please select a country"),
   website: z.string().url("Please enter a valid website URL"),
   confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
