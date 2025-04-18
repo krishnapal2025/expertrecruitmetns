@@ -32,19 +32,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
 import { Briefcase, Building, Clock, DollarSign, MapPin, Save } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InsertJob } from "@shared/schema";
 
-// Form schema for job posting (Full version)
+// Form schema for job posting
 const jobPostSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
   company: z.string().min(2, "Company name is required"),
@@ -62,22 +56,7 @@ const jobPostSchema = z.object({
   contactEmail: z.string().email("Must be a valid email address"),
 });
 
-// Form schema for simple job notification
-const jobNotificationSchema = z.object({
-  title: z.string().min(5, "Title must be at least 5 characters"),
-  company: z.string().min(2, "Company name is required"),
-  location: z.string().min(2, "Location is required"),
-  jobType: z.string().min(2, "Job type is required"),
-  specialization: z.string().optional(),
-  experience: z.string().min(2, "Experience level is required"),
-  minSalary: z.coerce.number().min(0, "Minimum salary is required"),
-  maxSalary: z.coerce.number().min(0, "Maximum salary is required"),
-  applicationDeadline: z.string().min(1, "Application deadline is required"),
-  contactEmail: z.string().email("Must be a valid email address"),
-});
-
 type JobPostFormValues = z.infer<typeof jobPostSchema>;
-type JobNotificationFormValues = z.infer<typeof jobNotificationSchema>;
 
 // Job categories
 const categories = [
@@ -195,10 +174,9 @@ export default function PostJobPage() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isPreview, setIsPreview] = useState(false);
-  const [formType, setFormType] = useState<"full" | "notification">("full");
   const queryClient = useQueryClient();
   
-  // Set up full job form with validation
+  // Set up form with validation
   const form = useForm<JobPostFormValues>({
     resolver: zodResolver(jobPostSchema),
     defaultValues: {
@@ -220,28 +198,10 @@ export default function PostJobPage() {
     },
   });
   
-  // Set up job notification form with validation
-  const notificationForm = useForm<JobNotificationFormValues>({
-    resolver: zodResolver(jobNotificationSchema),
-    defaultValues: {
-      title: "",
-      company: currentUser?.user.userType === "employer" ? 
-        (currentUser?.profile as any).companyName || "" : "",
-      location: "",
-      jobType: "",
-      specialization: "",
-      experience: "",
-      minSalary: 0,
-      maxSalary: 0,
-      applicationDeadline: new Date().toISOString().split('T')[0],
-      contactEmail: currentUser?.user.email || "",
-    },
-  });
-  
   // Watch form values for preview
   const formValues = form.watch();
   
-  // Create job mutation (full job form)
+  // Create job mutation
   const createJobMutation = useMutation({
     mutationFn: async (data: JobPostFormValues) => {
       const res = await apiRequest("POST", "/api/jobs", {
@@ -259,8 +219,8 @@ export default function PostJobPage() {
       // Invalidate the jobs query to refresh job listings
       queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
       
-      // Redirect to job management page
-      setLocation("/my-jobs");
+      // Redirect to jobs page
+      setLocation("/job-board");
     },
     onError: (error: Error) => {
       toast({
@@ -271,62 +231,9 @@ export default function PostJobPage() {
     },
   });
   
-  // Create job notification mutation (simplified job form)
-  const createJobNotificationMutation = useMutation({
-    mutationFn: async (data: JobNotificationFormValues) => {
-      // Add default values for the required fields that are not in the notification form
-      const fullJobData: JobPostFormValues = {
-        ...data,
-        category: data.specialization ? (
-          specializations.indexOf(data.specialization) >= 9 && specializations.indexOf(data.specialization) < 15 ? "Finance" : 
-          specializations.indexOf(data.specialization) >= 15 && specializations.indexOf(data.specialization) < 20 ? "Healthcare" : 
-          specializations.indexOf(data.specialization) >= 20 && specializations.indexOf(data.specialization) < 25 ? "Marketing" : 
-          specializations.indexOf(data.specialization) >= 25 && specializations.indexOf(data.specialization) < 29 ? "Engineering" : 
-          specializations.indexOf(data.specialization) >= 30 && specializations.indexOf(data.specialization) < 33 ? "Education" : "Technology"
-        ) : "Technology",
-        description: `We are looking for a ${data.title} at ${data.company}. This is a ${data.jobType} position.`,
-        requirements: `Experience level: ${data.experience}`,
-        benefits: "Competitive salary and benefits package.",
-      };
-      
-      const res = await apiRequest("POST", "/api/jobs", {
-        ...fullJobData,
-        employerId: currentUser?.profile.id,
-      });
-      return await res.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Job Notification Posted",
-        description: "Your job notification has been posted successfully.",
-      });
-      
-      // Invalidate the jobs query to refresh job listings
-      queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
-      
-      // Reset the form
-      notificationForm.reset();
-      
-      // Redirect to job management page
-      setLocation("/my-jobs");
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Failed to Post Job Notification",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-  
-  // Handle full form submission
+  // Handle form submission
   const onSubmit = (data: JobPostFormValues) => {
     createJobMutation.mutate(data);
-  };
-  
-  // Handle notification form submission
-  const onSubmitNotification = (data: JobNotificationFormValues) => {
-    createJobNotificationMutation.mutate(data);
   };
   
   // Get currency symbol based on selected location
@@ -375,350 +282,114 @@ export default function PostJobPage() {
           </Alert>
         ) : (
           <>
-            <Tabs defaultValue="notification" className="w-full" onValueChange={(value) => setFormType(value as "full" | "notification")}>
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="notification">Quick Job Notification</TabsTrigger>
-                <TabsTrigger value="full">Detailed Job Posting</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="notification">
-                {/* Quick job notification form */}
+            {/* Toggle between form and preview */}
+            <div className="flex mb-6 border-b pb-4">
+              <Button
+                variant={isPreview ? "outline" : "default"}
+                className="mr-2"
+                onClick={() => setIsPreview(false)}
+              >
+                Edit Job
+              </Button>
+              <Button
+                variant={isPreview ? "default" : "outline"}
+                onClick={() => setIsPreview(true)}
+                disabled={!form.formState.isValid}
+              >
+                Preview
+              </Button>
+            </div>
+            
+            {isPreview ? (
+              // Job Preview
+              <div className="space-y-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Quick Job Notification</CardTitle>
-                    <CardDescription>
-                      Create a simple job notification with just the essential details
-                    </CardDescription>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="text-2xl font-bold">{formValues.title}</CardTitle>
+                        <div className="flex items-center mt-2">
+                          <Building className="h-4 w-4 mr-1 text-gray-500" />
+                          <span className="text-gray-600">{formValues.company}</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className="inline-flex items-center bg-primary/10 text-primary rounded-full px-3 py-1 text-sm font-medium">
+                          {formValues.jobType}
+                        </span>
+                      </div>
+                    </div>
                   </CardHeader>
-                  <CardContent>
-                    <Form {...notificationForm}>
-                      <form onSubmit={notificationForm.handleSubmit(onSubmitNotification)} className="space-y-4">
-                        <FormField
-                          control={notificationForm.control}
-                          name="title"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Job Title</FormLabel>
-                              <FormControl>
-                                <Input placeholder="e.g., Senior Frontend Developer" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={notificationForm.control}
-                          name="company"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Company Name</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Your company name" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={notificationForm.control}
-                            name="location"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Location</FormLabel>
-                                <Select 
-                                  onValueChange={field.onChange} 
-                                  defaultValue={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select location" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {locations.map((location) => (
-                                      <SelectItem key={location} value={location}>
-                                        {location}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          
-                          <FormField
-                            control={notificationForm.control}
-                            name="jobType"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Job Type</FormLabel>
-                                <Select 
-                                  onValueChange={field.onChange} 
-                                  defaultValue={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select job type" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {jobTypes.map((type) => (
-                                      <SelectItem key={type} value={type}>
-                                        {type}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={notificationForm.control}
-                            name="specialization"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Specialization</FormLabel>
-                                <Select 
-                                  onValueChange={field.onChange} 
-                                  defaultValue={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select specialization" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {specializations.map((specialization) => (
-                                      <SelectItem key={specialization} value={specialization}>
-                                        {specialization}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          
-                          <FormField
-                            control={notificationForm.control}
-                            name="experience"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Experience Level</FormLabel>
-                                <Select 
-                                  onValueChange={field.onChange} 
-                                  defaultValue={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select experience level" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {experienceLevels.map((level) => (
-                                      <SelectItem key={level} value={level}>
-                                        {level}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={notificationForm.control}
-                            name="minSalary"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Minimum Salary</FormLabel>
-                                <FormControl>
-                                  <Input type="number" placeholder="e.g., 50000" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          
-                          <FormField
-                            control={notificationForm.control}
-                            name="maxSalary"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Maximum Salary</FormLabel>
-                                <FormControl>
-                                  <Input type="number" placeholder="e.g., 80000" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={notificationForm.control}
-                            name="applicationDeadline"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Application Deadline</FormLabel>
-                                <FormControl>
-                                  <Input type="date" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          
-                          <FormField
-                            control={notificationForm.control}
-                            name="contactEmail"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Contact Email</FormLabel>
-                                <FormControl>
-                                  <Input type="email" placeholder="contact@example.com" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        
-                        <Button 
-                          type="submit" 
-                          className="w-full"
-                          disabled={createJobNotificationMutation.isPending}
-                        >
-                          {createJobNotificationMutation.isPending ? "Posting..." : "Post Job Notification"}
-                        </Button>
-                      </form>
-                    </Form>
+                  <CardContent className="space-y-4">
+                    <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                      <div className="flex items-center">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        {formValues.location}
+                      </div>
+                      <div className="flex items-center">
+                        <Briefcase className="h-4 w-4 mr-1" />
+                        {formValues.category}
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-1" />
+                        {formValues.experience}
+                      </div>
+                      <div className="flex items-center">
+                        <DollarSign className="h-4 w-4 mr-1" />
+                        {getCurrencySymbol(formValues.location)}{formValues.minSalary.toLocaleString()} - {getCurrencySymbol(formValues.location)}{formValues.maxSalary.toLocaleString()} per year
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Job Description</h3>
+                      <p className="whitespace-pre-line">{formValues.description}</p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Requirements</h3>
+                      <p className="whitespace-pre-line">{formValues.requirements}</p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Benefits</h3>
+                      <p className="whitespace-pre-line">{formValues.benefits}</p>
+                    </div>
+                    
+                    <div className="rounded-lg bg-gray-50 p-4 border">
+                      <div className="font-medium mb-2">Application Information</div>
+                      <div className="text-sm">
+                        <p>
+                          <span className="font-medium">Deadline:</span> {new Date(formValues.applicationDeadline).toLocaleDateString()}
+                        </p>
+                        <p>
+                          <span className="font-medium">Contact:</span> {formValues.contactEmail}
+                        </p>
+                      </div>
+                    </div>
                   </CardContent>
+                  <CardFooter>
+                    <Button 
+                      className="w-full" 
+                      onClick={() => onSubmit(form.getValues())}
+                      disabled={createJobMutation.isPending}
+                    >
+                      {createJobMutation.isPending ? "Posting..." : "Post Job Now"}
+                    </Button>
+                  </CardFooter>
                 </Card>
-              </TabsContent>
-              
-              <TabsContent value="full">
-                {/* Toggle between form and preview for detailed job */}
-                <div className="flex mb-6 border-b pb-4">
-                  <Button
-                    variant={isPreview ? "outline" : "default"}
-                    className="mr-2"
-                    onClick={() => setIsPreview(false)}
-                  >
-                    Edit Job
-                  </Button>
-                  <Button
-                    variant={isPreview ? "default" : "outline"}
-                    onClick={() => setIsPreview(true)}
-                    disabled={!form.formState.isValid}
-                  >
-                    Preview
-                  </Button>
-                </div>
-                
-                {isPreview ? (
-                  // Job Preview
-                  <div className="space-y-6">
-                    <Card>
-                      <CardHeader>
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <CardTitle className="text-2xl font-bold">{formValues.title}</CardTitle>
-                            <div className="flex items-center mt-2">
-                              <Building className="h-4 w-4 mr-1 text-gray-500" />
-                              <span className="text-gray-600">{formValues.company}</span>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <span className="inline-flex items-center bg-primary/10 text-primary rounded-full px-3 py-1 text-sm font-medium">
-                              {formValues.jobType}
-                            </span>
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                          <div className="flex items-center">
-                            <MapPin className="h-4 w-4 mr-1" />
-                            {formValues.location}
-                          </div>
-                          <div className="flex items-center">
-                            <Briefcase className="h-4 w-4 mr-1" />
-                            {formValues.category}
-                          </div>
-                          <div className="flex items-center">
-                            <Clock className="h-4 w-4 mr-1" />
-                            {formValues.experience}
-                          </div>
-                          <div className="flex items-center">
-                            <DollarSign className="h-4 w-4 mr-1" />
-                            {getCurrencySymbol(formValues.location)}{formValues.minSalary.toLocaleString()} - {getCurrencySymbol(formValues.location)}{formValues.maxSalary.toLocaleString()} per year
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <h3 className="text-lg font-semibold mb-2">Job Description</h3>
-                          <p className="whitespace-pre-line">{formValues.description}</p>
-                        </div>
-                        
-                        <div>
-                          <h3 className="text-lg font-semibold mb-2">Requirements</h3>
-                          <p className="whitespace-pre-line">{formValues.requirements}</p>
-                        </div>
-                        
-                        <div>
-                          <h3 className="text-lg font-semibold mb-2">Benefits</h3>
-                          <p className="whitespace-pre-line">{formValues.benefits}</p>
-                        </div>
-                        
-                        <div className="rounded-lg bg-gray-50 p-4 border">
-                          <div className="font-medium mb-2">Application Information</div>
-                          <div className="text-sm">
-                            <p>
-                              <span className="font-medium">Deadline:</span> {new Date(formValues.applicationDeadline).toLocaleDateString()}
-                            </p>
-                            <p>
-                              <span className="font-medium">Contact:</span> {formValues.contactEmail}
-                            </p>
-                          </div>
-                        </div>
-                      </CardContent>
-                      <CardFooter>
-                        <Button 
-                          className="w-full" 
-                          onClick={() => onSubmit(form.getValues())}
-                          disabled={createJobMutation.isPending}
-                        >
-                          {createJobMutation.isPending ? "Posting..." : "Post Job Now"}
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </div>
-                ) : (
-                  // Job Post Form
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                      <Card>
-                        <CardHeader>
-                          <CardTitle>Job Details</CardTitle>
-                          <CardDescription>
-                            Enter the basic information about the job position
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
+              </div>
+            ) : (
+              // Job Post Form
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Job Details</CardTitle>
+                      <CardDescription>
+                        Enter the basic information about the job position
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
                       <FormField
                         control={form.control}
                         name="title"
