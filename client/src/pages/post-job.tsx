@@ -181,7 +181,8 @@ export default function PostJobPage() {
     resolver: zodResolver(jobPostSchema),
     defaultValues: {
       title: "",
-      company: currentUser?.profile.companyName || "",
+      company: currentUser?.user.userType === "employer" ? 
+        (currentUser?.profile as any).companyName || "" : "",
       location: "",
       category: "",
       jobType: "",

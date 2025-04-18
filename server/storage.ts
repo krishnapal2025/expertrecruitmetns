@@ -6,7 +6,7 @@ import {
   applications, Application, InsertApplication,
   testimonials, Testimonial, InsertTestimonial
 } from "@shared/schema";
-import session from "express-session";
+import * as session from "express-session";
 import createMemoryStore from "memorystore";
 
 const MemoryStore = createMemoryStore(session);
@@ -301,15 +301,76 @@ export class MemStorage implements IStorage {
   async createJob(insertJob: InsertJob): Promise<Job> {
     const id = this.jobIdCounter++;
     const now = new Date();
+    
+    // Extract company name from title if not provided
+    let company = insertJob.company;
+    if (!company && insertJob.title?.includes("at ")) {
+      const parts = insertJob.title.split(" at ");
+      if (parts.length >= 2) {
+        company = parts[1];
+      }
+    }
+    
+    // Build default requirements and benefits from description if not provided
+    const description = insertJob.description || "";
+    let requirements = insertJob.requirements;
+    let benefits = insertJob.benefits;
+    
+    if (!requirements && description.includes("Requirements:")) {
+      const reqParts = description.split("Requirements:");
+      if (reqParts.length >= 2) {
+        const reqSection = reqParts[1].split("\n\n")[0];
+        requirements = reqSection.trim();
+      }
+    }
+    
+    if (!benefits && description.includes("Benefits:")) {
+      const benParts = description.split("Benefits:");
+      if (benParts.length >= 2) {
+        const benSection = benParts[1].split("\n\n")[0];
+        benefits = benSection.trim();
+      }
+    }
+    
+    // Parse salary range from text format if minSalary/maxSalary not provided
+    let minSalary = insertJob.minSalary;
+    let maxSalary = insertJob.maxSalary;
+    
+    if ((!minSalary || !maxSalary) && insertJob.salary) {
+      const salaryText = insertJob.salary;
+      const numbers = salaryText.match(/[\d,]+/g);
+      if (numbers && numbers.length >= 2) {
+        minSalary = parseInt(numbers[0].replace(/,/g, ''));
+        maxSalary = parseInt(numbers[1].replace(/,/g, ''));
+      } else if (numbers && numbers.length === 1) {
+        const value = parseInt(numbers[0].replace(/,/g, ''));
+        minSalary = value * 0.9;
+        maxSalary = value * 1.1;
+      }
+    }
+    
+    const applicationDeadline = insertJob.applicationDeadline || new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    
+    // Create default job
     const job: Job = { 
       ...insertJob, 
       id, 
+      company: company || "Unknown Company",
+      requirements: requirements || "Please contact employer for detailed requirements.",
+      benefits: benefits || "Please contact employer for detailed benefits information.",
+      experience: insertJob.experience || "Not specified",
+      minSalary: minSalary || 0,
+      maxSalary: maxSalary || 0,
+      contactEmail: insertJob.contactEmail || "contact@example.com",
+      applicationDeadline: applicationDeadline,
+      specialization: insertJob.specialization || null,
       salary: insertJob.salary || null,
       postedDate: now,
       isActive: true,
       applicationCount: 0,
       createdAt: now
     };
+    
     this.jobs.set(id, job);
     return job;
   }

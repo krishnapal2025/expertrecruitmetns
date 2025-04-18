@@ -99,8 +99,8 @@ export default function MyJobsPage() {
   // Job card component
   const JobCard = ({ job, status }: { job: Job, status: "active" | "closed" }) => {
     const isActive = status === "active";
-    const postedDate = new Date(job.createdAt);
-    const deadline = new Date(job.applicationDeadline);
+    const postedDate = job.createdAt ? new Date(job.createdAt) : new Date(job.postedDate || Date.now());
+    const deadline = job.applicationDeadline ? new Date(job.applicationDeadline) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     
     // Calculate days remaining until deadline
     const daysRemaining = Math.ceil((deadline.getTime() - new Date().getTime()) / (1000 * 3600 * 24));

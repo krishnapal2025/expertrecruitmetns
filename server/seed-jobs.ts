@@ -13,13 +13,22 @@ async function seedJobs() {
   // FINANCE JOBS
   const financeJobs: InsertJob[] = [
     {
-      title: 'Senior Financial Analyst at Goldman Sachs',
+      title: 'Senior Financial Analyst',
+      company: 'Goldman Sachs',
       location: 'New York, NY',
       jobType: 'Full-time',
       salary: '$120,000 - $150,000',
       category: 'Finance',
-      description: "We are seeking a Senior Financial Analyst to join our Investment Banking Division at Goldman Sachs. The ideal candidate will have strong analytical skills, excellent communication abilities, and a deep understanding of financial markets.\n\nRequirements:\n- MBA or CFA, 5+ years in investment banking, financial modeling expertise\n\nBenefits:\n- Competitive salary, comprehensive benefits package, performance bonuses, 401(k) matching\n\nSkills Needed:\n- Financial Modeling, Valuation, M&A, Capital Markets, Excel, PowerPoint",
+      description: "We are seeking a Senior Financial Analyst to join our Investment Banking Division at Goldman Sachs. The ideal candidate will have strong analytical skills, excellent communication abilities, and a deep understanding of financial markets.",
+      requirements: "MBA or CFA, 5+ years in investment banking, financial modeling expertise. Proficiency in Excel, PowerPoint, and financial analysis tools.",
+      benefits: "Competitive salary, comprehensive benefits package, performance bonuses, 401(k) matching, professional development opportunities.",
       employerId: 1,
+      specialization: "Financial Analysis",
+      experience: "Senior (5-10 years)",
+      minSalary: 120000,
+      maxSalary: 150000,
+      contactEmail: "careers@goldmansachs.example.com",
+      applicationDeadline: new Date(new Date().setDate(new Date().getDate() + 30)),
     },
     {
       title: 'Investment Banking Associate at Morgan Stanley',

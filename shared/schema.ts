@@ -100,6 +100,8 @@ export const insertJobSchema = createInsertSchema(jobs).omit({
   id: true,
   postedDate: true,
   isActive: true,
+  createdAt: true,
+  applicationCount: true,
 });
 
 export const insertApplicationSchema = createInsertSchema(applications).omit({
