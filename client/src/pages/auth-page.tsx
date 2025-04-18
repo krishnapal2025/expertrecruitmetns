@@ -99,6 +99,28 @@ export default function AuthPage() {
       userType: "jobseeker"
     }
   });
+
+  // Track selected country for job seeker to update phone number field
+  const [selectedJobSeekerCountryCode, setSelectedJobSeekerCountryCode] = useState<string>("");
+  
+  // Watch the job seeker country field to update the phone prefix
+  const selectedJobSeekerCountry = jobSeekerForm.watch("country");
+  
+  // Update job seeker country code when country changes
+  useEffect(() => {
+    if (selectedJobSeekerCountry) {
+      const countryData = countries.find(c => c.name === selectedJobSeekerCountry);
+      if (countryData) {
+        setSelectedJobSeekerCountryCode(countryData.code);
+        
+        // Update phone number field if it's empty or only contains a previous country code
+        const currentPhone = jobSeekerForm.getValues("phoneNumber");
+        if (!currentPhone || currentPhone.match(/^\+\d+\s*$/)) {
+          jobSeekerForm.setValue("phoneNumber", countryData.code + " ");
+        }
+      }
+    }
+  }, [selectedJobSeekerCountry, jobSeekerForm]);
   
   // Employer registration form
   const employerForm = useForm<EmployerRegister>({
@@ -117,18 +139,18 @@ export default function AuthPage() {
     }
   });
   
-  // Track selected country to update phone number field
-  const [selectedCountryCode, setSelectedCountryCode] = useState<string>("");
+  // Track selected country for employer to update phone number field
+  const [selectedEmployerCountryCode, setSelectedEmployerCountryCode] = useState<string>("");
   
-  // Watch the country field to update the phone prefix
-  const selectedCountry = employerForm.watch("country");
+  // Watch the employer country field to update the phone prefix
+  const selectedEmployerCountry = employerForm.watch("country");
   
-  // Update country code when country changes
+  // Update employer country code when country changes
   useEffect(() => {
-    if (selectedCountry) {
-      const countryData = countries.find(c => c.name === selectedCountry);
+    if (selectedEmployerCountry) {
+      const countryData = countries.find(c => c.name === selectedEmployerCountry);
       if (countryData) {
-        setSelectedCountryCode(countryData.code);
+        setSelectedEmployerCountryCode(countryData.code);
         
         // Update phone number field if it's empty or only contains a previous country code
         const currentPhone = employerForm.getValues("phoneNumber");
@@ -137,7 +159,7 @@ export default function AuthPage() {
         }
       }
     }
-  }, [selectedCountry, employerForm]);
+  }, [selectedEmployerCountry, employerForm]);
   
   // Handle login submission
   const onLoginSubmit = (data: LoginCredentials) => {
@@ -402,8 +424,8 @@ export default function AuthPage() {
                                         </FormControl>
                                         <SelectContent>
                                           {countries.map((country) => (
-                                            <SelectItem key={country} value={country}>
-                                              {country}
+                                            <SelectItem key={country.name} value={country.name}>
+                                              {country.name} ({country.code})
                                             </SelectItem>
                                           ))}
                                         </SelectContent>
@@ -420,7 +442,10 @@ export default function AuthPage() {
                                     <FormItem>
                                       <FormLabel>Phone Number</FormLabel>
                                       <FormControl>
-                                        <Input placeholder="+1 (555) 000-0000" {...field} />
+                                        <Input 
+                                          placeholder={selectedJobSeekerCountryCode ? `${selectedJobSeekerCountryCode} phone number` : "Phone number"} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -512,7 +537,7 @@ export default function AuthPage() {
                                   <FormItem>
                                     <FormLabel>Company Name</FormLabel>
                                     <FormControl>
-                                      <Input placeholder="Acme Inc." {...field} />
+                                      <Input placeholder="Company Ltd." {...field} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -595,8 +620,8 @@ export default function AuthPage() {
                                         </FormControl>
                                         <SelectContent>
                                           {countries.map((country) => (
-                                            <SelectItem key={country} value={country}>
-                                              {country}
+                                            <SelectItem key={country.name} value={country.name}>
+                                              {country.name} ({country.code})
                                             </SelectItem>
                                           ))}
                                         </SelectContent>
@@ -613,7 +638,10 @@ export default function AuthPage() {
                                     <FormItem>
                                       <FormLabel>Phone Number</FormLabel>
                                       <FormControl>
-                                        <Input placeholder="+1 (555) 000-0000" {...field} />
+                                        <Input 
+                                          placeholder={selectedEmployerCountryCode ? `${selectedEmployerCountryCode} phone number` : "Phone number"} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -710,44 +738,61 @@ export default function AuthPage() {
             </div>
             
             {/* Right side: Hero section */}
-            <div className="md:col-span-2">
-              <div className="h-full flex flex-col justify-center bg-primary text-primary-foreground rounded-lg p-8">
-                <h2 className="text-2xl font-bold mb-4">Join Our Talent Network</h2>
-                <p className="mb-6">
-                  Connect with top employers and find your dream job or source the best talent for your company.
+            <div className="md:col-span-2 bg-primary text-white rounded-lg p-8 flex flex-col justify-center">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-2">Find Your Dream Career</h2>
+                <p className="text-primary-foreground/90">
+                  {isLoginMode 
+                    ? "Welcome back to the premier platform for job seekers and employers." 
+                    : userType === "jobseeker" 
+                      ? "Join thousands of job seekers who found their perfect role through our platform."
+                      : "Connect with talented professionals and grow your team with our comprehensive recruitment tools."
+                  }
                 </p>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start">
-                    <div className="bg-white/10 p-2 rounded-full mr-3">
-                      <UserIcon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium">For Job Seekers</h3>
-                      <p className="text-sm opacity-80">
-                        Access thousands of job opportunities tailored to your skills and career goals.
-                      </p>
-                    </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <div className="bg-white/20 p-2 rounded mr-3 flex-shrink-0">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
                   </div>
-                  
-                  <div className="flex items-start">
-                    <div className="bg-white/10 p-2 rounded-full mr-3">
-                      <BriefcaseIcon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium">For Employers</h3>
-                      <p className="text-sm opacity-80">
-                        Find the right talent quickly with our advanced matching algorithms and recruitment tools.
-                      </p>
-                    </div>
+                  <div>
+                    <h3 className="font-medium">Personalized Job Matches</h3>
+                    <p className="text-sm text-primary-foreground/80">Get job recommendations based on your skills and experience</p>
                   </div>
                 </div>
                 
-                <div className="mt-auto pt-8">
-                  <div className="text-sm opacity-70">
-                    By signing up, you agree to our <Link href="/privacy-policy" className="underline">Privacy Policy</Link> and <Link href="/terms" className="underline">Terms of Service</Link>.
+                <div className="flex items-start">
+                  <div className="bg-white/20 p-2 rounded mr-3 flex-shrink-0">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-medium">Industry Connections</h3>
+                    <p className="text-sm text-primary-foreground/80">Network with leading employers across diverse sectors</p>
                   </div>
                 </div>
+                
+                <div className="flex items-start">
+                  <div className="bg-white/20 p-2 rounded mr-3 flex-shrink-0">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-medium">Career Resources</h3>
+                    <p className="text-sm text-primary-foreground/80">Access tools and guidance to advance your professional journey</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-auto pt-6">
+                <p className="text-sm text-primary-foreground/70">
+                  By joining, you agree to our terms of service and privacy policy
+                </p>
               </div>
             </div>
           </div>
