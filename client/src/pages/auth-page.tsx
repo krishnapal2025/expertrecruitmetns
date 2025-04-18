@@ -150,11 +150,14 @@ export default function AuthPage() {
     if (selectedEmployerCountry) {
       const countryData = countries.find(c => c.name === selectedEmployerCountry);
       if (countryData) {
+        // Set the country code without the plus sign
         setSelectedEmployerCountryCode(countryData.code);
         
         // Always completely reset the phone number field with just the country code
         // This ensures old input is overwritten completely
-        employerForm.setValue("phoneNumber", countryData.code + " ", { 
+        // Remove the plus sign from the country code
+        const codeWithoutPlus = countryData.code.replace('+', '');
+        employerForm.setValue("phoneNumber", codeWithoutPlus + " ", { 
           shouldValidate: true,
           shouldDirty: true
         });
@@ -641,18 +644,18 @@ export default function AuthPage() {
                                       <FormControl>
                                         <div className="flex">
                                           <div className="bg-gray-100 px-3 py-2 border rounded-l-md text-gray-600">
-                                            {selectedEmployerCountryCode || "+"}
+                                            {selectedEmployerCountryCode?.replace('+', '') || ""}
                                           </div>
                                           <Input 
                                             className="rounded-l-none"
                                             placeholder="Phone number"
-                                            value={field.value.replace(/^\+\d+\s*/, '')}
+                                            value={field.value.replace(/^\+?\d+\s*/, '')}
                                             onChange={(e) => {
                                               // Completely replace the old input with a new phone number
-                                              const countryCode = selectedEmployerCountryCode || "+";
+                                              const countryCode = selectedEmployerCountryCode?.replace('+', '') || "";
                                               // Extract just the user input numbers without any country code prefixes
-                                              const userInput = e.target.value.replace(/^\+\d+\s*/, '').replace(/^\s+/, '');
-                                              // Create a clean new value with the current country code
+                                              const userInput = e.target.value.replace(/^\+?\d+\s*/, '').replace(/^\s+/, '');
+                                              // Create a clean new value with the current country code but without '+' symbol
                                               employerForm.setValue("phoneNumber", countryCode + " " + userInput, { 
                                                 shouldValidate: true,
                                                 shouldDirty: true
