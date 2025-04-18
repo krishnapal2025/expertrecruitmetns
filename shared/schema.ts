@@ -102,6 +102,12 @@ export const insertJobSchema = createInsertSchema(jobs).omit({
   isActive: true,
   createdAt: true,
   applicationCount: true,
+}).transform((data) => {
+  // Ensure applicationDeadline is a Date object
+  if (data.applicationDeadline && !(data.applicationDeadline instanceof Date)) {
+    data.applicationDeadline = new Date(data.applicationDeadline);
+  }
+  return data;
 });
 
 export const insertApplicationSchema = createInsertSchema(applications).omit({

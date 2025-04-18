@@ -52,7 +52,14 @@ const jobPostSchema = z.object({
   description: z.string().min(30, "Description must be at least 30 characters"),
   requirements: z.string().min(20, "Requirements must be at least 20 characters"),
   benefits: z.string().min(10, "Benefits must be at least 10 characters"),
-  applicationDeadline: z.string().min(1, "Application deadline is required"),
+  applicationDeadline: z.string().min(1, "Application deadline is required").refine((val) => {
+    try {
+      const date = new Date(val);
+      return !isNaN(date.getTime());
+    } catch {
+      return false;
+    }
+  }, "Please enter a valid date"),
   contactEmail: z.string().email("Must be a valid email address"),
 });
 
