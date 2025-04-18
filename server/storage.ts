@@ -18,16 +18,19 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   getAllUsers(): Promise<User[]>;
   getUserByEmployerId(employerId: number): Promise<User | undefined>;
+  getUserByJobSeekerId(jobSeekerId: number): Promise<User | undefined>;
   
   // JobSeeker methods
   getJobSeeker(id: number): Promise<JobSeeker | undefined>;
   getJobSeekerByUserId(userId: number): Promise<JobSeeker | undefined>;
   createJobSeeker(jobSeeker: InsertJobSeeker): Promise<JobSeeker>;
+  updateJobSeeker(jobSeeker: JobSeeker): Promise<JobSeeker>;
   
   // Employer methods
   getEmployer(id: number): Promise<Employer | undefined>;
   getEmployerByUserId(userId: number): Promise<Employer | undefined>;
   createEmployer(employer: InsertEmployer): Promise<Employer>;
+  updateEmployer(employer: Employer): Promise<Employer>;
   
   // Job methods
   getJob(id: number): Promise<Job | undefined>;
@@ -145,6 +148,13 @@ export class MemStorage implements IStorage {
     
     return this.users.get(employer.userId);
   }
+  
+  async getUserByJobSeekerId(jobSeekerId: number): Promise<User | undefined> {
+    const jobSeeker = await this.getJobSeeker(jobSeekerId);
+    if (!jobSeeker) return undefined;
+    
+    return this.users.get(jobSeeker.userId);
+  }
 
   // JobSeeker methods
   async getJobSeeker(id: number): Promise<JobSeeker | undefined> {
@@ -159,8 +169,23 @@ export class MemStorage implements IStorage {
 
   async createJobSeeker(insertJobSeeker: InsertJobSeeker): Promise<JobSeeker> {
     const id = this.jobSeekerIdCounter++;
-    const jobSeeker: JobSeeker = { ...insertJobSeeker, id };
+    const jobSeeker: JobSeeker = { 
+      ...insertJobSeeker, 
+      id,
+      cvPath: null 
+    };
     this.jobSeekers.set(id, jobSeeker);
+    return jobSeeker;
+  }
+  
+  async updateJobSeeker(jobSeeker: JobSeeker): Promise<JobSeeker> {
+    // Check if the job seeker exists
+    if (!this.jobSeekers.has(jobSeeker.id)) {
+      throw new Error('Job seeker not found');
+    }
+    
+    // Update in the Map
+    this.jobSeekers.set(jobSeeker.id, jobSeeker);
     return jobSeeker;
   }
 
@@ -179,6 +204,17 @@ export class MemStorage implements IStorage {
     const id = this.employerIdCounter++;
     const employer: Employer = { ...insertEmployer, id };
     this.employers.set(id, employer);
+    return employer;
+  }
+  
+  async updateEmployer(employer: Employer): Promise<Employer> {
+    // Check if the employer exists
+    if (!this.employers.has(employer.id)) {
+      throw new Error('Employer not found');
+    }
+    
+    // Update in the Map
+    this.employers.set(employer.id, employer);
     return employer;
   }
 
@@ -210,6 +246,7 @@ export class MemStorage implements IStorage {
     const job: Job = { 
       ...insertJob, 
       id, 
+      salary: insertJob.salary || null,
       postedDate: now,
       isActive: true
     };
@@ -241,6 +278,7 @@ export class MemStorage implements IStorage {
       ...insertApplication, 
       id, 
       appliedDate: now,
+      coverLetter: insertApplication.coverLetter || null,
       status: "pending"
     };
     this.applications.set(id, application);
@@ -258,7 +296,11 @@ export class MemStorage implements IStorage {
 
   async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
     const id = this.testimonialIdCounter++;
-    const testimonial: Testimonial = { ...insertTestimonial, id };
+    const testimonial: Testimonial = { 
+      ...insertTestimonial, 
+      id,
+      userId: insertTestimonial.userId !== undefined ? insertTestimonial.userId : null
+    };
     this.testimonials.set(id, testimonial);
     return testimonial;
   }

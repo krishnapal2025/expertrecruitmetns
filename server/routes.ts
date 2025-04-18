@@ -19,6 +19,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
 
   // API routes
+  
+  // Profile endpoints
+  // Update job seeker profile
+  app.patch("/api/profile/jobseeker/:id", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    
+    try {
+      const { id } = req.params;
+      const jobSeeker = await storage.getJobSeeker(parseInt(id));
+      
+      if (!jobSeeker) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      
+      // Check if current user has permission to update this profile
+      const user = await storage.getUserByJobSeekerId(parseInt(id));
+      if (!user || user.id !== req.user.id) {
+        return res.status(403).json({ message: "You don't have permission to update this profile" });
+      }
+      
+      // Update profile with new data
+      const updatedJobSeeker = {
+        ...jobSeeker,
+        ...req.body
+      };
+      
+      // Update in storage (simplified as MemStorage doesn't have update method)
+      const profile = await storage.updateJobSeeker(updatedJobSeeker);
+      res.json(profile);
+    } catch (error) {
+      console.error("Error updating job seeker profile:", error);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+  
+  // Update employer profile
+  app.patch("/api/profile/employer/:id", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    
+    try {
+      const { id } = req.params;
+      const employer = await storage.getEmployer(parseInt(id));
+      
+      if (!employer) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      
+      // Check if current user has permission to update this profile
+      const user = await storage.getUserByEmployerId(parseInt(id));
+      if (!user || user.id !== req.user.id) {
+        return res.status(403).json({ message: "You don't have permission to update this profile" });
+      }
+      
+      // Update profile with new data
+      const updatedEmployer = {
+        ...employer,
+        ...req.body
+      };
+      
+      // Update in storage (simplified as MemStorage doesn't have update method)
+      const profile = await storage.updateEmployer(updatedEmployer);
+      res.json(profile);
+    } catch (error) {
+      console.error("Error updating employer profile:", error);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+  
+  
   // Get all job listings with optional filters
   app.get("/api/jobs", async (req, res) => {
     try {
