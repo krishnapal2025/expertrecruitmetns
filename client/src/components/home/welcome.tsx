@@ -124,16 +124,6 @@ function CustomSlider() {
                 <p className="text-lg md:text-xl mb-8 text-white/90 max-w-2xl">
                   {slide.description}
                 </p>
-                <div className="flex flex-wrap gap-4">
-                  <button className="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center transition-colors shadow-lg">
-                    <Users className="mr-2 h-5 w-5" />
-                    Find a Job
-                  </button>
-                  <button className="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full flex items-center transition-colors shadow-lg">
-                    <Briefcase className="mr-2 h-5 w-5" />
-                    Post a Job
-                  </button>
-                </div>
               </motion.div>
             </div>
           </div>
