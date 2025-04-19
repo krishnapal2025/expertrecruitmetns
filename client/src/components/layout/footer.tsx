@@ -184,7 +184,7 @@ export default function Footer() {
         
         <div className="flex flex-col md:flex-row md:justify-between md:items-center">
           <div className="text-gray-400 mb-4 md:mb-0">
-            © {currentYear} RH Job Portal. All rights reserved.
+            © {currentYear} Expert Recruitments LLC. All rights reserved.
           </div>
           <div className="flex space-x-6">
             <Link href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors text-sm">

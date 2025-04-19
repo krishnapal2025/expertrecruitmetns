@@ -20,7 +20,8 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, Briefcase, User, LogOut, ChevronDown } from "lucide-react";
+import { Menu, User, LogOut, ChevronDown, Briefcase } from "lucide-react";
+import expertLogo from "@/assets/images/expert-recruitments-logo.jpg";
 import NotificationsPopover from "@/components/common/notifications";
 
 export default function Navbar() {
@@ -90,8 +91,11 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/">
               <div className="flex items-center cursor-pointer">
-                <Briefcase className="h-8 w-8 text-primary mr-2" />
-                <span className="text-xl font-bold">RH Job Portal</span>
+                <img 
+                  src={expertLogo} 
+                  alt="Expert Recruitments LLC" 
+                  className="h-10 w-auto"
+                />
               </div>
             </Link>
           </div>
@@ -242,7 +246,7 @@ export default function Navbar() {
                 <SheetHeader className="mb-4">
                   <SheetTitle>Menu</SheetTitle>
                   <SheetDescription>
-                    Navigate through our job portal
+                    Expert Recruitments LLC
                   </SheetDescription>
                 </SheetHeader>
                 <div className="flex flex-col space-y-4 py-4">
