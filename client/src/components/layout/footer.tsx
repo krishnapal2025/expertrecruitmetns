@@ -78,6 +78,42 @@ export default function Footer() {
             </div>
             
             <div>
+              <h3 className="text-lg font-bold mb-4">For Employers</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/auth?type=employer" className="text-gray-400 hover:text-white transition-colors">
+                    Register
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/post-job" className="text-gray-400 hover:text-white transition-colors">
+                    Post a Job
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/hire-talent" className="text-gray-400 hover:text-white transition-colors">
+                    Hire Talent
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services" className="text-gray-400 hover:text-white transition-colors">
+                    Recruitment Services
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blogs" className="text-gray-400 hover:text-white transition-colors">
+                    Hiring Resources
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/seo-insights" className="text-gray-400 hover:text-white transition-colors">
+                    Market Insights
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            
+            <div>
               <h3 className="text-lg font-bold mb-4">For Job Seekers</h3>
               <ul className="space-y-2">
                 <li>
