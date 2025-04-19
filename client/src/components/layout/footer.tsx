@@ -10,7 +10,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div>
             <div className="flex items-center mb-4">
               <Briefcase className="h-6 w-6 mr-2" />
@@ -76,116 +76,70 @@ export default function Footer() {
             </ul>
           </div>
           
-          <div className="flex flex-col justify-between">
-            <div>
-              <h3 className="text-lg font-bold mb-4">For Employers</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/auth?type=employer" className="text-gray-400 hover:text-white transition-colors">
-                    Register
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/post-job" className="text-gray-400 hover:text-white transition-colors">
-                    Post a Job
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/hire-talent" className="text-gray-400 hover:text-white transition-colors">
-                    Hire Talent
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/services" className="text-gray-400 hover:text-white transition-colors">
-                    Recruitment Services
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blogs" className="text-gray-400 hover:text-white transition-colors">
-                    Hiring Resources
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/seo-insights" className="text-gray-400 hover:text-white transition-colors">
-                    Market Insights
-                  </Link>
-                </li>
-              </ul>
-            </div>
+          <div>
+            <h3 className="text-lg font-bold mb-4">For Job Seekers</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/auth?type=jobseeker" className="text-gray-400 hover:text-white transition-colors">
+                  Register
+                </Link>
+              </li>
+              <li>
+                <Link href="/job-board" className="text-gray-400 hover:text-white transition-colors">
+                  Find Jobs
+                </Link>
+              </li>
+              <li>
+                <Link href="/sectors" className="text-gray-400 hover:text-white transition-colors">
+                  Career Sectors
+                </Link>
+              </li>
+              <li>
+                <Link href="/blogs" className="text-gray-400 hover:text-white transition-colors">
+                  Career Advice
+                </Link>
+              </li>
+              <li>
+                <Link href="/careers" className="text-gray-400 hover:text-white transition-colors">
+                  Join Our Team
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+            </ul>
           </div>
           
-          <div className="flex flex-col justify-between">
-            <div>
-              <h3 className="text-lg font-bold mb-4">For Job Seekers</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/auth?type=jobseeker" className="text-gray-400 hover:text-white transition-colors">
-                    Register
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/job-board" className="text-gray-400 hover:text-white transition-colors">
-                    Find Jobs
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/sectors" className="text-gray-400 hover:text-white transition-colors">
-                    Career Sectors
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blogs" className="text-gray-400 hover:text-white transition-colors">
-                    Career Advice
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/careers" className="text-gray-400 hover:text-white transition-colors">
-                    Join Our Team
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">
-                    Privacy Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        
-        <div className="mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-lg font-bold mb-4">Newsletter</h3>
-              <p className="text-gray-400 mb-4">
-                Subscribe to our newsletter for the latest job opportunities and career insights.
-              </p>
-              <div className="flex space-x-2">
-                <Input 
-                  type="email" 
-                  placeholder="Your email"
-                  className="bg-gray-800 border-gray-700 text-white"
-                />
-                <Button>Subscribe</Button>
-              </div>
+          <div>
+            <h3 className="text-lg font-bold mb-4">Newsletter</h3>
+            <p className="text-gray-400 mb-4">
+              Subscribe to our newsletter for the latest job opportunities and career insights.
+            </p>
+            <div className="flex space-x-2">
+              <Input 
+                type="email" 
+                placeholder="Your email"
+                className="bg-gray-800 border-gray-700 text-white"
+              />
+              <Button>Subscribe</Button>
             </div>
             
-            <div>
-              <h3 className="text-lg font-bold mb-4">Follow Us</h3>
-              <div className="flex space-x-4">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                  <Facebook className="h-6 w-6" />
-                </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                  <Twitter className="h-6 w-6" />
-                </a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                  <Linkedin className="h-6 w-6" />
-                </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                  <Instagram className="h-6 w-6" />
-                </a>
-              </div>
+            <h3 className="text-lg font-bold mt-6 mb-4">Follow Us</h3>
+            <div className="flex space-x-4">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                <Facebook className="h-6 w-6" />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                <Twitter className="h-6 w-6" />
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                <Linkedin className="h-6 w-6" />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                <Instagram className="h-6 w-6" />
+              </a>
             </div>
           </div>
         </div>
