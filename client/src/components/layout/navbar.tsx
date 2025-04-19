@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Menu, User, LogOut, ChevronDown, Briefcase } from "lucide-react";
-import expertLogo from "@assets/c9ba58cd-2134-41e8-a694-18ebf1697741.jpg";
+import expertLogo from "../../assets/expert-logo.png";
 import NotificationsPopover from "@/components/common/notifications";
 
 export default function Navbar() {
@@ -86,7 +86,7 @@ export default function Navbar() {
   return (
     <header className={`sticky top-0 z-40 transition-colors duration-200 ${scrolled ? "bg-white shadow-md" : "bg-white bg-opacity-95"}`}>
       <div className="container mx-auto px-4">
-        <div className="flex h-[80px] md:h-[100px] items-center justify-between">
+        <div className="flex h-[100px] md:h-[120px] items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/">
@@ -94,9 +94,9 @@ export default function Navbar() {
                 <img 
                   src={expertLogo} 
                   alt="Expert Recruitments LLC" 
-                  width="140"
-                  height="50"
-                  className="w-[140px] h-auto max-w-[80vw] md:max-w-[160px] object-contain"
+                  width="250"
+                  height="250"
+                  className="w-[200px] h-auto max-w-[80vw] md:max-w-[250px] object-contain"
                 />
               </div>
             </Link>
