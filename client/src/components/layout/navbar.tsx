@@ -94,9 +94,9 @@ export default function Navbar() {
                 <img 
                   src={expertLogo} 
                   alt="Expert Recruitments LLC" 
-                  width="160"
-                  height="60"
-                  className="w-[160px] h-auto max-w-[80vw] md:max-w-[200px]"
+                  width="140"
+                  height="50"
+                  className="w-[140px] h-auto max-w-[80vw] md:max-w-[160px] object-contain"
                 />
               </div>
             </Link>
