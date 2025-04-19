@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Menu, User, LogOut, ChevronDown, Briefcase } from "lucide-react";
-import expertLogo from "@/assets/images/expert-recruitments-logo.jpg";
+import expertLogo from "@/assets/expert-logo.svg";
 import NotificationsPopover from "@/components/common/notifications";
 
 export default function Navbar() {

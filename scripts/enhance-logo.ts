@@ -1,9 +1,14 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import OpenAI from 'openai';
 
 // Setup OpenAI client
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+// Get dirname equivalent for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function enhanceLogo() {
   try {
@@ -49,16 +54,14 @@ async function enhanceLogo() {
   }
 }
 
-// Run the function if this script is executed directly
-if (require.main === module) {
-  enhanceLogo()
-    .then(outputPath => {
-      console.log(`Logo enhanced and saved to: ${outputPath}`);
-    })
-    .catch(error => {
-      console.error('Logo enhancement failed:', error);
-      process.exit(1);
-    });
-}
+// Run the function immediately
+enhanceLogo()
+  .then(outputPath => {
+    console.log(`Logo enhanced and saved to: ${outputPath}`);
+  })
+  .catch(error => {
+    console.error('Logo enhancement failed:', error);
+    process.exit(1);
+  });
 
 export default enhanceLogo;
