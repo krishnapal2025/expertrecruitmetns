@@ -84,9 +84,9 @@ export default function Navbar() {
   ];
 
   return (
-    <header className={`sticky top-0 z-40 transition-colors duration-200 ${scrolled ? "bg-white shadow-sm" : "bg-transparent"}`}>
+    <header className={`sticky top-0 z-40 transition-colors duration-200 ${scrolled ? "bg-white shadow-md" : "bg-white bg-opacity-95"}`}>
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-28 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/">
@@ -94,7 +94,9 @@ export default function Navbar() {
                 <img 
                   src={expertLogo} 
                   alt="Expert Recruitments LLC" 
-                  className="h-10 w-auto"
+                  width="250"
+                  height="100"
+                  className="w-[250px] h-[100px] max-w-[80vw] md:max-w-[250px]"
                 />
               </div>
             </Link>
@@ -105,7 +107,7 @@ export default function Navbar() {
             {navigationLinks.map((link) => (
               link.isDropdown ? (
                 <div key={link.name} className="relative group">
-                  <div className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer flex items-center ${
+                  <div className={`text-base font-medium transition-colors hover:text-primary cursor-pointer flex items-center ${
                     link.dropdownItems?.some(item => location === item.href) ? "text-primary" : "text-gray-700"
                   }`}>
                     {link.name}
@@ -125,7 +127,7 @@ export default function Navbar() {
                 </div>
               ) : (
                 <Link key={link.name} href={link.href}>
-                  <div className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer ${location === link.href ? "text-primary" : "text-gray-700"}`}>
+                  <div className={`text-base font-medium transition-colors hover:text-primary cursor-pointer ${location === link.href ? "text-primary" : "text-gray-700"}`}>
                     {link.name}
                   </div>
                 </Link>
@@ -253,7 +255,7 @@ export default function Navbar() {
                   {navigationLinks.map((link) => 
                     link.isDropdown ? (
                       <div key={link.name} className="flex flex-col">
-                        <div className="px-4 py-2 font-medium text-gray-800">
+                        <div className="px-4 py-3 font-medium text-gray-800 text-base">
                           {link.name}
                         </div>
                         <div className="ml-4 flex flex-col space-y-2 mt-2">
