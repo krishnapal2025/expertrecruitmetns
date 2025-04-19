@@ -86,7 +86,7 @@ export default function Navbar() {
   return (
     <header className={`sticky top-0 z-40 transition-colors duration-200 ${scrolled ? "bg-white shadow-md" : "bg-white bg-opacity-95"}`}>
       <div className="container mx-auto px-4">
-        <div className="flex h-28 items-center justify-between">
+        <div className="flex h-[280px] items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/">
@@ -95,19 +95,19 @@ export default function Navbar() {
                   src={expertLogo} 
                   alt="Expert Recruitments LLC" 
                   width="250"
-                  height="100"
-                  className="w-[250px] h-[100px] max-w-[80vw] md:max-w-[250px]"
+                  height="250"
+                  className="w-[250px] h-[250px] max-w-[80vw] md:max-w-[250px]"
                 />
               </div>
             </Link>
           </div>
 
           {/* Desktop navigation */}
-          <nav className="hidden md:flex space-x-8 items-center">
+          <nav className="hidden md:flex space-x-8 items-start mt-8">
             {navigationLinks.map((link) => (
               link.isDropdown ? (
                 <div key={link.name} className="relative group">
-                  <div className={`text-base font-medium transition-colors hover:text-primary cursor-pointer flex items-center ${
+                  <div className={`text-lg font-medium transition-colors hover:text-primary cursor-pointer flex items-center ${
                     link.dropdownItems?.some(item => location === item.href) ? "text-primary" : "text-gray-700"
                   }`}>
                     {link.name}
@@ -136,7 +136,7 @@ export default function Navbar() {
           </nav>
 
           {/* Desktop right section */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-start mt-8 space-x-4">
             {currentUser ? (
               <>
                 <NotificationsPopover />
