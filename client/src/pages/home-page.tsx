@@ -1,7 +1,9 @@
 import { Helmet } from "react-helmet";
 import Banner from "@/components/home/banner";
 import Welcome from "@/components/home/welcome";
+import QuickLinks from "@/components/home/quick-links";
 import HiringTrends from "@/components/home/hiring-trends";
+import FeaturedCategories from "@/components/home/featured-categories";
 import AnimatedTestimonials from "@/components/home/animated-testimonials";
 import SearchBar from "@/components/home/search-bar";
 import { Button } from "@/components/ui/button";
@@ -401,6 +403,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      
+      <FeaturedCategories />
+      
+      <QuickLinks />
       
       <AnimatedTestimonials />
       
