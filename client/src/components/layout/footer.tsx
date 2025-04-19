@@ -10,8 +10,73 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8">
       <div className="container mx-auto px-4">
-        <div className="mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-12">
+          <div>
+            <div className="flex items-center mb-4">
+              <Briefcase className="h-6 w-6 mr-2" />
+              <span className="text-xl font-bold">RH Job Portal</span>
+            </div>
+            <p className="text-gray-400 mb-4">
+              Connecting talent with opportunity. Find your perfect job or the ideal candidate with our professional recruitment services.
+            </p>
+            <div className="space-y-3">
+              <div className="flex items-start">
+                <Phone className="h-5 w-5 mr-3 mt-0.5 text-gray-400" />
+                <span>+1 (555) 123-4567</span>
+              </div>
+              <div className="flex items-start">
+                <Mail className="h-5 w-5 mr-3 mt-0.5 text-gray-400" />
+                <span>info@rhjobportal.com</span>
+              </div>
+              <div className="flex items-start">
+                <MapPin className="h-5 w-5 mr-3 mt-0.5 text-gray-400" />
+                <span>123 Business Avenue, New York, NY 10001</span>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/" className="text-gray-400 hover:text-white transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link href="/about-us" className="text-gray-400 hover:text-white transition-colors">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="text-gray-400 hover:text-white transition-colors">
+                  Services
+                </Link>
+              </li>
+              <li>
+                <Link href="/job-board" className="text-gray-400 hover:text-white transition-colors">
+                  Find Jobs
+                </Link>
+              </li>
+              <li>
+                <Link href="/sectors" className="text-gray-400 hover:text-white transition-colors">
+                  Sectors
+                </Link>
+              </li>
+              <li>
+                <Link href="/blogs" className="text-gray-400 hover:text-white transition-colors">
+                  Blogs
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact-us" className="text-gray-400 hover:text-white transition-colors">
+                  Contact Us
+                </Link>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="flex flex-col justify-between">
             <div>
               <h3 className="text-lg font-bold mb-4">For Employers</h3>
               <ul className="space-y-2">
@@ -47,7 +112,9 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
-            
+          </div>
+          
+          <div className="flex flex-col justify-between">
             <div>
               <h3 className="text-lg font-bold mb-4">For Job Seekers</h3>
               <ul className="space-y-2">
@@ -84,73 +151,10 @@ export default function Footer() {
               </ul>
             </div>
           </div>
+        </div>
         
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <div className="flex items-center mb-4">
-                <Briefcase className="h-6 w-6 mr-2" />
-                <span className="text-xl font-bold">RH Job Portal</span>
-              </div>
-              <p className="text-gray-400 mb-4">
-                Connecting talent with opportunity. Find your perfect job or the ideal candidate with our professional recruitment services.
-              </p>
-              <div className="space-y-3">
-                <div className="flex items-start">
-                  <Phone className="h-5 w-5 mr-3 mt-0.5 text-gray-400" />
-                  <span>+1 (555) 123-4567</span>
-                </div>
-                <div className="flex items-start">
-                  <Mail className="h-5 w-5 mr-3 mt-0.5 text-gray-400" />
-                  <span>info@rhjobportal.com</span>
-                </div>
-                <div className="flex items-start">
-                  <MapPin className="h-5 w-5 mr-3 mt-0.5 text-gray-400" />
-                  <span>123 Business Avenue, New York, NY 10001</span>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-bold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/" className="text-gray-400 hover:text-white transition-colors">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about-us" className="text-gray-400 hover:text-white transition-colors">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/services" className="text-gray-400 hover:text-white transition-colors">
-                    Services
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/job-board" className="text-gray-400 hover:text-white transition-colors">
-                    Find Jobs
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/sectors" className="text-gray-400 hover:text-white transition-colors">
-                    Sectors
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blogs" className="text-gray-400 hover:text-white transition-colors">
-                    Blogs
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact-us" className="text-gray-400 hover:text-white transition-colors">
-                    Contact Us
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            
+        <div className="mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-lg font-bold mb-4">Newsletter</h3>
               <p className="text-gray-400 mb-4">
@@ -164,8 +168,10 @@ export default function Footer() {
                 />
                 <Button>Subscribe</Button>
               </div>
-              
-              <h3 className="text-lg font-bold mt-6 mb-4">Follow Us</h3>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-bold mb-4">Follow Us</h3>
               <div className="flex space-x-4">
                 <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
                   <Facebook className="h-6 w-6" />
