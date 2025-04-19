@@ -10,7 +10,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
           <div>
             <div className="flex items-center mb-4">
               <Briefcase className="h-6 w-6 mr-2" />
@@ -71,6 +71,42 @@ export default function Footer() {
               <li>
                 <Link href="/contact-us" className="text-gray-400 hover:text-white transition-colors">
                   Contact Us
+                </Link>
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-bold mb-4">For Employers</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/auth?type=employer" className="text-gray-400 hover:text-white transition-colors">
+                  Register
+                </Link>
+              </li>
+              <li>
+                <Link href="/post-job" className="text-gray-400 hover:text-white transition-colors">
+                  Post a Job
+                </Link>
+              </li>
+              <li>
+                <Link href="/hire-talent" className="text-gray-400 hover:text-white transition-colors">
+                  Hire Talent
+                </Link>
+              </li>
+              <li>
+                <Link href="/seo-insights" className="text-gray-400 hover:text-white transition-colors">
+                  SEO Insights
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="text-gray-400 hover:text-white transition-colors">
+                  Our Services
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact-us" className="text-gray-400 hover:text-white transition-colors">
+                  Contact Sales
                 </Link>
               </li>
             </ul>
