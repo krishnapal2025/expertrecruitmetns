@@ -10,7 +10,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           <div>
             <div className="flex items-center mb-4">
               <Briefcase className="h-6 w-6 mr-2" />
@@ -35,81 +35,83 @@ export default function Footer() {
             </div>
           </div>
           
-          <div>
-            <h3 className="text-lg font-bold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/" className="text-gray-400 hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="/about-us" className="text-gray-400 hover:text-white transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="text-gray-400 hover:text-white transition-colors">
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link href="/job-board" className="text-gray-400 hover:text-white transition-colors">
-                  Find Jobs
-                </Link>
-              </li>
-              <li>
-                <Link href="/sectors" className="text-gray-400 hover:text-white transition-colors">
-                  Sectors
-                </Link>
-              </li>
-              <li>
-                <Link href="/blogs" className="text-gray-400 hover:text-white transition-colors">
-                  Blogs
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact-us" className="text-gray-400 hover:text-white transition-colors">
-                  Contact Us
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-bold mb-4">For Job Seekers</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/auth?type=jobseeker" className="text-gray-400 hover:text-white transition-colors">
-                  Register
-                </Link>
-              </li>
-              <li>
-                <Link href="/job-board" className="text-gray-400 hover:text-white transition-colors">
-                  Find Jobs
-                </Link>
-              </li>
-              <li>
-                <Link href="/sectors" className="text-gray-400 hover:text-white transition-colors">
-                  Career Sectors
-                </Link>
-              </li>
-              <li>
-                <Link href="/blogs" className="text-gray-400 hover:text-white transition-colors">
-                  Career Advice
-                </Link>
-              </li>
-              <li>
-                <Link href="/careers" className="text-gray-400 hover:text-white transition-colors">
-                  Join Our Team
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-            </ul>
+          <div className="flex flex-col space-y-8">
+            <div>
+              <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/" className="text-gray-400 hover:text-white transition-colors">
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about-us" className="text-gray-400 hover:text-white transition-colors">
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services" className="text-gray-400 hover:text-white transition-colors">
+                    Services
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/job-board" className="text-gray-400 hover:text-white transition-colors">
+                    Find Jobs
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/sectors" className="text-gray-400 hover:text-white transition-colors">
+                    Sectors
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blogs" className="text-gray-400 hover:text-white transition-colors">
+                    Blogs
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact-us" className="text-gray-400 hover:text-white transition-colors">
+                    Contact Us
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-bold mb-4">For Job Seekers</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/auth?type=jobseeker" className="text-gray-400 hover:text-white transition-colors">
+                    Register
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/job-board" className="text-gray-400 hover:text-white transition-colors">
+                    Find Jobs
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/sectors" className="text-gray-400 hover:text-white transition-colors">
+                    Career Sectors
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blogs" className="text-gray-400 hover:text-white transition-colors">
+                    Career Advice
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/careers" className="text-gray-400 hover:text-white transition-colors">
+                    Join Our Team
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">
+                    Privacy Policy
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
           
           <div>
