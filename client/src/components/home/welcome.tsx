@@ -173,50 +173,14 @@ export default function Welcome() {
       
       <div className="container mx-auto px-4 relative z-10">
 
-        <div className="grid md:grid-cols-2 gap-12 mb-24 items-center">
-          {/* Left side - Image with floating elements */}
+        <div className="grid md:grid-cols-2 gap-12 mb-24 items-stretch">
+          {/* Left side - Job seekers content */}
           <motion.div 
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative order-2 md:order-1 md:pr-8"
           >
-            {/* Decorative elements */}
-            <motion.div 
-              className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-gradient-to-br from-primary/10 to-indigo-500/20 blur-2xl opacity-70 -z-10"
-              animate={{ 
-                scale: [1, 1.1, 1],
-                opacity: [0.6, 0.8, 0.6]
-              }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div 
-              className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-gradient-to-br from-purple-500/10 to-indigo-500/20 blur-2xl opacity-70 -z-10"
-              animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 0.7, 0.5]
-              }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            />
-            
-            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
-              <img 
-                src={hireImg} 
-                alt="Professional team in a business meeting" 
-                className="w-full h-auto object-cover rounded-xl transform scale-105 hover:scale-110 transition-transform duration-700" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
-            </div>
-          </motion.div>
-          
-          {/* Right side - Job seekers content */}
-          <motion.div 
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="space-y-8 order-1 md:order-2"
-          >
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 h-full">
               <div className="flex items-center mb-6">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center mr-4 shadow-lg">
                   <Users className="h-6 w-6 text-white" />
@@ -254,9 +218,15 @@ export default function Welcome() {
                 ))}
               </ul>
             </div>
-            
-            {/* Employer content */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+          </motion.div>
+          
+          {/* Right side - Employer content */}
+          <motion.div 
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 h-full">
               <div className="flex items-center mb-6">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mr-4 shadow-lg">
                   <Briefcase className="h-6 w-6 text-white" />
