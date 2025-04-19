@@ -10,8 +10,8 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 lg:gap-8 mb-12">
+          <div className="md:col-span-1">
             <div className="flex items-center mb-4">
               <Briefcase className="h-6 w-6 mr-2" />
               <span className="text-xl font-bold">RH Job Portal</span>
@@ -35,7 +35,7 @@ export default function Footer() {
             </div>
           </div>
           
-          <div>
+          <div className="md:col-span-1">
             <h3 className="text-lg font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
@@ -76,7 +76,7 @@ export default function Footer() {
             </ul>
           </div>
           
-          <div>
+          <div className="md:col-span-1">
             <h3 className="text-lg font-bold mb-4">For Employers</h3>
             <ul className="space-y-2">
               <li>
@@ -112,7 +112,7 @@ export default function Footer() {
             </ul>
           </div>
           
-          <div>
+          <div className="md:col-span-1">
             <h3 className="text-lg font-bold mb-4">For Job Seekers</h3>
             <ul className="space-y-2">
               <li>
@@ -148,7 +148,7 @@ export default function Footer() {
             </ul>
           </div>
           
-          <div>
+          <div className="md:col-span-1">
             <h3 className="text-lg font-bold mb-4">Newsletter</h3>
             <p className="text-gray-400 mb-4">
               Subscribe to our newsletter for the latest job opportunities and career insights.
