@@ -117,12 +117,6 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/job-board" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Find Jobs
-                  </a>
-                </li>
-                <li>
                   <a href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Sectors
