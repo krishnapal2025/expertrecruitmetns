@@ -1085,7 +1085,7 @@ export default function AboutUsPage() {
           transition={{ duration: 0.8 }}
         >
           {/* Minimalist CTA */}
-          <div className="relative py-14 px-8 rounded-lg bg-white border-t-2 border-primary shadow-sm">            
+          <div className="relative py-14 px-8 rounded-lg bg-white border-t-2 border-white shadow-sm">            
             {/* Content */}
             <div className="relative max-w-3xl mx-auto text-center">
               <span className="text-sm text-primary">Executive Recruitment Excellence</span>
@@ -1109,7 +1109,7 @@ export default function AboutUsPage() {
                 
                 <a 
                   href="/services" 
-                  className="px-6 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-md transition-colors hover:bg-gray-50 flex items-center"
+                  className="px-6 py-2 bg-white border border-white text-gray-700 font-medium rounded-md transition-colors hover:bg-gray-50 flex items-center"
                 >
                   <span>Our Services</span>
                   <ArrowRight className="ml-2 h-4 w-4" />
