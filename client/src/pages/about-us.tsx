@@ -104,12 +104,7 @@ export default function AboutUsPage() {
               Expert Recruitments
             </motion.h1>
             
-            <motion.div 
-              className="w-24 h-1.5 bg-primary rounded-full mb-8"
-              initial={{ width: 0 }}
-              animate={{ width: 96 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            ></motion.div>
+
             
             <motion.p 
               className="text-xl md:text-2xl text-gray-600 leading-relaxed mb-10 max-w-3xl"
