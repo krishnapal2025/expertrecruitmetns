@@ -14,8 +14,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 mb-12">
           <div>
             <div className="flex items-center mb-6">
-              <img src={ERLogo} alt="Expert Recruitments" className="h-10 w-auto mr-3" />
-              <span className="text-2xl font-bold">Expert Recruitments</span>
+              <img src={ERLogo} alt="EXPERT Recruitments LLC" className="h-10 w-auto mr-3" />
+              <span className="text-2xl font-bold">EXPERT Recruitments LLC</span>
             </div>
             <p className="text-gray-400 mb-8 max-w-3xl">
               Connecting talent with opportunity. Find your perfect job or the ideal candidate with our professional recruitment services.
@@ -232,7 +232,7 @@ export default function Footer() {
         
         <div className="flex flex-col md:flex-row md:justify-between md:items-center">
           <div className="text-gray-500 text-sm mb-4 md:mb-0">
-            © {currentYear} Expert Recruitments LLC. All rights reserved.
+            © {currentYear} EXPERT Recruitments LLC. All rights reserved.
           </div>
           <div className="flex flex-wrap gap-4">
             <Link href="/privacy-policy" className="text-gray-500 hover:text-white transition-colors text-xs">
