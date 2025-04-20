@@ -11,8 +11,8 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white pt-12 pb-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-6 gap-8 mb-12">
-          <div className="lg:col-span-6">
+        <div className="grid grid-cols-1 gap-8 mb-12">
+          <div>
             <div className="flex items-center mb-6">
               <img src={ERLogo} alt="Expert Recruitments" className="h-10 w-auto mr-3" />
               <span className="text-2xl font-bold">Expert Recruitments</span>
@@ -22,7 +22,7 @@ export default function Footer() {
             </p>
           </div>
           
-          <div className="lg:col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-gray-800 p-4 rounded-lg h-full">
               <div className="flex items-center mb-3">
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-2">
@@ -48,9 +48,7 @@ export default function Footer() {
                 </div>
               </div>
             </div>
-          </div>
-          
-          <div className="lg:col-span-2">
+            
             <div className="bg-gray-800 p-4 rounded-lg h-full">
               <div className="flex items-center mb-3">
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-2">
@@ -74,9 +72,7 @@ export default function Footer() {
                 </div>
               </div>
             </div>
-          </div>
-          
-          <div className="lg:col-span-2">
+            
             <div className="bg-gray-800 p-4 rounded-lg h-full">
               <div className="flex items-center mb-3">
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-2">
@@ -98,133 +94,107 @@ export default function Footer() {
             </div>
           </div>
           
-          <div className="lg:col-span-2">
-            <div className="grid grid-cols-2 gap-8">
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-bold mb-3">Quick Links</h3>
-                  <ul className="space-y-2">
-                    <li>
-                      <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                        Home
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/about-us" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                        About Us
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/services" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                        Services
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/job-board" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                        Find Jobs
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                        Sectors
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/blogs" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                        Blogs
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/contact-us" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                        Contact Us
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-bold mb-3">For Employers</h3>
-                  <ul className="space-y-2">
-                    <li>
-                      <Link href="/auth?type=employer" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                        Register
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/post-job" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                        Post a Job
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/hire-talent" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                        Hire Talent
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/seo-insights" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                        SEO Insights
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mt-6">
+            <div>
+              <h3 className="text-lg font-bold mb-3">Quick Links</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about-us" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Services
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/job-board" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Find Jobs
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Sectors
+                  </Link>
+                </li>
+              </ul>
             </div>
-          </div>
-          
-          <div className="lg:col-span-1 flex flex-col justify-start pl-4 lg:pl-8">
-            <h3 className="text-lg font-bold mb-3">For Job Seekers</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/auth?type=jobseeker" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                  Register
-                </Link>
-              </li>
-              <li>
-                <Link href="/job-board" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                  Find Jobs
-                </Link>
-              </li>
-              <li>
-                <Link href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                  Career Sectors
-                </Link>
-              </li>
-              <li>
-                <Link href="/blogs" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                  Career Advice
-                </Link>
-              </li>
-              <li>
-                <Link href="/careers" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                  Join Our Team
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          <div className="lg:col-span-1 flex flex-col justify-start">
-            <div className="mb-6">
+            
+            <div>
+              <h3 className="text-lg font-bold mb-3">For Employers</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/auth?type=employer" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Register
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/post-job" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Post a Job
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/hire-talent" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Hire Talent
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/seo-insights" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    SEO Insights
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-bold mb-3">For Job Seekers</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/auth?type=jobseeker" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Register
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/job-board" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Find Jobs
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Career Sectors
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blogs" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Career Advice
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            
+            <div>
               <h3 className="text-lg font-bold mb-3">Newsletter</h3>
               <p className="text-sm text-gray-400 mb-4">
-                Subscribe to our newsletter for the latest job opportunities and career insights.
+                Subscribe for job updates.
               </p>
               <div className="flex items-center">
                 <Input 
@@ -233,12 +203,12 @@ export default function Footer() {
                   className="bg-gray-700 border-gray-600 text-white rounded-r-none"
                 />
                 <Button className="bg-primary hover:bg-primary/90 text-white rounded-l-none">
-                  Subscribe
+                  Go
                 </Button>
               </div>
             </div>
             
-            <div className="mt-2">
+            <div>
               <h3 className="text-lg font-bold mb-3">Follow Us</h3>
               <div className="flex space-x-4">
                 <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition-colors">
