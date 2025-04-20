@@ -101,7 +101,7 @@ export default function Banner() {
   };
 
   return (
-    <div className="relative h-[650px] overflow-hidden">
+    <div className="relative h-[760px] overflow-hidden">
       {/* Slides */}
       <AnimatePresence initial={false}>
         <motion.div
