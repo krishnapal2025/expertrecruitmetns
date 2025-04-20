@@ -116,7 +116,7 @@ export default function AboutUsPage() {
             </motion.p>
             
             <motion.p 
-              className="text-lg text-gray-600 leading-relaxed mb-10 max-w-3xl"
+              className="text-lg text-gray-600 leading-relaxed mb-6 max-w-3xl"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.6 }}
@@ -124,6 +124,38 @@ export default function AboutUsPage() {
               From executive search in the UAE to focused head hunting services, we take a detailed and meticulous approach to finding the right people for the right positions.
             </motion.p>
             
+            {/* Section Navigation Buttons */}
+            <motion.div 
+              className="flex flex-wrap gap-3 mb-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+            >
+              <a 
+                href="#our-approach" 
+                className="px-4 py-2 bg-primary/10 text-primary text-sm font-medium rounded-md hover:bg-primary/20 transition-colors flex items-center"
+              >
+                <span>Our Approach</span>
+              </a>
+              <a 
+                href="#what-sets-us-apart" 
+                className="px-4 py-2 bg-primary/10 text-primary text-sm font-medium rounded-md hover:bg-primary/20 transition-colors flex items-center"
+              >
+                <span>What Sets Us Apart</span>
+              </a>
+              <a 
+                href="#our-history" 
+                className="px-4 py-2 bg-amber-500/10 text-amber-600 text-sm font-medium rounded-md hover:bg-amber-500/20 transition-colors flex items-center"
+              >
+                <span>Our History</span>
+              </a>
+              <a 
+                href="#our-mission" 
+                className="px-4 py-2 bg-blue-500/10 text-blue-600 text-sm font-medium rounded-md hover:bg-blue-500/20 transition-colors flex items-center"
+              >
+                <span>Our Mission</span>
+              </a>
+            </motion.div>
 
           </div>
           
@@ -169,7 +201,8 @@ export default function AboutUsPage() {
       <div className="container mx-auto px-4 py-20">
         {/* Our Approach Section */}
         <motion.div 
-          className="grid md:grid-cols-2 gap-16 items-center mb-24"
+          id="our-approach"
+          className="grid md:grid-cols-2 gap-16 items-center mb-24 pt-16 -mt-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -241,7 +274,8 @@ export default function AboutUsPage() {
 
         {/* What Sets Us Apart Section */}
         <motion.div 
-          className="grid md:grid-cols-2 gap-16 items-center mb-24"
+          id="what-sets-us-apart"
+          className="grid md:grid-cols-2 gap-16 items-center mb-24 pt-16 -mt-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -312,7 +346,8 @@ export default function AboutUsPage() {
 
         {/* Our History Section */}
         <motion.div 
-          className="grid md:grid-cols-2 gap-16 items-center mb-24"
+          id="our-history"
+          className="grid md:grid-cols-2 gap-16 items-center mb-24 pt-16 -mt-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -384,7 +419,8 @@ export default function AboutUsPage() {
 
         {/* Our Mission Section */}
         <motion.div 
-          className="mb-24 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-16 px-4 rounded-2xl relative overflow-hidden"
+          id="our-mission"
+          className="mb-24 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-16 px-4 rounded-2xl relative overflow-hidden pt-16 -mt-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
