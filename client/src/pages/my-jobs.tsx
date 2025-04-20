@@ -260,11 +260,21 @@ export default function MyJobsPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">My Posted Jobs</h1>
-          <p className="text-gray-600 mt-1">
-            Manage your job listings and track applications
-          </p>
+        <div className="mb-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">My Posted Jobs</h1>
+            <p className="text-gray-600 mt-1">
+              Manage your job listings and track applications
+            </p>
+          </div>
+          <Button 
+            size="lg" 
+            onClick={() => setLocation("/post-job")}
+            className="bg-primary hover:bg-primary/90"
+          >
+            <Plus className="h-5 w-5 mr-2" />
+            Post New Job
+          </Button>
         </div>
         
         {!currentUser ? (
