@@ -90,22 +90,14 @@ export default function Navbar() {
       return defaultLinks;
     }
     
-    // Job seeker specific links - show Home, About Us, Find Jobs, Job Services, and a modified Solutions menu
+    // Job seeker specific links - show Home, About Us, Find Jobs, Job Services, Blogs, and Contact Us
     return [
       { name: "Home", href: "/" },
       { name: "About Us", href: "/about-us" },
       { name: "Find Jobs", href: "/job-board" },
       { name: "Job Services", href: "/job-services" },
-      { 
-        name: "Solutions", 
-        href: "#",
-        isDropdown: true,
-        dropdownItems: [
-          { name: "Services", href: "/services" },
-          { name: "Blogs", href: "/blogs" },
-          { name: "Contact Us", href: "/contact-us" },
-        ]
-      },
+      { name: "Blogs", href: "/blogs" },
+      { name: "Contact Us", href: "/contact-us" },
     ];
   };
   
