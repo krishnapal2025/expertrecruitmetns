@@ -24,7 +24,7 @@ export default function SearchBar() {
   };
 
   return (
-    <section className="py-16 bg-white dark:bg-gray-950 z-10 relative border-t border-gray-100 dark:border-gray-800">
+    <section className="pt-28 pb-16 bg-white dark:bg-gray-950 z-10 relative border-t border-gray-100 dark:border-gray-800">
       <div className="container mx-auto px-4">
         {/* Main search form */}
         <motion.div
