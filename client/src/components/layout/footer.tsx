@@ -185,7 +185,7 @@ export default function Footer() {
           </div>
           
           <div className="lg:col-span-1">
-            <div className="bg-gray-800 p-4 rounded-lg h-full">
+            <div className="p-4 h-full">
               <h3 className="text-lg font-bold mb-3">For Job Seekers</h3>
               <ul className="space-y-2">
                 <li>
