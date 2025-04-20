@@ -1084,24 +1084,50 @@ export default function AboutUsPage() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          {/* Minimalist CTA */}
-          <div className="relative py-14 px-8 rounded-lg bg-white border-t-2 border-white shadow-sm">            
+          {/* CTA that matches hero section */}
+          <div className="relative py-14 px-8 bg-white">            
             {/* Content */}
             <div className="relative max-w-3xl mx-auto text-center">
-              <span className="text-sm text-primary">Executive Recruitment Excellence</span>
+              <motion.div 
+                className="inline-block mb-6 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md"
+                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: -20 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+              >
+                <span className="font-medium text-primary tracking-wider uppercase text-sm">Executive Recruitment Excellence</span>
+              </motion.div>
               
-              <h2 className="text-2xl md:text-3xl font-bold my-4 text-gray-800">
+              <motion.h2 
+                className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 tracking-tight"
+                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1, duration: 0.6 }}
+              >
                 Ready to Enhance Your Workforce?
-              </h2>
+              </motion.h2>
               
-              <p className="text-base mb-8 text-gray-600">
+              <motion.p 
+                className="text-lg text-gray-600 leading-relaxed mb-8"
+                whileInView={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+              >
                 Our expert team is prepared to help you find exceptional candidates who will drive your business forward.
-              </p>
+              </motion.p>
               
-              <div className="flex flex-wrap justify-center gap-4">
+              <motion.div 
+                className="flex flex-wrap justify-center gap-4"
+                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
                 <a 
                   href="/contact-us" 
-                  className="px-6 py-2 bg-primary text-white font-medium rounded-md transition-colors hover:bg-primary/90 flex items-center"
+                  className="px-6 py-3 bg-primary text-white font-medium rounded-md shadow-md hover:shadow-lg transition-all hover:bg-primary/90 flex items-center"
                 >
                   <span>Get in Touch</span>
                   <ArrowUpRight className="ml-2 h-4 w-4" />
@@ -1109,12 +1135,12 @@ export default function AboutUsPage() {
                 
                 <a 
                   href="/services" 
-                  className="px-6 py-2 bg-white border border-white text-gray-700 font-medium rounded-md transition-colors hover:bg-gray-50 flex items-center"
+                  className="px-6 py-3 bg-white border border-gray-100 text-gray-700 font-medium rounded-md shadow-sm hover:shadow-md transition-all hover:bg-gray-50 flex items-center"
                 >
                   <span>Our Services</span>
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </a>
-              </div>
+              </motion.div>
             </div>
           </div>
         </motion.div>
