@@ -305,6 +305,78 @@ export default function AboutUsPage() {
           </motion.div>
         </motion.div>
 
+        {/* Our History Section */}
+        <motion.div 
+          className="grid md:grid-cols-2 gap-16 items-center mb-24"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={container}
+        >
+          <motion.div variants={fadeIn}>
+            <motion.div 
+              className="inline-block bg-amber-500/10 text-amber-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
+              whileHover={{ scale: 1.05 }}
+            >
+              Our History
+            </motion.div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">A Legacy of Excellence</h2>
+            <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+              Collectively, we offer decades of experience in executive search in Dubai, talent acquisition, and head-hunting services. However, the story of Expert Recruitments began in 2015 – when our executive search company was founded as Expert Labor Supply Services.
+            </p>
+            <p className="text-lg text-gray-700 leading-relaxed">
+              Since 2018, we've been transforming workforces in India under the name Expert Recruitments LLC. Today, that name is synonymous with premium talent acquisition services in Dubai and throughout the UAE. We opened our first US office in New Jersey in 2015 – making us a truly global executive search company.
+            </p>
+            
+            <div className="mt-8 grid grid-cols-3 gap-6">
+              <div className="bg-amber-50 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-amber-600 mb-1">2015</div>
+                <p className="text-sm text-gray-600">Founded as Expert Labor Supply Services</p>
+              </div>
+              <div className="bg-amber-50 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-amber-600 mb-1">2015</div>
+                <p className="text-sm text-gray-600">First US office in New Jersey</p>
+              </div>
+              <div className="bg-amber-50 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-amber-600 mb-1">2018</div>
+                <p className="text-sm text-gray-600">Expanded to India as Expert Recruitments LLC</p>
+              </div>
+            </div>
+          </motion.div>
+          
+          <motion.div 
+            className="relative"
+            variants={scaleIn}
+          >
+            <div className="absolute -inset-4 bg-gradient-to-tr from-amber-500/20 via-amber-500/10 to-transparent rounded-2xl blur-lg opacity-70"></div>
+            <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden p-1">
+              <div className="aspect-[4/3] overflow-hidden rounded-xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1568992687947-868a62a9f521?q=80&w=1500&auto=format&fit=crop"
+                  alt="Expert Recruitments Office Building" 
+                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                />
+              </div>
+              
+              <div className="absolute bottom-5 left-5 right-5 bg-white/90 backdrop-blur-sm shadow-lg rounded-lg p-4">
+                <div className="text-gray-800 font-semibold mb-1">Global Presence</div>
+                <div className="text-sm text-gray-600">Dubai | UAE | India | USA</div>
+              </div>
+            </div>
+            
+            <motion.div 
+              className="absolute -top-3 -right-3 bg-amber-500 text-white rounded-full h-24 w-24 flex items-center justify-center shadow-lg"
+              animate={{ rotate: [0, 10, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <div className="text-center">
+                <div className="font-bold text-2xl">8+</div>
+                <div className="text-xs">Years of Excellence</div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+
         {/* Our Commitments Section */}
         <motion.div 
           className="mb-24"
