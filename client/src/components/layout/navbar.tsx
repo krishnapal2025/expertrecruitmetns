@@ -90,11 +90,12 @@ export default function Navbar() {
       return defaultLinks;
     }
     
-    // Job seeker specific links - only show Home, About Us, Find Jobs, and a modified Solutions menu
+    // Job seeker specific links - show Home, About Us, Find Jobs, Job Services, and a modified Solutions menu
     return [
       { name: "Home", href: "/" },
       { name: "About Us", href: "/about-us" },
       { name: "Find Jobs", href: "/job-board" },
+      { name: "Job Services", href: "/job-services" },
       { 
         name: "Solutions", 
         href: "#",
