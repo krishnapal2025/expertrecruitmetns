@@ -5,6 +5,7 @@ import hireImg from "@assets/3603649b-9dbb-4079-b5eb-c95af0e719b7.png";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Description } from "@radix-ui/react-toast";
 
 // Custom arrow components for the slider
 const NextArrow = (props: any) => {
@@ -41,8 +42,9 @@ function CustomSlider() {
       id: 1,
       image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1920&auto=format&fit=crop",
       title: "Connecting Talent with Opportunity",
-      subtitle: "Welcome to RH Job Portal",
-      description: "We connect talented professionals with great companies. Whether you're looking for your next career move or seeking outstanding talent, we're here to help you succeed."
+      subtitle: "Expert Recruitments",
+      description: "The Home of High-End Executive Search in Dubai"
+      
     },
     {
       id: 2,
