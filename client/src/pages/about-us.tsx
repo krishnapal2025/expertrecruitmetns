@@ -377,6 +377,97 @@ export default function AboutUsPage() {
           </motion.div>
         </motion.div>
 
+        {/* Our Mission Section */}
+        <motion.div 
+          className="mb-24 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-16 px-4 rounded-2xl relative overflow-hidden"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={container}
+        >
+          {/* Background decoration elements */}
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+            <motion.div 
+              className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-primary/5 mix-blend-multiply"
+              animate={{ 
+                scale: [1, 1.2, 1],
+                opacity: [0.5, 0.8, 0.5]
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div 
+              className="absolute bottom-20 -left-20 w-80 h-80 rounded-full bg-blue-500/5 mix-blend-multiply"
+              animate={{ 
+                scale: [1, 1.1, 1],
+                opacity: [0.4, 0.6, 0.4]
+              }}
+              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+          
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <motion.div 
+              className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4"
+              whileHover={{ scale: 1.05 }}
+              variants={scaleIn}
+            >
+              Our Mission
+            </motion.div>
+            
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold mb-8"
+              variants={fadeIn}
+            >
+              Redefining Executive Search
+            </motion.h2>
+            
+            <motion.div 
+              className="relative"
+              variants={scaleIn}
+            >
+              <svg className="text-primary/5 w-32 h-32 mx-auto mb-6 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 scale-150" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h10zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z"/>
+              </svg>
+              
+              <motion.p 
+                className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto mb-8 relative z-10"
+                variants={fadeIn}
+              >
+                We redefine executive search in Dubai and beyond by meticulously connecting exceptional talent with organizations across multiple sectors.
+              </motion.p>
+            </motion.div>
+            
+            <motion.p 
+              className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed"
+              variants={fadeIn}
+            >
+              Through our proven talent acquisition process, cutting-edge technology, established network of contacts, and industry-specific expertise, we are on a mission to drive business growth, exceed expectations, and empower success across Dubai and the UAE.
+            </motion.p>
+            
+            <motion.div 
+              className="mt-10 flex flex-wrap justify-center gap-4"
+              variants={container}
+            >
+              {[
+                { text: "Proven Process", color: "bg-primary/10 text-primary" },
+                { text: "Cutting-Edge Technology", color: "bg-blue-500/10 text-blue-600" },
+                { text: "Established Network", color: "bg-purple-500/10 text-purple-600" },
+                { text: "Industry Expertise", color: "bg-amber-500/10 text-amber-600" },
+                { text: "Business Growth", color: "bg-green-500/10 text-green-600" }
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  className={`px-4 py-2 rounded-full ${item.color} font-medium text-sm`}
+                  variants={scaleIn}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  {item.text}
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </motion.div>
+        
         {/* Our Values Section */}
         <motion.div 
           className="mb-24"
