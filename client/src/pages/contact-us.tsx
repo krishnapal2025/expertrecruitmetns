@@ -81,10 +81,10 @@ export default function ContactUsPage() {
       </Helmet>
 
       {/* Simple Header */}
-      <div className="bg-primary text-white py-16">
+      <div className="py-16">
         <div className="container mx-auto px-4 text-center">
           <motion.h1 
-            className="text-4xl md:text-5xl font-bold mb-4"
+            className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -92,13 +92,13 @@ export default function ContactUsPage() {
             Connect With Us
           </motion.h1>
           <motion.div 
-            className="w-20 h-1 bg-yellow-300 mx-auto mb-6"
+            className="w-20 h-1 bg-primary mx-auto mb-6"
             initial={{ opacity: 0, scaleX: 0 }}
             animate={{ opacity: 1, scaleX: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           ></motion.div>
           <motion.p 
-            className="text-xl max-w-2xl mx-auto"
+            className="text-xl max-w-2xl mx-auto text-gray-600 dark:text-gray-300"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
@@ -108,7 +108,7 @@ export default function ContactUsPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-12">
         {/* Office Locations Section */}
         <motion.div 
           className="text-center mb-16"
