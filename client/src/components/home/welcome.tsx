@@ -44,7 +44,7 @@ function CustomSlider() {
       title: "Connecting Talent with Opportunity",
       subtitle: "Expert Recruitments",
       description: "The Home of High-End Executive Search in Dubai"
-      
+
     },
     {
       id: 2,
@@ -105,10 +105,10 @@ function CustomSlider() {
                 transform: 'scale(1.05)'
               }}
             ></div>
-            
+
             {/* Overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/60 to-black/30"></div>
-            
+
             {/* Content */}
             <div className="container mx-auto h-full flex items-center relative z-10 px-4">
               <motion.div 
@@ -141,7 +141,7 @@ export default function Welcome() {
       {/* Decorative background elements */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"></div>
       <div className="absolute inset-0 -z-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMxLjIgMCAyLjMuNSAzLjIgMS4zLjkuOS0uNiAyLjEtLjYgMy4yIDAgMS4yIDEuNSAyLjQuNiAzLjItLjkuOS0yIDEuMy0zLjIgMS4zLTEuMiAwLTIuMy0uNS0zLjItMS4zLS45LS45LjYtMi4xLjYtMy4yIDAtMS4yLTEuNS0yLjQtLjYtMy4yLjktLjggMi0xLjMgMy4yLTEuM3oiIHN0cm9rZT0icmdiYSgxNDcsIDUxLCAyMzQsIDAuMSkiIHN0cm9rZS13aWR0aD0iMiIvPjwvZz48L3N2Zz4=')] opacity-5"></div>
-      
+
       {/* Animated background shapes */}
       <motion.div 
         className="absolute top-20 right-10 w-64 h-64 rounded-full bg-primary/5 mix-blend-multiply opacity-60 -z-10"
@@ -159,7 +159,7 @@ export default function Welcome() {
         }}
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
       />
-      
+
       {/* Full-width slideshow section */}
       <div className="w-full relative mb-24 z-20">
         <motion.div
@@ -172,7 +172,7 @@ export default function Welcome() {
           <CustomSlider />
         </motion.div>
       </div>
-      
+
       <div className="container mx-auto px-4 relative z-10">
 
         <div className="grid md:grid-cols-2 gap-12 mb-24 items-stretch">
@@ -191,11 +191,11 @@ export default function Welcome() {
                   For Job Seekers
                 </h3>
               </div>
-              
+
               <p className="text-gray-600 dark:text-gray-300 mb-6 text-lg">
                 Take the next step in your career journey with us. We offer access to thousands of opportunities across various industries and locations.
               </p>
-              
+
               <ul className="space-y-3 mb-6">
                 {[
                   "Create a profile that showcases your skills",
@@ -221,7 +221,7 @@ export default function Welcome() {
               </ul>
             </div>
           </motion.div>
-          
+
           {/* Right side - Employer content */}
           <motion.div 
             initial={{ opacity: 0, x: 40 }}
@@ -237,11 +237,11 @@ export default function Welcome() {
                   For Employers
                 </h3>
               </div>
-              
+
               <p className="text-gray-600 dark:text-gray-300 mb-6 text-lg">
                 Find the talent your organization needs to thrive. We provide access to a diverse pool of qualified candidates.
               </p>
-              
+
               <ul className="space-y-3">
                 {[
                   "Post jobs and reach qualified candidates",
@@ -330,7 +330,7 @@ export default function Welcome() {
               </CardContent>
             </Card>
           </motion.div>
-          
+
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
@@ -353,7 +353,7 @@ export default function Welcome() {
               </CardContent>
             </Card>
           </motion.div>
-          
+
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
