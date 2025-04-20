@@ -184,42 +184,40 @@ export default function Footer() {
             </div>
           </div>
           
-          <div className="lg:col-span-1">
-            <div className="p-4 h-full">
-              <h3 className="text-lg font-bold mb-3">For Job Seekers</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/auth?type=jobseeker" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Register
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/job-board" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Find Jobs
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Career Sectors
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blogs" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Career Advice
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/careers" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Join Our Team
-                  </Link>
-                </li>
-              </ul>
-            </div>
+          <div className="lg:col-span-1 flex flex-col justify-start pl-4 lg:pl-8">
+            <h3 className="text-lg font-bold mb-3">For Job Seekers</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/auth?type=jobseeker" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                  Register
+                </Link>
+              </li>
+              <li>
+                <Link href="/job-board" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                  Find Jobs
+                </Link>
+              </li>
+              <li>
+                <Link href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                  Career Sectors
+                </Link>
+              </li>
+              <li>
+                <Link href="/blogs" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                  Career Advice
+                </Link>
+              </li>
+              <li>
+                <Link href="/careers" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                  Join Our Team
+                </Link>
+              </li>
+            </ul>
           </div>
           
           <div className="lg:col-span-1 flex flex-col justify-start">
