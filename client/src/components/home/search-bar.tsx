@@ -25,23 +25,17 @@ export default function SearchBar() {
 
   return (
     <section className="pt-28 pb-16 z-10 relative border-t border-gray-100 dark:border-gray-800">
-      {/* Background image with overlay */}
+      {/* Background with subtle gradient */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-white/80 to-white/90 dark:from-gray-950/80 dark:to-gray-950/90 backdrop-blur-[2px]"></div>
-        <img 
-          src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?q=80&w=2000&auto=format&fit=crop"
-          alt="" 
-          className="w-full h-full object-cover object-center opacity-20 scale-105"
-        />
+        <div className="absolute inset-0 bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900"></div>
         
-        {/* Additional visual elements */}
-        <div className="absolute inset-0 bg-primary/5 mix-blend-multiply"></div>
-        <div className="absolute -bottom-8 -right-8 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
-        <div className="absolute -top-8 -left-8 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+        {/* Subtle decorative elements */}
+        <div className="absolute -bottom-8 -right-8 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+        <div className="absolute -top-8 -left-8 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
       </div>
       
       {/* Pattern overlay */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-[0.15] -z-10"></div>
+      <div className="absolute inset-0 bg-grid-pattern opacity-[0.10] -z-10"></div>
       
       <div className="container mx-auto px-4">
         {/* Main search form */}
