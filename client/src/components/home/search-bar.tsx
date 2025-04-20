@@ -24,18 +24,9 @@ export default function SearchBar() {
   };
 
   return (
-    <section className="pt-28 pb-16 z-10 relative border-t border-gray-100 dark:border-gray-800">
-      {/* Background with subtle gradient */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900"></div>
-        
-        {/* Subtle decorative elements */}
-        <div className="absolute -bottom-8 -right-8 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
-        <div className="absolute -top-8 -left-8 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
-      </div>
-      
-      {/* Pattern overlay */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-[0.10] -z-10"></div>
+    <section className="pt-28 pb-16 z-10 relative border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950">
+      {/* Plain white background */}
+      <div className="absolute inset-0 -z-10 bg-white dark:bg-gray-950"></div>
       
       <div className="container mx-auto px-4">
         {/* Main search form */}
@@ -45,15 +36,12 @@ export default function SearchBar() {
           transition={{ duration: 0.5 }}
           className="relative max-w-4xl mx-auto"
         >
-          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 border border-gray-100 dark:border-gray-800 relative overflow-hidden">
-            {/* Decorative accents */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 via-primary to-indigo-500/70"></div>
-            <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
-            <div className="absolute -bottom-20 -left-10 w-40 h-40 bg-indigo-500/5 rounded-full blur-3xl"></div>
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-800 relative overflow-hidden">
+            {/* Professional accent line */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-primary"></div>
             
-            <h2 className="text-2xl font-bold mb-6 text-center relative">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-600">Find Your Dream Job</span>
-            </h2>
+            <h2 className="text-2xl font-bold mb-6 text-center relative text-gray-800 dark:text-white">
+              Find Your Dream Job</h2>
             
             <form onSubmit={handleSearch} className="space-y-5">
               <div className="grid md:grid-cols-5 gap-4">
@@ -109,32 +97,23 @@ export default function SearchBar() {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="mt-10 flex flex-wrap justify-center gap-10 text-center"
         >
-          <div className="relative group">
-            <div className="absolute -inset-2 rounded-lg bg-gradient-to-r from-primary/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="relative">
-              <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-600">35,000+</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">Active Jobs</div>
-            </div>
+          <div className="relative">
+            <div className="text-3xl font-bold text-primary">35,000+</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">Active Jobs</div>
           </div>
           
-          <div className="h-12 w-px bg-gradient-to-b from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800"></div>
+          <div className="h-12 w-px bg-gray-200 dark:bg-gray-700"></div>
           
-          <div className="relative group">
-            <div className="absolute -inset-2 rounded-lg bg-gradient-to-r from-primary/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="relative">
-              <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-600">7,500+</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">Companies</div>
-            </div>
+          <div className="relative">
+            <div className="text-3xl font-bold text-primary">7,500+</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">Companies</div>
           </div>
           
-          <div className="h-12 w-px bg-gradient-to-b from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800"></div>
+          <div className="h-12 w-px bg-gray-200 dark:bg-gray-700"></div>
           
-          <div className="relative group">
-            <div className="absolute -inset-2 rounded-lg bg-gradient-to-r from-primary/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="relative">
-              <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-600">12M+</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">Job Seekers</div>
-            </div>
+          <div className="relative">
+            <div className="text-3xl font-bold text-primary">12M+</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">Job Seekers</div>
           </div>
         </motion.div>
       </div>
