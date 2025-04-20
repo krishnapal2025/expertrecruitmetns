@@ -282,7 +282,7 @@ export default function AboutUsPage() {
             className="order-2 md:order-1 rounded-2xl overflow-hidden shadow-xl relative"
             variants={scaleIn}
           >
-            <div className="absolute inset-0 bg-gradient-to-bl from-blue-500/20 to-transparent mix-blend-overlay z-10 rounded-2xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 to-transparent mix-blend-overlay z-10 rounded-2xl"></div>
             <svg className="absolute top-0 left-0 w-full h-full z-0" viewBox="0 0 200 200">
               <motion.path
                 d="M 0,100 C 20,120 50,50 70,100 S 100,190 120,100 S 150,40 180,100"
@@ -310,7 +310,7 @@ export default function AboutUsPage() {
           
           <motion.div className="order-1 md:order-2" variants={fadeIn}>
             <motion.div 
-              className="inline-block bg-blue-500/10 text-blue-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
+              className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4"
               whileHover={{ scale: 1.05 }}
             >
               What Sets Us Apart
@@ -327,11 +327,11 @@ export default function AboutUsPage() {
             </p>
             
             <motion.div 
-              className="mt-8 flex items-center gap-4 text-blue-600"
+              className="mt-8 flex items-center gap-4 text-primary"
               variants={scaleIn}
             >
               <motion.div 
-                className="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center"
+                className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center"
                 animate={pulseAnimation}
               >
                 <Rocket className="w-6 h-6" />
@@ -432,7 +432,7 @@ export default function AboutUsPage() {
               transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.div 
-              className="absolute bottom-20 -left-20 w-80 h-80 rounded-full bg-blue-500/5 mix-blend-multiply"
+              className="absolute bottom-20 -left-20 w-80 h-80 rounded-full bg-primary/5 mix-blend-multiply"
               animate={{ 
                 scale: [1, 1.1, 1],
                 opacity: [0.4, 0.6, 0.4]
@@ -486,7 +486,7 @@ export default function AboutUsPage() {
             >
               {[
                 { text: "Proven Process", color: "bg-primary/10 text-primary" },
-                { text: "Cutting-Edge Technology", color: "bg-blue-500/10 text-blue-600" },
+                { text: "Cutting-Edge Technology", color: "bg-primary/10 text-primary" },
                 { text: "Established Network", color: "bg-purple-500/10 text-purple-600" },
                 { text: "Industry Expertise", color: "bg-amber-500/10 text-amber-600" },
                 { text: "Business Growth", color: "bg-green-500/10 text-green-600" }
@@ -558,7 +558,7 @@ export default function AboutUsPage() {
               whileHover={{ y: -10 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="bg-gradient-to-br from-blue-500/5 to-blue-500/10 rounded-xl p-5 h-full flex flex-col">
+              <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-5 h-full flex flex-col">
                 <div className="bg-white rounded-full h-14 w-14 flex items-center justify-center shadow-md mb-4">
                   <Award className="w-8 h-8 text-blue-500" />
                 </div>
@@ -643,7 +643,7 @@ export default function AboutUsPage() {
           <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 rounded-3xl p-10 lg:p-16 relative overflow-hidden shadow-lg">
             {/* Background decorative elements */}
             <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
             
             <div className="relative z-10">
               <div className="flex flex-col lg:flex-row gap-10 lg:gap-20 items-center">
