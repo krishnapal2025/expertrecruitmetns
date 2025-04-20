@@ -377,6 +377,134 @@ export default function AboutUsPage() {
           </motion.div>
         </motion.div>
 
+        {/* Our Values Section */}
+        <motion.div 
+          className="mb-24"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={container}
+        >
+          <motion.div className="text-center mb-16" variants={fadeIn}>
+            <motion.div 
+              className="inline-block bg-emerald-500/10 text-emerald-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
+              whileHover={{ scale: 1.05 }}
+            >
+              Our Values
+            </motion.div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Guiding Principles</h2>
+            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+              We're quickly becoming one of the most respected recruitment agencies in the UAE because everything we do is based on our guiding principles.
+            </p>
+          </motion.div>
+          
+          <div className="grid md:grid-cols-5 gap-6">
+            {/* Value 1: Embracing Technology */}
+            <motion.div
+              className="bg-white border border-gray-100 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 p-1"
+              variants={scaleIn}
+              whileHover={{ y: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-5 h-full flex flex-col">
+                <div className="bg-white rounded-full h-14 w-14 flex items-center justify-center shadow-md mb-4">
+                  <svg 
+                    className="w-8 h-8 text-primary" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M15 10V19H3V10H15ZM16 8H2C1.44772 8 1 8.44772 1 9V20C1 20.5523 1.44772 21 2 21H16C16.5523 21 17 20.5523 17 20V9C17 8.44772 16.5523 8 16 8ZM9 12C9 12.5523 8.55228 13 8 13C7.44772 13 7 12.5523 7 12C7 11.4477 7.44772 11 8 11C8.55228 11 9 11.4477 9 12ZM22 6C22 8.76142 19.7614 11 17 11C14.2386 11 12 8.76142 12 6C12 3.23858 14.2386 1 17 1C19.7614 1 22 3.23858 22 6ZM20 6C20 4.34315 18.6569 3 17 3C15.3431 3 14 4.34315 14 6C14 7.65685 15.3431 9 17 9C18.6569 9 20 7.65685 20 6Z" fill="currentColor" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-lg mb-3">Embracing Technology</h3>
+                <p className="text-sm text-gray-600">
+                  We embrace the latest technologies – including AI and Machine Learning – to ensure we're one step ahead of other recruiters when it comes to securing best-in-class talent.
+                </p>
+              </div>
+            </motion.div>
+            
+            {/* Value 2: Prioritizing Experience */}
+            <motion.div
+              className="bg-white border border-gray-100 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 p-1"
+              variants={scaleIn}
+              whileHover={{ y: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="bg-gradient-to-br from-blue-500/5 to-blue-500/10 rounded-xl p-5 h-full flex flex-col">
+                <div className="bg-white rounded-full h-14 w-14 flex items-center justify-center shadow-md mb-4">
+                  <Award className="w-8 h-8 text-blue-500" />
+                </div>
+                <h3 className="font-bold text-lg mb-3">Prioritizing Experience</h3>
+                <p className="text-sm text-gray-600">
+                  We focus on matching specific industry experience with the right positions. The talent acquisition work we do empower businesses to deliver their commercial objectives and pursue long-term growth.
+                </p>
+              </div>
+            </motion.div>
+            
+            {/* Value 3: Leveraging Big Data */}
+            <motion.div
+              className="bg-white border border-gray-100 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 p-1"
+              variants={scaleIn}
+              whileHover={{ y: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="bg-gradient-to-br from-purple-500/5 to-purple-500/10 rounded-xl p-5 h-full flex flex-col">
+                <div className="bg-white rounded-full h-14 w-14 flex items-center justify-center shadow-md mb-4">
+                  <svg 
+                    className="w-8 h-8 text-purple-600" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M12 1L21.5 6.5V17.5L12 23L2.5 17.5V6.5L12 1ZM12 3.311L4.5 7.65381V16.3462L12 20.689L19.5 16.3462V7.65381L12 3.311ZM12 13C10.9 13 10 12.1 10 11C10 9.9 10.9 9 12 9C13.1 9 14 9.9 14 11C14 12.1 13.1 13 12 13ZM7.5 14.5C6.7 14.5 6 13.8 6 13C6 12.2 6.7 11.5 7.5 11.5C8.3 11.5 9 12.2 9 13C9 13.8 8.3 14.5 7.5 14.5ZM7.5 9.5C6.7 9.5 6 8.8 6 8C6 7.2 6.7 6.5 7.5 6.5C8.3 6.5 9 7.2 9 8C9 8.8 8.3 9.5 7.5 9.5ZM16.5 14.5C15.7 14.5 15 13.8 15 13C15 12.2 15.7 11.5 16.5 11.5C17.3 11.5 18 12.2 18 13C18 13.8 17.3 14.5 16.5 14.5ZM16.5 9.5C15.7 9.5 15 8.8 15 8C15 7.2 15.7 6.5 16.5 6.5C17.3 6.5 18 7.2 18 8C18 8.8 17.3 9.5 16.5 9.5Z" fill="currentColor" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-lg mb-3">Leveraging Big Data</h3>
+                <p className="text-sm text-gray-600">
+                  By processing and utilizing huge volumes of industry-specific data, our executive search experts in Dubai gain the insights needed to develop effective recruiting strategies.
+                </p>
+              </div>
+            </motion.div>
+            
+            {/* Value 4: Delivering Industry-Specific Services */}
+            <motion.div
+              className="bg-white border border-gray-100 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 p-1"
+              variants={scaleIn}
+              whileHover={{ y: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="bg-gradient-to-br from-amber-500/5 to-amber-500/10 rounded-xl p-5 h-full flex flex-col">
+                <div className="bg-white rounded-full h-14 w-14 flex items-center justify-center shadow-md mb-4">
+                  <Briefcase className="w-8 h-8 text-amber-500" />
+                </div>
+                <h3 className="font-bold text-lg mb-3">Industry-Specific Services</h3>
+                <p className="text-sm text-gray-600">
+                  Our executive search professionals and head hunters in Dubai tailor our proven search strategies according to the specific needs of each industry we serve.
+                </p>
+              </div>
+            </motion.div>
+            
+            {/* Value 5: Exceeding Client Expectations */}
+            <motion.div
+              className="bg-white border border-gray-100 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 p-1"
+              variants={scaleIn}
+              whileHover={{ y: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="bg-gradient-to-br from-green-500/5 to-green-500/10 rounded-xl p-5 h-full flex flex-col">
+                <div className="bg-white rounded-full h-14 w-14 flex items-center justify-center shadow-md mb-4">
+                  <CheckCircle2 className="w-8 h-8 text-green-500" />
+                </div>
+                <h3 className="font-bold text-lg mb-3">Exceeding Expectations</h3>
+                <p className="text-sm text-gray-600">
+                  It's not enough to simply deliver a comprehensive and productive service at Expert Recruitments. We work tirelessly to go well beyond our minimum commitments. Exceeding expectations is always the goal.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+        
         {/* Our Commitments Section */}
         <motion.div 
           className="mb-24"
