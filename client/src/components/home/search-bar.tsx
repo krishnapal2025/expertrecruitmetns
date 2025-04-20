@@ -24,10 +24,7 @@ export default function SearchBar() {
   };
 
   return (
-    <section className="pt-28 pb-16 z-10 relative border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950">
-      {/* Plain white background */}
-      <div className="absolute inset-0 -z-10 bg-white dark:bg-gray-950"></div>
-      
+    <section className="pt-28 pb-16 bg-white dark:bg-gray-950 z-10 relative border-t border-gray-100 dark:border-gray-800">
       <div className="container mx-auto px-4">
         {/* Main search form */}
         <motion.div
@@ -36,12 +33,8 @@ export default function SearchBar() {
           transition={{ duration: 0.5 }}
           className="relative max-w-4xl mx-auto"
         >
-          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-800 relative overflow-hidden">
-            {/* Professional accent line */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-primary"></div>
-            
-            <h2 className="text-2xl font-bold mb-6 text-center relative text-gray-800 dark:text-white">
-              Find Your Dream Job</h2>
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 border border-gray-100 dark:border-gray-800">
+            <h2 className="text-2xl font-bold mb-6 text-center">Find Your Dream Job</h2>
             
             <form onSubmit={handleSearch} className="space-y-5">
               <div className="grid md:grid-cols-5 gap-4">
@@ -95,25 +88,21 @@ export default function SearchBar() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="mt-10 flex flex-wrap justify-center gap-10 text-center"
+          className="mt-10 flex justify-center gap-10 text-center"
         >
-          <div className="relative">
-            <div className="text-3xl font-bold text-primary">35,000+</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">Active Jobs</div>
+          <div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">35,000+</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Active Jobs</div>
           </div>
-          
-          <div className="h-12 w-px bg-gray-200 dark:bg-gray-700"></div>
-          
-          <div className="relative">
-            <div className="text-3xl font-bold text-primary">7,500+</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">Companies</div>
+          <div className="h-12 w-px bg-gray-200 dark:bg-gray-800"></div>
+          <div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">7,500+</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Companies</div>
           </div>
-          
-          <div className="h-12 w-px bg-gray-200 dark:bg-gray-700"></div>
-          
-          <div className="relative">
-            <div className="text-3xl font-bold text-primary">12M+</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">Job Seekers</div>
+          <div className="h-12 w-px bg-gray-200 dark:bg-gray-800"></div>
+          <div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">12M+</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Job Seekers</div>
           </div>
         </motion.div>
       </div>

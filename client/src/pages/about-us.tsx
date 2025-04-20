@@ -124,91 +124,7 @@ export default function AboutUsPage() {
               From executive search in the UAE to focused head hunting services, we take a detailed and meticulous approach to finding the right people for the right positions.
             </motion.p>
             
-            {/* Navigation buttons for page sections */}
-            <motion.div 
-              className="flex flex-wrap justify-center gap-3 mb-4"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.6 }}
-            >
-              <button 
-                onClick={() => {
-                  const element = document.getElementById('our-approach');
-                  if (element) {
-                    const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
-                    window.scrollTo({top: y, behavior: 'smooth'});
-                  }
-                }}
-                className="px-4 py-2 text-xs font-medium bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-primary transition-colors shadow-sm flex items-center gap-1"
-              >
-                Our Approach <ArrowUpRight className="w-3 h-3" />
-              </button>
-              
-              <button 
-                onClick={() => {
-                  const element = document.getElementById('what-sets-us-apart');
-                  if (element) {
-                    const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
-                    window.scrollTo({top: y, behavior: 'smooth'});
-                  }
-                }}
-                className="px-4 py-2 text-xs font-medium bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-primary transition-colors shadow-sm flex items-center gap-1"
-              >
-                What Sets Us Apart <ArrowUpRight className="w-3 h-3" />
-              </button>
-              
-              <button 
-                onClick={() => {
-                  const element = document.getElementById('our-history');
-                  if (element) {
-                    const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
-                    window.scrollTo({top: y, behavior: 'smooth'});
-                  }
-                }}
-                className="px-4 py-2 text-xs font-medium bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-primary transition-colors shadow-sm flex items-center gap-1"
-              >
-                Our History <ArrowUpRight className="w-3 h-3" />
-              </button>
-              
-              <button 
-                onClick={() => {
-                  const element = document.getElementById('our-mission');
-                  if (element) {
-                    const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
-                    window.scrollTo({top: y, behavior: 'smooth'});
-                  }
-                }}
-                className="px-4 py-2 text-xs font-medium bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-primary transition-colors shadow-sm flex items-center gap-1"
-              >
-                Our Mission <ArrowUpRight className="w-3 h-3" />
-              </button>
-              
-              <button 
-                onClick={() => {
-                  const element = document.getElementById('our-values');
-                  if (element) {
-                    const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
-                    window.scrollTo({top: y, behavior: 'smooth'});
-                  }
-                }}
-                className="px-4 py-2 text-xs font-medium bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-primary transition-colors shadow-sm flex items-center gap-1"
-              >
-                Our Values <ArrowUpRight className="w-3 h-3" />
-              </button>
-              
-              <button 
-                onClick={() => {
-                  const element = document.getElementById('our-promise');
-                  if (element) {
-                    const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
-                    window.scrollTo({top: y, behavior: 'smooth'});
-                  }
-                }}
-                className="px-4 py-2 text-xs font-medium bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-primary transition-colors shadow-sm flex items-center gap-1"
-              >
-                Our Promise <ArrowUpRight className="w-3 h-3" />
-              </button>
-            </motion.div>
+
           </div>
           
           {/* Three value propositions */}
@@ -253,7 +169,6 @@ export default function AboutUsPage() {
       <div className="container mx-auto px-4 py-20">
         {/* Our Approach Section */}
         <motion.div 
-          id="our-approach"
           className="grid md:grid-cols-2 gap-16 items-center mb-24"
           initial="hidden"
           whileInView="visible"
@@ -326,7 +241,6 @@ export default function AboutUsPage() {
 
         {/* What Sets Us Apart Section */}
         <motion.div 
-          id="what-sets-us-apart"
           className="grid md:grid-cols-2 gap-16 items-center mb-24"
           initial="hidden"
           whileInView="visible"
@@ -398,7 +312,6 @@ export default function AboutUsPage() {
 
         {/* Our History Section */}
         <motion.div 
-          id="our-history"
           className="grid md:grid-cols-2 gap-16 items-center mb-24"
           initial="hidden"
           whileInView="visible"
@@ -471,7 +384,6 @@ export default function AboutUsPage() {
 
         {/* Our Mission Section */}
         <motion.div 
-          id="our-mission"
           className="mb-24 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-16 px-4 rounded-2xl relative overflow-hidden"
           initial="hidden"
           whileInView="visible"
@@ -563,7 +475,6 @@ export default function AboutUsPage() {
         
         {/* Our Values Section */}
         <motion.div 
-          id="our-values"
           className="mb-24"
           initial="hidden"
           whileInView="visible"
@@ -692,7 +603,6 @@ export default function AboutUsPage() {
         
         {/* Our Promise Section */}
         <motion.div 
-          id="our-promise"
           className="mb-24"
           initial="hidden"
           whileInView="visible"
