@@ -80,118 +80,35 @@ export default function ContactUsPage() {
         <meta name="description" content="Get in touch with Expert Recruitments across our global offices in India, Dubai, and USA. We're here to help with all your recruitment needs." />
       </Helmet>
 
-      {/* Hero Section - Matching Banner Style */}
-      <div className="relative h-[500px] overflow-hidden">
-        <div className="absolute inset-0 flex flex-col md:flex-row">
-          {/* Left content panel */}
-          <motion.div 
-            className="w-full md:w-7/12 bg-white dark:bg-gray-900 h-1/2 md:h-full relative overflow-hidden p-8 md:p-16 flex flex-col justify-center"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+      {/* Simple Header */}
+      <div className="bg-primary text-white py-16">
+        <div className="container mx-auto px-4 text-center">
+          <motion.h1 
+            className="text-4xl md:text-5xl font-bold mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {/* Decorative element */}
-            <div className="absolute -right-24 -top-24 w-48 h-48 rounded-full bg-primary opacity-10 blur-3xl"></div>
-            <div className="absolute right-0 bottom-0 w-1/3 h-1/3 bg-dot-pattern opacity-5"></div>
-            
-            <div className="relative z-10 max-w-xl">
-              {/* Tagline */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1, duration: 0.5 }}
-                className="mb-6"
-              >
-                <span className="inline-block bg-primary/10 dark:bg-primary/20 text-xs font-semibold tracking-wider px-3 py-1 rounded-sm text-primary dark:text-primary/90">
-                  GLOBAL NETWORK
-                </span>
-              </motion.div>
-              
-              {/* Title */}
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.6 }}
-                className="text-4xl md:text-6xl xl:text-7xl font-extrabold mb-6 leading-tight text-gray-900 dark:text-white"
-              >
-                <span className="block">Connect</span>
-                <span className="block">With Us</span>
-              </motion.h1>
-              
-              {/* Description */}
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.6 }}
-                className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-lg"
-              >
-                Our global team is ready to provide personalized recruitment solutions to meet your specific needs.
-              </motion.p>
-              
-              {/* Statistics */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.6 }}
-                className="grid grid-cols-3 gap-6 mb-10"
-              >
-                <div>
-                  <div className="text-3xl font-bold mb-1 text-primary">3</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Continents</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold mb-1 text-primary">24/7</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Support</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold mb-1 text-primary">10+</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Years Experience</div>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
-          
-          {/* Right image panel */}
+            Connect With Us
+          </motion.h1>
           <motion.div 
-            className="w-full md:w-5/12 h-1/2 md:h-full relative overflow-hidden"
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7 }}
+            className="w-20 h-1 bg-yellow-300 mx-auto mb-6"
+            initial={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          ></motion.div>
+          <motion.p 
+            className="text-xl max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <div 
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-10000 ease-in-out"
-              style={{
-                backgroundImage: `url(https://images.unsplash.com/photo-1573164574572-cb89e39749b4?q=80&w=1600&auto=format&fit=crop)`,
-                transform: 'scale(1.05)',
-                animation: 'slowZoom 15s infinite alternate ease-in-out'
-              }}
-            ></div>
-            <div className="absolute inset-0 bg-primary opacity-30 mix-blend-multiply"></div>
-            
-            {/* Floating card with contact info */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="absolute bottom-8 right-8 left-8 md:left-auto md:right-8 md:bottom-8 md:w-64 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-lg p-4 shadow-lg"
-            >
-              <div className="flex items-start">
-                <div className="bg-primary rounded-full p-2 mr-3 text-white">
-                  <Mail className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="font-semibold text-gray-900 dark:text-white mb-1">Get in Touch</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-300">
-                    Our team is here to help with all your recruitment needs.
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
+            Our global team is ready to provide personalized recruitment solutions to meet your specific needs.
+          </motion.p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-20">
+      <div className="container mx-auto px-4 py-16">
         {/* Office Locations Section */}
         <motion.div 
           className="text-center mb-16"
