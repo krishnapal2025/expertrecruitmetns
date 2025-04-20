@@ -85,20 +85,37 @@ export default function Navbar() {
       },
     ];
     
-    // If no user or not a job seeker, return default links
-    if (!currentUser || currentUser.user.userType !== "jobseeker") {
+    // If no user, return default links
+    if (!currentUser) {
       return defaultLinks;
     }
     
     // Job seeker specific links - show Home, About Us, Find Jobs, Job Services, Blogs, and Contact Us
-    return [
-      { name: "Home", href: "/" },
-      { name: "About Us", href: "/about-us" },
-      { name: "Find Jobs", href: "/job-board" },
-      { name: "Job Services", href: "/job-services" },
-      { name: "Blogs", href: "/blogs" },
-      { name: "Contact Us", href: "/contact-us" },
-    ];
+    if (currentUser.user.userType === "jobseeker") {
+      return [
+        { name: "Home", href: "/" },
+        { name: "About Us", href: "/about-us" },
+        { name: "Find Jobs", href: "/job-board" },
+        { name: "Job Services", href: "/job-services" },
+        { name: "Blogs", href: "/blogs" },
+        { name: "Contact Us", href: "/contact-us" },
+      ];
+    }
+    
+    // Employer specific links - show Home, About Us, Hire Talent, Blogs, Contact Us, but NOT Find Jobs
+    if (currentUser.user.userType === "employer") {
+      return [
+        { name: "Home", href: "/" },
+        { name: "About Us", href: "/about-us" },
+        { name: "Hire Talent", href: "/hire-talent" },
+        { name: "My Jobs", href: "/my-jobs" },
+        { name: "Blogs", href: "/blogs" },
+        { name: "Contact Us", href: "/contact-us" },
+      ];
+    }
+    
+    // Default fallback
+    return defaultLinks;
   };
   
   // Get the appropriate navigation links
