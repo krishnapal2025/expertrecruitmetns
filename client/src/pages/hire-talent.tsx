@@ -387,35 +387,139 @@ export default function HireTalentPage() {
               </div>
               
               <div className="bg-gray-50 p-8 rounded-lg">
-                <div className="max-w-3xl mx-auto text-center">
-                  <h3 className="text-2xl font-bold mb-4">Our Recruitment Process</h3>
-                  <p className="text-gray-600 mb-8">
-                    We follow a thorough, transparent process to ensure we find the perfect match for your permanent positions.
+                <div className="max-w-4xl mx-auto">
+                  <h3 className="text-3xl font-bold mb-6 text-center text-blue-800">Comprehensive Recruitment Process</h3>
+                  <p className="text-gray-600 mb-12 text-center">
+                    Our structured approach ensures we find the perfect talent match for your organization's needs.
                   </p>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="bg-white p-4 rounded-lg shadow-sm">
-                      <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-3">1</div>
-                      <h4 className="font-semibold mb-2">Needs Analysis</h4>
-                      <p className="text-sm text-gray-600">We thoroughly understand your requirements and company culture.</p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {/* First row */}
+                    <div className="flex flex-col items-center">
+                      <div className="bg-yellow-300 text-blue-800 font-semibold rounded-full py-2 px-6 mb-4 text-center">
+                        UNDERSTANDING<br />CLIENT NEEDS
+                      </div>
+                      <div className="text-center mb-6">
+                        <p className="text-gray-700">Starting the process with a thorough assessment of the client's specific recruitment requirements and strategic objectives</p>
+                      </div>
+                      <div className="flex justify-center w-full">
+                        <div className="relative">
+                          <div className="w-16 h-16 bg-white border-2 border-blue-300 border-dashed rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                            </svg>
+                          </div>
+                          <div className="absolute -right-12 top-1/2 transform -translate-y-1/2 rotate-45">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     
-                    <div className="bg-white p-4 rounded-lg shadow-sm">
-                      <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-3">2</div>
-                      <h4 className="font-semibold mb-2">Candidate Sourcing</h4>
-                      <p className="text-sm text-gray-600">We identify qualified candidates through our extensive network.</p>
+                    <div className="flex flex-col items-center">
+                      <div className="bg-yellow-300 text-blue-800 font-semibold rounded-full py-2 px-6 mb-4 text-center">
+                        CANDIDATE<br />ASSESSMENT
+                      </div>
+                      <div className="text-center mb-6">
+                        <p className="text-gray-700">Conduct rigorous assessment focusing on skills evaluation and cultural fit to ensure ideal matches</p>
+                      </div>
+                      <div className="flex justify-center w-full">
+                        <div className="relative">
+                          <div className="w-16 h-16 bg-white border-2 border-blue-300 border-dashed rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                          </div>
+                          <div className="absolute -right-12 top-1/2 transform -translate-y-1/2 rotate-45">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     
-                    <div className="bg-white p-4 rounded-lg shadow-sm">
-                      <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-3">3</div>
-                      <h4 className="font-semibold mb-2">Screening & Assessment</h4>
-                      <p className="text-sm text-gray-600">We evaluate technical skills, experience, and cultural fit.</p>
+                    <div className="flex flex-col items-center">
+                      <div className="bg-yellow-300 text-blue-800 font-semibold rounded-full py-2 px-6 mb-4 text-center">
+                        CANDIDATE<br />INTERVIEW
+                      </div>
+                      <div className="text-center mb-6">
+                        <p className="text-gray-700">Facilitate structured interviews to evaluate the candidates and ensure alignment with the client's expectations</p>
+                      </div>
+                      <div className="flex justify-center w-full">
+                        <div className="relative">
+                          <div className="w-16 h-16 bg-white border-2 border-blue-300 border-dashed rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     
-                    <div className="bg-white p-4 rounded-lg shadow-sm">
-                      <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-3">4</div>
-                      <h4 className="font-semibold mb-2">Placement & Support</h4>
-                      <p className="text-sm text-gray-600">We assist with offers and provide ongoing support.</p>
+                    {/* Second row - with reversed arrows */}
+                    <div className="flex flex-col items-center mt-8">
+                      <div className="flex justify-center w-full mb-6">
+                        <div className="relative">
+                          <div className="w-16 h-16 bg-white border-2 border-blue-300 border-dashed rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                            </svg>
+                          </div>
+                          <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 -rotate-135">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-yellow-300 text-blue-800 font-semibold rounded-full py-2 px-6 mb-4 text-center">
+                        CANDIDATE<br />SOURCING
+                      </div>
+                      <div className="text-center">
+                        <p className="text-gray-700">Utilizing multiple channels and in-house database to source a diverse pool of candidates tailored to client needs</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col items-center mt-8">
+                      <div className="flex justify-center w-full mb-6">
+                        <div className="relative">
+                          <div className="w-16 h-16 bg-white border-2 border-blue-300 border-dashed rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                          </div>
+                          <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 -rotate-135">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-yellow-300 text-blue-800 font-semibold rounded-full py-2 px-6 mb-4 text-center">
+                        CANDIDATE<br />SHORTLISTING
+                      </div>
+                      <div className="text-center">
+                        <p className="text-gray-700">Provide the client with a curated list of top candidates who align with their strategic goals, to choose from</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col items-center mt-8">
+                      <div className="flex justify-center w-full mb-6">
+                        <div className="w-16 h-16 bg-white border-2 border-blue-300 border-dashed rounded-full flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="bg-yellow-300 text-blue-800 font-semibold rounded-full py-2 px-6 mb-4 text-center">
+                        BACKGROUND<br />VERIFICATION
+                      </div>
+                      <div className="text-center">
+                        <p className="text-gray-700">Ensuring candidates meet necessary requirements and align with the company's expectations by verifying their background</p>
+                      </div>
                     </div>
                   </div>
                   
