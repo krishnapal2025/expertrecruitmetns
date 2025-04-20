@@ -2,7 +2,8 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Briefcase, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import ERLogo from "@assets/ER.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -13,8 +14,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 lg:gap-8 mb-12">
           <div className="md:col-span-1">
             <div className="flex items-center mb-4">
-              <Briefcase className="h-6 w-6 mr-2" />
-              <span className="text-xl font-bold">RH Job Portal</span>
+              <img src={ERLogo} alt="Expert Recruitments" className="h-8 w-auto mr-2" />
+              <span className="text-xl font-bold">Expert Recruitments</span>
             </div>
             <p className="text-gray-400 mb-4">
               Connecting talent with opportunity. Find your perfect job or the ideal candidate with our professional recruitment services.
