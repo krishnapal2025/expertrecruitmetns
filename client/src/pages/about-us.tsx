@@ -132,42 +132,78 @@ export default function AboutUsPage() {
               transition={{ delay: 0.7, duration: 0.6 }}
             >
               <button 
-                onClick={() => document.getElementById('our-approach')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => {
+                  const element = document.getElementById('our-approach');
+                  if (element) {
+                    const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                  }
+                }}
                 className="px-4 py-2 text-xs font-medium bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-primary transition-colors shadow-sm flex items-center gap-1"
               >
                 Our Approach <ArrowUpRight className="w-3 h-3" />
               </button>
               
               <button 
-                onClick={() => document.getElementById('what-sets-us-apart')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => {
+                  const element = document.getElementById('what-sets-us-apart');
+                  if (element) {
+                    const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                  }
+                }}
                 className="px-4 py-2 text-xs font-medium bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-primary transition-colors shadow-sm flex items-center gap-1"
               >
                 What Sets Us Apart <ArrowUpRight className="w-3 h-3" />
               </button>
               
               <button 
-                onClick={() => document.getElementById('our-history')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => {
+                  const element = document.getElementById('our-history');
+                  if (element) {
+                    const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                  }
+                }}
                 className="px-4 py-2 text-xs font-medium bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-primary transition-colors shadow-sm flex items-center gap-1"
               >
                 Our History <ArrowUpRight className="w-3 h-3" />
               </button>
               
               <button 
-                onClick={() => document.getElementById('our-mission')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => {
+                  const element = document.getElementById('our-mission');
+                  if (element) {
+                    const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                  }
+                }}
                 className="px-4 py-2 text-xs font-medium bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-primary transition-colors shadow-sm flex items-center gap-1"
               >
                 Our Mission <ArrowUpRight className="w-3 h-3" />
               </button>
               
               <button 
-                onClick={() => document.getElementById('our-values')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => {
+                  const element = document.getElementById('our-values');
+                  if (element) {
+                    const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                  }
+                }}
                 className="px-4 py-2 text-xs font-medium bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-primary transition-colors shadow-sm flex items-center gap-1"
               >
                 Our Values <ArrowUpRight className="w-3 h-3" />
               </button>
               
               <button 
-                onClick={() => document.getElementById('our-promise')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => {
+                  const element = document.getElementById('our-promise');
+                  if (element) {
+                    const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                  }
+                }}
                 className="px-4 py-2 text-xs font-medium bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-primary transition-colors shadow-sm flex items-center gap-1"
               >
                 Our Promise <ArrowUpRight className="w-3 h-3" />
