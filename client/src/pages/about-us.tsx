@@ -101,21 +101,50 @@ export default function AboutUsPage() {
             </motion.p>
             
             <motion.div 
-              className="flex items-center justify-center gap-2 mb-12"
+              className="flex flex-wrap justify-center gap-3 mb-12"
               variants={scaleIn}
             >
-              <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5">
-                <MapPin className="h-4 w-4 mr-2 text-white/80" />
-                <span className="text-white/90 font-medium">Dubai</span>
-              </div>
-              <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5">
-                <Globe className="h-4 w-4 mr-2 text-white/80" />
-                <span className="text-white/90 font-medium">UAE & GCC</span>
-              </div>
-              <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5">
-                <Building className="h-4 w-4 mr-2 text-white/80" />
-                <span className="text-white/90 font-medium">Executive Search</span>
-              </div>
+              <motion.div 
+                className="group relative"
+                whileHover={{ y: -5 }}
+                transition={{ type: "spring", stiffness: 500 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/70 to-primary/70 rounded-xl blur-sm opacity-80 group-hover:opacity-100 transition-all duration-300"></div>
+                <div className="relative flex items-center bg-white/10 backdrop-blur-md rounded-xl px-5 py-2 border border-white/20 shadow-lg">
+                  <div className="bg-white/20 rounded-full p-1.5 mr-3">
+                    <MapPin className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="text-white font-medium tracking-wide">Dubai</span>
+                </div>
+              </motion.div>
+              
+              <motion.div 
+                className="group relative"
+                whileHover={{ y: -5 }}
+                transition={{ type: "spring", stiffness: 500 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/70 to-blue-600/70 rounded-xl blur-sm opacity-80 group-hover:opacity-100 transition-all duration-300"></div>
+                <div className="relative flex items-center bg-white/10 backdrop-blur-md rounded-xl px-5 py-2 border border-white/20 shadow-lg">
+                  <div className="bg-white/20 rounded-full p-1.5 mr-3">
+                    <Globe className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="text-white font-medium tracking-wide">UAE & GCC</span>
+                </div>
+              </motion.div>
+              
+              <motion.div 
+                className="group relative"
+                whileHover={{ y: -5 }}
+                transition={{ type: "spring", stiffness: 500 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/70 to-indigo-600/70 rounded-xl blur-sm opacity-80 group-hover:opacity-100 transition-all duration-300"></div>
+                <div className="relative flex items-center bg-white/10 backdrop-blur-md rounded-xl px-5 py-2 border border-white/20 shadow-lg">
+                  <div className="bg-white/20 rounded-full p-1.5 mr-3">
+                    <Building className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="text-white font-medium tracking-wide">Executive Search</span>
+                </div>
+              </motion.div>
             </motion.div>
             
             <motion.div 
@@ -974,48 +1003,137 @@ export default function AboutUsPage() {
         
         {/* Call to Action Section */}
         <motion.div 
-          className="relative rounded-2xl overflow-hidden"
+          className="relative overflow-hidden mb-24"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-primary to-blue-600 opacity-90"></div>
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIxIDEuNzktNCA0LTRzNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQtMS43OS00LTR6TTYwIDEyYzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00em0wLTE2YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00eiIvPjwvZz48L2c+PC9zdmc+')] bg-repeat opacity-10"></div>
-          
-          <div className="relative py-16 px-6 md:px-10 lg:px-16 text-white text-center">
-            <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-            >
-              Ready to Enhance Your Workforce?
-            </motion.h2>
-            <motion.p 
-              className="text-lg md:text-xl mb-8 max-w-3xl mx-auto text-white/90"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-            >
-              If you're ready to enhance your workforce with the very best talent in your niche, we stand ready to serve.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-            >
-              <a 
-                href="/contact-us" 
-                className="inline-flex items-center bg-white text-primary px-6 py-3 rounded-full font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300 group"
+          {/* Modern glass-morphism style CTA */}
+          <div className="relative py-20 px-8 rounded-3xl overflow-hidden">
+            {/* Background with animated gradient */}
+            <div className="absolute inset-0 z-0">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-purple-600/80 to-indigo-600/90"></div>
+              <motion.div 
+                className="absolute top-0 left-0 right-0 bottom-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.15),transparent_50%)]"
+                animate={{ 
+                  backgroundPosition: ['0% 0%', '100% 100%'],
+                  scale: [1, 1.2, 1] 
+                }}
+                transition={{ 
+                  duration: 15,
+                  repeat: Infinity,
+                  repeatType: 'reverse'
+                }}
+              ></motion.div>
+              
+              {/* Decorative elements */}
+              <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
+              
+              {/* Geometric patterns */}
+              <div className="absolute inset-0 flex justify-around items-center opacity-20">
+                {[...Array(5)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"
+                    initial={{ height: '20%', opacity: 0 }}
+                    animate={{ height: '80%', opacity: 0.3 }}
+                    transition={{ 
+                      duration: 4 + i,
+                      repeat: Infinity,
+                      repeatType: 'reverse',
+                      delay: i * 0.3
+                    }}
+                  ></motion.div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Content */}
+            <div className="relative z-10 max-w-5xl mx-auto text-center">
+              <motion.div
+                className="inline-block px-6 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6 shadow-lg"
+                whileHover={{ scale: 1.05 }}
               >
-                Get in Touch 
-                <ArrowUpRight className="ml-2 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-              </a>
-            </motion.div>
+                <span className="text-white/90 font-medium text-sm tracking-wider uppercase">Executive Recruitment Excellence</span>
+              </motion.div>
+              
+              <motion.h2 
+                className="text-3xl md:text-5xl font-bold mb-6 text-white"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+              >
+                Ready to Enhance Your Workforce?
+              </motion.h2>
+              
+              <motion.p 
+                className="text-lg md:text-xl mb-12 max-w-3xl mx-auto text-white/90 leading-relaxed"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+              >
+                If you're ready to enhance your workforce with the very best talent in your niche, 
+                we stand ready to serve. Our expert team is prepared to help you find exceptional candidates who will drive your business forward.
+              </motion.p>
+              
+              <motion.div
+                className="flex flex-wrap justify-center gap-4 mb-10"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+              >
+                <a 
+                  href="/contact-us" 
+                  className="relative group overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-white/10 backdrop-blur-sm group-hover:bg-white/20 rounded-xl transition-all duration-300"></div>
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-white/0 blur-lg"></div>
+                  </div>
+                  <div className="relative px-8 py-4 bg-white text-primary font-medium text-lg rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 flex items-center">
+                    <span>Get in Touch</span>
+                    <ArrowUpRight className="ml-2 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </div>
+                </a>
+                
+                <a 
+                  href="/services" 
+                  className="relative group overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-white/5 backdrop-blur-sm group-hover:bg-white/10 rounded-xl transition-all duration-300 border border-white/20"></div>
+                  <div className="relative px-8 py-4 text-white font-medium text-lg rounded-xl flex items-center">
+                    <span>Our Services</span>
+                    <svg className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </a>
+              </motion.div>
+              
+              <motion.div 
+                className="flex justify-center gap-10 pt-8 border-t border-white/10"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+              >
+                {[
+                  { text: "Premium Talent", value: "100%" },
+                  { text: "Client Satisfaction", value: "95%" },
+                  { text: "Retention Rate", value: "92%" }
+                ].map((stat, index) => (
+                  <div key={index} className="text-center">
+                    <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
+                    <div className="text-sm text-white/70">{stat.text}</div>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
           </div>
         </motion.div>
       </div>
