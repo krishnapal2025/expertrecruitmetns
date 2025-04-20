@@ -66,134 +66,163 @@ export default function AboutUsPage() {
       </Helmet>
 
       {/* Hero Section with Professional Design */}
-      <div className="relative bg-gray-900 py-24 text-white overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Subtle professional pattern */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00ek02MCAxMmMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHptMC0xNmMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')] bg-repeat opacity-10"></div>
-          
-          {/* Professional accent line */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/70 via-primary to-primary/70"></div>
-        </div>
+      <div className="relative bg-white py-24 overflow-hidden">
+        {/* Top accent line */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-primary"></div>
         
-        {/* Dark overlay for contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent"></div>
+        {/* Professional subtle pattern */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIHN0cm9rZT0iI2UyZThmMCIgc3Ryb2tlLXdpZHRoPSIxIj48cGF0aCBkPSJNMzYgMThsLTEwLTI4TTI4IDBMMCA0MCIvPjwvZz48L2c+PC9zdmc+')] opacity-5"></div>
         
         <div className="container mx-auto px-4 relative">
-          <motion.div 
-            initial="hidden"
-            animate="visible"
-            variants={fadeIn}
-            className="flex flex-col items-center text-center"
-          >
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Left content */}
             <motion.div 
-              className="mb-6 inline-block px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full"
-              whileHover={{ scale: 1.05 }}
-            >
-              <span className="font-medium text-white/90">Executive Search Specialists</span>
-            </motion.div>
-            
-            <motion.h1 
-              className="text-4xl md:text-6xl font-bold mb-6"
-              animate={{ opacity: [0.8, 1], y: [10, 0] }}
-              transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" as const }}
-            >
-              Expert Recruitments
-            </motion.h1>
-            
-            <motion.p 
-              className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed mb-8"
-              variants={fadeIn}
-            >
-              The Home of High-End Executive Search in Dubai and across the UAE
-            </motion.p>
-            
-            <motion.div 
-              className="flex flex-wrap justify-center gap-3 mb-12"
-              variants={scaleIn}
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="flex flex-col items-start text-left"
             >
               <motion.div 
-                className="group relative"
-                whileHover={{ y: -5 }}
-                transition={{ type: "spring", stiffness: 500 }}
+                className="mb-6 inline-block px-4 py-1.5 bg-primary/10 rounded-md border-l-4 border-primary"
+                whileHover={{ x: 5 }}
+                transition={{ type: "spring", stiffness: 400 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/70 to-primary/70 rounded-xl blur-sm opacity-80 group-hover:opacity-100 transition-all duration-300"></div>
-                <div className="relative flex items-center bg-white/10 backdrop-blur-md rounded-xl px-5 py-2 border border-white/20 shadow-lg">
-                  <div className="bg-white/20 rounded-full p-1.5 mr-3">
-                    <MapPin className="h-4 w-4 text-white" />
-                  </div>
-                  <span className="text-white font-medium tracking-wide">Dubai</span>
+                <span className="font-medium text-primary">Executive Search Specialists</span>
+              </motion.div>
+              
+              <motion.h1 
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-800"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+              >
+                Expert Recruitments
+              </motion.h1>
+              
+              <motion.p 
+                className="text-xl md:text-2xl text-gray-600 leading-relaxed mb-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+              >
+                The Home of High-End Executive Search in Dubai and across the UAE
+              </motion.p>
+              
+              <motion.div 
+                className="flex flex-wrap gap-3 mb-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+              >
+                <div className="flex items-center rounded-full bg-gray-100 px-4 py-2 text-gray-700">
+                  <MapPin className="h-4 w-4 mr-2 text-primary" />
+                  <span className="font-medium">Dubai</span>
+                </div>
+                
+                <div className="flex items-center rounded-full bg-gray-100 px-4 py-2 text-gray-700">
+                  <Globe className="h-4 w-4 mr-2 text-primary" />
+                  <span className="font-medium">UAE & GCC</span>
+                </div>
+                
+                <div className="flex items-center rounded-full bg-gray-100 px-4 py-2 text-gray-700">
+                  <Building className="h-4 w-4 mr-2 text-primary" />
+                  <span className="font-medium">Executive Search</span>
                 </div>
               </motion.div>
               
-              <motion.div 
-                className="group relative"
-                whileHover={{ y: -5 }}
-                transition={{ type: "spring", stiffness: 500 }}
+              <motion.a 
+                href="/contact-us" 
+                className="inline-flex items-center px-6 py-3 bg-primary text-white font-medium rounded-md shadow-sm hover:shadow-md transition-all duration-300"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                whileHover={{ scale: 1.05 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/70 to-blue-600/70 rounded-xl blur-sm opacity-80 group-hover:opacity-100 transition-all duration-300"></div>
-                <div className="relative flex items-center bg-white/10 backdrop-blur-md rounded-xl px-5 py-2 border border-white/20 shadow-lg">
-                  <div className="bg-white/20 rounded-full p-1.5 mr-3">
-                    <Globe className="h-4 w-4 text-white" />
-                  </div>
-                  <span className="text-white font-medium tracking-wide">UAE & GCC</span>
-                </div>
-              </motion.div>
-              
-              <motion.div 
-                className="group relative"
-                whileHover={{ y: -5 }}
-                transition={{ type: "spring", stiffness: 500 }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/70 to-indigo-600/70 rounded-xl blur-sm opacity-80 group-hover:opacity-100 transition-all duration-300"></div>
-                <div className="relative flex items-center bg-white/10 backdrop-blur-md rounded-xl px-5 py-2 border border-white/20 shadow-lg">
-                  <div className="bg-white/20 rounded-full p-1.5 mr-3">
-                    <Building className="h-4 w-4 text-white" />
-                  </div>
-                  <span className="text-white font-medium tracking-wide">Executive Search</span>
-                </div>
-              </motion.div>
+                <span>Connect With Us</span>
+                <ArrowUpRight className="ml-2 h-5 w-5" />
+              </motion.a>
             </motion.div>
             
+            {/* Right content */}
             <motion.div 
-              className="mt-8 grid grid-cols-3 gap-6 md:gap-10 max-w-3xl mx-auto"
+              className="relative hidden md:block"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-primary/5 rounded-full"></div>
+              
+              <div className="grid grid-cols-3 gap-5 relative">
+                <motion.div 
+                  className="flex flex-col justify-center items-center bg-white rounded-xl p-6 shadow-lg border border-gray-100 h-full"
+                  whileHover={{ y: -10 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                    <Users size={28} className="text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">Comprehensive</h3>
+                  <p className="text-sm text-gray-600 text-center">Talent Acquisition</p>
+                </motion.div>
+                
+                <motion.div 
+                  className="flex flex-col justify-center items-center bg-white rounded-xl p-6 shadow-lg border border-gray-100 h-full mt-8"
+                  whileHover={{ y: -10 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                    <Briefcase size={28} className="text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">Meticulous</h3>
+                  <p className="text-sm text-gray-600 text-center">Search Process</p>
+                </motion.div>
+                
+                <motion.div 
+                  className="flex flex-col justify-center items-center bg-white rounded-xl p-6 shadow-lg border border-gray-100 h-full"
+                  whileHover={{ y: -10 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                    <Target size={28} className="text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">Results</h3>
+                  <p className="text-sm text-gray-600 text-center">Guaranteed</p>
+                </motion.div>
+              </div>
+            </motion.div>
+            
+            {/* Mobile version of capabilities (visible only on mobile) */}
+            <motion.div 
+              className="grid grid-cols-3 gap-4 md:hidden mt-8"
               variants={container}
               initial="hidden"
               animate="visible"
             >
               <motion.div variants={scaleIn} className="text-center">
-                <motion.div 
-                  className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3"
-                  whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
-                >
-                  <Users size={32} className="text-white" />
-                </motion.div>
-                <h3 className="text-lg font-semibold">Comprehensive</h3>
-                <p className="text-sm text-white/80">Talent Acquisition</p>
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <Users size={24} className="text-primary" />
+                </div>
+                <h3 className="text-base font-semibold text-gray-800">Comprehensive</h3>
+                <p className="text-xs text-gray-600">Talent Acquisition</p>
               </motion.div>
               
               <motion.div variants={scaleIn} className="text-center">
-                <motion.div 
-                  className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3"
-                  whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
-                >
-                  <Briefcase size={32} className="text-white" />
-                </motion.div>
-                <h3 className="text-lg font-semibold">Meticulous</h3>
-                <p className="text-sm text-white/80">Search Process</p>
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <Briefcase size={24} className="text-primary" />
+                </div>
+                <h3 className="text-base font-semibold text-gray-800">Meticulous</h3>
+                <p className="text-xs text-gray-600">Search Process</p>
               </motion.div>
               
               <motion.div variants={scaleIn} className="text-center">
-                <motion.div 
-                  className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3"
-                  whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
-                >
-                  <Target size={32} className="text-white" />
-                </motion.div>
-                <h3 className="text-lg font-semibold">Results</h3>
-                <p className="text-sm text-white/80">Guaranteed</p>
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <Target size={24} className="text-primary" />
+                </div>
+                <h3 className="text-base font-semibold text-gray-800">Results</h3>
+                <p className="text-xs text-gray-600">Guaranteed</p>
               </motion.div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </div>
 
