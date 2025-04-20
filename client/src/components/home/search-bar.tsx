@@ -24,7 +24,20 @@ export default function SearchBar() {
   };
 
   return (
-    <section className="pt-28 pb-16 bg-white dark:bg-gray-950 z-10 relative border-t border-gray-100 dark:border-gray-800">
+    <section className="pt-28 pb-16 z-10 relative border-t border-gray-100 dark:border-gray-800">
+      {/* Background image with overlay */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-b from-white/95 to-white/90 dark:from-gray-950/95 dark:to-gray-950/90 backdrop-blur-sm"></div>
+        <img 
+          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop"
+          alt="" 
+          className="w-full h-full object-cover opacity-10"
+        />
+      </div>
+      
+      {/* Pattern overlay */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-5 -z-10"></div>
+      
       <div className="container mx-auto px-4">
         {/* Main search form */}
         <motion.div
