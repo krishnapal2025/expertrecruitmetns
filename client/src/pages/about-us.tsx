@@ -126,33 +126,47 @@ export default function AboutUsPage() {
             
             {/* Section Navigation Buttons */}
             <motion.div 
-              className="flex flex-wrap gap-3 mb-10"
+              className="flex flex-wrap gap-4 mb-10"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
             >
               <a 
                 href="#our-approach" 
-                className="px-4 py-2 bg-primary/10 text-primary text-sm font-medium rounded-md hover:bg-primary/20 transition-colors flex items-center"
+                className="px-5 py-2.5 bg-white text-primary text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
               >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary">
+                  <path d="M17.5 12a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M12 7V5m0 14v-2m5-5h2M5 12h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
                 <span>Our Approach</span>
               </a>
               <a 
                 href="#what-sets-us-apart" 
-                className="px-4 py-2 bg-primary/10 text-primary text-sm font-medium rounded-md hover:bg-primary/20 transition-colors flex items-center"
+                className="px-5 py-2.5 bg-white text-primary text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
               >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary">
+                  <path d="M12 8V16M12 8L8 12M12 8L16 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5"/>
+                </svg>
                 <span>What Sets Us Apart</span>
               </a>
               <a 
                 href="#our-history" 
-                className="px-4 py-2 bg-amber-500/10 text-amber-600 text-sm font-medium rounded-md hover:bg-amber-500/20 transition-colors flex items-center"
+                className="px-5 py-2.5 bg-white text-amber-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
               >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-amber-600">
+                  <path d="M12 8V12L14 14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
                 <span>Our History</span>
               </a>
               <a 
                 href="#our-mission" 
-                className="px-4 py-2 bg-blue-500/10 text-blue-600 text-sm font-medium rounded-md hover:bg-blue-500/20 transition-colors flex items-center"
+                className="px-5 py-2.5 bg-white text-blue-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
               >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-blue-600">
+                  <path d="M15 3L19 7M19 7L15 11M19 7H5M9 13L5 17M5 17L9 21M5 17H19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
                 <span>Our Mission</span>
               </a>
             </motion.div>
