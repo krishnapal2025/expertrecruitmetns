@@ -12,6 +12,7 @@ import {
   Rocket, 
   Search,
   ArrowUpRight,
+  ArrowRight,
   MapPin
 } from "lucide-react";
 
@@ -1083,111 +1084,37 @@ export default function AboutUsPage() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          {/* Professional modern CTA */}
-          <div className="relative py-20 px-8 rounded-3xl overflow-hidden border border-gray-200 shadow-xl">
-            {/* Background with subtle pattern */}
-            <div className="absolute inset-0 z-0">
-              <div className="absolute inset-0 bg-gray-50"></div>
-              
-              {/* Subtle grid pattern */}
-              <div className="absolute inset-0 opacity-5">
-                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" />
-                    </pattern>
-                  </defs>
-                  <rect width="100%" height="100%" fill="url(#grid)" />
-                </svg>
-              </div>
-              
-              {/* Professional accent elements */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-primary"></div>
-              <div className="absolute top-0 bottom-0 left-0 w-1 bg-gradient-to-b from-primary to-transparent"></div>
-              
-              {/* Subtle decorative elements */}
-              <div className="absolute top-20 right-20 w-64 h-64 rounded-full border border-gray-200 opacity-20"></div>
-              <div className="absolute bottom-10 left-10 w-40 h-40 rounded-full border border-gray-200 opacity-10"></div>
-              
-              {/* Professional geometric patterns */}
-              <div className="absolute right-16 top-0 bottom-0 w-px bg-gradient-to-b from-gray-200 via-gray-300 to-gray-200 opacity-30"></div>
-              <div className="absolute left-1/3 top-0 bottom-0 w-px bg-gradient-to-b from-gray-200 via-gray-300 to-gray-200 opacity-20"></div>
-            </div>
-            
+          {/* Minimalist CTA */}
+          <div className="relative py-14 px-8 rounded-lg bg-white border-t-2 border-primary shadow-sm">            
             {/* Content */}
-            <div className="relative z-10 max-w-5xl mx-auto text-center">
-              <motion.div
-                className="inline-block px-6 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 shadow-sm"
-                whileHover={{ scale: 1.05 }}
-              >
-                <span className="font-medium text-sm tracking-wider uppercase text-primary">Executive Recruitment Excellence</span>
-              </motion.div>
+            <div className="relative max-w-3xl mx-auto text-center">
+              <span className="text-sm text-primary">Executive Recruitment Excellence</span>
               
-              <motion.h2 
-                className="text-3xl md:text-5xl font-bold mb-6 text-gray-800"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2, duration: 0.6 }}
-              >
+              <h2 className="text-2xl md:text-3xl font-bold my-4 text-gray-800">
                 Ready to Enhance Your Workforce?
-              </motion.h2>
+              </h2>
               
-              <motion.p 
-                className="text-lg md:text-xl mb-12 max-w-3xl mx-auto text-gray-600 leading-relaxed"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3, duration: 0.6 }}
-              >
-                If you're ready to enhance your workforce with the very best talent in your niche, 
-                we stand ready to serve. Our expert team is prepared to help you find exceptional candidates who will drive your business forward.
-              </motion.p>
+              <p className="text-base mb-8 text-gray-600">
+                Our expert team is prepared to help you find exceptional candidates who will drive your business forward.
+              </p>
               
-              <motion.div
-                className="flex flex-wrap justify-center gap-4 mb-10"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4, duration: 0.6 }}
-              >
+              <div className="flex flex-wrap justify-center gap-4">
                 <a 
                   href="/contact-us" 
-                  className="px-8 py-4 bg-primary text-white font-medium text-lg rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center group"
+                  className="px-6 py-2 bg-primary text-white font-medium rounded-md transition-colors hover:bg-primary/90 flex items-center"
                 >
                   <span>Get in Touch</span>
-                  <ArrowUpRight className="ml-2 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  <ArrowUpRight className="ml-2 h-4 w-4" />
                 </a>
                 
                 <a 
                   href="/services" 
-                  className="px-8 py-4 bg-white border border-gray-200 text-gray-700 font-medium text-lg rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center group"
+                  className="px-6 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-md transition-colors hover:bg-gray-50 flex items-center"
                 >
                   <span>Our Services</span>
-                  <svg className="ml-2 h-5 w-5 text-gray-500 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </a>
-              </motion.div>
-              
-              <motion.div 
-                className="flex justify-center gap-10 pt-8 border-t border-gray-200"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-              >
-                {[
-                  { text: "Premium Talent", value: "100%" },
-                  { text: "Client Satisfaction", value: "95%" },
-                  { text: "Retention Rate", value: "92%" }
-                ].map((stat, index) => (
-                  <div key={index} className="text-center">
-                    <div className="text-3xl font-bold text-primary mb-1">{stat.value}</div>
-                    <div className="text-sm text-gray-500">{stat.text}</div>
-                  </div>
-                ))}
-              </motion.div>
+              </div>
             </div>
           </div>
         </motion.div>
