@@ -560,7 +560,7 @@ export default function AboutUsPage() {
             >
               <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-5 h-full flex flex-col">
                 <div className="bg-white rounded-full h-14 w-14 flex items-center justify-center shadow-md mb-4">
-                  <Award className="w-8 h-8 text-blue-500" />
+                  <Award className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="font-bold text-lg mb-3">Prioritizing Experience</h3>
                 <p className="text-sm text-gray-600">
@@ -778,10 +778,10 @@ export default function AboutUsPage() {
               <Card className="border-none shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden bg-gradient-to-br from-white to-gray-50 h-full">
                 <CardContent className="p-8 text-center">
                   <motion.div 
-                    className="w-20 h-20 bg-blue-500/10 text-blue-600 rounded-full mx-auto mb-6 flex items-center justify-center relative"
+                    className="w-20 h-20 bg-primary/10 text-primary rounded-full mx-auto mb-6 flex items-center justify-center relative"
                     whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.15)" }}
                   >
-                    <div className="absolute inset-0 rounded-full bg-blue-500/5 animate-ping"></div>
+                    <div className="absolute inset-0 rounded-full bg-primary/5 animate-ping"></div>
                     <Award className="w-10 h-10" />
                   </motion.div>
                   <h3 className="text-xl font-bold mb-4">Meticulous Approach</h3>
@@ -868,10 +868,10 @@ export default function AboutUsPage() {
               whileHover={{ y: -10 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-primary/60 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
               <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg">
-                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-5 group-hover:bg-blue-100 transition-colors duration-300">
-                  <svg className="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div className="w-12 h-12 bg-primary/5 rounded-full flex items-center justify-center mb-5 group-hover:bg-primary/10 transition-colors duration-300">
+                  <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 8V12L15 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M12 22C16.4183 22 20 18.4183 20 14C20 9.58172 16.4183 6 12 6C7.58172 6 4 9.58172 4 14C4 18.4183 7.58172 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M10 2H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -989,7 +989,7 @@ export default function AboutUsPage() {
               whileHover={{ y: -10 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-blue-600 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-primary/70 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
               <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg flex flex-col md:flex-row items-center">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-5 md:mb-0 md:mr-6 group-hover:bg-primary/20 transition-colors duration-300">
                   <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
