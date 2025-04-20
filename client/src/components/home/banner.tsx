@@ -12,49 +12,49 @@ const slowZoomKeyframes = `
   to { transform: scale(1.15); }
 }`;
 
-// Banner slide data with a new minimalist aesthetic
+// Banner slide data with SEO-optimized keywords for Dubai and UAE recruitment
 const slides = [
   {
-    title: "Your Career,\nRedefined",
+    title: "Executive Search\nDubai & UAE",
     tagline: "FIND OPPORTUNITIES",
-    description: "Connect with forward-thinking companies seeking your unique talents",
+    description: "Connect with premier Dubai employers seeking top talent through UAE's leading recruitment agency",
     image: "https://images.unsplash.com/photo-1516387938699-a93567ec168e?q=80&w=1600&auto=format&fit=crop",
     color: "bg-primary",
     stats: [
-      { value: "15k+", label: "Google & Amazon Jobs" },
-      { value: "1.2k", label: "Fortune 500 Companies" },
-      { value: "24/7", label: "Expert Support" }
+      { value: "10k+", label: "Executive Placements" },
+      { value: "500+", label: "UAE Companies" },
+      { value: "24/7", label: "Dedicated Support" }
     ],
     ctaText: "Browse Jobs",
     ctaLink: "/job-board",
   },
   {
-    title: "Talent\nAcquisition",
-    tagline: "HIRE PROFESSIONALS",
-    description: "Connect with exceptional candidates ready to transform your business",
+    title: "Talent\nAcquisition UAE",
+    tagline: "PREMIUM HEADHUNTING",
+    description: "Partner with Dubai's expert headhunters to transform your business with exceptional talent",
     image: "https://images.unsplash.com/photo-1573164574572-cb89e39749b4?q=80&w=1600&auto=format&fit=crop",
     color: "bg-violet-500",
     stats: [
-      { value: "90k+", label: "Microsoft & Apple Candidates" },
-      { value: "48hr", label: "Meta & Salesforce Hire Time" },
-      { value: "92%", label: "Tesla & Netflix Success Rate" }
+      { value: "15+", label: "Years in UAE Market" },
+      { value: "48hr", label: "Executive Match Time" },
+      { value: "92%", label: "Placement Success Rate" }
     ],
     ctaText: "Post a Job",
     ctaLink: "/auth?type=employer",
   },
   {
-    title: "Strategic\nGrowth",
-    tagline: "CAREER RESOURCES",
-    description: "Unlock industry insights and professional development resources",
+    title: "Recruitment\nAgencies Dubai",
+    tagline: "EXPERT HEADHUNTERS",
+    description: "Experience the difference with Dubai's most trusted recruitment agency for executive talent",
     image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1600&auto=format&fit=crop",
     color: "bg-emerald-500",
     stats: [
-      { value: "200+", label: "Google & Adobe Career Guides" },
-      { value: "45%", label: "Deloitte & McKinsey Salary Growth" },
-      { value: "8k+", label: "Amazon & Microsoft Success Stories" }
+      { value: "100+", label: "Dubai Industry Sectors" },
+      { value: "3000+", label: "UAE Professionals Placed" },
+      { value: "8k+", label: "Executive Success Stories" }
     ],
-    ctaText: "Career Resources",
-    ctaLink: "/blogs",
+    ctaText: "Our Services",
+    ctaLink: "/services",
   },
 ];
 

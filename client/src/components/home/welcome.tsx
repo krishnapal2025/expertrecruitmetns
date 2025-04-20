@@ -36,29 +36,28 @@ const PrevArrow = (props: any) => {
 
 // Custom slider component with the slides
 function CustomSlider() {
-  // Slides data with images, titles and descriptions
+  // Slides data with SEO-optimized titles and descriptions for Dubai/UAE recruitment
   const slides = [
     {
       id: 1,
       image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1920&auto=format&fit=crop",
-      title: "Connecting Talent with Opportunity",
-      subtitle: "Expert Recruitments Welcomes You",
-      description: "The Home of High-End Executive Search in Dubai , From executive search in the UAE to focused head hunting services, we take a detailed and meticulous approach to finding the right people for the right positions"
-
+      title: "Executive Search Dubai",
+      subtitle: "Premier Headhunters in UAE",
+      description: "The Home of High-End Executive Search in Dubai. From executive recruitment in the UAE to specialized headhunting services, we take a meticulous approach to matching exceptional talent with leading Dubai organizations."
     },
     {
       id: 2,
       image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1920&auto=format&fit=crop",
-      title: "Building Careers Together",
-      subtitle: "Your Success is Our Mission",
-      description: "Find your dream job or the perfect candidate with our advanced matching technology and personalized support every step of the way."
+      title: "Dubai's Top Recruitment Agency",
+      subtitle: "Talent Acquisition UAE",
+      description: "As the leading recruitment agency in Dubai, we deliver tailored talent acquisition solutions for UAE businesses seeking executive professionals across diverse industries and specializations."
     },
     {
       id: 3,
       image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1920&auto=format&fit=crop",
-      title: "Empowering Professional Growth",
-      subtitle: "Discover New Possibilities",
-      description: "Access thousands of opportunities and top talent across industries. Our platform is designed to make your job search or hiring process seamless and effective."
+      title: "Expert Headhunters Dubai",
+      subtitle: "UAE's Trusted Recruitment Partner",
+      description: "Our Dubai headhunters identify and secure exceptional executive talent for UAE businesses. With our specialized recruitment services, we connect organizations with professionals who will drive your business forward."
     }
   ];
 
