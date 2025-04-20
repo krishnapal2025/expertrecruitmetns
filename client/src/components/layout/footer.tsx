@@ -223,36 +223,40 @@ export default function Footer() {
           </div>
           
           <div className="lg:col-span-1">
-            <div className="bg-gray-800 p-4 rounded-lg h-full">
-              <h3 className="text-lg font-bold mb-3">Newsletter</h3>
-              <p className="text-sm text-gray-400 mb-4">
-                Subscribe to our newsletter for the latest job opportunities and career insights.
-              </p>
-              <div className="flex space-x-2">
-                <Input 
-                  type="email" 
-                  placeholder="Your email"
-                  className="bg-gray-700 border-gray-600 text-white text-sm"
-                />
-                <Button className="bg-primary hover:bg-primary/90 text-white">Subscribe</Button>
-              </div>
-            </div>
-            
-            <div className="mt-8 p-1">
-              <h3 className="text-lg font-bold mb-3">Follow Us</h3>
-              <div className="flex space-x-3">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition-colors">
-                  <Facebook className="h-4 w-4 text-white" />
-                </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-sky-500 transition-colors">
-                  <Twitter className="h-4 w-4 text-white" />
-                </a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-700 transition-colors">
-                  <Linkedin className="h-4 w-4 text-white" />
-                </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-pink-600 transition-colors">
-                  <Instagram className="h-4 w-4 text-white" />
-                </a>
+            <div className="p-4 h-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-lg font-bold mb-3">Newsletter</h3>
+                  <p className="text-sm text-gray-400 mb-4">
+                    Subscribe to our newsletter for the latest job opportunities and career insights.
+                  </p>
+                  <div className="space-y-3">
+                    <Input 
+                      type="email" 
+                      placeholder="Your email"
+                      className="bg-gray-700 border-gray-600 text-white w-full"
+                    />
+                    <Button className="bg-primary hover:bg-primary/90 text-white w-full">Subscribe</Button>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-bold mb-3">Follow Us</h3>
+                  <div className="flex space-x-3">
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition-colors">
+                      <Facebook className="h-4 w-4 text-white" />
+                    </a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-sky-500 transition-colors">
+                      <Twitter className="h-4 w-4 text-white" />
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-700 transition-colors">
+                      <Linkedin className="h-4 w-4 text-white" />
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-pink-600 transition-colors">
+                      <Instagram className="h-4 w-4 text-white" />
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
