@@ -65,11 +65,18 @@ export default function AboutUsPage() {
         <meta name="description" content="Expert Recruitments - The Home of High-End Executive Search in Dubai. We provide comprehensive and meticulous approach to executive search in Dubai and across the UAE." />
       </Helmet>
 
-      {/* Hero Section with Animated Gradient */}
-      <div className="relative bg-gradient-to-r from-primary/90 to-primary py-24 text-white overflow-hidden">
+      {/* Hero Section with Professional Design */}
+      <div className="relative bg-gray-900 py-24 text-white overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIxIDEuNzktNCA0LTRzNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQtMS43OS00LTR6TTYwIDEyYzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00em0wLTE2YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00eiIvPjwvZz48L2c+PC9zdmc+')] bg-repeat opacity-20"></div>
+          {/* Subtle professional pattern */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00ek02MCAxMmMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHptMC0xNmMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')] bg-repeat opacity-10"></div>
+          
+          {/* Professional accent line */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/70 via-primary to-primary/70"></div>
         </div>
+        
+        {/* Dark overlay for contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent"></div>
         
         <div className="container mx-auto px-4 relative">
           <motion.div 
@@ -1009,58 +1016,48 @@ export default function AboutUsPage() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          {/* Modern glass-morphism style CTA */}
-          <div className="relative py-20 px-8 rounded-3xl overflow-hidden">
-            {/* Background with animated gradient */}
+          {/* Professional modern CTA */}
+          <div className="relative py-20 px-8 rounded-3xl overflow-hidden border border-gray-200 shadow-xl">
+            {/* Background with subtle pattern */}
             <div className="absolute inset-0 z-0">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-purple-600/80 to-indigo-600/90"></div>
-              <motion.div 
-                className="absolute top-0 left-0 right-0 bottom-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.15),transparent_50%)]"
-                animate={{ 
-                  backgroundPosition: ['0% 0%', '100% 100%'],
-                  scale: [1, 1.2, 1] 
-                }}
-                transition={{ 
-                  duration: 15,
-                  repeat: Infinity,
-                  repeatType: 'reverse'
-                }}
-              ></motion.div>
+              <div className="absolute inset-0 bg-gray-50"></div>
               
-              {/* Decorative elements */}
-              <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
-              <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
-              
-              {/* Geometric patterns */}
-              <div className="absolute inset-0 flex justify-around items-center opacity-20">
-                {[...Array(5)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"
-                    initial={{ height: '20%', opacity: 0 }}
-                    animate={{ height: '80%', opacity: 0.3 }}
-                    transition={{ 
-                      duration: 4 + i,
-                      repeat: Infinity,
-                      repeatType: 'reverse',
-                      delay: i * 0.3
-                    }}
-                  ></motion.div>
-                ))}
+              {/* Subtle grid pattern */}
+              <div className="absolute inset-0 opacity-5">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#grid)" />
+                </svg>
               </div>
+              
+              {/* Professional accent elements */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-primary"></div>
+              <div className="absolute top-0 bottom-0 left-0 w-1 bg-gradient-to-b from-primary to-transparent"></div>
+              
+              {/* Subtle decorative elements */}
+              <div className="absolute top-20 right-20 w-64 h-64 rounded-full border border-gray-200 opacity-20"></div>
+              <div className="absolute bottom-10 left-10 w-40 h-40 rounded-full border border-gray-200 opacity-10"></div>
+              
+              {/* Professional geometric patterns */}
+              <div className="absolute right-16 top-0 bottom-0 w-px bg-gradient-to-b from-gray-200 via-gray-300 to-gray-200 opacity-30"></div>
+              <div className="absolute left-1/3 top-0 bottom-0 w-px bg-gradient-to-b from-gray-200 via-gray-300 to-gray-200 opacity-20"></div>
             </div>
             
             {/* Content */}
             <div className="relative z-10 max-w-5xl mx-auto text-center">
               <motion.div
-                className="inline-block px-6 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6 shadow-lg"
+                className="inline-block px-6 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 shadow-sm"
                 whileHover={{ scale: 1.05 }}
               >
-                <span className="text-white/90 font-medium text-sm tracking-wider uppercase">Executive Recruitment Excellence</span>
+                <span className="font-medium text-sm tracking-wider uppercase text-primary">Executive Recruitment Excellence</span>
               </motion.div>
               
               <motion.h2 
-                className="text-3xl md:text-5xl font-bold mb-6 text-white"
+                className="text-3xl md:text-5xl font-bold mb-6 text-gray-800"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -1070,7 +1067,7 @@ export default function AboutUsPage() {
               </motion.h2>
               
               <motion.p 
-                className="text-lg md:text-xl mb-12 max-w-3xl mx-auto text-white/90 leading-relaxed"
+                className="text-lg md:text-xl mb-12 max-w-3xl mx-auto text-gray-600 leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -1089,34 +1086,25 @@ export default function AboutUsPage() {
               >
                 <a 
                   href="/contact-us" 
-                  className="relative group overflow-hidden"
+                  className="px-8 py-4 bg-primary text-white font-medium text-lg rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center group"
                 >
-                  <div className="absolute inset-0 bg-white/10 backdrop-blur-sm group-hover:bg-white/20 rounded-xl transition-all duration-300"></div>
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-white/0 blur-lg"></div>
-                  </div>
-                  <div className="relative px-8 py-4 bg-white text-primary font-medium text-lg rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 flex items-center">
-                    <span>Get in Touch</span>
-                    <ArrowUpRight className="ml-2 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                  </div>
+                  <span>Get in Touch</span>
+                  <ArrowUpRight className="ml-2 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </a>
                 
                 <a 
                   href="/services" 
-                  className="relative group overflow-hidden"
+                  className="px-8 py-4 bg-white border border-gray-200 text-gray-700 font-medium text-lg rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center group"
                 >
-                  <div className="absolute inset-0 bg-white/5 backdrop-blur-sm group-hover:bg-white/10 rounded-xl transition-all duration-300 border border-white/20"></div>
-                  <div className="relative px-8 py-4 text-white font-medium text-lg rounded-xl flex items-center">
-                    <span>Our Services</span>
-                    <svg className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </div>
+                  <span>Our Services</span>
+                  <svg className="ml-2 h-5 w-5 text-gray-500 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
                 </a>
               </motion.div>
               
               <motion.div 
-                className="flex justify-center gap-10 pt-8 border-t border-white/10"
+                className="flex justify-center gap-10 pt-8 border-t border-gray-200"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
@@ -1128,8 +1116,8 @@ export default function AboutUsPage() {
                   { text: "Retention Rate", value: "92%" }
                 ].map((stat, index) => (
                   <div key={index} className="text-center">
-                    <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
-                    <div className="text-sm text-white/70">{stat.text}</div>
+                    <div className="text-3xl font-bold text-primary mb-1">{stat.value}</div>
+                    <div className="text-sm text-gray-500">{stat.text}</div>
                   </div>
                 ))}
               </motion.div>
