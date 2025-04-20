@@ -49,7 +49,7 @@ export default function JobCard({ job }: JobCardProps) {
           <div className="flex-grow">
             <div className="flex items-center text-sm text-gray-500 mb-2">
               <Building className="h-4 w-4 mr-1" />
-              <span className="mr-4">Company Name</span>
+              <span className="mr-4">{job.company || "Expert Recruitments"}</span>
               <Calendar className="h-4 w-4 mr-1" />
               <span>{formatDate(job.postedDate ? job.postedDate : null)}</span>
             </div>
