@@ -4,14 +4,19 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Job } from "@shared/schema";
 import { Building, MapPin, Calendar, Briefcase } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 interface JobCardProps {
   job: Job;
 }
 
 export default function JobCard({ job }: JobCardProps) {
+  const { currentUser } = useAuth();
+  const isJobSeeker = currentUser && currentUser.user.userType === "jobseeker";
+  
   // Format date for display
-  const formatDate = (dateString: Date) => {
+  const formatDate = (dateString: Date | null) => {
+    if (!dateString) return "Recent";
     const date = new Date(dateString);
     const now = new Date();
     
@@ -46,15 +51,15 @@ export default function JobCard({ job }: JobCardProps) {
               <Building className="h-4 w-4 mr-1" />
               <span className="mr-4">Company Name</span>
               <Calendar className="h-4 w-4 mr-1" />
-              <span>{formatDate(job.postedDate)}</span>
+              <span>{formatDate(job.postedDate ? job.postedDate : null)}</span>
             </div>
             
             <Link href={`/job/${job.id}`}>
-              <a className="block">
+              <div className="block cursor-pointer">
                 <h3 className="text-xl font-bold mb-2 hover:text-primary transition-colors">
                   {job.title}
                 </h3>
-              </a>
+              </div>
             </Link>
             
             <div className="flex flex-wrap gap-2 mb-3">
@@ -82,11 +87,19 @@ export default function JobCard({ job }: JobCardProps) {
           </div>
           
           <div className="mt-4 md:mt-0 md:ml-6 md:flex md:flex-col md:items-end">
-            <Link href={`/job/${job.id}`}>
-              <Button>
-                View Job
-              </Button>
-            </Link>
+            {isJobSeeker ? (
+              <Link href={`/job/${job.id}`}>
+                <Button>
+                  View Job
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/job-seeker-register">
+                <Button>
+                  View Job
+                </Button>
+              </Link>
+            )}
             
             <div className="mt-2 flex items-center text-sm text-gray-500">
               <Briefcase className="h-4 w-4 mr-1" />
