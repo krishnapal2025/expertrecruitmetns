@@ -42,8 +42,9 @@ function CustomSlider() {
       id: 1,
       image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1920&auto=format&fit=crop",
       title: "Connecting Talent with Opportunity",
-      subtitle: "Expert Recruitments",
-      description: "The Home of High-End Executive Search in Dubai. From executive search in the UAE to focused head hunting services, we take a detailed and meticulous approach to finding the right people for the right positions."
+      subtitle: "Expert Recruitments Welcomes You",
+      description: "The Home of High-End Executive Search in Dubai , From executive search in the UAE to focused head hunting services, we take a detailed and meticulous approach to finding the right people for the right positions"
+
     },
     {
       id: 2,

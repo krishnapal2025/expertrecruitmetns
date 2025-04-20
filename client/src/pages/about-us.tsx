@@ -1,7 +1,19 @@
 import { Helmet } from "react-helmet";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Briefcase, Users, Award, Target, Globe, Zap, Heart } from "lucide-react";
+import { 
+  Briefcase, 
+  Users, 
+  Award, 
+  Target, 
+  Globe, 
+  Building, 
+  CheckCircle2, 
+  Rocket, 
+  Search,
+  ArrowUpRight,
+  MapPin
+} from "lucide-react";
 
 export default function AboutUsPage() {
   // Animation variants
@@ -49,8 +61,8 @@ export default function AboutUsPage() {
   return (
     <>
       <Helmet>
-        <title>About Us | RH Job Portal</title>
-        <meta name="description" content="Learn about our mission and vision to connect the best talent with the top employers worldwide." />
+        <title>About Us | Expert Recruitments</title>
+        <meta name="description" content="Expert Recruitments - The Home of High-End Executive Search in Dubai. We provide comprehensive and meticulous approach to executive search in Dubai and across the UAE." />
       </Helmet>
 
       {/* Hero Section with Animated Gradient */}
@@ -66,22 +78,48 @@ export default function AboutUsPage() {
             variants={fadeIn}
             className="flex flex-col items-center text-center"
           >
+            <motion.div 
+              className="mb-6 inline-block px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full"
+              whileHover={{ scale: 1.05 }}
+            >
+              <span className="font-medium text-white/90">Executive Search Specialists</span>
+            </motion.div>
+            
             <motion.h1 
-              className="text-4xl md:text-5xl font-bold mb-6"
+              className="text-4xl md:text-6xl font-bold mb-6"
               animate={{ opacity: [0.8, 1], y: [10, 0] }}
               transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" as const }}
             >
-              About Us
+              Expert Recruitments
             </motion.h1>
+            
             <motion.p 
-              className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed"
+              className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed mb-8"
               variants={fadeIn}
             >
-              We connect talent with opportunity and help businesses thrive with the right people.
+              The Home of High-End Executive Search in Dubai and across the UAE
             </motion.p>
             
             <motion.div 
-              className="mt-12 grid grid-cols-3 gap-6 md:gap-10 max-w-3xl mx-auto"
+              className="flex items-center justify-center gap-2 mb-12"
+              variants={scaleIn}
+            >
+              <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5">
+                <MapPin className="h-4 w-4 mr-2 text-white/80" />
+                <span className="text-white/90 font-medium">Dubai</span>
+              </div>
+              <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5">
+                <Globe className="h-4 w-4 mr-2 text-white/80" />
+                <span className="text-white/90 font-medium">UAE & GCC</span>
+              </div>
+              <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5">
+                <Building className="h-4 w-4 mr-2 text-white/80" />
+                <span className="text-white/90 font-medium">Executive Search</span>
+              </div>
+            </motion.div>
+            
+            <motion.div 
+              className="mt-8 grid grid-cols-3 gap-6 md:gap-10 max-w-3xl mx-auto"
               variants={container}
               initial="hidden"
               animate="visible"
@@ -93,8 +131,8 @@ export default function AboutUsPage() {
                 >
                   <Users size={32} className="text-white" />
                 </motion.div>
-                <h3 className="text-lg font-semibold">10K+</h3>
-                <p className="text-sm text-white/80">Placements</p>
+                <h3 className="text-lg font-semibold">Comprehensive</h3>
+                <p className="text-sm text-white/80">Talent Acquisition</p>
               </motion.div>
               
               <motion.div variants={scaleIn} className="text-center">
@@ -104,8 +142,8 @@ export default function AboutUsPage() {
                 >
                   <Briefcase size={32} className="text-white" />
                 </motion.div>
-                <h3 className="text-lg font-semibold">5K+</h3>
-                <p className="text-sm text-white/80">Employers</p>
+                <h3 className="text-lg font-semibold">Meticulous</h3>
+                <p className="text-sm text-white/80">Search Process</p>
               </motion.div>
               
               <motion.div variants={scaleIn} className="text-center">
@@ -113,10 +151,10 @@ export default function AboutUsPage() {
                   className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3"
                   whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
                 >
-                  <Globe size={32} className="text-white" />
+                  <Target size={32} className="text-white" />
                 </motion.div>
-                <h3 className="text-lg font-semibold">20+</h3>
-                <p className="text-sm text-white/80">Countries</p>
+                <h3 className="text-lg font-semibold">Results</h3>
+                <p className="text-sm text-white/80">Guaranteed</p>
               </motion.div>
             </motion.div>
           </motion.div>
@@ -124,7 +162,7 @@ export default function AboutUsPage() {
       </div>
 
       <div className="container mx-auto px-4 py-20">
-        {/* Vision Section with Interactive SVG */}
+        {/* Our Approach Section */}
         <motion.div 
           className="grid md:grid-cols-2 gap-16 items-center mb-24"
           initial="hidden"
@@ -137,14 +175,17 @@ export default function AboutUsPage() {
               className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4"
               whileHover={{ scale: 1.05 }}
             >
-              Our Vision
+              Our Approach
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Connecting Talent with Opportunity</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">A Comprehensive & Meticulous Approach</h2>
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-              To be the leading platform where talent and opportunity meet, creating meaningful careers and successful businesses around the world.
+              At Expert Recruitments, we work tirelessly to ensure our clients receive a comprehensive and meticulous approach to executive search in Dubai and across the UAE.
+            </p>
+            <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+              Our experienced recruiting agents use a proven talent acquisition process that guarantees best-in-class employees who exceed the expectations of our clients.
             </p>
             <p className="text-lg text-gray-700 leading-relaxed">
-              We believe in the transformative power of the right job match - not just for individuals, but for organizations. When people are in positions that leverage their strengths and align with their values, both the individual and the organization thrive.
+              By utilizing tried-and-tested executive search and head-hunting processes in the UAE, we give our clients the talent they need quickly and efficiently. Whether we're serving businesses in Dubai, the wider GCC region, India, or Europe, our attention to detail and meticulous approach guarantees results.
             </p>
             
             <motion.div 
@@ -155,9 +196,9 @@ export default function AboutUsPage() {
                 className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center"
                 animate={pulseAnimation}
               >
-                <Target className="w-6 h-6" />
+                <Search className="w-6 h-6" />
               </motion.div>
-              <p className="font-medium">Focused on finding the perfect match</p>
+              <p className="font-medium">Finding the perfect talent for your organization</p>
             </motion.div>
           </motion.div>
           
@@ -186,14 +227,14 @@ export default function AboutUsPage() {
             >
               <img 
                 src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf" 
-                alt="Team of business professionals collaborating"
+                alt="Executive recruitment professionals in Dubai"
                 className="w-full h-auto rounded-xl"
               />
             </motion.div>
           </motion.div>
         </motion.div>
 
-        {/* Mission Section with Animated Path */}
+        {/* What Sets Us Apart Section */}
         <motion.div 
           className="grid md:grid-cols-2 gap-16 items-center mb-24"
           initial="hidden"
@@ -225,7 +266,7 @@ export default function AboutUsPage() {
             >
               <img 
                 src="https://images.unsplash.com/photo-1507679799987-c73779587ccf" 
-                alt="Professional recruiters connecting employers with candidates"
+                alt="Executive recruitment professionals meeting with clients"
                 className="w-full h-auto rounded-xl"
               />
             </motion.div>
@@ -236,14 +277,17 @@ export default function AboutUsPage() {
               className="inline-block bg-blue-500/10 text-blue-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
               whileHover={{ scale: 1.05 }}
             >
-              Our Mission
+              What Sets Us Apart
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Creating Connections That Matter</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Delivering Growth Through Talent</h2>
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-              To empower careers and strengthen businesses by creating connections that matter.
+              What sets us apart from other recruitment agencies in Dubai is our unwavering dedication to delivering growth. When talent acquisition works properly, it takes the organization to the next level of its development.
+            </p>
+            <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+              We're driven by a desire to deliver value with every appointment. Every candidate we find, vet, and on-board fills a skill gap or brings the qualities needed to drive long-term business growth.
             </p>
             <p className="text-lg text-gray-700 leading-relaxed">
-              Every day, we work to understand the unique needs of both job seekers and employers, ensuring we foster meaningful connections that lead to mutual success. We're committed to providing personalized service, innovative technology, and deep industry expertise.
+              Your success is our success. That's why we'll go the extra mile to ensure your team has the skills and qualities it needs to succeed.
             </p>
             
             <motion.div 
@@ -254,14 +298,14 @@ export default function AboutUsPage() {
                 className="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center"
                 animate={pulseAnimation}
               >
-                <Zap className="w-6 h-6" />
+                <Rocket className="w-6 h-6" />
               </motion.div>
-              <p className="font-medium">Powered by industry expertise and technology</p>
+              <p className="font-medium">Taking your organization to the next level</p>
             </motion.div>
           </motion.div>
         </motion.div>
 
-        {/* Core Values with Interactive Cards */}
+        {/* Our Commitments Section */}
         <motion.div 
           className="mb-24"
           initial="hidden"
@@ -274,11 +318,11 @@ export default function AboutUsPage() {
               className="inline-block bg-purple-500/10 text-purple-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
               whileHover={{ scale: 1.05 }}
             >
-              What Drives Us
+              Our Commitments
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Core Values</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">How We Ensure Your Success</h2>
             <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-              These principles guide everything we do and every decision we make.
+              Our commitments to every client and candidate drive our exceptional results.
             </p>
           </motion.div>
           
@@ -298,11 +342,11 @@ export default function AboutUsPage() {
                     whileHover={{ scale: 1.1, backgroundColor: "rgba(var(--primary), 0.15)" }}
                   >
                     <div className="absolute inset-0 rounded-full bg-primary/5 animate-ping"></div>
-                    <Award className="w-10 h-10" />
+                    <CheckCircle2 className="w-10 h-10" />
                   </motion.div>
-                  <h3 className="text-xl font-bold mb-4">Integrity</h3>
+                  <h3 className="text-xl font-bold mb-4">Exceptional Quality</h3>
                   <p className="text-gray-600">
-                    We operate with transparency and honesty in all our dealings with clients, candidates, and colleagues.
+                    We guarantee best-in-class employees who exceed the expectations of our clients through our proven talent acquisition process.
                   </p>
                 </CardContent>
               </Card>
@@ -320,11 +364,11 @@ export default function AboutUsPage() {
                     whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.15)" }}
                   >
                     <div className="absolute inset-0 rounded-full bg-blue-500/5 animate-ping"></div>
-                    <Target className="w-10 h-10" />
+                    <Award className="w-10 h-10" />
                   </motion.div>
-                  <h3 className="text-xl font-bold mb-4">Excellence</h3>
+                  <h3 className="text-xl font-bold mb-4">Meticulous Approach</h3>
                   <p className="text-gray-600">
-                    We strive for excellence in everything we do, continually raising the bar for ourselves and our services.
+                    Our attention to detail and meticulous approach to executive search guarantees results for businesses in Dubai and beyond.
                   </p>
                 </CardContent>
               </Card>
@@ -342,11 +386,11 @@ export default function AboutUsPage() {
                     whileHover={{ scale: 1.1, backgroundColor: "rgba(168, 85, 247, 0.15)" }}
                   >
                     <div className="absolute inset-0 rounded-full bg-purple-500/5 animate-ping"></div>
-                    <Heart className="w-10 h-10" />
+                    <Target className="w-10 h-10" />
                   </motion.div>
-                  <h3 className="text-xl font-bold mb-4">Human Connection</h3>
+                  <h3 className="text-xl font-bold mb-4">Delivering Value</h3>
                   <p className="text-gray-600">
-                    We believe in the power of human connections and relationships in the recruitment process.
+                    Every candidate we place brings the qualities needed to drive long-term business growth for your organization.
                   </p>
                 </CardContent>
               </Card>
@@ -354,201 +398,51 @@ export default function AboutUsPage() {
           </motion.div>
         </motion.div>
 
-        {/* Our Team with Hover Effect Cards */}
+        {/* Call to Action Section */}
         <motion.div 
-          className="rounded-3xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 p-12 mb-24 relative"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={container}
+          className="relative rounded-2xl overflow-hidden"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/5 rounded-full -ml-32 -mb-32"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary to-blue-600 opacity-90"></div>
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIxIDEuNzktNCA0LTRzNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQtMS43OS00LTR6TTYwIDEyYzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00em0wLTE2YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00eiIvPjwvZz48L2c+PC9zdmc+')] bg-repeat opacity-10"></div>
           
-          <motion.div className="text-center mb-16 relative z-10" variants={fadeIn}>
-            <motion.div 
-              className="inline-block bg-green-500/10 text-green-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
-              whileHover={{ scale: 1.05 }}
+          <div className="relative py-16 px-6 md:px-10 lg:px-16 text-white text-center">
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.6 }}
             >
-              Meet The Experts
+              Ready to Enhance Your Workforce?
+            </motion.h2>
+            <motion.p 
+              className="text-lg md:text-xl mb-8 max-w-3xl mx-auto text-white/90"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            >
+              If you're ready to enhance your workforce with the very best talent in your niche, we stand ready to serve.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+            >
+              <a 
+                href="/contact-us" 
+                className="inline-flex items-center bg-white text-primary px-6 py-3 rounded-full font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300 group"
+              >
+                Get in Touch 
+                <ArrowUpRight className="ml-2 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </a>
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Team</h2>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-              Our team of experienced professionals is dedicated to understanding your unique needs and finding the perfect match.
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            className="grid md:grid-cols-4 gap-8"
-            variants={container}
-          >
-            <motion.div 
-              className="group relative"
-              variants={scaleIn}
-              whileHover={{ y: -10 }}
-            >
-              <div className="rounded-xl overflow-hidden shadow-lg bg-white">
-                <div className="relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-                  <img 
-                    src="https://images.unsplash.com/photo-1573496130141-209d200cebd8" 
-                    alt="Sarah Johnson"
-                    className="w-full h-auto aspect-square object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20">
-                    <p className="text-sm">Over 15 years of recruitment experience across multiple industries.</p>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="font-bold text-lg">Sarah Johnson</h3>
-                  <p className="text-primary">CEO & Founder</p>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              className="group relative"
-              variants={scaleIn}
-              whileHover={{ y: -10 }}
-            >
-              <div className="rounded-xl overflow-hidden shadow-lg bg-white">
-                <div className="relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-                  <img 
-                    src="https://images.unsplash.com/photo-1590650516494-0c8e4a4dd67e" 
-                    alt="David Chen"
-                    className="w-full h-auto aspect-square object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20">
-                    <p className="text-sm">Former Google engineer with expertise in AI-powered recruitment solutions.</p>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="font-bold text-lg">David Chen</h3>
-                  <p className="text-blue-600">Chief Technology Officer</p>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              className="group relative"
-              variants={scaleIn}
-              whileHover={{ y: -10 }}
-            >
-              <div className="rounded-xl overflow-hidden shadow-lg bg-white">
-                <div className="relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-                  <img 
-                    src="https://images.unsplash.com/photo-1573496130407-57329f01f769" 
-                    alt="Emma Rodriguez"
-                    className="w-full h-auto aspect-square object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20">
-                    <p className="text-sm">Specializes in executive search and talent acquisition strategy.</p>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="font-bold text-lg">Emma Rodriguez</h3>
-                  <p className="text-purple-600">Head of Recruitment</p>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              className="group relative"
-              variants={scaleIn}
-              whileHover={{ y: -10 }}
-            >
-              <div className="rounded-xl overflow-hidden shadow-lg bg-white">
-                <div className="relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-                  <img 
-                    src="https://images.unsplash.com/photo-1578574577315-3fbeb0cecdc2" 
-                    alt="Michael Taylor"
-                    className="w-full h-auto aspect-square object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20">
-                    <p className="text-sm">Expert in building long-term client relationships and business development.</p>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="font-bold text-lg">Michael Taylor</h3>
-                  <p className="text-green-600">Client Relations Manager</p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        </motion.div>
-
-        {/* Join Our Journey Section with Animation */}
-        <motion.div 
-          className="text-center relative overflow-hidden"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={container}
-        >
-          <div className="absolute inset-0 bg-primary/5 rounded-full w-[800px] h-[800px] mx-auto -top-1/2 opacity-30"></div>
-          
-          <motion.h2 
-            className="text-3xl md:text-4xl font-bold mb-6 relative z-10"
-            variants={fadeIn}
-          >
-            Join Our Journey
-          </motion.h2>
-          <motion.p 
-            className="text-lg text-gray-700 mb-10 max-w-3xl mx-auto relative z-10"
-            variants={fadeIn}
-          >
-            Whether you're looking for your next career move or seeking the perfect addition to your team, we're here to help you succeed.
-          </motion.p>
-          
-          <motion.div 
-            className="flex flex-wrap justify-center gap-6 relative z-10"
-            variants={container}
-          >
-            <motion.a 
-              href="/auth?type=jobseeker" 
-              className="bg-primary text-white px-8 py-4 rounded-full font-medium hover:shadow-lg hover:bg-primary/90 transition-all"
-              variants={scaleIn}
-              whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(var(--primary), 0.3)" }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Register as Job Seeker
-            </motion.a>
-            <motion.a 
-              href="/auth?type=employer" 
-              className="bg-white border-2 border-primary text-primary px-8 py-4 rounded-full font-medium hover:shadow-lg hover:bg-primary/5 transition-all"
-              variants={scaleIn}
-              whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(var(--primary), 0.1)" }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Register as Employer
-            </motion.a>
-          </motion.div>
-          
-          <motion.div 
-            className="mt-16 flex justify-center items-center gap-2 text-gray-500 relative z-10"
-            variants={fadeIn}
-          >
-            <motion.svg 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              className="w-5 h-5"
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="m4.93 4.93 14.14 14.14"></path>
-              <path d="m14.83 9.17-5.66 5.66"></path>
-              <path d="m9.17 9.17 5.66 5.66"></path>
-            </motion.svg>
-            <span>100% satisfaction guaranteed</span>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </>
