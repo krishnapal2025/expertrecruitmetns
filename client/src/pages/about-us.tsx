@@ -655,13 +655,15 @@ export default function AboutUsPage() {
                       <h3 className="text-xl font-bold">Our Commitment to You</h3>
                     </div>
                     
-                    <ul className="space-y-5">
+                    <ul className="space-y-4">
                       {[
                         "Personalized service tailored to your business needs",
                         "Custom recruitment solutions for maximum efficiency",
                         "Comprehensive support to reduce your workload",
                         "Focus on quality over quantity in candidates",
                         "Transparent communication throughout the process",
+                        "Long-term partnership approach for continued success",
+                        "Specialized expertise across multiple industries"
                       ].map((item, index) => (
                         <motion.li 
                           key={index}
@@ -678,24 +680,6 @@ export default function AboutUsPage() {
                         </motion.li>
                       ))}
                     </ul>
-                    
-                    <motion.div 
-                      className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700"
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.8 }}
-                    >
-                      <a 
-                        href="/contact-us" 
-                        className="inline-flex items-center justify-center w-full px-6 py-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 text-white font-medium shadow-lg hover:shadow-xl transition duration-300 group"
-                      >
-                        <span>Experience the Difference</span>
-                        <svg className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                      </a>
-                    </motion.div>
                   </div>
                 </motion.div>
               </div>
