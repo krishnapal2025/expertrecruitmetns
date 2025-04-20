@@ -62,13 +62,13 @@ export default function ContactUsPage() {
   return (
     <>
       <Helmet>
-        <title>Contact Us | RH Job Portal</title>
-        <meta name="description" content="Get in touch with our team. We're here to help with any questions about our job portal, recruitment services, or career advice." />
+        <title>Connect With Us | Expert Recruitments LLC</title>
+        <meta name="description" content="Get in touch with Expert Recruitments across our global offices in India, Dubai, and USA. We're here to help with all your recruitment needs." />
       </Helmet>
 
       <div className="bg-primary text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
+          <h1 className="text-4xl font-bold mb-4">Connect With Us!</h1>
           <p className="text-xl max-w-2xl">
             Have questions or need assistance? Reach out to our team and we'll be happy to help.
           </p>
@@ -78,46 +78,114 @@ export default function ContactUsPage() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-3 gap-8">
           {/* Contact Info Cards */}
-          <div className="md:col-span-1 space-y-4">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-start">
-                  <Phone className="h-6 w-6 text-primary mr-4 mt-1" />
+          <div className="md:col-span-1 space-y-6">
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 rounded-full bg-yellow-300 flex items-center justify-center mr-3">
+                  <MapPin className="h-5 w-5 text-blue-700" />
+                </div>
+                <h3 className="text-lg font-bold text-blue-700 bg-yellow-300 px-4 py-1 rounded-full">INDIA</h3>
+              </div>
+              
+              <div className="mb-4">
+                <div className="flex items-center mb-2">
+                  <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center mr-3">
+                    <Phone className="h-4 w-4 text-white" />
+                  </div>
+                  <p className="text-gray-700">+91 84509 79450</p>
+                </div>
+                
+                <div className="flex items-center mb-2">
+                  <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center mr-3">
+                    <Mail className="h-4 w-4 text-white" />
+                  </div>
+                  <a href="mailto:info@expertrecruitments.com" className="text-blue-600 hover:underline">
+                    info@expertrecruitments.com
+                  </a>
+                </div>
+                
+                <div className="flex items-start mt-4">
+                  <div className="w-8 h-8 rounded-full bg-teal-500 flex-shrink-0 flex items-center justify-center mr-3 mt-1">
+                    <MapPin className="h-4 w-4 text-white" />
+                  </div>
                   <div>
-                    <h3 className="font-bold text-lg mb-2">Phone</h3>
-                    <p className="text-gray-700">+1 (555) 123-4567</p>
-                    <p className="text-gray-500 text-sm mt-1">Monday to Friday, 9am to 6pm</p>
+                    <p className="text-gray-700 font-medium mb-1">Navi Mumbai:</p>
+                    <p className="text-gray-600 mb-4">302, Foundation Tower, CBD Belapur, Maharashtra</p>
+                    
+                    <p className="text-gray-700 font-medium mb-1">Lucknow:</p>
+                    <p className="text-gray-600 mb-4">05, Kisan Bazar, Bibhuti Nagar, Lucknow, Uttar Pradesh</p>
+                    
+                    <p className="text-gray-700 font-medium mb-1">Hyderabad:</p>
+                    <p className="text-gray-600">Level 1, Phase 2, N-Heights, Plot No 38, Siddiq Nagar, HITEC City, Hyderabad, Telangana</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-start">
-                  <Mail className="h-6 w-6 text-primary mr-4 mt-1" />
+              </div>
+            </div>
+            
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 rounded-full bg-yellow-300 flex items-center justify-center mr-3">
+                  <MapPin className="h-5 w-5 text-blue-700" />
+                </div>
+                <h3 className="text-lg font-bold text-blue-700 bg-yellow-300 px-4 py-1 rounded-full">DUBAI</h3>
+              </div>
+              
+              <div className="mb-4">
+                <div className="flex items-center mb-2">
+                  <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center mr-3">
+                    <Phone className="h-4 w-4 text-white" />
+                  </div>
+                  <p className="text-gray-700">+9714 331 5588</p>
+                </div>
+                
+                <div className="flex items-center mb-2">
+                  <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center mr-3">
+                    <Mail className="h-4 w-4 text-white" />
+                  </div>
+                  <a href="mailto:talent@expertrecruitments.com" className="text-blue-600 hover:underline">
+                    talent@expertrecruitments.com
+                  </a>
+                </div>
+                
+                <div className="flex items-start mt-4">
+                  <div className="w-8 h-8 rounded-full bg-teal-500 flex-shrink-0 flex items-center justify-center mr-3 mt-1">
+                    <MapPin className="h-4 w-4 text-white" />
+                  </div>
                   <div>
-                    <h3 className="font-bold text-lg mb-2">Email</h3>
-                    <p className="text-gray-700">info@rhjobportal.com</p>
-                    <p className="text-gray-500 text-sm mt-1">We'll respond as soon as possible</p>
+                    <p className="text-gray-600">Office No. 306, Al Shali Building, Dubai, United Arab Emirates</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-start">
-                  <MapPin className="h-6 w-6 text-primary mr-4 mt-1" />
+              </div>
+            </div>
+            
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 rounded-full bg-yellow-300 flex items-center justify-center mr-3">
+                  <MapPin className="h-5 w-5 text-blue-700" />
+                </div>
+                <h3 className="text-lg font-bold text-blue-700 bg-yellow-300 px-4 py-1 rounded-full">USA</h3>
+              </div>
+              
+              <div>
+                <div className="flex items-start mb-3">
+                  <div className="w-8 h-8 rounded-full bg-teal-500 flex-shrink-0 flex items-center justify-center mr-3 mt-1">
+                    <MapPin className="h-4 w-4 text-white" />
+                  </div>
                   <div>
-                    <h3 className="font-bold text-lg mb-2">Office</h3>
-                    <p className="text-gray-700">123 Business Avenue</p>
-                    <p className="text-gray-700">Suite 456</p>
-                    <p className="text-gray-700">New York, NY 10001</p>
+                    <p className="text-gray-600">6 Moyse Place, Suite 302 Edison, New Jersey 08820</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                
+                <div className="flex items-center">
+                  <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center mr-3">
+                    <Mail className="h-4 w-4 text-white" />
+                  </div>
+                  <a href="mailto:nj@expertrecruitments.com" className="text-blue-600 hover:underline">
+                    nj@expertrecruitments.com
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Contact Form */}
@@ -228,16 +296,16 @@ export default function ContactUsPage() {
 
         {/* Google Map */}
         <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6">Find Us</h2>
+          <h2 className="text-2xl font-bold mb-6 text-blue-800">Our Global Presence</h2>
           <div className="h-[400px] rounded-lg overflow-hidden border border-gray-200">
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387193.3059353029!2d-74.25986548248684!3d40.69714941774136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sus!4v1626836254215!5m2!1sen!2sus" 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3610.1785270136026!2d55.17570511503143!3d25.18975998389566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f69df66cafc8d%3A0x84a09f0b5b3c4e3f!2sAl%20Shali%20Building%20-%20Dubai%20-%20United%20Arab%20Emirates!5e0!3m2!1sen!2sus!4v1619026384553!5m2!1sen!2sus" 
               width="100%" 
               height="100%" 
               style={{ border: 0 }} 
               allowFullScreen={true} 
               loading="lazy"
-              title="Google Maps"
+              title="Dubai Office Location"
             ></iframe>
           </div>
         </div>
