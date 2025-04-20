@@ -101,7 +101,7 @@ export default function Banner() {
   };
 
   return (
-    <div className="relative h-[760px] overflow-hidden">
+    <div className="relative h-[760px] md:h-[760px] overflow-hidden">
       {/* Slides */}
       <AnimatePresence initial={false}>
         <motion.div
@@ -113,7 +113,7 @@ export default function Banner() {
         >
           {/* Left content panel */}
           <motion.div 
-            className="w-full md:w-7/12 bg-white dark:bg-gray-900 h-1/2 md:h-full relative overflow-hidden p-8 md:p-16 flex flex-col justify-center"
+            className="w-full md:w-7/12 bg-white dark:bg-gray-900 h-[380px] md:h-full relative overflow-hidden p-6 md:p-16 flex flex-col justify-center"
             variants={{
               initial: { opacity: 0, x: -50 },
               animate: { opacity: 1, x: 0, transition: { duration: 0.5 } },
@@ -130,7 +130,7 @@ export default function Banner() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.5 }}
-                className="mb-6"
+                className="mb-3 md:mb-6"
               >
                 <span className={`inline-block ${currentSlide === 0 ? 'bg-primary/10 dark:bg-primary/20' : `${slides[currentSlide].color} bg-opacity-10`} text-xs font-semibold tracking-wider px-3 py-1 rounded-sm ${currentSlide === 0 ? 'text-primary dark:text-primary/90' : `text-${slides[currentSlide].color.split('-')[1]}-600 dark:text-${slides[currentSlide].color.split('-')[1]}-400`}`}>
                   {slides[currentSlide].tagline}
@@ -142,7 +142,7 @@ export default function Banner() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
-                className="text-4xl md:text-6xl xl:text-7xl font-extrabold mb-6 leading-tight text-gray-900 dark:text-white"
+                className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-extrabold mb-3 md:mb-6 leading-tight text-gray-900 dark:text-white"
               >
                 {slides[currentSlide].title.split('\n').map((line, i) => (
                   <span key={i} className="block">{line}</span>
@@ -154,24 +154,24 @@ export default function Banner() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
-                className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-lg"
+                className="text-sm sm:text-base md:text-lg xl:text-xl text-gray-600 dark:text-gray-300 mb-4 md:mb-8 max-w-lg"
               >
                 {slides[currentSlide].description}
               </motion.p>
               
-              {/* Statistics */}
+              {/* Statistics - Hidden on smallest screens */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
-                className="grid grid-cols-3 gap-6 mb-10"
+                className="hidden sm:grid grid-cols-3 gap-2 md:gap-6 mb-4 md:mb-10"
               >
                 {slides[currentSlide].stats.map((stat, index) => (
                   <div key={index}>
-                    <div className={`text-3xl font-bold mb-1 ${currentSlide === 0 ? 'text-primary' : `text-${slides[currentSlide].color.split('-')[1]}-500`}`}>
+                    <div className={`text-xl md:text-2xl xl:text-3xl font-bold mb-0 md:mb-1 ${currentSlide === 0 ? 'text-primary' : `text-${slides[currentSlide].color.split('-')[1]}-500`}`}>
                       {stat.value}
                     </div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                    <div className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
                       {stat.label}
                     </div>
                   </div>
@@ -183,7 +183,7 @@ export default function Banner() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                className="flex flex-wrap gap-4"
+                className="flex flex-wrap gap-3 md:gap-4"
               >
                 <Link href={
                   slides[currentSlide].ctaText === "Post a Job" && 
@@ -191,19 +191,19 @@ export default function Banner() {
                   "/post-job" : slides[currentSlide].ctaLink
                 }>
                   <Button 
-                    size="lg" 
-                    className={`${currentSlide === 0 ? 'bg-primary hover:bg-primary/90' : slides[currentSlide].color} font-medium group transition-all text-white`}
+                    size="default" 
+                    className={`${currentSlide === 0 ? 'bg-primary hover:bg-primary/90' : slides[currentSlide].color} font-medium group transition-all text-white md:text-base text-sm`}
                   >
                     {slides[currentSlide].ctaText}
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </Link>
                 
                 {currentSlide === 1 && (
                   <Link href="/hire-talent">
                     <Button 
-                      size="lg" 
-                      className="font-medium bg-blue-500 hover:bg-blue-600 text-white"
+                      size="default" 
+                      className="font-medium bg-blue-500 hover:bg-blue-600 text-white md:text-base text-sm"
                     >
                       Hire Talent
                     </Button>
@@ -213,9 +213,9 @@ export default function Banner() {
                 {currentSlide === 0 && !currentUser && (
                   <Link href="/auth?type=jobseeker">
                     <Button 
-                      size="lg" 
+                      size="default" 
                       variant="outline" 
-                      className="font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      className="font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 md:text-base text-sm"
                     >
                       Register Now
                     </Button>
@@ -227,7 +227,7 @@ export default function Banner() {
           
           {/* Right image panel */}
           <motion.div 
-            className="w-full md:w-5/12 h-1/2 md:h-full relative overflow-hidden"
+            className="w-full md:w-5/12 h-[380px] md:h-full relative overflow-hidden"
             variants={{
               initial: { opacity: 0, scale: 1.1 },
               animate: { opacity: 1, scale: 1, transition: { duration: 0.7 } },
@@ -244,20 +244,20 @@ export default function Banner() {
             ></div>
             <div className={`absolute inset-0 ${slides[currentSlide].color} opacity-30 mix-blend-multiply`}></div>
             
-            {/* Floating card with call-to-action */}
+            {/* Floating card with call-to-action - Hidden on smallest screens */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
-              className="absolute bottom-8 right-8 left-8 md:left-auto md:right-8 md:bottom-8 md:w-64 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-lg p-4 shadow-lg"
+              className="hidden sm:block absolute bottom-8 right-4 left-4 md:left-auto md:right-8 md:bottom-8 md:w-64 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-lg p-3 md:p-4 shadow-lg"
             >
               <div className="flex items-start">
                 <div className={`${slides[currentSlide].color} rounded-full p-2 mr-3 text-white`}>
-                  <ArrowUpRight className="w-5 h-5" />
+                  <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5" />
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 dark:text-white mb-1">Ready to start?</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-300">Join thousands who have already found their perfect career match.</div>
+                  <div className="font-semibold text-gray-900 dark:text-white mb-1 text-sm md:text-base">Ready to start?</div>
+                  <div className="text-xs md:text-sm text-gray-600 dark:text-gray-300">Join thousands who have already found their perfect career match.</div>
                 </div>
               </div>
             </motion.div>
