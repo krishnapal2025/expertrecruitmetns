@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileCheck, Award, Briefcase, FileText, Clock, BookOpen, UserCheck } from "lucide-react";
+import { Link } from "wouter";
 
 export default function JobServices() {
   return (
@@ -19,9 +20,14 @@ export default function JobServices() {
               EXCLUSIVELY FOR JOB SEEKERS
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Premium Career Services</h1>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 text-lg mb-6">
               Enhance your job search experience with our specialized services designed to give you a competitive edge in the market.
             </p>
+            <Link href="/job-seeker-register">
+              <Button variant="default" className="mx-auto">
+                Register as Job Seeker
+              </Button>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
