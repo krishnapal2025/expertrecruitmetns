@@ -135,9 +135,9 @@ export default function Footer() {
               <h3 className="text-lg font-bold mb-3">For Employers</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/employer-register" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <Link href="/job-seeker-register" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Register
+                    Register as Job Seeker
                   </Link>
                 </li>
                 <li>
