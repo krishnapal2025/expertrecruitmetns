@@ -228,7 +228,7 @@ export default function Footer() {
               <p className="text-sm text-gray-400 mb-4">
                 Subscribe to our newsletter for the latest job opportunities and career insights.
               </p>
-              <div className="flex space-x-2 mb-6">
+              <div className="flex space-x-2">
                 <Input 
                   type="email" 
                   placeholder="Your email"
@@ -236,7 +236,9 @@ export default function Footer() {
                 />
                 <Button className="bg-primary hover:bg-primary/90 text-white">Subscribe</Button>
               </div>
-              
+            </div>
+            
+            <div className="mt-8 p-1">
               <h3 className="text-lg font-bold mb-3">Follow Us</h3>
               <div className="flex space-x-3">
                 <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition-colors">
