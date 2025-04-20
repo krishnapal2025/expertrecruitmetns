@@ -167,7 +167,7 @@ export default function Footer() {
                 <li>
                   <a href="/job-seeker-register" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Register
+                    Register as Job Seeker
                   </a>
                 </li>
                 <li>
