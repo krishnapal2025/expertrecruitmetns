@@ -900,9 +900,61 @@ export default function AboutUsPage() {
               Our Reputation
             </motion.div>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Premium Executive Search in Dubai</h2>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-700 max-w-3xl mx-auto mb-10">
               While we're not the oldest recruitment agency in the UAE, we're definitely one of the most respected. We look beyond the immediate talent requirements of the businesses we serve to ensure every appointment makes a real difference.
             </p>
+
+            {/* Numbers Talk Section */}
+            <motion.div 
+              className="max-w-4xl mx-auto mb-10"
+              variants={scaleIn}
+            >
+              <div className="bg-blue-50 rounded-xl p-8 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-100/50 to-blue-200/20"></div>
+                
+                <div className="relative z-10">
+                  <h3 className="text-2xl font-bold text-blue-800 mb-12">Numbers Talk</h3>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    {/* Years in Business */}
+                    <div className="flex flex-col items-center">
+                      <div className="w-24 h-24 flex items-center justify-center bg-yellow-400 rounded-full mb-3 shadow-md relative">
+                        <div className="absolute inset-1 rounded-full border-2 border-blue-700 opacity-20"></div>
+                        <span className="text-3xl font-bold text-blue-900">10+</span>
+                      </div>
+                      <p className="text-sm font-medium text-blue-800">Years in Business</p>
+                    </div>
+                    
+                    {/* Clients & Brands */}
+                    <div className="flex flex-col items-center">
+                      <div className="w-24 h-24 flex items-center justify-center bg-yellow-400 rounded-full mb-3 shadow-md relative">
+                        <div className="absolute inset-1 rounded-full border-2 border-blue-700 opacity-20"></div>
+                        <span className="text-3xl font-bold text-blue-900">100+</span>
+                      </div>
+                      <p className="text-sm font-medium text-blue-800">Clients & Brands</p>
+                    </div>
+                    
+                    {/* Placements */}
+                    <div className="flex flex-col items-center">
+                      <div className="w-24 h-24 flex items-center justify-center bg-yellow-400 rounded-full mb-3 shadow-md relative">
+                        <div className="absolute inset-1 rounded-full border-2 border-blue-700 opacity-20"></div>
+                        <span className="text-3xl font-bold text-blue-900">10000+</span>
+                      </div>
+                      <p className="text-sm font-medium text-blue-800">Placements</p>
+                    </div>
+                    
+                    {/* Countries-wide Presence */}
+                    <div className="flex flex-col items-center">
+                      <div className="w-24 h-24 flex items-center justify-center bg-yellow-400 rounded-full mb-3 shadow-md relative">
+                        <div className="absolute inset-1 rounded-full border-2 border-blue-700 opacity-20"></div>
+                        <span className="text-3xl font-bold text-blue-900">3</span>
+                      </div>
+                      <p className="text-sm font-medium text-blue-800">Countries-wide Presence</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
