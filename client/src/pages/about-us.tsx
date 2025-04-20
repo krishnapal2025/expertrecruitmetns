@@ -150,7 +150,7 @@ export default function AboutUsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
           >
-            <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+            <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center h-full">
               <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-100 shadow-sm">
                 <Users className="h-5 w-5 text-primary" />
               </div>
@@ -159,7 +159,7 @@ export default function AboutUsPage() {
               <div className="absolute -bottom-1 left-0 right-0 h-1 bg-primary/20 rounded-b-lg"></div>
             </div>
             
-            <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 md:transform md:-translate-y-4">
+            <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center h-full">
               <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-100 shadow-sm">
                 <Briefcase className="h-5 w-5 text-primary" />
               </div>
@@ -168,7 +168,7 @@ export default function AboutUsPage() {
               <div className="absolute -bottom-1 left-0 right-0 h-1 bg-primary/20 rounded-b-lg"></div>
             </div>
             
-            <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+            <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center h-full">
               <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-100 shadow-sm">
                 <Target className="h-5 w-5 text-primary" />
               </div>
@@ -178,21 +178,7 @@ export default function AboutUsPage() {
             </div>
           </motion.div>
           
-          {/* CTA Button */}
-          <motion.div 
-            className="flex justify-center mt-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-          >
-            <a 
-              href="/contact-us" 
-              className="px-8 py-3 bg-primary text-white font-medium rounded shadow-md hover:shadow-lg transition-all duration-300 flex items-center group"
-            >
-              <span>Connect With Our Team</span>
-              <ArrowUpRight className="ml-2 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-            </a>
-          </motion.div>
+
         </div>
       </div>
 
