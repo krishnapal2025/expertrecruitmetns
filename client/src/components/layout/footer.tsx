@@ -200,7 +200,7 @@ export default function Footer() {
                 <Input 
                   type="email" 
                   placeholder="Your email"
-                  className="bg-gray-700 border-gray-600 text-white rounded-r-none"
+                  className="bg-gray-700 border-gray-600 text-white rounded-r-none w-36"
                 />
                 <Button className="bg-primary hover:bg-primary/90 text-white rounded-l-none">
                   Go
