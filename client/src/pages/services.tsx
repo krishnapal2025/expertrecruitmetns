@@ -109,7 +109,7 @@ export default function ServicesPage() {
           </div>
           
           <div className="mt-8 text-center">
-            <Link href="/auth?type=jobseeker">
+            <Link href="/job-seeker-register">
               <Button size="lg">Register as Job Seeker</Button>
             </Link>
           </div>
@@ -135,7 +135,7 @@ export default function ServicesPage() {
                 <p className="text-gray-600 mb-4">
                   Access a diverse pool of qualified candidates through our extensive network and advanced matching technology.
                 </p>
-                <Link href="/auth?type=employer">
+                <Link href="/employer-register">
                   <Button variant="outline" className="w-full">Post a Job</Button>
                 </Link>
               </CardContent>
@@ -169,7 +169,7 @@ export default function ServicesPage() {
           </div>
           
           <div className="mt-8 text-center">
-            <Link href="/auth?type=employer">
+            <Link href="/employer-register">
               <Button size="lg">Register as Employer</Button>
             </Link>
           </div>
@@ -279,10 +279,10 @@ export default function ServicesPage() {
             Whether you're looking for your next career opportunity or searching for top talent, we're here to help you succeed.
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
-            <Link href="/auth?type=jobseeker">
+            <Link href="/job-seeker-register">
               <Button size="lg">For Job Seekers</Button>
             </Link>
-            <Link href="/auth?type=employer">
+            <Link href="/employer-register">
               <Button size="lg" variant="outline">For Employers</Button>
             </Link>
           </div>
