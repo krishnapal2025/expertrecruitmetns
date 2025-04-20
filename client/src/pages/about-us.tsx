@@ -120,27 +120,7 @@ export default function AboutUsPage() {
               The Home of High-End Executive Search in Dubai and across the UAE
             </motion.p>
             
-            <motion.div 
-              className="flex flex-wrap justify-center gap-5 mb-12"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-            >
-              <div className="flex flex-col items-center gap-3 px-6 py-5 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
-                <MapPin className="h-6 w-6 text-primary" />
-                <span className="font-medium text-gray-800">Dubai</span>
-              </div>
-              
-              <div className="flex flex-col items-center gap-3 px-6 py-5 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
-                <Globe className="h-6 w-6 text-primary" />
-                <span className="font-medium text-gray-800">UAE & GCC</span>
-              </div>
-              
-              <div className="flex flex-col items-center gap-3 px-6 py-5 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
-                <Building className="h-6 w-6 text-primary" />
-                <span className="font-medium text-gray-800">Executive Search</span>
-              </div>
-            </motion.div>
+
           </div>
           
           {/* Three value propositions */}
