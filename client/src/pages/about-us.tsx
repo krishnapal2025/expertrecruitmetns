@@ -938,7 +938,7 @@ export default function AboutUsPage() {
                     <div className="flex flex-col items-center">
                       <div className="w-24 h-24 flex items-center justify-center bg-yellow-400 rounded-full mb-3 shadow-md relative">
                         <div className="absolute inset-1 rounded-full border-2 border-blue-700 opacity-20"></div>
-                        <span className="text-3xl font-bold text-blue-900">10000+</span>
+                        <span className="text-3xl font-bold text-blue-900">10K+</span>
                       </div>
                       <p className="text-sm font-medium text-blue-800">Placements</p>
                     </div>
