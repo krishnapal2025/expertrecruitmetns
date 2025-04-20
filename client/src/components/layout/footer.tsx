@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -99,34 +99,34 @@ export default function Footer() {
               <h3 className="text-lg font-bold mb-3">Quick Links</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Home
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/about-us" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/about-us" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     About Us
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/services" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/services" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Services
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/job-board" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/job-board" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Find Jobs
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Sectors
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -135,28 +135,28 @@ export default function Footer() {
               <h3 className="text-lg font-bold mb-3">For Employers</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/job-seeker-register" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/job-seeker-register" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Register as Job Seeker
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/post-job" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/post-job" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Post a Job
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/hire-talent" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/hire-talent" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Hire Talent
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/seo-insights" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/seo-insights" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     SEO Insights
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -165,28 +165,28 @@ export default function Footer() {
               <h3 className="text-lg font-bold mb-3">For Job Seekers</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/job-seeker-register" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/job-seeker-register" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Register
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/job-board" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/job-board" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Find Jobs
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Career Sectors
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/blogs" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/blogs" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Career Advice
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -235,15 +235,15 @@ export default function Footer() {
             © {currentYear} EXPERT Recruitments LLC. All rights reserved.
           </div>
           <div className="flex flex-wrap gap-4">
-            <Link href="/privacy-policy" className="text-gray-500 hover:text-white transition-colors text-xs">
+            <a href="/privacy-policy" className="text-gray-500 hover:text-white transition-colors text-xs">
               Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-gray-500 hover:text-white transition-colors text-xs">
+            </a>
+            <a href="/terms" className="text-gray-500 hover:text-white transition-colors text-xs">
               Terms of Service
-            </Link>
-            <Link href="/accessibility" className="text-gray-500 hover:text-white transition-colors text-xs">
+            </a>
+            <a href="/accessibility" className="text-gray-500 hover:text-white transition-colors text-xs">
               Accessibility
-            </Link>
+            </a>
           </div>
         </div>
       </div>
