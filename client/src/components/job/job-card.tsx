@@ -58,13 +58,9 @@ export default function JobCard({ job }: JobCardProps) {
               <span>{formatDate(job.postedDate ? job.postedDate : null)}</span>
             </div>
             
-            <Link href={`/job/${job.id}`}>
-              <div className="block cursor-pointer">
-                <h3 className="text-xl font-bold mb-2 hover:text-primary transition-colors">
-                  {job.title}
-                </h3>
-              </div>
-            </Link>
+            <h3 className="text-xl font-bold mb-2 text-gray-800">
+              {job.title}
+            </h3>
             
             <div className="flex flex-wrap gap-2 mb-3">
               <Badge variant="outline" className="text-primary bg-primary/5">

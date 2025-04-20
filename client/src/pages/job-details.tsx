@@ -189,7 +189,7 @@ export default function JobDetailsPage({ id }: { id: string }) {
                   <Card key={i} className="hover:shadow-md transition-shadow">
                     <CardContent className="p-6">
                       <Link href={`/job/${job.id + i}`}>
-                        <a className="block">
+                        <div className="block cursor-pointer">
                           <h3 className="text-xl font-bold mb-2 hover:text-primary transition-colors">
                             {job.title} - {i === 1 ? 'Senior' : i === 2 ? 'Junior' : 'Associate'} Level
                           </h3>
@@ -208,7 +208,7 @@ export default function JobDetailsPage({ id }: { id: string }) {
                             </div>
                           </div>
                           <p className="text-gray-700 line-clamp-2">{job.description.substring(0, 120)}...</p>
-                        </a>
+                        </div>
                       </Link>
                     </CardContent>
                   </Card>
