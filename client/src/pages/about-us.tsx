@@ -126,13 +126,13 @@ export default function AboutUsPage() {
             
             {/* Section Navigation Buttons */}
             <motion.div 
-              className="flex flex-wrap gap-4 mb-10"
+              className="flex flex-col items-center gap-4 mb-10"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
             >
               {/* First Row */}
-              <div className="flex flex-wrap gap-4 w-full">
+              <div className="flex flex-wrap justify-center gap-4 w-full">
                 <a 
                   href="#our-approach" 
                   className="px-5 py-2.5 bg-white text-primary text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
@@ -174,7 +174,7 @@ export default function AboutUsPage() {
               </div>
               
               {/* Second Row */}
-              <div className="flex flex-wrap gap-4 w-full mt-0">
+              <div className="flex flex-wrap justify-center gap-4 w-full mt-0">
                 <a 
                   href="#our-values" 
                   className="px-5 py-2.5 bg-white text-emerald-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
