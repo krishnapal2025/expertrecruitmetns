@@ -71,7 +71,6 @@ export default function AboutUsPage() {
         <div className="absolute inset-0 bg-gray-50"></div>
         
         {/* Accent lines */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-primary shadow-sm"></div>
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
         
         {/* Decorative elements */}
