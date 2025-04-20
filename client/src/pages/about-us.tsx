@@ -131,44 +131,88 @@ export default function AboutUsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
             >
-              <a 
-                href="#our-approach" 
-                className="px-5 py-2.5 bg-white text-primary text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary">
-                  <path d="M17.5 12a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M12 7V5m0 14v-2m5-5h2M5 12h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                </svg>
-                <span>Our Approach</span>
-              </a>
-              <a 
-                href="#what-sets-us-apart" 
-                className="px-5 py-2.5 bg-white text-primary text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary">
-                  <path d="M12 8V16M12 8L8 12M12 8L16 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5"/>
-                </svg>
-                <span>What Sets Us Apart</span>
-              </a>
-              <a 
-                href="#our-history" 
-                className="px-5 py-2.5 bg-white text-amber-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-amber-600">
-                  <path d="M12 8V12L14 14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <span>Our History</span>
-              </a>
-              <a 
-                href="#our-mission" 
-                className="px-5 py-2.5 bg-white text-blue-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-blue-600">
-                  <path d="M15 3L19 7M19 7L15 11M19 7H5M9 13L5 17M5 17L9 21M5 17H19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <span>Our Mission</span>
-              </a>
+              {/* First Row */}
+              <div className="flex flex-wrap gap-4 w-full">
+                <a 
+                  href="#our-approach" 
+                  className="px-5 py-2.5 bg-white text-primary text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary">
+                    <path d="M17.5 12a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" stroke="currentColor" strokeWidth="1.5"/>
+                    <path d="M12 7V5m0 14v-2m5-5h2M5 12h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                  <span>Our Approach</span>
+                </a>
+                <a 
+                  href="#what-sets-us-apart" 
+                  className="px-5 py-2.5 bg-white text-primary text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary">
+                    <path d="M12 8V16M12 8L8 12M12 8L16 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5"/>
+                  </svg>
+                  <span>What Sets Us Apart</span>
+                </a>
+                <a 
+                  href="#our-history" 
+                  className="px-5 py-2.5 bg-white text-amber-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-amber-600">
+                    <path d="M12 8V12L14 14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span>Our History</span>
+                </a>
+                <a 
+                  href="#our-mission" 
+                  className="px-5 py-2.5 bg-white text-blue-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-blue-600">
+                    <path d="M15 3L19 7M19 7L15 11M19 7H5M9 13L5 17M5 17L9 21M5 17H19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span>Our Mission</span>
+                </a>
+              </div>
+              
+              {/* Second Row */}
+              <div className="flex flex-wrap gap-4 w-full mt-0">
+                <a 
+                  href="#our-values" 
+                  className="px-5 py-2.5 bg-white text-emerald-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-emerald-600">
+                    <path d="M9 10.5L11 12.5L15.5 8M7 18L3 14L7 10M17 18L21 14L17 10M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span>Our Values</span>
+                </a>
+                <a 
+                  href="#our-promise" 
+                  className="px-5 py-2.5 bg-white text-purple-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-purple-600">
+                    <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span>Our Promise</span>
+                </a>
+                <a 
+                  href="#our-commitments" 
+                  className="px-5 py-2.5 bg-white text-rose-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-rose-600">
+                    <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M7 22a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span>Our Commitments</span>
+                </a>
+                <a 
+                  href="#our-reputation" 
+                  className="px-5 py-2.5 bg-white text-orange-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-orange-600">
+                    <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span>Our Reputation</span>
+                </a>
+              </div>
             </motion.div>
 
           </div>
@@ -525,7 +569,8 @@ export default function AboutUsPage() {
         
         {/* Our Values Section */}
         <motion.div 
-          className="mb-24"
+          id="our-values"
+          className="mb-24 pt-16 -mt-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -653,7 +698,8 @@ export default function AboutUsPage() {
         
         {/* Our Promise Section */}
         <motion.div 
-          className="mb-24"
+          id="our-promise"
+          className="mb-24 pt-16 -mt-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -744,7 +790,8 @@ export default function AboutUsPage() {
         
         {/* Our Commitments Section */}
         <motion.div 
-          className="mb-24"
+          id="our-commitments"
+          className="mb-24 pt-16 -mt-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -837,7 +884,8 @@ export default function AboutUsPage() {
 
         {/* Our Reputation Section */}
         <motion.div 
-          className="mb-24"
+          id="our-reputation"
+          className="mb-24 pt-16 -mt-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
