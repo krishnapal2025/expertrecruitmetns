@@ -97,16 +97,46 @@ export default function BlogsPage() {
   return (
     <>
       <Helmet>
-        <title>Blog | Career Resources & Advice | RH Job Portal</title>
+        <title>Blog | Career Resources & Advice | Expert Recruitments</title>
         <meta name="description" content="Browse our collection of career advice, industry insights, and job search tips to help you advance your professional journey." />
       </Helmet>
 
-      <div className="bg-primary text-white py-16">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold mb-4">Career Resources & Insights</h1>
-          <p className="text-xl max-w-2xl">
-            Expert advice, tips, and insights to help you navigate your career journey successfully.
-          </p>
+      <div className="relative py-20 overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute inset-0 bg-gray-50"></div>
+        
+        {/* Accent lines */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
+        
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-1/3 h-full overflow-hidden">
+          <div className="absolute -right-20 top-1/4 w-80 h-80 bg-primary/5 rounded-full"></div>
+          <div className="absolute -right-10 bottom-1/4 w-40 h-40 bg-primary/5 rounded-full"></div>
+        </div>
+        
+        <div className="absolute left-0 bottom-0 w-1/4 h-80 overflow-hidden">
+          <div className="absolute -left-20 bottom-0 w-64 h-64 bg-gray-100 rounded-full"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative">
+          {/* Main content */}
+          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16">
+            <div className="inline-block mb-6 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md">
+              <span className="font-medium text-primary tracking-wider uppercase text-sm">Knowledge Center</span>
+            </div>
+            
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-gray-800 tracking-tight">
+              Career Resources & Insights
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed mb-4 max-w-3xl">
+              Expert advice, tips, and insights for your career journey
+            </p>
+            
+            <p className="text-lg text-gray-600 leading-relaxed mb-6 max-w-3xl">
+              Stay informed with the latest trends and strategies in professional development
+            </p>
+          </div>
         </div>
       </div>
 

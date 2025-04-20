@@ -99,37 +99,65 @@ export default function SEOInsightsPage() {
   return (
     <>
       <Helmet>
-        <title>SEO Insights | RH Job Portal</title>
+        <title>SEO Insights | Expert Recruitments</title>
         <meta name="description" content="Analyze job market trends, optimize your resume, and improve your visibility with our SEO insights tools." />
       </Helmet>
 
       {/* Hero section */}
-      <div className="relative bg-gradient-to-r from-primary to-blue-600 py-20 text-white overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-[40%] -left-[10%] w-[60%] h-[80%] rounded-full bg-blue-400 opacity-10 blur-3xl"></div>
-          <div className="absolute -bottom-[30%] -right-[10%] w-[50%] h-[70%] rounded-full bg-purple-400 opacity-10 blur-3xl"></div>
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIxIDEuNzktNCA0LTRzNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQtMS43OS00LTR6TTYwIDEyYzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00em0wLTE2YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00eiIvPjwvZz48L2c+PC9zdmc+')] bg-repeat opacity-20"></div>
+      <div className="relative py-20 overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute inset-0 bg-gray-50"></div>
+        
+        {/* Accent lines */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
+        
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-1/3 h-full overflow-hidden">
+          <div className="absolute -right-20 top-1/4 w-80 h-80 bg-primary/5 rounded-full"></div>
+          <div className="absolute -right-10 bottom-1/4 w-40 h-40 bg-primary/5 rounded-full"></div>
+        </div>
+        
+        <div className="absolute left-0 bottom-0 w-1/4 h-80 overflow-hidden">
+          <div className="absolute -left-20 bottom-0 w-64 h-64 bg-gray-100 rounded-full"></div>
         </div>
         
         <div className="container mx-auto px-4 relative">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeIn}
-            className="flex flex-col items-center text-center"
-          >
-            <motion.h1
-              className="text-4xl md:text-5xl font-bold mb-6"
-              animate={{ opacity: [0.8, 1], y: [10, 0] }}
-              transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
+          {/* Main content */}
+          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16">
+            <motion.div 
+              className="inline-block mb-6 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <span className="font-medium text-primary tracking-wider uppercase text-sm">Data Analytics</span>
+            </motion.div>
+            
+            <motion.h1 
+              className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-gray-800 tracking-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.7 }}
             >
               Job Market SEO Insights
             </motion.h1>
+            
             <motion.p 
-              className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed mb-12"
-              variants={fadeIn}
+              className="text-xl md:text-2xl text-gray-600 leading-relaxed mb-4 max-w-3xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
             >
-              Analyze trends, optimize your visibility, and make data-driven decisions for your job search or hiring process
+              Analyze trends, optimize your visibility, and make data-driven decisions
+            </motion.p>
+            
+            <motion.p 
+              className="text-lg text-gray-600 leading-relaxed mb-6 max-w-3xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+            >
+              Gain valuable insights for your job search or hiring process with our advanced analytics tools
             </motion.p>
             
             <div className="w-full max-w-2xl mx-auto relative">
@@ -148,7 +176,7 @@ export default function SEOInsightsPage() {
                 Analyze
               </Button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 

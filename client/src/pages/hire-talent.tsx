@@ -9,21 +9,49 @@ export default function HireTalentPage() {
   return (
     <>
       <Helmet>
-        <title>Hire Talent | RH Job Portal</title>
+        <title>Hire Talent | Expert Recruitments</title>
         <meta name="description" content="Find the right talent for your business. Preview candidates, hire contract talent, or permanent staff with our specialist recruitment services." />
       </Helmet>
 
       {/* Hero Section */}
-      <div className="bg-primary text-white py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl font-bold mb-6">Hire Top Talent For Your Business</h1>
-            <p className="text-xl mb-8">
-              Connect with qualified professionals who will drive your business forward.
-              Our specialist recruiters have a deep understanding of your industry's talent needs.
+      <div className="relative py-20 overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute inset-0 bg-gray-50"></div>
+        
+        {/* Accent lines */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
+        
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-1/3 h-full overflow-hidden">
+          <div className="absolute -right-20 top-1/4 w-80 h-80 bg-primary/5 rounded-full"></div>
+          <div className="absolute -right-10 bottom-1/4 w-40 h-40 bg-primary/5 rounded-full"></div>
+        </div>
+        
+        <div className="absolute left-0 bottom-0 w-1/4 h-80 overflow-hidden">
+          <div className="absolute -left-20 bottom-0 w-64 h-64 bg-gray-100 rounded-full"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative">
+          {/* Main content */}
+          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16">
+            <div className="inline-block mb-6 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md">
+              <span className="font-medium text-primary tracking-wider uppercase text-sm">Talent Solutions</span>
+            </div>
+            
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-gray-800 tracking-tight">
+              Hire Top Talent For Your Business
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed mb-4 max-w-3xl">
+              Connect with qualified professionals who will drive your business forward
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20" asChild>
+            
+            <p className="text-lg text-gray-600 leading-relaxed mb-6 max-w-3xl">
+              Our specialist recruiters have a deep understanding of your industry's talent needs
+            </p>
+            
+            <div className="mt-8">
+              <Button size="lg" className="bg-white text-primary hover:bg-gray-100 border border-primary shadow-sm" asChild>
                 <Link href="/contact-us">Speak to a Consultant</Link>
               </Button>
             </div>
