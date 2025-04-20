@@ -596,6 +596,113 @@ export default function AboutUsPage() {
           </div>
         </motion.div>
         
+        {/* Our Promise Section */}
+        <motion.div 
+          className="mb-24"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={container}
+        >
+          <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 rounded-3xl p-10 lg:p-16 relative overflow-hidden shadow-lg">
+            {/* Background decorative elements */}
+            <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl"></div>
+            
+            <div className="relative z-10">
+              <div className="flex flex-col lg:flex-row gap-10 lg:gap-20 items-center">
+                <motion.div 
+                  className="lg:w-1/2"
+                  variants={fadeIn}
+                >
+                  <motion.div 
+                    className="inline-block bg-rose-500/10 text-rose-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    Our Promise
+                  </motion.div>
+                  <h2 className="text-3xl md:text-4xl font-bold mb-6">A Personalized Approach to Executive Search</h2>
+                  
+                  <div className="space-y-4 text-gray-700 dark:text-gray-300">
+                    <p className="leading-relaxed">
+                      When you choose Expert Recruitments for executive search in Dubai, you're guaranteed a personalized, fully tailored service based on the needs and objectives of your business.
+                    </p>
+                    <p className="leading-relaxed">
+                      We're not like other recruitment agencies in Dubai. We take the time to understand your organization before creating a custom solution designed to make the entire process fast, efficient, and productive.
+                    </p>
+                    <p className="leading-relaxed">
+                      We understand the pressures and challenges associated with running a successful business in the UAE. That's why we've developed a comprehensive approach that lifts the burden of recruitment from your shoulders.
+                    </p>
+                    <p className="leading-relaxed font-medium text-lg">
+                      Leave talent acquisition and head hunting in Dubai to us – while you focus on driving business growth.
+                    </p>
+                  </div>
+                </motion.div>
+                
+                <motion.div 
+                  className="lg:w-1/2 relative"
+                  variants={scaleIn}
+                >
+                  <div className="absolute -inset-4 bg-gradient-to-tr from-rose-500/20 via-rose-500/5 to-transparent rounded-3xl blur-lg opacity-70"></div>
+                  <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl relative">
+                    <div className="flex items-center mb-6">
+                      <div className="w-12 h-12 bg-rose-500/10 rounded-full flex items-center justify-center mr-4">
+                        <svg className="w-6 h-6 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold">Our Commitment to You</h3>
+                    </div>
+                    
+                    <ul className="space-y-5">
+                      {[
+                        "Personalized service tailored to your business needs",
+                        "Custom recruitment solutions for maximum efficiency",
+                        "Comprehensive support to reduce your workload",
+                        "Focus on quality over quantity in candidates",
+                        "Transparent communication throughout the process",
+                      ].map((item, index) => (
+                        <motion.li 
+                          key={index}
+                          className="flex items-start"
+                          initial={{ opacity: 0, x: -20 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.2 + (index * 0.1) }}
+                        >
+                          <svg className="w-5 h-5 text-rose-500 mt-1 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-gray-700 dark:text-gray-300">{item}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                    
+                    <motion.div 
+                      className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.8 }}
+                    >
+                      <a 
+                        href="/contact-us" 
+                        className="inline-flex items-center justify-center w-full px-6 py-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 text-white font-medium shadow-lg hover:shadow-xl transition duration-300 group"
+                      >
+                        <span>Experience the Difference</span>
+                        <svg className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </a>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+        
         {/* Our Commitments Section */}
         <motion.div 
           className="mb-24"
