@@ -909,47 +909,55 @@ export default function AboutUsPage() {
               className="max-w-4xl mx-auto mb-10"
               variants={scaleIn}
             >
-              <div className="bg-blue-50 rounded-xl p-8 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-100/50 to-blue-200/20"></div>
+              <div className="bg-white rounded-xl p-8 relative overflow-hidden shadow-sm border-b-2 border-primary">
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-50/50 to-gray-100/20"></div>
                 
                 <div className="relative z-10">
-                  <h3 className="text-2xl font-bold text-blue-800 mb-12">Numbers Talk</h3>
+                  <motion.div 
+                    className="inline-block mb-8 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md"
+                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, y: -20 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <span className="font-medium text-primary tracking-wider uppercase text-sm">Numbers Talk</span>
+                  </motion.div>
                   
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                     {/* Years in Business */}
                     <div className="flex flex-col items-center">
                       <div className="w-24 h-24 flex items-center justify-center bg-yellow-400 rounded-full mb-3 shadow-md relative">
-                        <div className="absolute inset-1 rounded-full border-2 border-blue-700 opacity-20"></div>
-                        <span className="text-3xl font-bold text-blue-900">10+</span>
+                        <div className="absolute inset-1 rounded-full border border-gray-200 opacity-50"></div>
+                        <span className="text-3xl font-bold text-gray-800">10+</span>
                       </div>
-                      <p className="text-sm font-medium text-blue-800">Years in Business</p>
+                      <p className="text-sm font-medium text-gray-700">Years in Business</p>
                     </div>
                     
                     {/* Clients & Brands */}
                     <div className="flex flex-col items-center">
                       <div className="w-24 h-24 flex items-center justify-center bg-yellow-400 rounded-full mb-3 shadow-md relative">
-                        <div className="absolute inset-1 rounded-full border-2 border-blue-700 opacity-20"></div>
-                        <span className="text-3xl font-bold text-blue-900">100+</span>
+                        <div className="absolute inset-1 rounded-full border border-gray-200 opacity-50"></div>
+                        <span className="text-3xl font-bold text-gray-800">100+</span>
                       </div>
-                      <p className="text-sm font-medium text-blue-800">Clients & Brands</p>
+                      <p className="text-sm font-medium text-gray-700">Clients & Brands</p>
                     </div>
                     
                     {/* Placements */}
                     <div className="flex flex-col items-center">
                       <div className="w-24 h-24 flex items-center justify-center bg-yellow-400 rounded-full mb-3 shadow-md relative">
-                        <div className="absolute inset-1 rounded-full border-2 border-blue-700 opacity-20"></div>
-                        <span className="text-3xl font-bold text-blue-900">10K+</span>
+                        <div className="absolute inset-1 rounded-full border border-gray-200 opacity-50"></div>
+                        <span className="text-3xl font-bold text-gray-800">10K+</span>
                       </div>
-                      <p className="text-sm font-medium text-blue-800">Placements</p>
+                      <p className="text-sm font-medium text-gray-700">Placements</p>
                     </div>
                     
                     {/* Countries-wide Presence */}
                     <div className="flex flex-col items-center">
                       <div className="w-24 h-24 flex items-center justify-center bg-yellow-400 rounded-full mb-3 shadow-md relative">
-                        <div className="absolute inset-1 rounded-full border-2 border-blue-700 opacity-20"></div>
-                        <span className="text-3xl font-bold text-blue-900">3</span>
+                        <div className="absolute inset-1 rounded-full border border-gray-200 opacity-50"></div>
+                        <span className="text-3xl font-bold text-gray-800">3</span>
                       </div>
-                      <p className="text-sm font-medium text-blue-800">Countries-wide Presence</p>
+                      <p className="text-sm font-medium text-gray-700">Countries-wide Presence</p>
                     </div>
                   </div>
                 </div>
