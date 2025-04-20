@@ -689,6 +689,198 @@ export default function AboutUsPage() {
           </motion.div>
         </motion.div>
 
+        {/* Our Reputation Section */}
+        <motion.div 
+          className="mb-24"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={container}
+        >
+          <motion.div className="text-center mb-16" variants={fadeIn}>
+            <motion.div 
+              className="inline-block bg-indigo-500/10 text-indigo-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
+              whileHover={{ scale: 1.05 }}
+            >
+              Our Reputation
+            </motion.div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Premium Executive Search in Dubai</h2>
+            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+              While we're not the oldest recruitment agency in the UAE, we're definitely one of the most respected. We look beyond the immediate talent requirements of the businesses we serve to ensure every appointment makes a real difference.
+            </p>
+          </motion.div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Benefit 1 */}
+            <motion.div
+              className="group relative"
+              variants={scaleIn}
+              whileHover={{ y: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-indigo-600 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg">
+                <div className="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center mb-5 group-hover:bg-indigo-100 transition-colors duration-300">
+                  <svg className="w-6 h-6 text-indigo-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 19.25C15 19.25 8 16 8 10V4.75L15 2L22 4.75V10C22 16 15 19.25 15 19.25Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M2 10.5C2 14 5 16.5 5 16.5C5 16.5 8 14 8 10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M15 8L13 10L11 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Unlock Access to a Larger Talent Pool</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                  Gain a broader candidate pool, boosting your odds of securing the ideal hire. Our extensive network spans various industries and regions, ensuring you connect with top-tier talent tailored to your needs in Dubai and beyond.
+                </p>
+              </div>
+            </motion.div>
+            
+            {/* Benefit 2 */}
+            <motion.div
+              className="group relative"
+              variants={scaleIn}
+              whileHover={{ y: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg">
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-5 group-hover:bg-blue-100 transition-colors duration-300">
+                  <svg className="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 8V12L15 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 22C16.4183 22 20 18.4183 20 14C20 9.58172 16.4183 6 12 6C7.58172 6 4 9.58172 4 14C4 18.4183 7.58172 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M10 2H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 2V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Accelerate Hiring Time</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                  Slash recruitment delays with Expert Recruitments' streamlined process. We refine every step, enabling you to fill positions swiftly without sacrificing quality.
+                </p>
+              </div>
+            </motion.div>
+            
+            {/* Benefit 3 */}
+            <motion.div
+              className="group relative"
+              variants={scaleIn}
+              whileHover={{ y: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg">
+                <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center mb-5 group-hover:bg-green-100 transition-colors duration-300">
+                  <svg className="w-6 h-6 text-green-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 18C11.0807 18 9.87449 17.6994 8.4487 16.6845C6.79843 15.5143 6 13.9227 6 12C6 10.0773 6.79843 8.48566 8.4487 7.31547C9.87449 6.30063 11.0807 6 12 6C13.3951 6 14.7424 6.53225 16.2782 7.64673C18.0393 8.94167 19 10.6364 19 12C19 13.3636 18.0393 15.0583 16.2782 16.3533C14.7424 17.4677 13.3951 18 12 18Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M17 10L15 12L17 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M7 10L9 12L7 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Maximize Cost Savings</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                  Cut hiring expenses significantly by relying on our expertise, experience, and comprehensive marketing reach. Our services are proven to reduce overhead, optimize resources, and boost efficiency.
+                </p>
+              </div>
+            </motion.div>
+            
+            {/* Benefit 4 */}
+            <motion.div
+              className="group relative"
+              variants={scaleIn}
+              whileHover={{ y: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-violet-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg">
+                <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center mb-5 group-hover:bg-purple-100 transition-colors duration-300">
+                  <svg className="w-6 h-6 text-purple-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 10C18 11.657 14.4183 13 10 13C5.58172 13 2 11.657 2 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M18 14C18 15.657 14.4183 17 10 17C5.58172 17 2 15.657 2 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M10 9C14.4183 9 18 7.65685 18 6C18 4.34315 14.4183 3 10 3C5.58172 3 2 4.34315 2 6C2 7.65685 5.58172 9 10 9Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M2 6V18C2 19.657 5.58172 21 10 21C13.8125 21 16.9324 19.9603 17.8358 18.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M22 12C22 13.657 20.6569 15 19 15C17.3431 15 16 13.657 16 12C16 10.343 17.3431 9 19 9C20.6569 9 22 10.343 22 12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Receive Tailored Consultation</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                  Benefit from customized guidance designed for your unique hiring goals. We provide personalized strategies and insights throughout the process, ensuring every decision aligns perfectly with your business vision.
+                </p>
+              </div>
+            </motion.div>
+            
+            {/* Benefit 5 */}
+            <motion.div
+              className="group relative"
+              variants={scaleIn}
+              whileHover={{ y: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg">
+                <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mb-5 group-hover:bg-amber-100 transition-colors duration-300">
+                  <svg className="w-6 h-6 text-amber-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M3.6 9H20.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M3.6 15H20.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 20.4952C14.4 20.4952 16.5 17.0962 16.5 11.9952C16.5 6.89415 14.4 3.49512 12 3.49512C9.6 3.49512 7.5 6.89415 7.5 11.9952C7.5 17.0962 9.6 20.4952 12 20.4952Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Tap Proactive Headhunting Strategies</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                  Discover hidden talent through our expert headhunting. We proactively seek out high-caliber candidates who aren't on the market, delivering game-changers to your doorstep and elevating your team.
+                </p>
+              </div>
+            </motion.div>
+            
+            {/* Benefit 6 */}
+            <motion.div
+              className="group relative"
+              variants={scaleIn}
+              whileHover={{ y: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-rose-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg">
+                <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-5 group-hover:bg-red-100 transition-colors duration-300">
+                  <svg className="w-6 h-6 text-red-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 14L17 9L22 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M8 9L13 14L12 22L8 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M16 19L12 22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M2 11L8 9L12 2L17 9L22 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Strengthen Competitive Positioning</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                  Stay ahead in your industry with top talent uncovered by us. Our ability to identify and attract elite professionals gives your business a sharp edge, positioning you as a leader in the job market.
+                </p>
+              </div>
+            </motion.div>
+            
+            {/* Benefit 7 */}
+            <motion.div
+              className="group relative md:col-span-2 lg:col-span-2"
+              variants={scaleIn}
+              whileHover={{ y: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-blue-600 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg flex flex-col md:flex-row items-center">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-5 md:mb-0 md:mr-6 group-hover:bg-primary/20 transition-colors duration-300">
+                  <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M7.5 12L10.5 15L16.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white text-center md:text-left">Enjoy a Seamless Recruitment Experience</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    Experience a hassle-free hiring journey with our expert support. From start to finish, we handle the details, ensuring a smooth, stress-free executive search process that delivers results and keeps your focus on growing your business.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+        
         {/* Call to Action Section */}
         <motion.div 
           className="relative rounded-2xl overflow-hidden"
