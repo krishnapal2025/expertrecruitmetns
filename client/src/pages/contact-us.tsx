@@ -80,65 +80,198 @@ export default function ContactUsPage() {
         <meta name="description" content="Get in touch with Expert Recruitments across our global offices in India, Dubai, and USA. We're here to help with all your recruitment needs." />
       </Helmet>
 
-      {/* Simple Header */}
-      <div className="py-16">
-        <div className="container mx-auto px-4 text-center">
-          <motion.h1 
-            className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            Connect With Us
-          </motion.h1>
+      {/* Hero Section with Executive Theme - matching About Us page */}
+      <div className="relative py-20 overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute inset-0 bg-gray-50"></div>
+        
+        {/* Accent lines */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
+        
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-1/3 h-full overflow-hidden">
+          <div className="absolute -right-20 top-1/4 w-80 h-80 bg-primary/5 rounded-full"></div>
+          <div className="absolute -right-10 bottom-1/4 w-40 h-40 bg-primary/5 rounded-full"></div>
+        </div>
+        
+        <div className="absolute left-0 bottom-0 w-1/4 h-80 overflow-hidden">
+          <div className="absolute -left-20 bottom-0 w-64 h-64 bg-gray-100 rounded-full"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative">
+          {/* Main content */}
+          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16">
+            <motion.div 
+              className="inline-block mb-6 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <span className="font-medium text-primary tracking-wider uppercase text-sm">Global Presence</span>
+            </motion.div>
+            
+            <motion.h1 
+              className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-gray-800 tracking-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.7 }}
+            >
+              Connect With Us
+            </motion.h1>
+            
+            <motion.p 
+              className="text-xl md:text-2xl text-gray-600 leading-relaxed mb-4 max-w-3xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+            >
+              Offices in UAE, India, and the United States
+            </motion.p>
+            
+            <motion.p 
+              className="text-lg text-gray-600 leading-relaxed mb-6 max-w-3xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+            >
+              Our global team is ready to provide personalized recruitment solutions to meet your specific needs.
+            </motion.p>
+          </div>
+          
+          {/* Three value propositions */}
           <motion.div 
-            className="w-20 h-1 bg-primary mx-auto mb-6"
-            initial={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          ></motion.div>
-          <motion.p 
-            className="text-xl max-w-2xl mx-auto text-gray-600 dark:text-gray-300"
+            className="grid md:grid-cols-3 gap-8 relative z-10 max-w-5xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
           >
-            Our global team is ready to provide personalized recruitment solutions to meet your specific needs.
-          </motion.p>
+            <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center h-full">
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-100 shadow-sm">
+                <MapPin className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2 text-center">Dubai, UAE</h3>
+              <p className="text-gray-600 text-center">Middle East Headquarters</p>
+              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-primary/20 rounded-b-lg"></div>
+            </div>
+            
+            <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center h-full">
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-100 shadow-sm">
+                <MapPin className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2 text-center">Mumbai, India</h3>
+              <p className="text-gray-600 text-center">Asian Operations</p>
+              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-primary/20 rounded-b-lg"></div>
+            </div>
+            
+            <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center h-full">
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-100 shadow-sm">
+                <MapPin className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2 text-center">New Jersey, USA</h3>
+              <p className="text-gray-600 text-center">North American Division</p>
+              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-primary/20 rounded-b-lg"></div>
+            </div>
+          </motion.div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-16">
         {/* Office Locations Section */}
         <motion.div 
           className="text-center mb-16"
-          variants={fadeIn}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
         >
-          <span className="inline-block bg-primary/10 text-xs font-semibold tracking-wider px-3 py-1 rounded-sm text-primary mb-4">
-            GLOBAL OFFICES
-          </span>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Our Global Presence</h2>
-          <div className="w-16 h-1 bg-primary mx-auto mb-6"></div>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <motion.div 
+            className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.6
+                }
+              }
+            }}
+          >
+            Our Global Offices
+          </motion.div>
+          <motion.h2 
+            className="text-3xl md:text-4xl font-bold mb-6 text-gray-800"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.6
+                }
+              }
+            }}
+          >
+            Worldwide Presence, Local Expertise
+          </motion.h2>
+          <motion.div 
+            className="w-16 h-1 bg-primary mx-auto mb-6"
+            variants={{
+              hidden: { opacity: 0, scaleX: 0 },
+              visible: {
+                opacity: 1,
+                scaleX: 1,
+                transition: {
+                  duration: 0.6
+                }
+              }
+            }}
+          ></motion.div>
+          <motion.p 
+            className="text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.6
+                }
+              }
+            }}
+          >
             With offices across three continents, we deliver excellent recruitment services worldwide.
-          </p>
+          </motion.p>
         </motion.div>
 
         {/* Office Cards */}
         <motion.div 
           className="grid md:grid-cols-3 gap-10 mb-24"
-          variants={staggerContainer}
-          initial="initial"
-          whileInView="animate"
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.2
+              }
+            }
+          }}
         >
           {/* India Office */}
           <motion.div 
             className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-            variants={fadeIn}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.6
+                }
+              }
+            }}
           >
             <div className="h-2 bg-primary"></div>
             <div className="p-8">
@@ -298,19 +431,68 @@ export default function ContactUsPage() {
         {/* Get in Touch Section */}
         <motion.div 
           className="text-center mb-16"
-          variants={fadeIn}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
         >
-          <span className="inline-block bg-primary/10 text-xs font-semibold tracking-wider px-3 py-1 rounded-sm text-primary mb-4">
-            GET IN TOUCH
-          </span>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Contact Us</h2>
-          <div className="w-16 h-1 bg-primary mx-auto mb-6"></div>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <motion.div 
+            className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.6
+                }
+              }
+            }}
+          >
+            Get In Touch
+          </motion.div>
+          <motion.h2 
+            className="text-3xl md:text-4xl font-bold mb-6 text-gray-800"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.6
+                }
+              }
+            }}
+          >
+            Let's Start a Conversation
+          </motion.h2>
+          <motion.div 
+            className="w-16 h-1 bg-primary mx-auto mb-6"
+            variants={{
+              hidden: { opacity: 0, scaleX: 0 },
+              visible: {
+                opacity: 1,
+                scaleX: 1,
+                transition: {
+                  duration: 0.6
+                }
+              }
+            }}
+          ></motion.div>
+          <motion.p 
+            className="text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.6
+                }
+              }
+            }}
+          >
             Have a question or inquiry? Fill out the form below and our team will get back to you as soon as possible.
-          </p>
+          </motion.p>
         </motion.div>
 
         {/* Contact Form and FAQ Grid */}
