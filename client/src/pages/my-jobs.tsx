@@ -260,21 +260,37 @@ export default function MyJobsPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-6 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">My Posted Jobs</h1>
-            <p className="text-gray-600 mt-1">
-              Manage your job listings and track applications
-            </p>
+        {/* Create Job Banner Section */}
+        <div className="mb-10 bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-xl shadow-sm border border-primary/20">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-4 md:mb-0">
+              <h2 className="text-2xl font-bold text-gray-800">Ready to find your next hire?</h2>
+              <p className="text-gray-600 mt-1 max-w-md">
+                Post a new job listing and connect with qualified candidates in your industry
+              </p>
+            </div>
+            <Button 
+              size="lg" 
+              onClick={() => setLocation("/post-job")}
+              className="relative group overflow-hidden bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-6 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
+            >
+              <div className="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
+              <div className="relative flex items-center">
+                <div className="bg-white/30 rounded-full p-2 mr-3">
+                  <Plus className="h-5 w-5" />
+                </div>
+                <span className="text-lg">Post New Job</span>
+              </div>
+            </Button>
           </div>
-          <Button 
-            size="lg" 
-            onClick={() => setLocation("/post-job")}
-            className="bg-primary hover:bg-primary/90"
-          >
-            <Plus className="h-5 w-5 mr-2" />
-            Post New Job
-          </Button>
+        </div>
+        
+        {/* My Jobs Section */}
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold">My Posted Jobs</h1>
+          <p className="text-gray-600 mt-1">
+            Manage your job listings and track applications
+          </p>
         </div>
         
         {!currentUser ? (
