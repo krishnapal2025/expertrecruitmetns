@@ -63,25 +63,53 @@ export default function Navbar() {
     return currentUser.user.email.charAt(0).toUpperCase();
   };
 
-  // Navigation links
-  const navigationLinks = [
-    { name: "Home", href: "/" },
-    { name: "About Us", href: "/about-us" },
-    { name: "Find Jobs", href: "/job-board" },
-    { name: "Hire Talent", href: "/hire-talent" },
-    { 
-      name: "Solutions", 
-      href: "#",
-      isDropdown: true,
-      dropdownItems: [
-        { name: "Services", href: "/services" },
-        { name: "Sectors", href: "/sectors" },
-        { name: "Blogs", href: "/blogs" },
-        { name: "Insights", href: "/seo-insights" },
-        { name: "Contact Us", href: "/contact-us" },
-      ]
-    },
-  ];
+  // Define navigation links based on user type
+  const getNavigationLinks = () => {
+    // Default navigation for all users
+    const defaultLinks = [
+      { name: "Home", href: "/" },
+      { name: "About Us", href: "/about-us" },
+      { name: "Find Jobs", href: "/job-board" },
+      { name: "Hire Talent", href: "/hire-talent" },
+      { 
+        name: "Solutions", 
+        href: "#",
+        isDropdown: true,
+        dropdownItems: [
+          { name: "Services", href: "/services" },
+          { name: "Sectors", href: "/sectors" },
+          { name: "Blogs", href: "/blogs" },
+          { name: "Insights", href: "/seo-insights" },
+          { name: "Contact Us", href: "/contact-us" },
+        ]
+      },
+    ];
+    
+    // If no user or not a job seeker, return default links
+    if (!currentUser || currentUser.user.userType !== "jobseeker") {
+      return defaultLinks;
+    }
+    
+    // Job seeker specific links - only show Home, About Us, Find Jobs, and a modified Solutions menu
+    return [
+      { name: "Home", href: "/" },
+      { name: "About Us", href: "/about-us" },
+      { name: "Find Jobs", href: "/job-board" },
+      { 
+        name: "Solutions", 
+        href: "#",
+        isDropdown: true,
+        dropdownItems: [
+          { name: "Services", href: "/services" },
+          { name: "Blogs", href: "/blogs" },
+          { name: "Contact Us", href: "/contact-us" },
+        ]
+      },
+    ];
+  };
+  
+  // Get the appropriate navigation links
+  const navigationLinks = getNavigationLinks();
 
   return (
     <header className={`sticky top-0 z-40 transition-colors duration-200 ${scrolled ? "bg-white shadow-md" : "bg-white bg-opacity-95"}`}>
@@ -248,7 +276,7 @@ export default function Navbar() {
                 <SheetHeader className="mb-4">
                   <SheetTitle>Menu</SheetTitle>
                   <SheetDescription>
-                    Expert Recruitments LLC
+                    EXPERT Recruitments LLC
                   </SheetDescription>
                 </SheetHeader>
                 <div className="flex flex-col space-y-4 py-4">
