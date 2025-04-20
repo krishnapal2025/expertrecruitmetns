@@ -107,12 +107,21 @@ export default function AboutUsPage() {
 
             
             <motion.p 
-              className="text-xl md:text-2xl text-gray-600 leading-relaxed mb-10 max-w-3xl"
+              className="text-xl md:text-2xl text-gray-600 leading-relaxed mb-4 max-w-3xl"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.6 }}
             >
               The Home of High-End Executive Search in Dubai and across the UAE
+            </motion.p>
+            
+            <motion.p 
+              className="text-lg text-gray-600 leading-relaxed mb-10 max-w-3xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+            >
+              From executive search in the UAE to focused head hunting services, we take a detailed and meticulous approach to finding the right people for the right positions.
             </motion.p>
             
 
