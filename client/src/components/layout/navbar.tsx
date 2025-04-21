@@ -110,7 +110,7 @@ export default function Navbar() {
         { name: "About Us", href: "/about-us" },
         { name: "Hire Talent", href: "/hire-talent" },
         { name: "My Jobs", href: "/my-jobs" },
-        { name: "Applicants", href: "/applicants" },
+        { name: "Applications Manager", href: "/applications-manager" },
         { name: "Blogs", href: "/blogs" },
         { name: "Contact Us", href: "/contact-us" },
       ];

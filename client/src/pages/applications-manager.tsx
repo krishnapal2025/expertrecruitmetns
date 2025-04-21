@@ -111,7 +111,7 @@ export default function ApplicationsManagerPage() {
   });
   
   // Helper function to format date
-  const formatDate = (dateString: Date | null) => {
+  const formatDate = (dateString: string | Date | null) => {
     if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -264,14 +264,12 @@ export default function ApplicationsManagerPage() {
                                   </div>
                                   <div className="flex items-center text-gray-600">
                                     <Mail className="h-4 w-4 mr-2" />
-                                    <span>{application.jobSeeker.email}</span>
+                                    <span>Contact email available in messages</span>
                                   </div>
-                                  {application.jobSeeker.phone && (
-                                    <div className="flex items-center text-gray-600">
-                                      <Phone className="h-4 w-4 mr-2" />
-                                      <span>{application.jobSeeker.phone}</span>
-                                    </div>
-                                  )}
+                                  <div className="flex items-center text-gray-600">
+                                    <Phone className="h-4 w-4 mr-2" />
+                                    <span>{application.jobSeeker.phoneNumber}</span>
+                                  </div>
                                 </div>
                               </div>
                             </div>
