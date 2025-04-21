@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Building, MapPin, Clock, Briefcase, Calendar, CheckCircle, Loader2, Upload, User, ChevronLeft, Info } from "lucide-react";
+import { Building, MapPin, Clock, Briefcase, Calendar, CheckCircle, Loader2, Upload, User, ChevronLeft, Info, DollarSign } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -46,6 +46,34 @@ const ApplicationFormSchema = z.object({
 
 type ApplicationFormValues = z.infer<typeof ApplicationFormSchema>;
 
+// Helper function to provide description for different currencies
+const getCurrencyDescription = (currency: string): string => {
+  switch (currency) {
+    case "AED":
+      return "United Arab Emirates Dirham - Primary currency in the UAE";
+    case "USD":
+      return "United States Dollar - Global reserve currency";
+    case "EUR":
+      return "Euro - Official currency of most European Union countries";
+    case "GBP":
+      return "British Pound Sterling - Official currency of the United Kingdom";
+    case "SAR":
+      return "Saudi Riyal - Official currency of Saudi Arabia";
+    case "QAR":
+      return "Qatari Riyal - Official currency of Qatar";
+    case "BHD":
+      return "Bahraini Dinar - Official currency of Bahrain";
+    case "KWD":
+      return "Kuwaiti Dinar - Official currency of Kuwait";
+    case "OMR":
+      return "Omani Rial - Official currency of Oman";
+    case "INR":
+      return "Indian Rupee - Official currency of India";
+    default:
+      return "Please specify your preferred salary currency";
+  }
+};
+
 export default function JobApplicationPage() {
   const params = useParams<{ id: string }>();
   const jobId = parseInt(params.id);
@@ -57,6 +85,7 @@ export default function JobApplicationPage() {
   const [additionalFileName, setAdditionalFileName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [applicationComplete, setApplicationComplete] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState("AED");
   
   // Fetch job details
   const { data, isLoading, error } = useQuery<JobDetailsResponse>({
@@ -155,7 +184,7 @@ export default function JobApplicationPage() {
           currentPosition: data.currentPosition,
           yearsOfExperience: data.yearsOfExperience,
           availableStartDate: data.availableStartDate,
-          salaryExpectation: data.salaryExpectation,
+          salaryExpectation: `${data.salaryExpectation} ${selectedCurrency}`,
           heardAbout: data.heardAbout,
           linkedinProfile: data.linkedinProfile,
           portfolioUrl: data.portfolioUrl,
@@ -489,10 +518,47 @@ export default function JobApplicationPage() {
                                 name="salaryExpectation"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>Salary Expectation (AED)</FormLabel>
-                                    <FormControl>
-                                      <Input placeholder="e.g. 15,000 - 20,000 AED/month" {...field} />
-                                    </FormControl>
+                                    <FormLabel>Salary Expectation</FormLabel>
+                                    <div className="grid grid-cols-4 gap-2">
+                                      <div className="col-span-1">
+                                        <Select 
+                                          value={selectedCurrency} 
+                                          onValueChange={setSelectedCurrency}
+                                        >
+                                          <SelectTrigger>
+                                            <SelectValue placeholder="Currency" />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            <SelectItem value="AED">AED</SelectItem>
+                                            <SelectItem value="USD">USD</SelectItem>
+                                            <SelectItem value="EUR">EUR</SelectItem>
+                                            <SelectItem value="GBP">GBP</SelectItem>
+                                            <SelectItem value="SAR">SAR</SelectItem>
+                                            <SelectItem value="QAR">QAR</SelectItem>
+                                            <SelectItem value="BHD">BHD</SelectItem>
+                                            <SelectItem value="KWD">KWD</SelectItem>
+                                            <SelectItem value="OMR">OMR</SelectItem>
+                                            <SelectItem value="INR">INR</SelectItem>
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                      <div className="col-span-3">
+                                        <FormControl>
+                                          <Input 
+                                            placeholder={`e.g. 15,000 - 20,000 ${selectedCurrency}/month`} 
+                                            {...field} 
+                                            onChange={(e) => {
+                                              // Remove any existing currency codes
+                                              const value = e.target.value.replace(/AED|USD|EUR|GBP|SAR|QAR|BHD|KWD|OMR|INR/g, '').trim();
+                                              field.onChange(value);
+                                            }}
+                                          />
+                                        </FormControl>
+                                      </div>
+                                    </div>
+                                    <FormDescription className="text-xs text-gray-500 mt-1">
+                                      {getCurrencyDescription(selectedCurrency)}
+                                    </FormDescription>
                                     <FormMessage />
                                   </FormItem>
                                 )}
