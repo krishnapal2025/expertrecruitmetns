@@ -1,8 +1,7 @@
-import { Switch, Route, useLocation, Redirect } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import { useAuth } from "@/hooks/use-auth";
 import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/home-page";
 import AboutUsPage from "@/pages/about-us";
@@ -28,7 +27,6 @@ import MyJobsPage from "@/pages/my-jobs";
 import EditJobPage from "@/pages/edit-job";
 import JobServicesPage from "@/pages/job-services";
 import AppliedJobsPage from "@/pages/applied-jobs";
-import ApplicationsManagerPage from "@/pages/applications-manager";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import Navbar from "@/components/layout/navbar";
@@ -49,7 +47,6 @@ function PageViewTracker() {
 }
 
 function Router() {
-  const { currentUser } = useAuth();
   return (
     <Switch>
       <Route path="/" component={HomePage} />
@@ -79,9 +76,8 @@ function Router() {
       <ProtectedRoute path="/my-jobs" component={MyJobsPage} />
       <ProtectedRoute path="/job-services" component={JobServicesPage} />
       <ProtectedRoute path="/applied-jobs" component={AppliedJobsPage} />
-      <ProtectedRoute path="/applications-manager" component={ApplicationsManagerPage} />
       <Route path="/edit-job/:id">
-        {params => <ProtectedRoute path={`/edit-job/${params.id}`} component={() => <EditJobPage id={params.id} />} />}
+        {params => <ProtectedRoute path={`/edit-job/${params.id}`} component={() => <EditJobPage />} />}
       </Route>
       <Route component={NotFound} />
     </Switch>
