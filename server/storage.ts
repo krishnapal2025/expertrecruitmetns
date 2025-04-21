@@ -288,6 +288,15 @@ export class DatabaseStorage implements IStorage {
     }
   }
   
+  async updateApplication(updatedApplication: Application): Promise<Application> {
+    const [application] = await db
+      .update(applications)
+      .set(updatedApplication)
+      .where(eq(applications.id, updatedApplication.id))
+      .returning();
+    return application;
+  }
+  
   // Testimonial methods
   async getTestimonial(id: number): Promise<Testimonial | undefined> {
     const [testimonial] = await db.select().from(testimonials).where(eq(testimonials.id, id));
@@ -667,9 +676,20 @@ export class MemStorage implements IStorage {
       id, 
       appliedDate: now,
       coverLetter: insertApplication.coverLetter || null,
-      status: "pending"
+      status: "new" // Changed from pending to new
     };
     this.applications.set(id, application);
+    return application;
+  }
+  
+  async updateApplication(application: Application): Promise<Application> {
+    // Check if the application exists
+    if (!this.applications.has(application.id)) {
+      throw new Error('Application not found');
+    }
+    
+    // Update in the Map
+    this.applications.set(application.id, application);
     return application;
   }
 
