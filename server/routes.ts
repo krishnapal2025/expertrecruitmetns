@@ -277,7 +277,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get all applications for a specific jobseeker
+  // Get all applications (for admin or based on user type)
   app.get("/api/applications", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
@@ -332,6 +332,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching applications:", error);
       res.status(500).json({ message: "Failed to fetch applications" });
+    }
+  });
+
+  // Get applications for the current job seeker (for the Applied Jobs page)
+  app.get("/api/applications/my-applications", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to view your applications" });
+      }
+      
+      const user = req.user;
+      
+      if (user.userType !== "jobseeker") {
+        return res.status(403).json({ message: "Only job seekers can access this endpoint" });
+      }
+      
+      // Get jobseeker profile
+      const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+      if (!jobSeeker) {
+        return res.status(404).json({ message: "Job seeker profile not found" });
+      }
+      
+      // Get all applications for this jobseeker
+      const applications = await storage.getApplicationsByJobSeekerId(jobSeeker.id);
+      
+      // Get job details for each application
+      const applicationsWithJobs = await Promise.all(
+        applications.map(async (app) => {
+          const job = await storage.getJob(app.jobId);
+          return { 
+            ...app, 
+            job,
+            appliedDate: app.appliedDate || new Date(), // Ensure appliedDate is always set
+            notes: app.coverLetter || '' // Use coverLetter as notes
+          };
+        })
+      );
+      
+      res.json(applicationsWithJobs);
+    } catch (error) {
+      console.error("Error fetching job seeker applications:", error);
+      res.status(500).json({ message: "Failed to fetch your applications" });
     }
   });
 

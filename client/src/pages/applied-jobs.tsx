@@ -201,11 +201,11 @@ export default function AppliedJobsPage() {
                               </div>
                               <div className="flex items-center text-gray-600">
                                 <Calendar className="h-4 w-4 mr-1" />
-                                <span>Posted: {formatDate(application.job.postedDate)}</span>
+                                <span>Posted: {application.job.postedDate && formatDate(application.job.postedDate)}</span>
                               </div>
                               <div className="flex items-center text-gray-600">
                                 <Clock className="h-4 w-4 mr-1" />
-                                <span>Deadline: {formatDate(application.job.applicationDeadline)}</span>
+                                <span>Deadline: {application.job.applicationDeadline && formatDate(application.job.applicationDeadline)}</span>
                               </div>
                             </div>
                             
