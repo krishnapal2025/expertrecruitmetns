@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Briefcase, MapPin, Calendar, Building, Clock, User, Share2, BookmarkPlus, Loader2, CheckCircle } from "lucide-react";
+import { Briefcase, MapPin, Calendar, Building, Clock, User, Share2, BookmarkPlus, Loader2, CheckCircle, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type JobDetailsResponse = {
@@ -19,6 +19,9 @@ export default function JobDetailsPage({ id }: { id: string }) {
   const [location, navigate] = useLocation();
   const { currentUser } = useAuth();
   const { toast } = useToast();
+  
+  // Check if coming from applications-manager
+  const isFromApplicationsManager = location.includes("applications-manager");
   
   // Get job details
   const { data, isLoading, error } = useQuery<JobDetailsResponse>({
@@ -128,24 +131,38 @@ export default function JobDetailsPage({ id }: { id: string }) {
               </div>
             </div>
             <div className="mt-4 md:mt-0 flex flex-wrap gap-2">
-              {hasApplied ? (
-                <Button variant="outline" size="sm" className="bg-green-800/20" disabled>
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  Applied
+              {isFromApplicationsManager ? (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-white/20"
+                  onClick={() => window.history.back()}
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Applications
                 </Button>
               ) : (
-                <Button variant="secondary" size="sm" onClick={handleApplyClick}>
-                  Apply Now
-                </Button>
+                <>
+                  {hasApplied ? (
+                    <Button variant="outline" size="sm" className="bg-green-800/20" disabled>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Applied
+                    </Button>
+                  ) : (
+                    <Button variant="secondary" size="sm" onClick={handleApplyClick}>
+                      Apply Now
+                    </Button>
+                  )}
+                  <Button variant="outline" size="sm" className="bg-white/10">
+                    <BookmarkPlus className="h-4 w-4 mr-2" />
+                    Save
+                  </Button>
+                  <Button variant="outline" size="sm" className="bg-white/10">
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share
+                  </Button>
+                </>
               )}
-              <Button variant="outline" size="sm" className="bg-white/10">
-                <BookmarkPlus className="h-4 w-4 mr-2" />
-                Save
-              </Button>
-              <Button variant="outline" size="sm" className="bg-white/10">
-                <Share2 className="h-4 w-4 mr-2" />
-                Share
-              </Button>
             </div>
           </div>
         </div>
@@ -206,54 +223,58 @@ export default function JobDetailsPage({ id }: { id: string }) {
                   </ul>
                 </div>
               </CardContent>
-              <CardFooter className="flex justify-center border-t pt-6">
-                {hasApplied ? (
-                  <Button disabled variant="outline" size="lg" className="bg-green-50">
-                    <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
-                    Already Applied
-                  </Button>
-                ) : (
-                  <Button size="lg" onClick={handleApplyClick}>
-                    Apply for this Position
-                  </Button>
-                )}
-              </CardFooter>
+              {!isFromApplicationsManager && (
+                <CardFooter className="flex justify-center border-t pt-6">
+                  {hasApplied ? (
+                    <Button disabled variant="outline" size="lg" className="bg-green-50">
+                      <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
+                      Already Applied
+                    </Button>
+                  ) : (
+                    <Button size="lg" onClick={handleApplyClick}>
+                      Apply for this Position
+                    </Button>
+                  )}
+                </CardFooter>
+              )}
             </Card>
             
-            {/* Similar Jobs */}
-            <div className="mt-8">
-              <h2 className="text-2xl font-bold mb-4">Similar Jobs</h2>
-              <div className="space-y-4">
-                {[1, 2, 3].map((i) => (
-                  <Card key={i} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-6">
-                      <Link href={`/job/${job.id + i}`}>
-                        <div className="block cursor-pointer">
-                          <h3 className="text-xl font-bold mb-2 hover:text-primary transition-colors">
-                            {job.title} - {i === 1 ? 'Senior' : i === 2 ? 'Junior' : 'Associate'} Level
-                          </h3>
-                          <div className="flex flex-wrap gap-4 text-gray-600 mb-2">
-                            <div className="flex items-center">
-                              <Building className="h-4 w-4 mr-1" />
-                              <span>{employer.companyName}</span>
+            {/* Similar Jobs - only show when not from applications manager */}
+            {!isFromApplicationsManager && (
+              <div className="mt-8">
+                <h2 className="text-2xl font-bold mb-4">Similar Jobs</h2>
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <Card key={i} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-6">
+                        <Link href={`/job/${job.id + i}`}>
+                          <div className="block cursor-pointer">
+                            <h3 className="text-xl font-bold mb-2 hover:text-primary transition-colors">
+                              {job.title} - {i === 1 ? 'Senior' : i === 2 ? 'Junior' : 'Associate'} Level
+                            </h3>
+                            <div className="flex flex-wrap gap-4 text-gray-600 mb-2">
+                              <div className="flex items-center">
+                                <Building className="h-4 w-4 mr-1" />
+                                <span>{employer.companyName}</span>
+                              </div>
+                              <div className="flex items-center">
+                                <MapPin className="h-4 w-4 mr-1" />
+                                <span>{job.location}</span>
+                              </div>
+                              <div className="flex items-center">
+                                <Briefcase className="h-4 w-4 mr-1" />
+                                <span>{job.jobType}</span>
+                              </div>
                             </div>
-                            <div className="flex items-center">
-                              <MapPin className="h-4 w-4 mr-1" />
-                              <span>{job.location}</span>
-                            </div>
-                            <div className="flex items-center">
-                              <Briefcase className="h-4 w-4 mr-1" />
-                              <span>{job.jobType}</span>
-                            </div>
+                            <p className="text-gray-700 line-clamp-2">{job.description.substring(0, 120)}...</p>
                           </div>
-                          <p className="text-gray-700 line-clamp-2">{job.description.substring(0, 120)}...</p>
-                        </div>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                ))}
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
           
           {/* Sidebar */}
@@ -343,9 +364,11 @@ export default function JobDetailsPage({ id }: { id: string }) {
                   </div>
                 </div>
                 
-                <Button variant="outline" className="w-full mt-6">
-                  View Company Profile
-                </Button>
+                {!isFromApplicationsManager && (
+                  <Button variant="outline" className="w-full mt-6">
+                    View Company Profile
+                  </Button>
+                )}
               </CardContent>
             </Card>
           </div>
