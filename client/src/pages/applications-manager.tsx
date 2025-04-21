@@ -60,7 +60,8 @@ export default function ApplicationsManager() {
   const [actionType, setActionType] = useState<"shortlist" | "reject">("shortlist");
   
   // Extract job ID from query parameter if present
-  const jobIdParam = new URLSearchParams(location.split('?')[1]).get('job');
+  const queryParams = location.includes('?') ? location.split('?')[1] : '';
+  const jobIdParam = new URLSearchParams(queryParams).get('job');
   const specificJobId = jobIdParam ? parseInt(jobIdParam) : null;
 
   // Fetch applications
@@ -174,7 +175,9 @@ export default function ApplicationsManager() {
   };
 
   // Get status badge color
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: string | null | undefined) => {
+    if (!status) return <Badge>Unknown</Badge>;
+    
     switch (status) {
       case "new":
         return <Badge className="bg-blue-500">New</Badge>;
