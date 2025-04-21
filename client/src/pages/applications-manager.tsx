@@ -64,11 +64,18 @@ export default function ApplicationsManager() {
   const specificJobId = jobIdParam ? parseInt(jobIdParam) : null;
 
   // Fetch applications
-  const { data: applications, isLoading } = useQuery<ApplicationWithJob[]>({
+  const { data: applications, isLoading, isError, error } = useQuery<ApplicationWithJob[]>({
     queryKey: ["/api/applications"],
     queryFn: getQueryFn({ on401: "throw" }),
     refetchInterval: 30000, // Refresh every 30 seconds
   });
+  
+  // Log error if present
+  useEffect(() => {
+    if (isError) {
+      console.error("Error fetching applications:", error);
+    }
+  }, [isError, error]);
 
   // Update application status mutation
   const updateStatusMutation = useMutation({
@@ -218,6 +225,11 @@ export default function ApplicationsManager() {
             <p className="text-gray-600">
               Review, shortlist and respond to candidate applications for your job listings.
             </p>
+            {/* Debug info */}
+            <div className="text-xs text-gray-500 mt-1">
+              User Type: {currentUser?.user.userType} | 
+              Debug: {isError ? 'API Error' : applications ? `${applications.length} applications loaded` : 'No applications data'}
+            </div>
           </div>
           
           {/* Back button for job-specific view */}
