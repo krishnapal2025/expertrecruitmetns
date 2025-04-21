@@ -2,12 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
-import { Job, Employer } from "@shared/schema";
+import { Job, Employer, Application } from "@shared/schema";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Briefcase, MapPin, Calendar, Building, Clock, User, Share2, BookmarkPlus, Loader2 } from "lucide-react";
+import { Briefcase, MapPin, Calendar, Building, Clock, User, Share2, BookmarkPlus, Loader2, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type JobDetailsResponse = {
@@ -20,10 +20,20 @@ export default function JobDetailsPage({ id }: { id: string }) {
   const { currentUser } = useAuth();
   const { toast } = useToast();
   
+  // Get job details
   const { data, isLoading, error } = useQuery<JobDetailsResponse>({
     queryKey: [`/api/jobs/${id}`],
     enabled: !!id,
   });
+  
+  // Check if user has already applied for this job
+  const { data: applications, isLoading: isLoadingApplications } = useQuery<Application[]>({
+    queryKey: ["/api/applications/my-applications"],
+    enabled: !!currentUser && currentUser.user.userType === "jobseeker",
+  });
+  
+  // Determine if the user has already applied for this job
+  const hasApplied = applications?.some(app => app.jobId === parseInt(id)) || false;
 
   if (isLoading) {
     return (
@@ -61,6 +71,16 @@ export default function JobDetailsPage({ id }: { id: string }) {
         title: "Unauthorized",
         description: "Only job seekers can apply for jobs. Please log in with a job seeker account.",
         variant: "destructive",
+      });
+      return;
+    }
+    
+    // Check if the user has already applied for this job
+    if (hasApplied) {
+      toast({
+        title: "Already Applied",
+        description: "You have already applied for this job. You can check your application status in 'Applied Jobs'.",
+        variant: "default",
       });
       return;
     }
@@ -108,9 +128,16 @@ export default function JobDetailsPage({ id }: { id: string }) {
               </div>
             </div>
             <div className="mt-4 md:mt-0 flex flex-wrap gap-2">
-              <Button variant="secondary" size="sm" onClick={handleApplyClick}>
-                Apply Now
-              </Button>
+              {hasApplied ? (
+                <Button variant="outline" size="sm" className="bg-green-800/20" disabled>
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Applied
+                </Button>
+              ) : (
+                <Button variant="secondary" size="sm" onClick={handleApplyClick}>
+                  Apply Now
+                </Button>
+              )}
               <Button variant="outline" size="sm" className="bg-white/10">
                 <BookmarkPlus className="h-4 w-4 mr-2" />
                 Save
@@ -180,9 +207,16 @@ export default function JobDetailsPage({ id }: { id: string }) {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-center border-t pt-6">
-                <Button size="lg" onClick={handleApplyClick}>
-                  Apply for this Position
-                </Button>
+                {hasApplied ? (
+                  <Button disabled variant="outline" size="lg" className="bg-green-50">
+                    <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
+                    Already Applied
+                  </Button>
+                ) : (
+                  <Button size="lg" onClick={handleApplyClick}>
+                    Apply for this Position
+                  </Button>
+                )}
               </CardFooter>
             </Card>
             
