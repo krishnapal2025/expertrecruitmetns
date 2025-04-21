@@ -67,7 +67,7 @@ export const applications = pgTable("applications", {
   jobId: integer("job_id").notNull().references(() => jobs.id),
   jobSeekerId: integer("job_seeker_id").notNull().references(() => jobSeekers.id),
   appliedDate: timestamp("applied_date").defaultNow(),
-  status: text("status").default("pending"), // 'pending', 'reviewed', 'rejected', 'accepted'
+  status: text("status").default("new"), // 'new', 'viewed', 'shortlisted', 'rejected'
   coverLetter: text("cover_letter"),
 });
 
