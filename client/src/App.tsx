@@ -1,7 +1,8 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, useLocation, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import { useAuth } from "@/hooks/use-auth";
 import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/home-page";
 import AboutUsPage from "@/pages/about-us";
@@ -48,6 +49,7 @@ function PageViewTracker() {
 }
 
 function Router() {
+  const { currentUser } = useAuth();
   return (
     <Switch>
       <Route path="/" component={HomePage} />
