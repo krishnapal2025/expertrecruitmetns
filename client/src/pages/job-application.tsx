@@ -6,7 +6,7 @@ import { z } from "zod";
 import { useLocation, useParams } from "wouter";
 import { Helmet } from "react-helmet";
 import { useAuth } from "@/hooks/use-auth";
-import { Job, Employer } from "@shared/schema";
+import { Job, Employer, Application } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -89,12 +89,35 @@ export default function JobApplicationPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [applicationComplete, setApplicationComplete] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState("AED");
+  const [hasAlreadyApplied, setHasAlreadyApplied] = useState(false);
   
   // Fetch job details
   const { data, isLoading, error } = useQuery<JobDetailsResponse>({
     queryKey: [`/api/jobs/${jobId}`],
     enabled: !isNaN(jobId),
   });
+  
+  // Check if user has already applied for this job
+  const { data: myApplications } = useQuery<Application[]>({
+    queryKey: ["/api/applications/my-applications"],
+    enabled: !!currentUser && currentUser.user.userType === "jobseeker",
+  });
+  
+  // Check if already applied when applications data is loaded
+  useEffect(() => {
+    if (myApplications && myApplications.length > 0) {
+      const alreadyApplied = myApplications.some(app => app.jobId === jobId);
+      setHasAlreadyApplied(alreadyApplied);
+      
+      if (alreadyApplied) {
+        toast({
+          title: "Application Already Exists",
+          description: "You have already applied for this job. You can check the status in your profile.",
+          variant: "default",
+        });
+      }
+    }
+  }, [myApplications, jobId, toast]);
   
   // Initialize form
   const form = useForm<ApplicationFormValues>({
@@ -338,15 +361,35 @@ export default function JobApplicationPage() {
                 </CardHeader>
                 
                 <CardContent className="pt-6">
-                  <Tabs value={activeTab} onValueChange={setActiveTab}>
-                    <TabsList className="grid grid-cols-3 mb-6">
-                      <TabsTrigger value="details">Personal Details</TabsTrigger>
-                      <TabsTrigger value="experience">Experience & Skills</TabsTrigger>
-                      <TabsTrigger value="confirmation" disabled={!applicationComplete}>Confirmation</TabsTrigger>
-                    </TabsList>
-                    
-                    <Form {...form}>
-                      <form onSubmit={form.handleSubmit(onSubmit)}>
+                  {hasAlreadyApplied ? (
+                    <div className="text-center py-12">
+                      <div className="mx-auto w-16 h-16 mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                        <CheckCircle className="h-8 w-8 text-primary" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">You've Already Applied!</h3>
+                      <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                        You have already submitted an application for <span className="font-semibold">{job.title}</span> at <span className="font-semibold">{employer.companyName}</span>.
+                      </p>
+                      
+                      <div className="flex justify-center space-x-4">
+                        <Button variant="outline" onClick={() => navigate("/applied-jobs")}>
+                          View My Applications
+                        </Button>
+                        <Button onClick={() => navigate("/job-board")}>
+                          Browse More Jobs
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <Tabs value={activeTab} onValueChange={setActiveTab}>
+                      <TabsList className="grid grid-cols-3 mb-6">
+                        <TabsTrigger value="details">Personal Details</TabsTrigger>
+                        <TabsTrigger value="experience">Experience & Skills</TabsTrigger>
+                        <TabsTrigger value="confirmation" disabled={!applicationComplete}>Confirmation</TabsTrigger>
+                      </TabsList>
+                      
+                      <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)}
                         <TabsContent value="details" className="mt-0">
                           <div className="space-y-6">
                             <FormField
