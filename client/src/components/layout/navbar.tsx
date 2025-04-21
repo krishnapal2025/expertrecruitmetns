@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
+import { navigateAndScrollTop } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -27,7 +28,7 @@ import NotificationsPopover from "@/components/common/notifications";
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const { currentUser, logoutMutation } = useAuth();
   
   // Detect scroll to change navbar appearance
@@ -156,21 +157,25 @@ export default function Navbar() {
                   <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                     <div className="py-1 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                       {link.dropdownItems?.map((item) => (
-                        <Link key={item.name} href={item.href}>
-                          <div className={`block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${location === item.href ? "text-primary dark:text-primary bg-primary/5" : ""}`}>
-                            {item.name}
-                          </div>
-                        </Link>
+                        <div 
+                          key={item.name} 
+                          onClick={() => navigateAndScrollTop(navigate, item.href)}
+                          className={`block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer ${location === item.href ? "text-primary dark:text-primary bg-primary/5" : ""}`}
+                        >
+                          {item.name}
+                        </div>
                       ))}
                     </div>
                   </div>
                 </div>
               ) : (
-                <Link key={link.name} href={link.href}>
-                  <div className={`text-base font-medium transition-colors hover:text-primary cursor-pointer ${location === link.href ? "text-primary" : "text-gray-700"}`}>
-                    {link.name}
-                  </div>
-                </Link>
+                <div 
+                  key={link.name} 
+                  onClick={() => navigateAndScrollTop(navigate, link.href)}
+                  className={`text-base font-medium transition-colors hover:text-primary cursor-pointer ${location === link.href ? "text-primary" : "text-gray-700"}`}
+                >
+                  {link.name}
+                </div>
               )
             ))}
           </nav>
