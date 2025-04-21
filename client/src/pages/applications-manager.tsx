@@ -111,7 +111,7 @@ export default function ApplicationsManager() {
   // Handle view application
   const handleViewApplication = (application: ApplicationWithJob) => {
     // If status is "new", mark as viewed
-    if (application.status === "new") {
+    if (application.status && application.status === "new") {
       updateStatusMutation.mutate({
         id: application.id,
         status: "viewed"
@@ -156,7 +156,7 @@ export default function ApplicationsManager() {
     
     // Then filter by status tab
     if (activeTab === "all") return true;
-    return app.status === activeTab;
+    return app.status ? app.status === activeTab : false;
   });
 
   // Format date for display
@@ -214,10 +214,10 @@ export default function ApplicationsManager() {
     ? applications.filter(app => app.jobId === specificJobId)
     : applications;
     
-  const newCount = filteredForCounts?.filter(app => app.status === "new").length || 0;
-  const viewedCount = filteredForCounts?.filter(app => app.status === "viewed").length || 0;
-  const shortlistedCount = filteredForCounts?.filter(app => app.status === "shortlisted").length || 0;
-  const rejectedCount = filteredForCounts?.filter(app => app.status === "rejected").length || 0;
+  const newCount = filteredForCounts?.filter(app => app.status && app.status === "new").length || 0;
+  const viewedCount = filteredForCounts?.filter(app => app.status && app.status === "viewed").length || 0;
+  const shortlistedCount = filteredForCounts?.filter(app => app.status && app.status === "shortlisted").length || 0;
+  const rejectedCount = filteredForCounts?.filter(app => app.status && app.status === "rejected").length || 0;
 
   return (
     <>
@@ -311,7 +311,7 @@ export default function ApplicationsManager() {
                             View Details
                           </Button>
                           <div className="flex gap-2 mt-3">
-                            {(application.status === "new" || application.status === "viewed") && (
+                            {application.status && (application.status === "new" || application.status === "viewed") && (
                               <>
                                 <Button
                                   variant="outline"
@@ -331,7 +331,7 @@ export default function ApplicationsManager() {
                                 </Button>
                               </>
                             )}
-                            {application.status === "shortlisted" && (
+                            {application.status && application.status === "shortlisted" && (
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -342,7 +342,7 @@ export default function ApplicationsManager() {
                                 Reject
                               </Button>
                             )}
-                            {application.status === "rejected" && (
+                            {application.status && application.status === "rejected" && (
                               <Button
                                 variant="outline"
                                 size="sm"
