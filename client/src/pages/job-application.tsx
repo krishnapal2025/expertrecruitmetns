@@ -116,6 +116,9 @@ export default function JobApplicationPage() {
   
   // Check if user is logged in and is a job seeker
   useEffect(() => {
+    // Scroll to top when page loads
+    window.scrollTo(0, 0);
+    
     if (!currentUser) {
       toast({
         title: "Authentication required",

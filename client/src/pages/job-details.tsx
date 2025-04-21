@@ -112,8 +112,9 @@ export default function JobDetailsPage({ id }: { id: string }) {
       return;
     }
     
-    // Navigate to the dedicated application page
-    navigate(`/apply/${id}`);
+    // Navigate to the dedicated application page using window.location
+    // This ensures a full page reload that will trigger the scroll to top
+    window.location.href = `/apply/${id}`;
   };
 
   // Format date for display
