@@ -215,6 +215,12 @@ export default function Navbar() {
                             <span>Posted Jobs</span>
                           </DropdownMenuItem>
                         </Link>
+                        <Link href="/applications-manager">
+                          <DropdownMenuItem>
+                            <User className="mr-2 h-4 w-4" />
+                            <span>Applications Manager</span>
+                          </DropdownMenuItem>
+                        </Link>
                         <Link href="/post-job">
                           <DropdownMenuItem>
                             <svg
@@ -388,10 +394,10 @@ export default function Navbar() {
                               </Link>
                             </SheetClose>
                             <SheetClose asChild>
-                              <Link href="/applicants">
+                              <Link href="/applications-manager">
                                 <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
                                   <User className="mr-2 h-4 w-4" />
-                                  Applicants
+                                  Applications Manager
                                 </div>
                               </Link>
                             </SheetClose>

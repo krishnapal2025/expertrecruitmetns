@@ -227,7 +227,7 @@ export default function ApplicationsManagerPage() {
                                 </div>
                               </div>
                               <div className="mt-4 md:mt-0">
-                                {getStatusBadge(application.status)}
+                                {getStatusBadge(application.status || 'new')}
                                 <p className="text-sm text-gray-500 mt-1">
                                   Applied on {formatDate(application.appliedDate)}
                                 </p>
