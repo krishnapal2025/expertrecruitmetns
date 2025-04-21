@@ -152,10 +152,10 @@ export default function ApplicationsManager() {
   });
 
   // Format date for display
-  const formatDate = (dateString: string | null | undefined) => {
+  const formatDate = (dateString: string | Date | null | undefined) => {
     if (!dateString) return "Not specified";
     try {
-      const date = new Date(dateString);
+      const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
       return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
