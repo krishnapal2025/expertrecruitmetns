@@ -243,11 +243,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validate application data
       const { coverLetter } = req.body;
       
-      // Create the application
+      // Create the application with "new" status
       const application = await storage.createApplication({
         jobId,
         jobSeekerId: jobSeeker.id,
-        coverLetter
+        coverLetter,
+        status: "new"
       });
       
       // Update real-time store for application tracking
@@ -627,6 +628,93 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching notifications:", error);
       res.status(500).json({ message: "Failed to fetch notifications" });
+    }
+  });
+  
+  // Update application status (for employers to change status to 'viewed', 'shortlisted', or 'rejected')
+  app.put("/api/applications/:id/status", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to update application status" });
+      }
+      
+      const user = req.user;
+      if (user.userType !== "employer") {
+        return res.status(403).json({ message: "Only employers can update application status" });
+      }
+      
+      const applicationId = parseInt(req.params.id);
+      if (isNaN(applicationId)) {
+        return res.status(400).json({ message: "Invalid application ID" });
+      }
+      
+      const { status } = req.body;
+      
+      // Validate status value
+      if (!['viewed', 'shortlisted', 'rejected'].includes(status)) {
+        return res.status(400).json({ message: "Invalid status. Must be 'viewed', 'shortlisted', or 'rejected'" });
+      }
+      
+      // Find the application
+      const application = await storage.getApplication(applicationId);
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      
+      // Get the job associated with this application
+      const job = await storage.getJob(application.jobId);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+      
+      // Get employer profile
+      const employer = await storage.getEmployerByUserId(user.id);
+      if (!employer) {
+        return res.status(404).json({ message: "Employer profile not found" });
+      }
+      
+      // Check if job belongs to this employer
+      if (job.employerId !== employer.id) {
+        return res.status(403).json({ message: "You can only update applications for your own job listings" });
+      }
+      
+      // Update the application status
+      const updatedApplication = await storage.updateApplication({
+        ...application,
+        status
+      });
+      
+      // Notify the job seeker of the status change
+      const jobSeeker = await storage.getJobSeeker(application.jobSeekerId);
+      if (jobSeeker) {
+        const jobSeekerUser = await storage.getUserByJobSeekerId(jobSeeker.id);
+        if (jobSeekerUser) {
+          let message = "";
+          
+          if (status === "viewed") {
+            message = `Your application for ${job.title} has been viewed by the employer.`;
+          } else if (status === "shortlisted") {
+            message = `Congratulations! You have been shortlisted for ${job.title}.`;
+          } else if (status === "rejected") {
+            message = `We regret to inform you that your application for ${job.title} has not been successful.`;
+          }
+          
+          if (message) {
+            realtimeStore.notifications.push({
+              id: realtimeStore.notificationId++,
+              userId: jobSeekerUser.id,
+              message,
+              read: false,
+              createdAt: new Date()
+            });
+          }
+        }
+      }
+      
+      res.json(updatedApplication);
+    } catch (error) {
+      console.error("Error updating application status:", error);
+      res.status(500).json({ message: "Failed to update application status" });
     }
   });
   

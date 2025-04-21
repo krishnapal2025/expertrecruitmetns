@@ -58,6 +58,7 @@ export interface IStorage {
   getApplicationsByJobId(jobId: number): Promise<Application[]>;
   getApplicationsByJobSeekerId(jobSeekerId: number): Promise<Application[]>;
   createApplication(application: InsertApplication): Promise<Application>;
+  updateApplication(application: Application): Promise<Application>;
   
   // Testimonial methods
   getTestimonial(id: number): Promise<Testimonial | undefined>;
