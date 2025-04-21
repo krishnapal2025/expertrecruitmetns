@@ -70,7 +70,7 @@ export default function ApplicationsManagerPage() {
         description: "Please log in to manage applications",
         variant: "destructive",
       });
-      navigate("/auth");
+      navigateAndScrollTop(navigate, "/auth");
       return;
     }
     
@@ -80,7 +80,7 @@ export default function ApplicationsManagerPage() {
         description: "This page is only available for employers",
         variant: "destructive",
       });
-      navigate("/");
+      navigateAndScrollTop(navigate, "/");
       return;
     }
   }, [currentUser, toast, navigate]);
@@ -485,7 +485,7 @@ export default function ApplicationsManagerPage() {
                                         e.stopPropagation();
                                         // Save in session storage that we're coming from applications manager
                                         sessionStorage.setItem("fromApplicationsManager", "true");
-                                        navigate(`/job/${application.jobId}`);
+                                        navigateAndScrollTop(navigate, `/job/${application.jobId}`);
                                       }}
                                     >
                                       <ExternalLink className="h-4 w-4 mr-2" />
