@@ -59,7 +59,7 @@ export default function AppliedJobsPage() {
         description: "Please log in to view your applied jobs",
         variant: "destructive",
       });
-      navigate("/auth");
+      navigateAndScrollTop(navigate, "/auth");
       return;
     }
     
@@ -69,7 +69,7 @@ export default function AppliedJobsPage() {
         description: "This page is only available for job seekers",
         variant: "destructive",
       });
-      navigate("/");
+      navigateAndScrollTop(navigate, "/");
       return;
     }
   }, [currentUser, location, navigate, toast]);
@@ -259,7 +259,7 @@ export default function AppliedJobsPage() {
                                 <Button
                                   variant="outline"
                                   className="text-primary border-primary hover:bg-primary/5"
-                                  onClick={() => navigate(`/job/${application.jobId}`)}
+                                  onClick={() => navigateAndScrollTop(navigate, `/job/${application.jobId}`)}
                                 >
                                   <ExternalLink className="h-4 w-4 mr-2" />
                                   View Job Details
@@ -326,7 +326,7 @@ export default function AppliedJobsPage() {
             <p className="text-gray-600 mb-6">
               You haven't applied to any jobs yet. Start exploring job opportunities today!
             </p>
-            <Button onClick={() => navigate("/job-board")}>
+            <Button onClick={() => navigateAndScrollTop(navigate, "/job-board")}>
               Browse Jobs
             </Button>
           </div>
