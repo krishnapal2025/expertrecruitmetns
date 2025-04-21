@@ -18,6 +18,7 @@ import ResetPasswordPage from "@/pages/reset-password";
 import JobSeekerRegisterPage from "@/pages/job-seeker-register";
 import EmployerRegisterPage from "@/pages/employer-register";
 import JobDetailsPage from "@/pages/job-details";
+import JobApplicationPage from "@/pages/job-application";
 import HireTalentPage from "@/pages/hire-talent";
 import SEOInsightsPage from "@/pages/seo-insights";
 import ProfilePage from "@/pages/profile-page";
@@ -53,6 +54,9 @@ function Router() {
       <Route path="/job-board" component={JobBoardPage} />
       <Route path="/job/:id">
         {params => <JobDetailsPage id={params.id} />}
+      </Route>
+      <Route path="/apply/:id">
+        {params => <ProtectedRoute path={`/apply/${params.id}`} component={JobApplicationPage} />}
       </Route>
       <Route path="/sectors" component={SectorsPage} />
       <Route path="/contact-us" component={ContactUsPage} />

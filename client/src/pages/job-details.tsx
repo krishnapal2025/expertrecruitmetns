@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 import { useAuth } from "@/hooks/use-auth";
@@ -8,9 +7,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Briefcase, MapPin, Calendar, Building, Clock, User, Share2, BookmarkPlus, Loader2 } from "lucide-react";
-import JobApplyForm from "@/components/job/job-apply-form";
+import { useToast } from "@/hooks/use-toast";
 
 type JobDetailsResponse = {
   job: Job;
@@ -53,16 +51,22 @@ export default function JobDetailsPage({ id }: { id: string }) {
   
   const handleApplyClick = () => {
     if (!currentUser) {
-      navigate("/auth?type=jobseeker");
+      // Save current URL for redirect after login
+      navigate(`/auth?type=jobseeker&redirect=${encodeURIComponent(`/apply/${id}`)}`);
       return;
     }
     
     if (currentUser.user.userType !== "jobseeker") {
-      alert("Only job seekers can apply for jobs. Please log in with a job seeker account.");
+      toast({
+        title: "Unauthorized",
+        description: "Only job seekers can apply for jobs. Please log in with a job seeker account.",
+        variant: "destructive",
+      });
       return;
     }
     
-    setApplyDialogOpen(true);
+    // Navigate to the dedicated application page
+    navigate(`/apply/${id}`);
   };
 
   // Format date for display
