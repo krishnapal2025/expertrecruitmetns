@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
@@ -57,7 +57,7 @@ export default function ApplicationsManagerPage() {
   const [applicationToUpdate, setApplicationToUpdate] = useState<{id: number, status: string} | null>(null);
   
   // Redirect if not logged in or not an employer
-  useState(() => {
+  useEffect(() => {
     if (!currentUser) {
       toast({
         title: "Authentication required",
@@ -77,7 +77,7 @@ export default function ApplicationsManagerPage() {
       navigate("/");
       return;
     }
-  });
+  }, [currentUser, toast, navigate]);
   
   // Get applications for employer jobs
   const { data: applications, isLoading, error } = useQuery<ApplicationWithDetails[]>({

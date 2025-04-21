@@ -325,8 +325,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const appsWithJobs = jobApplications.map(app => ({ ...app, job }));
           
           // Add job seeker data to each application
-          for (let app of appsWithJobs) {
-            app.jobSeeker = await storage.getJobSeeker(app.jobSeekerId);
+          for (let i = 0; i < appsWithJobs.length; i++) {
+            const jobSeeker = await storage.getJobSeeker(appsWithJobs[i].jobSeekerId);
+            // Create a new object with the jobSeeker property
+            appsWithJobs[i] = {
+              ...appsWithJobs[i],
+              jobSeeker,
+              appliedDate: appsWithJobs[i].appliedDate || new Date()
+            };
           }
           
           applications = applications.concat(appsWithJobs);
