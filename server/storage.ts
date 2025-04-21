@@ -59,6 +59,7 @@ export interface IStorage {
   getApplicationsByJobSeekerId(jobSeekerId: number): Promise<Application[]>;
   createApplication(application: InsertApplication): Promise<Application>;
   deleteApplication(id: number): Promise<boolean>;
+  updateApplicationStatus(id: number, status: string): Promise<Application | undefined>;
   
   // Testimonial methods
   getTestimonial(id: number): Promise<Testimonial | undefined>;
@@ -322,6 +323,22 @@ export class DatabaseStorage implements IStorage {
     } finally {
       client.release();
     }
+  }
+  
+  async updateApplicationStatus(id: number, status: string): Promise<Application | undefined> {
+    // Validate status
+    if (!["new", "viewed", "shortlisted", "rejected"].includes(status)) {
+      throw new Error("Invalid status value");
+    }
+    
+    // Update the application status
+    const [updatedApplication] = await db
+      .update(applications)
+      .set({ status })
+      .where(eq(applications.id, id))
+      .returning();
+    
+    return updatedApplication;
   }
   
   // Testimonial methods
@@ -732,6 +749,27 @@ export class MemStorage implements IStorage {
     
     // Then delete the application
     return this.applications.delete(id);
+  }
+  
+  async updateApplicationStatus(id: number, status: string): Promise<Application | undefined> {
+    // Validate status
+    if (!["new", "viewed", "shortlisted", "rejected"].includes(status)) {
+      throw new Error("Invalid status value");
+    }
+    
+    // Check if the application exists
+    const application = this.applications.get(id);
+    if (!application) {
+      return undefined;
+    }
+    
+    // Update the status
+    const updatedApplication = { ...application, status };
+    
+    // Save back to the Map
+    this.applications.set(id, updatedApplication);
+    
+    return updatedApplication;
   }
 
   // Testimonial methods

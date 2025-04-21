@@ -427,6 +427,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "An error occurred while deleting the application" });
     }
   });
+  
+  // Update application status (employers only)
+  app.patch("/api/applications/:id/status", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to update application status" });
+      }
+      
+      const user = req.user;
+      if (user.userType !== "employer") {
+        return res.status(403).json({ message: "Only employers can update application status" });
+      }
+      
+      const applicationId = parseInt(req.params.id);
+      if (isNaN(applicationId)) {
+        return res.status(400).json({ message: "Invalid application ID" });
+      }
+      
+      // Validate request body
+      const { status } = req.body;
+      if (!status || !["new", "viewed", "shortlisted", "rejected"].includes(status)) {
+        return res.status(400).json({ message: "Invalid status value. Must be one of: new, viewed, shortlisted, rejected" });
+      }
+      
+      // Get the application
+      const application = await storage.getApplication(applicationId);
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      
+      // Verify employer owns the job this application is for
+      const employer = await storage.getEmployerByUserId(user.id);
+      if (!employer) {
+        return res.status(404).json({ message: "Employer profile not found" });
+      }
+      
+      const job = await storage.getJob(application.jobId);
+      if (!job || job.employerId !== employer.id) {
+        return res.status(403).json({ message: "You can only update status for applications to your own jobs" });
+      }
+      
+      // Update the application status
+      const updatedApplication = await storage.updateApplicationStatus(applicationId, status);
+      
+      if (updatedApplication) {
+        res.status(200).json(updatedApplication);
+      } else {
+        res.status(500).json({ message: "Failed to update application status" });
+      }
+    } catch (error) {
+      console.error("Error updating application status:", error);
+      res.status(500).json({ message: "An error occurred while updating the application status" });
+    }
+  });
 
   // Get all testimonials
   app.get("/api/testimonials", async (req, res) => {
