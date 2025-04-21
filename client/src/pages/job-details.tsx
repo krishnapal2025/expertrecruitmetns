@@ -20,8 +20,21 @@ export default function JobDetailsPage({ id }: { id: string }) {
   const { currentUser } = useAuth();
   const { toast } = useToast();
   
-  // Check if coming from applications-manager
-  const isFromApplicationsManager = location.includes("applications-manager");
+  // Check if coming from applications-manager by examining the referrer
+  const isFromApplicationsManager = document.referrer.includes("applications-manager") || 
+                                    sessionStorage.getItem("fromApplicationsManager") === "true";
+                                    
+  // Store the fact that we're coming from applications-manager in sessionStorage
+  if (document.referrer.includes("applications-manager")) {
+    sessionStorage.setItem("fromApplicationsManager", "true");
+  }
+  
+  // Clear fromApplicationsManager from sessionStorage when this component unmounts
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem("fromApplicationsManager");
+    };
+  }, []);
   
   // Get job details
   const { data, isLoading, error } = useQuery<JobDetailsResponse>({
@@ -136,7 +149,11 @@ export default function JobDetailsPage({ id }: { id: string }) {
                   variant="outline" 
                   size="sm" 
                   className="bg-white/20"
-                  onClick={() => window.history.back()}
+                  onClick={() => {
+                    // Clear the fromApplicationsManager flag and go back
+                    sessionStorage.removeItem("fromApplicationsManager");
+                    window.history.back();
+                  }}
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Applications

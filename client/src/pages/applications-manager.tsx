@@ -482,6 +482,8 @@ export default function ApplicationsManagerPage() {
                                       className="text-primary border-primary hover:bg-primary/5"
                                       onClick={(e) => {
                                         e.stopPropagation();
+                                        // Save in session storage that we're coming from applications manager
+                                        sessionStorage.setItem("fromApplicationsManager", "true");
                                         navigate(`/job/${application.jobId}`);
                                       }}
                                     >
