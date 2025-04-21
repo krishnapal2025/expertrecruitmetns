@@ -109,6 +109,7 @@ export default function Navbar() {
         { name: "About Us", href: "/about-us" },
         { name: "Hire Talent", href: "/hire-talent" },
         { name: "My Jobs", href: "/my-jobs" },
+        { name: "Applicants", href: "/applicants" },
         { name: "Blogs", href: "/blogs" },
         { name: "Contact Us", href: "/contact-us" },
       ];
@@ -382,6 +383,14 @@ export default function Navbar() {
                                 <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
                                   <Briefcase className="mr-2 h-4 w-4" />
                                   Posted Jobs
+                                </div>
+                              </Link>
+                            </SheetClose>
+                            <SheetClose asChild>
+                              <Link href="/applicants">
+                                <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
+                                  <User className="mr-2 h-4 w-4" />
+                                  Applicants
                                 </div>
                               </Link>
                             </SheetClose>
