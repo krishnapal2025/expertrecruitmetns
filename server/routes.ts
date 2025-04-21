@@ -320,9 +320,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         let applications: any[] = [];
         for (const job of employerJobs) {
           const jobApplications = await storage.getApplicationsByJobId(job.id);
-          applications = applications.concat(
-            jobApplications.map(app => ({ ...app, job }))
-          );
+          
+          // Add job data to each application
+          const appsWithJobs = jobApplications.map(app => ({ ...app, job }));
+          
+          // Add job seeker data to each application
+          for (let app of appsWithJobs) {
+            app.jobSeeker = await storage.getJobSeeker(app.jobSeekerId);
+          }
+          
+          applications = applications.concat(appsWithJobs);
         }
         
         res.json(applications);
