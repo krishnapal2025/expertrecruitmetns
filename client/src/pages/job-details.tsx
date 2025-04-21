@@ -17,8 +17,8 @@ type JobDetailsResponse = {
 
 export default function JobDetailsPage({ id }: { id: string }) {
   const [location, navigate] = useLocation();
-  const [applyDialogOpen, setApplyDialogOpen] = useState(false);
   const { currentUser } = useAuth();
+  const { toast } = useToast();
   
   const { data, isLoading, error } = useQuery<JobDetailsResponse>({
     queryKey: [`/api/jobs/${id}`],
@@ -70,7 +70,8 @@ export default function JobDetailsPage({ id }: { id: string }) {
   };
 
   // Format date for display
-  const formatDate = (dateString: Date) => {
+  const formatDate = (dateString: Date | null) => {
+    if (!dateString) return "N/A";
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
@@ -316,25 +317,6 @@ export default function JobDetailsPage({ id }: { id: string }) {
           </div>
         </div>
       </div>
-
-      {/* Apply Dialog */}
-      <Dialog open={applyDialogOpen} onOpenChange={setApplyDialogOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Apply for {job.title}</DialogTitle>
-            <DialogDescription>
-              Please fill out the application form below to apply for this position at {employer.companyName}.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <JobApplyForm 
-            jobId={job.id} 
-            jobTitle={job.title} 
-            employerName={employer.companyName}
-            onSuccess={() => setApplyDialogOpen(false)} 
-          />
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
