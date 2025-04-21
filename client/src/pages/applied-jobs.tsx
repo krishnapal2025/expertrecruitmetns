@@ -78,18 +78,14 @@ export default function AppliedJobsPage() {
   // Generate status badge
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "pending":
-        return <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-300">Under Review</Badge>;
+      case "new":
+        return <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300">New</Badge>;
+      case "viewed":
+        return <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-300">Viewed</Badge>;
       case "shortlisted":
-        return <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300">Shortlisted</Badge>;
-      case "interviewed":
-        return <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-300">Interviewed</Badge>;
-      case "offered":
-        return <Badge variant="outline" className="bg-green-100 text-green-800 border-green-300">Offer Extended</Badge>;
+        return <Badge variant="outline" className="bg-green-100 text-green-800 border-green-300">Shortlisted</Badge>;
       case "rejected":
         return <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300">Not Selected</Badge>;
-      case "accepted":
-        return <Badge variant="outline" className="bg-emerald-100 text-emerald-800 border-emerald-300">Offer Accepted</Badge>;
       default:
         return <Badge variant="outline">Unknown</Badge>;
     }
@@ -100,12 +96,12 @@ export default function AppliedJobsPage() {
     if (!applications) return [];
     
     switch (activeTab) {
-      case "pending":
-        return applications.filter(app => app.status === "pending");
+      case "new":
+        return applications.filter(app => app.status === "new");
+      case "viewed":
+        return applications.filter(app => app.status === "viewed");
       case "shortlisted":
-        return applications.filter(app => app.status === "shortlisted" || app.status === "interviewed");
-      case "offered":
-        return applications.filter(app => app.status === "offered");
+        return applications.filter(app => app.status === "shortlisted");
       case "rejected":
         return applications.filter(app => app.status === "rejected");
       case "all":
@@ -151,9 +147,9 @@ export default function AppliedJobsPage() {
             <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="mb-6">
                 <TabsTrigger value="all">All Applications</TabsTrigger>
-                <TabsTrigger value="pending">Under Review</TabsTrigger>
+                <TabsTrigger value="new">New</TabsTrigger>
+                <TabsTrigger value="viewed">Viewed</TabsTrigger>
                 <TabsTrigger value="shortlisted">Shortlisted</TabsTrigger>
-                <TabsTrigger value="offered">Offers</TabsTrigger>
                 <TabsTrigger value="rejected">Not Selected</TabsTrigger>
               </TabsList>
               

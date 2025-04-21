@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getQueryFn, apiRequest, queryClient } from "@/lib/queryClient";
@@ -53,7 +53,7 @@ type ApplicationWithJob = Application & {
 export default function ApplicationsManager() {
   const { currentUser } = useAuth();
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const [_, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("all");
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<ApplicationWithJob | null>(null);
@@ -144,12 +144,16 @@ export default function ApplicationsManager() {
   // Format date for display
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return "Not specified";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch (error) {
+      return "Invalid date";
+    }
   };
 
   // Get status badge color
