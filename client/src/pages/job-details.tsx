@@ -10,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Briefcase, MapPin, Calendar, Building, Clock, User, Share2, BookmarkPlus, Loader2, CheckCircle, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { scrollToTop, navigateAndScrollToTop } from "@/lib/utils";
 
 type JobDetailsResponse = {
   job: Job;
