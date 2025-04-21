@@ -25,7 +25,8 @@ import {
   CheckCircle,
   XCircle,
   Loader2,
-  AlertTriangle
+  AlertTriangle,
+  Trash2
 } from "lucide-react";
 import { Helmet } from "react-helmet";
 import {
@@ -55,6 +56,7 @@ export default function ApplicationsManagerPage() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("all");
   const [applicationToUpdate, setApplicationToUpdate] = useState<{id: number, status: string} | null>(null);
+  const [applicationToDelete, setApplicationToDelete] = useState<number | null>(null);
   
   // Redirect if not logged in or not an employer
   useEffect(() => {
@@ -110,6 +112,31 @@ export default function ApplicationsManagerPage() {
     }
   });
   
+  // Delete application mutation
+  const deleteApplicationMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await apiRequest("DELETE", `/api/applications/${id}`);
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Application deleted",
+        description: "The application has been successfully deleted.",
+      });
+      // Invalidate applications query to refetch the data
+      queryClient.invalidateQueries({ queryKey: ["/api/applications"] });
+      setApplicationToDelete(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error deleting application",
+        description: error.message || "Failed to delete application. Please try again.",
+        variant: "destructive",
+      });
+      setApplicationToDelete(null);
+    }
+  });
+  
   // Helper function to format date
   const formatDate = (dateString: string | Date | null) => {
     if (!dateString) return "N/A";
@@ -139,6 +166,11 @@ export default function ApplicationsManagerPage() {
   // Handle status update
   const handleStatusUpdate = (applicationId: number, status: string) => {
     setApplicationToUpdate({ id: applicationId, status });
+  };
+  
+  // Handle delete application
+  const handleDeleteApplication = (applicationId: number) => {
+    setApplicationToDelete(applicationId);
   };
   
   // Filter applications based on active tab
@@ -401,14 +433,56 @@ export default function ApplicationsManagerPage() {
                                 </Button>
                               </div>
                               
-                              <Button
-                                variant="outline"
-                                className="text-primary border-primary hover:bg-primary/5"
-                                onClick={() => navigate(`/job/${application.jobId}`)}
-                              >
-                                <ExternalLink className="h-4 w-4 mr-2" />
-                                View Job Details
-                              </Button>
+                              <div className="flex gap-2">
+                                <Button
+                                  variant="outline"
+                                  className="text-primary border-primary hover:bg-primary/5"
+                                  onClick={() => navigate(`/job/${application.jobId}`)}
+                                >
+                                  <ExternalLink className="h-4 w-4 mr-2" />
+                                  View Job Details
+                                </Button>
+                                
+                                <AlertDialog open={applicationToDelete === application.id}>
+                                  <AlertDialogTrigger asChild>
+                                    <Button 
+                                      variant="outline" 
+                                      className="text-red-600 border-red-200 hover:bg-red-50"
+                                      onClick={() => handleDeleteApplication(application.id)}
+                                    >
+                                      <Trash2 className="h-4 w-4 mr-2" />
+                                      Delete
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Delete This Application</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Are you sure you want to delete {application.jobSeeker.firstName} {application.jobSeeker.lastName}'s application for the position of {application.job.title}?
+                                        <br /><br />
+                                        This action cannot be undone. The application will be permanently removed from your system.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel onClick={() => setApplicationToDelete(null)}>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction 
+                                        onClick={() => deleteApplicationMutation.mutate(application.id)}
+                                        disabled={deleteApplicationMutation.isPending}
+                                        className="bg-red-600 hover:bg-red-700"
+                                      >
+                                        {deleteApplicationMutation.isPending ? (
+                                          <>
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            Deleting...
+                                          </>
+                                        ) : (
+                                          "Delete Application"
+                                        )}
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
                             </div>
                           </CardContent>
                         </div>
