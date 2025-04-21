@@ -151,9 +151,9 @@ export default function JobDetailsPage({ id }: { id: string }) {
                   size="sm" 
                   className="bg-white/20"
                   onClick={() => {
-                    // Clear the fromApplicationsManager flag and go back
+                    // Clear the fromApplicationsManager flag and navigate to applications manager
                     sessionStorage.removeItem("fromApplicationsManager");
-                    window.history.back();
+                    navigate("/applications-manager");
                   }}
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
