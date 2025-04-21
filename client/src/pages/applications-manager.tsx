@@ -26,7 +26,9 @@ import {
   XCircle,
   Loader2,
   AlertTriangle,
-  Trash2
+  Trash2,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { Helmet } from "react-helmet";
 import {
@@ -57,6 +59,7 @@ export default function ApplicationsManagerPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [applicationToUpdate, setApplicationToUpdate] = useState<{id: number, status: string} | null>(null);
   const [applicationToDelete, setApplicationToDelete] = useState<number | null>(null);
+  const [expandedApplicationId, setExpandedApplicationId] = useState<number | null>(null);
   
   // Redirect if not logged in or not an employer
   useEffect(() => {
@@ -173,6 +176,15 @@ export default function ApplicationsManagerPage() {
     setApplicationToDelete(applicationId);
   };
   
+  // Toggle expanded application
+  const toggleApplicationExpanded = (applicationId: number) => {
+    if (expandedApplicationId === applicationId) {
+      setExpandedApplicationId(null);
+    } else {
+      setExpandedApplicationId(applicationId);
+    }
+  };
+  
   // Filter applications based on active tab
   const getFilteredApplications = () => {
     if (!applications) return [];
@@ -246,263 +258,301 @@ export default function ApplicationsManagerPage() {
                       </p>
                     </div>
                   ) : (
-                    filteredApplications.map((application) => (
-                      <Card key={application.id} className="overflow-hidden">
-                        <div className="border-l-4 border-primary">
-                          <CardHeader className="bg-gray-50 pb-4">
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                              <div>
-                                <CardTitle className="text-xl">{application.job.title}</CardTitle>
-                                <div className="flex items-center mt-2 text-gray-600">
-                                  <Building className="h-4 w-4 mr-1" />
-                                  <span>{application.job.company}</span>
+                    filteredApplications.map((application) => {
+                      const isExpanded = expandedApplicationId === application.id;
+                      return (
+                        <Card 
+                          key={application.id} 
+                          className={`overflow-hidden transition-all duration-200 ${isExpanded ? '' : 'hover:shadow-md'}`}
+                          onClick={() => toggleApplicationExpanded(application.id)}
+                        >
+                          <div className="border-l-4 border-primary cursor-pointer">
+                            <CardHeader className="bg-gray-50 pb-4">
+                              <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                                <div className="flex items-center gap-2">
+                                  <div>
+                                    <CardTitle className="text-xl">{application.job.title}</CardTitle>
+                                    <div className="flex items-center mt-2 text-gray-600">
+                                      <User className="h-4 w-4 mr-1" />
+                                      <span>{application.jobSeeker.firstName} {application.jobSeeker.lastName}</span>
+                                    </div>
+                                  </div>
+                                  {isExpanded ? (
+                                    <ChevronUp className="h-5 w-5 text-gray-400" />
+                                  ) : (
+                                    <ChevronDown className="h-5 w-5 text-gray-400" />
+                                  )}
                                 </div>
-                              </div>
-                              <div className="mt-4 md:mt-0">
-                                {getStatusBadge(application.status || 'new')}
-                                <p className="text-sm text-gray-500 mt-1">
-                                  Applied on {formatDate(application.appliedDate)}
-                                </p>
-                              </div>
-                            </div>
-                          </CardHeader>
-                          
-                          <CardContent className="pt-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                              <div>
-                                <h3 className="font-medium mb-3">Job Details</h3>
-                                <div className="flex flex-wrap gap-y-2 gap-x-6">
-                                  <div className="flex items-center text-gray-600">
-                                    <MapPin className="h-4 w-4 mr-1" />
-                                    <span>{application.job.location}</span>
-                                  </div>
-                                  <div className="flex items-center text-gray-600">
-                                    <Briefcase className="h-4 w-4 mr-1" />
-                                    <span>{application.job.jobType}</span>
-                                  </div>
-                                  <div className="flex items-center text-gray-600">
-                                    <Calendar className="h-4 w-4 mr-1" />
-                                    <span>Posted: {application.job.postedDate && formatDate(application.job.postedDate)}</span>
-                                  </div>
-                                </div>
-                              </div>
-                              
-                              <div>
-                                <h3 className="font-medium mb-3">Applicant Details</h3>
-                                <div className="space-y-2">
-                                  <div className="flex items-center text-gray-600">
-                                    <User className="h-4 w-4 mr-2" />
-                                    <span>{application.jobSeeker.firstName} {application.jobSeeker.lastName}</span>
-                                  </div>
-                                  <div className="flex items-center text-gray-600">
-                                    <Mail className="h-4 w-4 mr-2" />
-                                    <span>Contact email available in messages</span>
-                                  </div>
-                                  <div className="flex items-center text-gray-600">
-                                    <Phone className="h-4 w-4 mr-2" />
-                                    <span>{application.jobSeeker.phoneNumber}</span>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            
-                            {application.coverLetter && (
-                              <div className="mb-6">
-                                <h3 className="font-medium mb-2">Cover Letter:</h3>
-                                <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
-                                  <p className="text-gray-700 whitespace-pre-line">
-                                    {application.coverLetter}
+                                <div className="mt-4 md:mt-0 flex items-center gap-3">
+                                  {getStatusBadge(application.status || 'new')}
+                                  <p className="text-sm text-gray-500">
+                                    Applied: {formatDate(application.appliedDate)}
                                   </p>
                                 </div>
                               </div>
-                            )}
+                            </CardHeader>
                             
-                            <div className="mb-6">
-                              <h3 className="font-medium mb-2">Resume:</h3>
-                              <div className="bg-gray-50 p-4 rounded-md border border-gray-200 flex items-center justify-between">
-                                <div className="flex items-center">
-                                  <FileText className="h-5 w-5 text-primary mr-2" />
-                                  <span className="text-gray-700">
-                                    {application.jobSeeker.firstName}_{application.jobSeeker.lastName}_Resume.pdf
-                                  </span>
+                            {isExpanded && (
+                              <CardContent className="pt-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                  <div>
+                                    <h3 className="font-medium mb-3">Job Details</h3>
+                                    <div className="flex flex-wrap gap-y-2 gap-x-6">
+                                      <div className="flex items-center text-gray-600">
+                                        <Building className="h-4 w-4 mr-1" />
+                                        <span>{application.job.company}</span>
+                                      </div>
+                                      <div className="flex items-center text-gray-600">
+                                        <MapPin className="h-4 w-4 mr-1" />
+                                        <span>{application.job.location}</span>
+                                      </div>
+                                      <div className="flex items-center text-gray-600">
+                                        <Briefcase className="h-4 w-4 mr-1" />
+                                        <span>{application.job.jobType}</span>
+                                      </div>
+                                      <div className="flex items-center text-gray-600">
+                                        <Calendar className="h-4 w-4 mr-1" />
+                                        <span>Posted: {application.job.postedDate && formatDate(application.job.postedDate)}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  <div>
+                                    <h3 className="font-medium mb-3">Applicant Details</h3>
+                                    <div className="space-y-2">
+                                      <div className="flex items-center text-gray-600">
+                                        <User className="h-4 w-4 mr-2" />
+                                        <span>{application.jobSeeker.firstName} {application.jobSeeker.lastName}</span>
+                                      </div>
+                                      <div className="flex items-center text-gray-600">
+                                        <Mail className="h-4 w-4 mr-2" />
+                                        <span>Contact email available in messages</span>
+                                      </div>
+                                      <div className="flex items-center text-gray-600">
+                                        <Phone className="h-4 w-4 mr-2" />
+                                        <span>{application.jobSeeker.phoneNumber}</span>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
-                                <Button variant="outline" size="sm">
-                                  <DownloadCloud className="h-4 w-4 mr-2" />
-                                  Download
-                                </Button>
-                              </div>
-                            </div>
-                            
-                            <Separator className="my-4" />
-                            
-                            <div className="flex justify-between items-center">
-                              <div className="flex gap-2">
-                                <AlertDialog open={applicationToUpdate?.id === application.id && applicationToUpdate?.status === "shortlisted"}>
-                                  <AlertDialogTrigger asChild>
+                                
+                                {application.coverLetter && (
+                                  <div className="mb-6">
+                                    <h3 className="font-medium mb-2">Cover Letter:</h3>
+                                    <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
+                                      <p className="text-gray-700 whitespace-pre-line">
+                                        {application.coverLetter}
+                                      </p>
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                <div className="mb-6">
+                                  <h3 className="font-medium mb-2">Resume:</h3>
+                                  <div className="bg-gray-50 p-4 rounded-md border border-gray-200 flex items-center justify-between">
+                                    <div className="flex items-center">
+                                      <FileText className="h-5 w-5 text-primary mr-2" />
+                                      <span className="text-gray-700">
+                                        {application.jobSeeker.firstName}_{application.jobSeeker.lastName}_Resume.pdf
+                                      </span>
+                                    </div>
                                     <Button 
                                       variant="outline" 
-                                      className="text-green-600 border-green-200 hover:bg-green-50"
-                                      onClick={() => handleStatusUpdate(application.id, "shortlisted")}
-                                      disabled={application.status === "shortlisted"}
+                                      size="sm"
+                                      onClick={(e) => e.stopPropagation()}
                                     >
-                                      <CheckCircle className="h-4 w-4 mr-2" />
-                                      Shortlist
+                                      <DownloadCloud className="h-4 w-4 mr-2" />
+                                      Download
                                     </Button>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Shortlist This Candidate</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        Are you sure you want to shortlist {application.jobSeeker.firstName} {application.jobSeeker.lastName} for the position of {application.job.title}?
-                                        <br /><br />
-                                        This will move their application to the shortlisted status.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel onClick={() => setApplicationToUpdate(null)}>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction 
-                                        onClick={() => updateApplicationStatusMutation.mutate({ id: application.id, status: "shortlisted" })}
-                                        disabled={updateApplicationStatusMutation.isPending}
-                                        className="bg-green-600 hover:bg-green-700"
-                                      >
-                                        {updateApplicationStatusMutation.isPending ? (
-                                          <>
-                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                            Processing...
-                                          </>
-                                        ) : (
-                                          "Confirm Shortlist"
-                                        )}
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
+                                  </div>
+                                </div>
                                 
-                                <AlertDialog open={applicationToUpdate?.id === application.id && applicationToUpdate?.status === "rejected"}>
-                                  <AlertDialogTrigger asChild>
-                                    <Button 
-                                      variant="outline" 
-                                      className="text-red-600 border-red-200 hover:bg-red-50"
-                                      onClick={() => handleStatusUpdate(application.id, "rejected")}
-                                      disabled={application.status === "rejected"}
+                                <Separator className="my-4" />
+                                
+                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                  <div className="flex flex-wrap gap-2">
+                                    <AlertDialog open={applicationToUpdate?.id === application.id && applicationToUpdate?.status === "shortlisted"}>
+                                      <AlertDialogTrigger asChild>
+                                        <Button 
+                                          variant="outline" 
+                                          className="text-green-600 border-green-200 hover:bg-green-50"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleStatusUpdate(application.id, "shortlisted");
+                                          }}
+                                          disabled={application.status === "shortlisted"}
+                                        >
+                                          <CheckCircle className="h-4 w-4 mr-2" />
+                                          Shortlist
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle>Shortlist This Candidate</AlertDialogTitle>
+                                          <AlertDialogDescription>
+                                            Are you sure you want to shortlist {application.jobSeeker.firstName} {application.jobSeeker.lastName} for the position of {application.job.title}?
+                                            <br /><br />
+                                            This will move their application to the shortlisted status.
+                                          </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                          <AlertDialogCancel onClick={() => setApplicationToUpdate(null)}>Cancel</AlertDialogCancel>
+                                          <AlertDialogAction 
+                                            onClick={() => updateApplicationStatusMutation.mutate({ id: application.id, status: "shortlisted" })}
+                                            disabled={updateApplicationStatusMutation.isPending}
+                                            className="bg-green-600 hover:bg-green-700"
+                                          >
+                                            {updateApplicationStatusMutation.isPending ? (
+                                              <>
+                                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                                Processing...
+                                              </>
+                                            ) : (
+                                              "Confirm Shortlist"
+                                            )}
+                                          </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
+                                    
+                                    <AlertDialog open={applicationToUpdate?.id === application.id && applicationToUpdate?.status === "rejected"}>
+                                      <AlertDialogTrigger asChild>
+                                        <Button 
+                                          variant="outline" 
+                                          className="text-red-600 border-red-200 hover:bg-red-50"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleStatusUpdate(application.id, "rejected");
+                                          }}
+                                          disabled={application.status === "rejected"}
+                                        >
+                                          <XCircle className="h-4 w-4 mr-2" />
+                                          Reject
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle>Reject This Application</AlertDialogTitle>
+                                          <AlertDialogDescription>
+                                            Are you sure you want to reject {application.jobSeeker.firstName} {application.jobSeeker.lastName}'s application for the position of {application.job.title}?
+                                            <br /><br />
+                                            This will move their application to the rejected status.
+                                          </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                          <AlertDialogCancel onClick={() => setApplicationToUpdate(null)}>Cancel</AlertDialogCancel>
+                                          <AlertDialogAction 
+                                            onClick={() => updateApplicationStatusMutation.mutate({ id: application.id, status: "rejected" })}
+                                            disabled={updateApplicationStatusMutation.isPending}
+                                            className="bg-red-600 hover:bg-red-700"
+                                          >
+                                            {updateApplicationStatusMutation.isPending ? (
+                                              <>
+                                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                                Processing...
+                                              </>
+                                            ) : (
+                                              "Confirm Rejection"
+                                            )}
+                                          </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
+                                    
+                                    <Button
+                                      variant="outline"
+                                      className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        updateApplicationStatusMutation.mutate({ id: application.id, status: "viewed" });
+                                      }}
+                                      disabled={application.status === "viewed" || updateApplicationStatusMutation.isPending}
                                     >
-                                      <XCircle className="h-4 w-4 mr-2" />
-                                      Reject
+                                      {updateApplicationStatusMutation.isPending && applicationToUpdate?.id === application.id ? (
+                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                      ) : (
+                                        <>Mark as Viewed</>
+                                      )}
                                     </Button>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Reject This Application</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        Are you sure you want to reject {application.jobSeeker.firstName} {application.jobSeeker.lastName}'s application for the position of {application.job.title}?
-                                        <br /><br />
-                                        This will move their application to the rejected status.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel onClick={() => setApplicationToUpdate(null)}>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction 
-                                        onClick={() => updateApplicationStatusMutation.mutate({ id: application.id, status: "rejected" })}
-                                        disabled={updateApplicationStatusMutation.isPending}
-                                        className="bg-red-600 hover:bg-red-700"
-                                      >
-                                        {updateApplicationStatusMutation.isPending ? (
-                                          <>
-                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                            Processing...
-                                          </>
-                                        ) : (
-                                          "Confirm Rejection"
-                                        )}
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                                
-                                <Button
-                                  variant="outline"
-                                  className="text-blue-600 border-blue-200 hover:bg-blue-50"
-                                  onClick={() => updateApplicationStatusMutation.mutate({ id: application.id, status: "viewed" })}
-                                  disabled={application.status === "viewed" || updateApplicationStatusMutation.isPending}
-                                >
-                                  {updateApplicationStatusMutation.isPending && applicationToUpdate?.id === application.id ? (
-                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                  ) : (
-                                    <>Mark as Viewed</>
-                                  )}
-                                </Button>
-                              </div>
-                              
-                              <div className="flex gap-2">
-                                <Button
-                                  variant="outline"
-                                  className="text-primary border-primary hover:bg-primary/5"
-                                  onClick={() => navigate(`/job/${application.jobId}`)}
-                                >
-                                  <ExternalLink className="h-4 w-4 mr-2" />
-                                  View Job Details
-                                </Button>
-                                
-                                <AlertDialog open={applicationToDelete === application.id}>
-                                  <AlertDialogTrigger asChild>
-                                    <Button 
-                                      variant="outline" 
-                                      className="text-red-600 border-red-200 hover:bg-red-50"
-                                      onClick={() => handleDeleteApplication(application.id)}
+                                  </div>
+                                  
+                                  <div className="flex gap-2">
+                                    <Button
+                                      variant="outline"
+                                      className="text-primary border-primary hover:bg-primary/5"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate(`/job/${application.jobId}`);
+                                      }}
                                     >
-                                      <Trash2 className="h-4 w-4 mr-2" />
-                                      Delete
+                                      <ExternalLink className="h-4 w-4 mr-2" />
+                                      View Job Details
                                     </Button>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Delete This Application</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        Are you sure you want to delete {application.jobSeeker.firstName} {application.jobSeeker.lastName}'s application for the position of {application.job.title}?
-                                        <br /><br />
-                                        This action cannot be undone. The application will be permanently removed from your system.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel onClick={() => setApplicationToDelete(null)}>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction 
-                                        onClick={() => deleteApplicationMutation.mutate(application.id)}
-                                        disabled={deleteApplicationMutation.isPending}
-                                        className="bg-red-600 hover:bg-red-700"
-                                      >
-                                        {deleteApplicationMutation.isPending ? (
-                                          <>
-                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                            Deleting...
-                                          </>
-                                        ) : (
-                                          "Delete Application"
-                                        )}
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </div>
-                      </Card>
-                    ))
+                                    
+                                    <AlertDialog open={applicationToDelete === application.id}>
+                                      <AlertDialogTrigger asChild>
+                                        <Button 
+                                          variant="outline" 
+                                          className="text-red-600 border-red-200 hover:bg-red-50"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDeleteApplication(application.id);
+                                          }}
+                                        >
+                                          <Trash2 className="h-4 w-4 mr-2" />
+                                          Delete
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle>Delete This Application</AlertDialogTitle>
+                                          <AlertDialogDescription>
+                                            Are you sure you want to delete {application.jobSeeker.firstName} {application.jobSeeker.lastName}'s application for the position of {application.job.title}?
+                                            <br /><br />
+                                            This action cannot be undone. The application will be permanently removed from your system.
+                                          </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                          <AlertDialogCancel onClick={() => setApplicationToDelete(null)}>Cancel</AlertDialogCancel>
+                                          <AlertDialogAction 
+                                            onClick={() => deleteApplicationMutation.mutate(application.id)}
+                                            disabled={deleteApplicationMutation.isPending}
+                                            className="bg-red-600 hover:bg-red-700"
+                                          >
+                                            {deleteApplicationMutation.isPending ? (
+                                              <>
+                                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                                Deleting...
+                                              </>
+                                            ) : (
+                                              "Delete Application"
+                                            )}
+                                          </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            )}
+                          </div>
+                        </Card>
+                      );
+                    })
                   )}
                 </div>
               </TabsContent>
             </Tabs>
           </>
         ) : (
-          <div className="text-center py-16 bg-gray-50 rounded-lg border border-gray-200">
-            <Search className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-xl font-medium mb-2">No applications yet</h3>
-            <p className="text-gray-600 mb-6">
-              You haven't received any applications for your job postings yet.
+          <div className="text-center py-16">
+            <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+              <Search className="h-10 w-10 text-gray-400" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">No Applications Yet</h2>
+            <p className="text-gray-600 max-w-md mx-auto mb-8">
+              You don't have any applications for your job postings yet. Applications will appear here once candidates start applying.
             </p>
-            <Button onClick={() => navigate("/employer/jobs")}>
-              View My Jobs
-            </Button>
           </div>
         )}
       </div>
