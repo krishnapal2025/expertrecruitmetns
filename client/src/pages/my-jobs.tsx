@@ -160,7 +160,7 @@ export default function MyJobsPage() {
         <Separator />
         
         <CardFooter className="pt-3 flex justify-between">
-          <div>
+          <div className="flex space-x-2">
             <Button 
               variant="outline" 
               size="sm" 
@@ -168,6 +168,16 @@ export default function MyJobsPage() {
             >
               <ExternalLink className="h-4 w-4 mr-1" />
               View
+            </Button>
+            
+            <Button 
+              variant="default" 
+              size="sm"
+              className="bg-primary/10 hover:bg-primary/20 text-primary hover:text-primary border border-primary/20"
+              onClick={() => setLocation(`/applications-manager?job=${job.id}`)}
+            >
+              <Users className="h-4 w-4 mr-1" />
+              {job.applicationCount ? `View Applications (${job.applicationCount})` : "View Applications"}
             </Button>
           </div>
           

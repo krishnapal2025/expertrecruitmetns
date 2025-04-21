@@ -53,11 +53,15 @@ type ApplicationWithJob = Application & {
 export default function ApplicationsManager() {
   const { currentUser } = useAuth();
   const { toast } = useToast();
-  const [_, navigate] = useLocation();
+  const [location, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("all");
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<ApplicationWithJob | null>(null);
   const [actionType, setActionType] = useState<"shortlist" | "reject">("shortlist");
+  
+  // Extract job ID from query parameter if present
+  const jobIdParam = new URLSearchParams(location.split('?')[1]).get('job');
+  const specificJobId = jobIdParam ? parseInt(jobIdParam) : null;
 
   // Fetch applications
   const { data: applications, isLoading } = useQuery<ApplicationWithJob[]>({
@@ -135,8 +139,14 @@ export default function ApplicationsManager() {
     });
   };
 
-  // Filter applications based on active tab
+  // Filter applications based on active tab and specific job if provided
   const filteredApplications = applications?.filter((app) => {
+    // First filter by job ID if specified
+    if (specificJobId !== null && app.jobId !== specificJobId) {
+      return false;
+    }
+    
+    // Then filter by status tab
     if (activeTab === "all") return true;
     return app.status === activeTab;
   });
@@ -183,23 +193,57 @@ export default function ApplicationsManager() {
     return null; // Will redirect due to ProtectedRoute
   }
   
+  // Get job title if a specific job is being viewed
+  const specificJob = specificJobId !== null && applications?.length 
+    ? applications.find(app => app.jobId === specificJobId)?.job
+    : null;
+    
   // Count applications by status
-  const newCount = applications?.filter(app => app.status === "new").length || 0;
-  const viewedCount = applications?.filter(app => app.status === "viewed").length || 0;
-  const shortlistedCount = applications?.filter(app => app.status === "shortlisted").length || 0;
-  const rejectedCount = applications?.filter(app => app.status === "rejected").length || 0;
+  // If a specific job is selected, filter application counts by that job
+  const filteredForCounts = specificJobId !== null && applications
+    ? applications.filter(app => app.jobId === specificJobId)
+    : applications;
+    
+  const newCount = filteredForCounts?.filter(app => app.status === "new").length || 0;
+  const viewedCount = filteredForCounts?.filter(app => app.status === "viewed").length || 0;
+  const shortlistedCount = filteredForCounts?.filter(app => app.status === "shortlisted").length || 0;
+  const rejectedCount = filteredForCounts?.filter(app => app.status === "rejected").length || 0;
 
   return (
     <>
       <div className="container max-w-6xl py-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
           <div>
             <h1 className="text-3xl font-bold mb-2">Manage Applications</h1>
             <p className="text-gray-600">
               Review, shortlist and respond to candidate applications for your job listings.
             </p>
           </div>
+          
+          {/* Back button for job-specific view */}
+          {specificJobId && (
+            <Button 
+              variant="ghost" 
+              className="mt-4 md:mt-0" 
+              onClick={() => navigate("/applications-manager")}
+            >
+              View All Applications
+            </Button>
+          )}
         </div>
+        
+        {/* Job title header when viewing applications for a specific job */}
+        {specificJob && (
+          <div className="bg-gray-50 p-4 rounded-lg border mb-6">
+            <div className="flex items-center gap-2">
+              <Briefcase className="h-5 w-5 text-primary" />
+              <h2 className="text-xl font-semibold">Applications for: {specificJob.title}</h2>
+            </div>
+            <p className="text-gray-600 mt-1 ml-7">
+              {specificJob.company} • {specificJob.location}
+            </p>
+          </div>
+        )}
 
         {isLoading ? (
           <div className="flex justify-center items-center py-20">
@@ -210,7 +254,7 @@ export default function ApplicationsManager() {
             <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="mb-6">
                 <TabsTrigger value="all">
-                  All ({applications.length})
+                  All ({filteredApplications?.length || 0})
                 </TabsTrigger>
                 <TabsTrigger value="new">
                   New ({newCount})
@@ -336,7 +380,7 @@ export default function ApplicationsManager() {
                               <Button
                                 variant="outline"
                                 className="text-primary border-primary hover:bg-primary/5"
-                                onClick={() => navigate(`/job/${application.jobId}`)}
+                                onClick={() => navigate(`/jobs/${application.jobId}`)}
                               >
                                 <ExternalLink className="h-4 w-4 mr-2" />
                                 View Job Details
@@ -357,13 +401,35 @@ export default function ApplicationsManager() {
         ) : (
           <div className="text-center py-16 bg-gray-50 rounded-lg border border-gray-200">
             <Search className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-xl font-medium mb-2">No applications yet</h3>
+            <h3 className="text-xl font-medium mb-2">
+              {specificJob 
+                ? `No applications for ${specificJob.title}` 
+                : "No applications yet"
+              }
+            </h3>
             <p className="text-gray-600 mb-6">
-              You don't have any applications for your job listings yet.
+              {specificJob
+                ? `You don't have any applications for this job listing yet.`
+                : `You don't have any applications for your job listings yet.`
+              }
             </p>
-            <Button onClick={() => navigate("/post-job")}>
-              Post a New Job
-            </Button>
+            {specificJob ? (
+              <div className="space-x-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigate(`/jobs/${specificJobId}`)}
+                >
+                  View Job Details
+                </Button>
+                <Button onClick={() => navigate("/applications-manager")}>
+                  View All Applications
+                </Button>
+              </div>
+            ) : (
+              <Button onClick={() => navigate("/post-job")}>
+                Post a New Job
+              </Button>
+            )}
           </div>
         )}
       </div>
