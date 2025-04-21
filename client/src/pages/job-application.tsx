@@ -42,6 +42,9 @@ const ApplicationFormSchema = z.object({
   portfolioUrl: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
   relocation: z.enum(["yes", "no", "flexible"]),
   referenceContacts: z.string().optional(),
+  confirmApplication: z.boolean().refine(val => val === true, {
+    message: "You must confirm your application details before submitting"
+  }),
 });
 
 type ApplicationFormValues = z.infer<typeof ApplicationFormSchema>;
@@ -111,6 +114,7 @@ export default function JobApplicationPage() {
       portfolioUrl: "",
       relocation: "flexible",
       referenceContacts: "",
+      confirmApplication: false,
     }
   });
   
@@ -685,6 +689,38 @@ export default function JobApplicationPage() {
                               )}
                             />
                             
+                            <div className="bg-gray-50 border p-4 rounded-lg mb-6">
+                              <h4 className="font-semibold text-gray-800 mb-2">Application Confirmation</h4>
+                              <p className="text-sm text-gray-600 mb-4">
+                                Before submitting your application, please review all information for accuracy. By checking the box below, 
+                                you confirm that all information provided is accurate and complete.
+                              </p>
+                              
+                              <FormField
+                                control={form.control}
+                                name="confirmApplication"
+                                render={({ field }) => (
+                                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                    <FormControl>
+                                      <input
+                                        type="checkbox"
+                                        checked={field.value}
+                                        onChange={field.onChange}
+                                        className="h-4 w-4 mt-1 rounded border-gray-300 text-primary focus:ring-primary"
+                                      />
+                                    </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                      <FormLabel className="text-sm font-medium leading-none">
+                                        I confirm that all information provided in this application is true and accurate. I understand that any false 
+                                        information may result in the rejection of my application.
+                                      </FormLabel>
+                                      <FormMessage />
+                                    </div>
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                            
                             <div className="flex justify-between">
                               <Button 
                                 type="button" 
@@ -696,7 +732,7 @@ export default function JobApplicationPage() {
                               <Button 
                                 type="submit"
                                 className="bg-primary hover:bg-primary/90"
-                                disabled={isSubmitting || applicationMutation.isPending}
+                                disabled={!form.watch("confirmApplication") || isSubmitting || applicationMutation.isPending}
                               >
                                 {(isSubmitting || applicationMutation.isPending) && (
                                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
