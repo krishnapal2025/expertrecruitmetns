@@ -18,7 +18,7 @@ import ResetPasswordPage from "@/pages/reset-password";
 import JobSeekerRegisterPage from "@/pages/job-seeker-register";
 import EmployerRegisterPage from "@/pages/employer-register";
 import JobDetailsPage from "@/pages/job-details";
-import JobApplicationPage from "@/pages/job-application-fixed";
+import JobApplicationPage from "@/pages/job-application";
 import HireTalentPage from "@/pages/hire-talent";
 import SEOInsightsPage from "@/pages/seo-insights";
 import ProfilePage from "@/pages/profile-page";

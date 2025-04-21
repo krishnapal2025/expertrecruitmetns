@@ -58,7 +58,6 @@ export interface IStorage {
   getApplicationsByJobId(jobId: number): Promise<Application[]>;
   getApplicationsByJobSeekerId(jobSeekerId: number): Promise<Application[]>;
   createApplication(application: InsertApplication): Promise<Application>;
-  updateApplication(application: Application): Promise<Application>;
   
   // Testimonial methods
   getTestimonial(id: number): Promise<Testimonial | undefined>;
@@ -286,15 +285,6 @@ export class DatabaseStorage implements IStorage {
     } finally {
       client.release();
     }
-  }
-  
-  async updateApplication(updatedApplication: Application): Promise<Application> {
-    const [application] = await db
-      .update(applications)
-      .set(updatedApplication)
-      .where(eq(applications.id, updatedApplication.id))
-      .returning();
-    return application;
   }
   
   // Testimonial methods
@@ -676,20 +666,9 @@ export class MemStorage implements IStorage {
       id, 
       appliedDate: now,
       coverLetter: insertApplication.coverLetter || null,
-      status: "new" // Changed from pending to new
+      status: "pending"
     };
     this.applications.set(id, application);
-    return application;
-  }
-  
-  async updateApplication(application: Application): Promise<Application> {
-    // Check if the application exists
-    if (!this.applications.has(application.id)) {
-      throw new Error('Application not found');
-    }
-    
-    // Update in the Map
-    this.applications.set(application.id, application);
     return application;
   }
 
