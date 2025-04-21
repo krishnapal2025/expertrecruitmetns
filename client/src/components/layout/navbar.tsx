@@ -109,7 +109,7 @@ export default function Navbar() {
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
         { name: "Hire Talent", href: "/hire-talent" },
-        { name: "My Jobs", href: "/my-jobs" },
+        { name: "Post Manager", href: "/my-jobs" },
         { name: "Applications Manager", href: "/applications-manager" },
         { name: "Blogs", href: "/blogs" },
         { name: "Contact Us", href: "/contact-us" },
@@ -212,7 +212,7 @@ export default function Navbar() {
                         <Link href="/my-jobs">
                           <DropdownMenuItem>
                             <Briefcase className="mr-2 h-4 w-4" />
-                            <span>Posted Jobs</span>
+                            <span>Post Manager</span>
                           </DropdownMenuItem>
                         </Link>
                         <Link href="/applications-manager">
@@ -389,7 +389,7 @@ export default function Navbar() {
                               <Link href="/my-jobs">
                                 <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
                                   <Briefcase className="mr-2 h-4 w-4" />
-                                  Posted Jobs
+                                  Post Manager
                                 </div>
                               </Link>
                             </SheetClose>

@@ -23,7 +23,7 @@ import HireTalentPage from "@/pages/hire-talent";
 import SEOInsightsPage from "@/pages/seo-insights";
 import ProfilePage from "@/pages/profile-page";
 import PostJobPage from "@/pages/post-job";
-import MyJobsPage from "@/pages/my-jobs";
+import PostManagerPage from "@/pages/post-manager";
 import EditJobPage from "@/pages/edit-job";
 import JobServicesPage from "@/pages/job-services";
 import AppliedJobsPage from "@/pages/applied-jobs";
@@ -74,7 +74,7 @@ function Router() {
       <Route path="/seo-insights" component={SEOInsightsPage} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
       <ProtectedRoute path="/post-job" component={PostJobPage} />
-      <ProtectedRoute path="/my-jobs" component={MyJobsPage} />
+      <ProtectedRoute path="/my-jobs" component={PostManagerPage} />
       <ProtectedRoute path="/job-services" component={JobServicesPage} />
       <ProtectedRoute path="/applied-jobs" component={AppliedJobsPage} />
       <ProtectedRoute path="/applications-manager" component={ApplicationsManagerPage} />
