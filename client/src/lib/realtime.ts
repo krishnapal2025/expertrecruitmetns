@@ -47,16 +47,23 @@ const realtimeState = {
 async function pollJobs(): Promise<void> {
   try {
     const response = await apiRequest("GET", `/api/realtime/jobs?since=${realtimeState.lastJobId}`);
+    
+    // Skip if not OK
+    if (!response.ok) {
+      return;
+    }
+    
     const data: RealtimeJobsResponse = await response.json();
     
     // Update our last seen job ID
     realtimeState.lastJobId = data.lastId;
     
     // If we have new jobs and a callback is registered, call it
-    if (data.jobs.length > 0 && realtimeState.callbacks.onNewJobs) {
+    if (data.jobs && data.jobs.length > 0 && realtimeState.callbacks.onNewJobs) {
       realtimeState.callbacks.onNewJobs(data.jobs);
     }
   } catch (error) {
+    // Log the error but don't display it to the user as this is a background operation
     console.error("Error polling for new jobs:", error);
   }
 }
@@ -68,8 +75,8 @@ async function pollApplications(): Promise<void> {
   try {
     const response = await apiRequest("GET", `/api/realtime/applications?since=${realtimeState.lastApplicationId}`);
     
-    // If we get a 403, user is not an employer, just skip silently
-    if (response.status === 403) {
+    // Skip if we get 401 or 403 error (not logged in or not an employer)
+    if (response.status === 401 || response.status === 403) {
       return;
     }
     
@@ -84,14 +91,11 @@ async function pollApplications(): Promise<void> {
     realtimeState.lastApplicationId = data.lastId;
     
     // If we have new applications and a callback is registered, call it
-    if (data.applications.length > 0 && realtimeState.callbacks.onNewApplications) {
+    if (data.applications && data.applications.length > 0 && realtimeState.callbacks.onNewApplications) {
       realtimeState.callbacks.onNewApplications(data.applications);
     }
   } catch (error) {
-    // Skip authentication errors (user not logged in)
-    if (error instanceof Error && error.message.includes("401")) {
-      return;
-    }
+    // Log the error but don't display it to the user as this is a background operation
     console.error("Error polling for new applications:", error);
   }
 }
@@ -103,7 +107,7 @@ async function pollNotifications(): Promise<void> {
   try {
     const response = await apiRequest("GET", `/api/realtime/notifications?since=${realtimeState.lastNotificationId}`);
     
-    // Handle auth errors silently
+    // Skip if not logged in
     if (response.status === 401) {
       return;
     }
@@ -119,10 +123,11 @@ async function pollNotifications(): Promise<void> {
     realtimeState.lastNotificationId = data.lastId;
     
     // If we have new notifications and a callback is registered, call it
-    if (data.notifications.length > 0 && realtimeState.callbacks.onNewNotifications) {
+    if (data.notifications && data.notifications.length > 0 && realtimeState.callbacks.onNewNotifications) {
       realtimeState.callbacks.onNewNotifications(data.notifications);
     }
   } catch (error) {
+    // Log the error but don't display it to the user as this is a background operation
     console.error("Error polling for new notifications:", error);
   }
 }
