@@ -58,6 +58,7 @@ export interface IStorage {
   getApplicationsByJobId(jobId: number): Promise<Application[]>;
   getApplicationsByJobSeekerId(jobSeekerId: number): Promise<Application[]>;
   createApplication(application: InsertApplication): Promise<Application>;
+  deleteApplication(id: number): Promise<boolean>;
   
   // Testimonial methods
   getTestimonial(id: number): Promise<Testimonial | undefined>;
@@ -279,6 +280,42 @@ export class DatabaseStorage implements IStorage {
       
       await client.query('COMMIT');
       return application;
+    } catch (e) {
+      await client.query('ROLLBACK');
+      throw e;
+    } finally {
+      client.release();
+    }
+  }
+  
+  async deleteApplication(id: number): Promise<boolean> {
+    // Start a transaction to update both the application and job
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      
+      // Get the application to find the associated job
+      const application = await this.getApplication(id);
+      if (!application) {
+        return false;
+      }
+      
+      // Delete the application
+      const result = await db.delete(applications).where(eq(applications.id, id));
+      
+      if (result.rowCount > 0) {
+        // Decrement the job application count
+        await db
+          .update(jobs)
+          .set({ applications: sql`GREATEST(${jobs.applications} - 1, 0)` }) // Ensure count doesn't go below 0
+          .where(eq(jobs.id, application.jobId));
+        
+        await client.query('COMMIT');
+        return true;
+      }
+      
+      await client.query('ROLLBACK');
+      return false;
     } catch (e) {
       await client.query('ROLLBACK');
       throw e;
