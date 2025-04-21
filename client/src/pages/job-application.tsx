@@ -338,7 +338,7 @@ export default function JobApplicationPage() {
                     <TabsList className="grid grid-cols-3 mb-6">
                       <TabsTrigger value="details">Personal Details</TabsTrigger>
                       <TabsTrigger value="experience">Experience & Skills</TabsTrigger>
-                      <TabsTrigger value="confirmation" disabled={!applicationComplete}>Confirmation</TabsTrigger>
+                      <TabsTrigger value="confirmation">Confirmation</TabsTrigger>
                     </TabsList>
                     
                     <Form {...form}>
@@ -547,16 +547,11 @@ export default function JobApplicationPage() {
                                           <Input 
                                             placeholder={`e.g. 15,000 - 20,000 ${selectedCurrency}/month`} 
                                             {...field} 
-                                            onChange={(e) => {
-                                              // Remove any existing currency codes
-                                              const value = e.target.value.replace(/AED|USD|EUR|GBP|SAR|QAR|BHD|KWD|OMR|INR/g, '').trim();
-                                              field.onChange(value);
-                                            }}
                                           />
                                         </FormControl>
                                       </div>
                                     </div>
-                                    <FormDescription className="text-xs text-gray-500 mt-1">
+                                    <FormDescription>
                                       {getCurrencyDescription(selectedCurrency)}
                                     </FormDescription>
                                     <FormMessage />
@@ -565,15 +560,39 @@ export default function JobApplicationPage() {
                               />
                             </div>
                             
+                            <FormField
+                              control={form.control}
+                              name="coverLetter"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Cover Letter *</FormLabel>
+                                  <FormControl>
+                                    <Textarea 
+                                      placeholder="Explain why you're a good fit for this position..." 
+                                      className="min-h-[200px]" 
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <FormDescription>
+                                    Highlight your most relevant skills and experience for this position
+                                  </FormDescription>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <FormField
                                 control={form.control}
                                 name="linkedinProfile"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>LinkedIn Profile URL</FormLabel>
+                                    <FormLabel>LinkedIn Profile</FormLabel>
                                     <FormControl>
-                                      <Input placeholder="https://linkedin.com/in/yourprofile" {...field} />
+                                      <Input 
+                                        placeholder="https://www.linkedin.com/in/your-profile" 
+                                        {...field} 
+                                      />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -585,9 +604,12 @@ export default function JobApplicationPage() {
                                 name="portfolioUrl"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>Portfolio/Website URL</FormLabel>
+                                    <FormLabel>Portfolio/Website</FormLabel>
                                     <FormControl>
-                                      <Input placeholder="https://yourportfolio.com" {...field} />
+                                      <Input 
+                                        placeholder="https://your-website.com" 
+                                        {...field} 
+                                      />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -595,51 +617,56 @@ export default function JobApplicationPage() {
                               />
                             </div>
                             
-                            <FormField
-                              control={form.control}
-                              name="relocation"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Willing to relocate? *</FormLabel>
-                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Select an option" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      <SelectItem value="yes">Yes, I can relocate</SelectItem>
-                                      <SelectItem value="no">No, I cannot relocate</SelectItem>
-                                      <SelectItem value="flexible">Flexible, depending on the offer</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            
-                            <div className="space-y-2">
-                              <FormLabel htmlFor="additionalDocuments">Additional Documents</FormLabel>
-                              <div className="flex items-center justify-center w-full">
-                                <label
-                                  htmlFor="additionalDocuments"
-                                  className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
-                                >
-                                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <Upload className="w-6 h-6 mb-2 text-gray-400" />
-                                    <p className="text-sm text-gray-500">Upload additional documents (optional)</p>
-                                    {additionalFileName && (
-                                      <p className="mt-1 text-sm text-primary font-medium">{additionalFileName}</p>
-                                    )}
-                                  </div>
-                                  <Input
-                                    id="additionalDocuments"
-                                    type="file"
-                                    className="hidden"
-                                    accept=".pdf,.doc,.docx,.jpg,.png"
-                                    onChange={handleAdditionalFileChange}
-                                  />
-                                </label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <FormField
+                                control={form.control}
+                                name="relocation"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Are you willing to relocate?</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                      <FormControl>
+                                        <SelectTrigger>
+                                          <SelectValue placeholder="Select an option" />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="yes">Yes, I can relocate</SelectItem>
+                                        <SelectItem value="no">No, I cannot relocate</SelectItem>
+                                        <SelectItem value="flexible">Flexible / Depends on offer</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              
+                              <div className="space-y-2">
+                                <FormLabel htmlFor="additionalDocs">Additional Documents</FormLabel>
+                                <div className="flex items-center justify-center w-full">
+                                  <label
+                                    htmlFor="additionalDocs"
+                                    className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                                  >
+                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                      <Upload className="w-8 h-8 mb-3 text-gray-400" />
+                                      <p className="mb-2 text-sm text-gray-500">
+                                        <span className="font-semibold">Optional documents</span>
+                                      </p>
+                                      <p className="text-xs text-gray-500">Certificates, references, etc.</p>
+                                      {additionalFileName && (
+                                        <p className="mt-2 text-sm text-primary font-medium">{additionalFileName}</p>
+                                      )}
+                                    </div>
+                                    <Input
+                                      id="additionalDocs"
+                                      type="file"
+                                      className="hidden"
+                                      accept=".pdf,.doc,.docx,.jpg,.png"
+                                      onChange={handleAdditionalFileChange}
+                                    />
+                                  </label>
+                                </div>
                               </div>
                             </div>
                             
@@ -648,37 +675,15 @@ export default function JobApplicationPage() {
                               name="referenceContacts"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>References (optional)</FormLabel>
+                                  <FormLabel>Professional References</FormLabel>
                                   <FormControl>
                                     <Textarea 
-                                      placeholder="Please provide contact details for professional references"
-                                      className="min-h-[80px]"
-                                      {...field}
+                                      placeholder="Name, Company, Position, Email, Phone (Optional)" 
+                                      {...field} 
                                     />
                                   </FormControl>
                                   <FormDescription>
-                                    Include name, company, position, and contact information
-                                  </FormDescription>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            
-                            <FormField
-                              control={form.control}
-                              name="coverLetter"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Cover Letter *</FormLabel>
-                                  <FormControl>
-                                    <Textarea 
-                                      placeholder="Tell the employer why you're a good fit for this position..."
-                                      className="min-h-[200px]"
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormDescription>
-                                    Minimum 50 characters. Explain why you're interested in this position and how your skills match the requirements.
+                                    List any professional references that we can contact
                                   </FormDescription>
                                   <FormMessage />
                                 </FormItem>
@@ -688,64 +693,121 @@ export default function JobApplicationPage() {
                             <div className="flex justify-between">
                               <Button 
                                 type="button" 
-                                variant="outline" 
+                                variant="outline"
                                 onClick={() => setActiveTab("details")}
                               >
-                                Back
+                                Back to Details
                               </Button>
+                              
                               <Button 
-                                type="submit"
+                                type="button" 
+                                onClick={() => setActiveTab("confirmation")}
                                 className="bg-primary hover:bg-primary/90"
-                                disabled={isSubmitting || applicationMutation.isPending}
                               >
-                                {(isSubmitting || applicationMutation.isPending) && (
-                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                )}
-                                {isSubmitting ? "Uploading Files..." : applicationMutation.isPending ? "Submitting..." : "Submit Application"}
+                                Review Application
                               </Button>
                             </div>
                           </div>
                         </TabsContent>
                         
                         <TabsContent value="confirmation" className="mt-0">
-                          <div className="text-center py-12">
-                            <div className="mx-auto w-16 h-16 mb-4 rounded-full bg-green-100 flex items-center justify-center">
-                              <CheckCircle className="h-8 w-8 text-green-600" />
+                          {applicationComplete ? (
+                            <div className="text-center py-12">
+                              <div className="mx-auto w-16 h-16 mb-4 rounded-full bg-green-100 flex items-center justify-center">
+                                <CheckCircle className="h-8 w-8 text-green-600" />
+                              </div>
+                              <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Submitted!</h3>
+                              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                                Your application for <span className="font-semibold">{job.title}</span> at <span className="font-semibold">{employer.companyName}</span> has been successfully submitted.
+                              </p>
+                              
+                              <Card className="max-w-md mx-auto bg-gray-50 border mb-6">
+                                <CardContent className="pt-6">
+                                  <h4 className="font-semibold text-gray-700 mb-2">What happens next?</h4>
+                                  <ol className="text-left space-y-2 text-sm text-gray-600">
+                                    <li className="flex items-start">
+                                      <span className="bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5">1</span>
+                                      <span>Your application will be reviewed by the hiring team</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                      <span className="bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5">2</span>
+                                      <span>If your profile matches their requirements, you'll be contacted for an interview</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                      <span className="bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5">3</span>
+                                      <span>You can track the status of your application in your profile</span>
+                                    </li>
+                                  </ol>
+                                </CardContent>
+                              </Card>
+                              
+                              <div className="flex justify-center space-x-4">
+                                <Button variant="outline" onClick={() => navigate("/applied-jobs")}>
+                                  View My Applications
+                                </Button>
+                                <Button onClick={() => navigate("/job-board")}>
+                                  Browse More Jobs
+                                </Button>
+                              </div>
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Submitted!</h3>
-                            <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                              Your application for <span className="font-semibold">{job.title}</span> at <span className="font-semibold">{employer.companyName}</span> has been successfully submitted.
-                            </p>
-                            
-                            <Card className="max-w-md mx-auto bg-gray-50 border mb-6">
-                              <CardContent className="pt-6">
-                                <h4 className="font-semibold text-gray-700 mb-2">What happens next?</h4>
-                                <ol className="text-left space-y-2 text-sm text-gray-600">
-                                  <li className="flex items-start">
-                                    <span className="bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5">1</span>
-                                    <span>Your application will be reviewed by the hiring team</span>
-                                  </li>
-                                  <li className="flex items-start">
-                                    <span className="bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5">2</span>
-                                    <span>If your profile matches their requirements, you'll be contacted for an interview</span>
-                                  </li>
-                                  <li className="flex items-start">
-                                    <span className="bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5">3</span>
-                                    <span>You can track the status of your application in your profile</span>
-                                  </li>
-                                </ol>
-                              </CardContent>
-                            </Card>
-                            
-                            <div className="flex justify-center space-x-4">
-                              <Button variant="outline" onClick={() => navigate("/profile-page")}>
-                                View My Applications
-                              </Button>
-                              <Button onClick={() => navigate("/job-board")}>
-                                Browse More Jobs
-                              </Button>
+                          ) : (
+                            <div className="space-y-6 py-6">
+                              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                                <h3 className="text-lg font-semibold text-yellow-800 mb-2">Review your application</h3>
+                                <p className="text-yellow-700 mb-4">
+                                  Please ensure all information is correct before submitting your application.
+                                </p>
+                                
+                                <div className="space-y-4">
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                      <h4 className="font-semibold text-gray-700">Personal Information</h4>
+                                      <ul className="mt-2 space-y-1 text-gray-600">
+                                        <li><span className="text-gray-500">Name:</span> {form.getValues("fullName")}</li>
+                                        <li><span className="text-gray-500">Email:</span> {form.getValues("email")}</li>
+                                        <li><span className="text-gray-500">Phone:</span> {form.getValues("phone")}</li>
+                                      </ul>
+                                    </div>
+                                    
+                                    <div>
+                                      <h4 className="font-semibold text-gray-700">Professional Information</h4>
+                                      <ul className="mt-2 space-y-1 text-gray-600">
+                                        <li><span className="text-gray-500">Current Position:</span> {form.getValues("currentPosition")}</li>
+                                        <li><span className="text-gray-500">Experience:</span> {form.getValues("yearsOfExperience")}</li>
+                                        <li><span className="text-gray-500">Relocation:</span> {form.getValues("relocation")}</li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                  
+                                  <div className="pt-2">
+                                    <h4 className="font-semibold text-gray-700">Cover Letter Preview</h4>
+                                    <p className="mt-2 text-sm text-gray-600 line-clamp-3">{form.getValues("coverLetter")}</p>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div className="flex justify-between">
+                                <Button 
+                                  type="button" 
+                                  variant="outline"
+                                  onClick={() => setActiveTab("experience")}
+                                >
+                                  Back to Experience
+                                </Button>
+                                
+                                <Button 
+                                  type="submit"
+                                  disabled={isSubmitting || applicationMutation.isPending}
+                                  className="min-w-[120px]"
+                                >
+                                  {(isSubmitting || applicationMutation.isPending) && (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  )}
+                                  Submit Application
+                                </Button>
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </TabsContent>
                       </form>
                     </Form>
