@@ -88,11 +88,13 @@ export default function JobCard({ job }: JobCardProps) {
           
           <div className="mt-4 md:mt-0 md:ml-6 md:flex md:flex-col md:items-end">
             {isJobSeeker ? (
-              <Link href={`/job/${job.id}`}>
-                <Button>
-                  View Job
-                </Button>
-              </Link>
+              <Button onClick={() => {
+                // Set flag in sessionStorage to indicate we're coming from job-board
+                sessionStorage.setItem("fromJobBoard", "true");
+                window.location.href = `/job/${job.id}`;
+              }}>
+                View Job
+              </Button>
             ) : (
               <Link href="/job-seeker-register">
                 <Button>

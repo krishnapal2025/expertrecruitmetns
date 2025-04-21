@@ -22,18 +22,28 @@ export default function JobDetailsPage({ id }: { id: string }) {
   const { toast } = useToast();
   
   // Check if coming from applications-manager by examining the referrer
+  // Also check if coming from job-board (find-jobs) and store as a different flag
   const isFromApplicationsManager = document.referrer.includes("applications-manager") || 
                                     sessionStorage.getItem("fromApplicationsManager") === "true";
+  
+  const isFromJobBoard = document.referrer.includes("job-board") || 
+                         sessionStorage.getItem("fromJobBoard") === "true";
                                     
   // Store the fact that we're coming from applications-manager in sessionStorage
   if (document.referrer.includes("applications-manager")) {
     sessionStorage.setItem("fromApplicationsManager", "true");
   }
   
-  // Clear fromApplicationsManager from sessionStorage when this component unmounts
+  // Store the fact that we're coming from job-board in sessionStorage
+  if (document.referrer.includes("job-board")) {
+    sessionStorage.setItem("fromJobBoard", "true");
+  }
+  
+  // Clear sessionStorage flags when this component unmounts
   useEffect(() => {
     return () => {
       sessionStorage.removeItem("fromApplicationsManager");
+      sessionStorage.removeItem("fromJobBoard");
     };
   }, []);
   
