@@ -22,9 +22,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
-type ApplicationWithJob = Application & {
+// Extended type for Application with Job details
+interface ApplicationWithJobDetails extends Application {
   job: Job;
-};
+  appliedDate: Date; // Using appliedDate from schema instead of createdAt
+  status: string;
+  notes?: string;
+}
 
 export default function AppliedJobsPage() {
   const [location, navigate] = useLocation();
@@ -56,13 +60,14 @@ export default function AppliedJobsPage() {
   }, [currentUser, location, navigate, toast]);
   
   // Get job seeker applications
-  const { data: applications, isLoading, error } = useQuery<ApplicationWithJob[]>({
+  const { data: applications, isLoading, error } = useQuery<ApplicationWithJobDetails[]>({
     queryKey: ["/api/applications/my-applications"],
     enabled: !!currentUser && currentUser.user.userType === "jobseeker",
   });
   
   // Helper function to format date
-  const formatDate = (dateString: Date) => {
+  const formatDate = (dateString: Date | null) => {
+    if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -172,13 +177,13 @@ export default function AppliedJobsPage() {
                                 <CardTitle className="text-xl">{application.job.title}</CardTitle>
                                 <div className="flex items-center mt-2 text-gray-600">
                                   <Building className="h-4 w-4 mr-1" />
-                                  <span>{application.job.companyName}</span>
+                                  <span>{application.job.company}</span>
                                 </div>
                               </div>
                               <div className="mt-4 md:mt-0">
                                 {getStatusBadge(application.status)}
                                 <p className="text-sm text-gray-500 mt-1">
-                                  Applied on {formatDate(application.createdAt)}
+                                  Applied on {formatDate(application.appliedDate)}
                                 </p>
                               </div>
                             </div>
