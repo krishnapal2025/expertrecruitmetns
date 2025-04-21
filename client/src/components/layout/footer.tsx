@@ -4,12 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 import ERLogo from "@assets/ER.png";
-import { useLocation } from "wouter";
-import { navigateAndScrollTop } from "@/lib/navigation";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const [_, navigate] = useLocation();
   
   return (
     <footer className="bg-gray-900 text-white pt-12 pb-8">
@@ -102,40 +99,28 @@ export default function Footer() {
               <h3 className="text-lg font-bold mb-3">Quick Links</h3>
               <ul className="space-y-2">
                 <li>
-                  <div 
-                    onClick={() => navigateAndScrollTop(navigate, "/")}
-                    className="text-sm text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
-                  >
+                  <a href="/" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Home
-                  </div>
+                  </a>
                 </li>
                 <li>
-                  <div 
-                    onClick={() => navigateAndScrollTop(navigate, "/about-us")}
-                    className="text-sm text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
-                  >
+                  <a href="/about-us" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     About Us
-                  </div>
+                  </a>
                 </li>
                 <li>
-                  <div 
-                    onClick={() => navigateAndScrollTop(navigate, "/services")}
-                    className="text-sm text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
-                  >
+                  <a href="/services" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Services
-                  </div>
+                  </a>
                 </li>
                 <li>
-                  <div 
-                    onClick={() => navigateAndScrollTop(navigate, "/sectors")}
-                    className="text-sm text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
-                  >
+                  <a href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Sectors
-                  </div>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -144,40 +129,28 @@ export default function Footer() {
               <h3 className="text-lg font-bold mb-3">For Employers</h3>
               <ul className="space-y-2">
                 <li>
-                  <div 
-                    onClick={() => navigateAndScrollTop(navigate, "/employer-register")}
-                    className="text-sm text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
-                  >
+                  <a href="/employer-register" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Register as Employer
-                  </div>
+                  </a>
                 </li>
                 <li>
-                  <div 
-                    onClick={() => navigateAndScrollTop(navigate, "/post-job")}
-                    className="text-sm text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
-                  >
+                  <a href="/post-job" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Post a Job
-                  </div>
+                  </a>
                 </li>
                 <li>
-                  <div 
-                    onClick={() => navigateAndScrollTop(navigate, "/hire-talent")}
-                    className="text-sm text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
-                  >
+                  <a href="/hire-talent" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Hire Talent
-                  </div>
+                  </a>
                 </li>
                 <li>
-                  <div 
-                    onClick={() => navigateAndScrollTop(navigate, "/seo-insights")}
-                    className="text-sm text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
-                  >
+                  <a href="/seo-insights" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     SEO Insights
-                  </div>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -186,40 +159,28 @@ export default function Footer() {
               <h3 className="text-lg font-bold mb-3">For Job Seekers</h3>
               <ul className="space-y-2">
                 <li>
-                  <div 
-                    onClick={() => navigateAndScrollTop(navigate, "/job-seeker-register")}
-                    className="text-sm text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
-                  >
+                  <a href="/job-seeker-register" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Register as Job Seeker
-                  </div>
+                  </a>
                 </li>
                 <li>
-                  <div 
-                    onClick={() => navigateAndScrollTop(navigate, "/job-board")}
-                    className="text-sm text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
-                  >
+                  <a href="/job-board" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Find Jobs
-                  </div>
+                  </a>
                 </li>
                 <li>
-                  <div 
-                    onClick={() => navigateAndScrollTop(navigate, "/sectors")}
-                    className="text-sm text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
-                  >
+                  <a href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Career Sectors
-                  </div>
+                  </a>
                 </li>
                 <li>
-                  <div 
-                    onClick={() => navigateAndScrollTop(navigate, "/blogs")}
-                    className="text-sm text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
-                  >
+                  <a href="/blogs" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Career Advice
-                  </div>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -268,24 +229,15 @@ export default function Footer() {
             © {currentYear} EXPERT Recruitments LLC. All rights reserved.
           </div>
           <div className="flex flex-wrap gap-4">
-            <div 
-              onClick={() => navigateAndScrollTop(navigate, "/privacy-policy")}
-              className="text-gray-500 hover:text-white transition-colors text-xs cursor-pointer"
-            >
+            <a href="/privacy-policy" className="text-gray-500 hover:text-white transition-colors text-xs">
               Privacy Policy
-            </div>
-            <div 
-              onClick={() => navigateAndScrollTop(navigate, "/terms")}
-              className="text-gray-500 hover:text-white transition-colors text-xs cursor-pointer"
-            >
+            </a>
+            <a href="/terms" className="text-gray-500 hover:text-white transition-colors text-xs">
               Terms of Service
-            </div>
-            <div 
-              onClick={() => navigateAndScrollTop(navigate, "/accessibility")}
-              className="text-gray-500 hover:text-white transition-colors text-xs cursor-pointer"
-            >
+            </a>
+            <a href="/accessibility" className="text-gray-500 hover:text-white transition-colors text-xs">
               Accessibility
-            </div>
+            </a>
           </div>
         </div>
       </div>

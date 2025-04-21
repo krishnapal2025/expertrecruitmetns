@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
-import { navigateAndScrollTop } from "@/lib/navigation";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -70,7 +69,7 @@ export default function ApplicationsManagerPage() {
         description: "Please log in to manage applications",
         variant: "destructive",
       });
-      navigateAndScrollTop(navigate, "/auth");
+      navigate("/auth");
       return;
     }
     
@@ -80,7 +79,7 @@ export default function ApplicationsManagerPage() {
         description: "This page is only available for employers",
         variant: "destructive",
       });
-      navigateAndScrollTop(navigate, "/");
+      navigate("/");
       return;
     }
   }, [currentUser, toast, navigate]);
@@ -485,7 +484,7 @@ export default function ApplicationsManagerPage() {
                                         e.stopPropagation();
                                         // Save in session storage that we're coming from applications manager
                                         sessionStorage.setItem("fromApplicationsManager", "true");
-                                        navigateAndScrollTop(navigate, `/job/${application.jobId}`);
+                                        navigate(`/job/${application.jobId}`);
                                       }}
                                     >
                                       <ExternalLink className="h-4 w-4 mr-2" />

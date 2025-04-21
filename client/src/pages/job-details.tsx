@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
-import { navigateAndScrollTop } from "@/lib/navigation";
 import { Job, Employer, Application } from "@shared/schema";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -67,7 +66,7 @@ export default function JobDetailsPage({ id }: { id: string }) {
         <div className="text-center py-16">
           <h2 className="text-2xl font-bold text-red-600 mb-2">Error Loading Job Details</h2>
           <p className="text-gray-600">{(error as Error)?.message || "Job not found"}</p>
-          <Button className="mt-4" onClick={() => navigateAndScrollTop(navigate, "/job-board")}>
+          <Button className="mt-4" onClick={() => navigate("/job-board")}>
             Back to Job Board
           </Button>
         </div>
@@ -80,7 +79,7 @@ export default function JobDetailsPage({ id }: { id: string }) {
   const handleApplyClick = () => {
     if (!currentUser) {
       // Save current URL for redirect after login
-      navigateAndScrollTop(navigate, `/auth?type=jobseeker&redirect=${encodeURIComponent(`/apply/${id}`)}`);
+      navigate(`/auth?type=jobseeker&redirect=${encodeURIComponent(`/apply/${id}`)}`);
       return;
     }
     
@@ -104,7 +103,7 @@ export default function JobDetailsPage({ id }: { id: string }) {
     }
     
     // Navigate to the dedicated application page
-    navigateAndScrollTop(navigate, `/apply/${id}`);
+    navigate(`/apply/${id}`);
   };
 
   // Format date for display
@@ -155,8 +154,6 @@ export default function JobDetailsPage({ id }: { id: string }) {
                     // Clear the fromApplicationsManager flag and go back
                     sessionStorage.removeItem("fromApplicationsManager");
                     window.history.back();
-                    // Scroll to top when returning
-                    window.scrollTo(0, 0);
                   }}
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
