@@ -90,12 +90,13 @@ export default function Navbar() {
       return defaultLinks;
     }
     
-    // Job seeker specific links - show Home, About Us, Find Jobs, Job Services, Blogs, and Contact Us
+    // Job seeker specific links - show Home, About Us, Find Jobs, Applied Jobs, Job Services, Blogs, and Contact Us
     if (currentUser.user.userType === "jobseeker") {
       return [
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
         { name: "Find Jobs", href: "/job-board" },
+        { name: "Applied Jobs", href: "/applied-jobs" },
         { name: "Job Services", href: "/job-services" },
         { name: "Blogs", href: "/blogs" },
         { name: "Contact Us", href: "/contact-us" },
@@ -199,10 +200,10 @@ export default function Navbar() {
                       </DropdownMenuItem>
                     </Link>
                     {currentUser.user.userType === "jobseeker" && (
-                      <Link href="/my-applications">
+                      <Link href="/applied-jobs">
                         <DropdownMenuItem>
                           <Briefcase className="mr-2 h-4 w-4" />
-                          <span>My Applications</span>
+                          <span>Applied Jobs</span>
                         </DropdownMenuItem>
                       </Link>
                     )}
@@ -346,10 +347,10 @@ export default function Navbar() {
                         
                         {currentUser.user.userType === "jobseeker" && (
                           <SheetClose asChild>
-                            <Link href="/my-applications">
+                            <Link href="/applied-jobs">
                               <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
                                 <Briefcase className="mr-2 h-4 w-4" />
-                                My Applications
+                                Applied Jobs
                               </div>
                             </Link>
                           </SheetClose>

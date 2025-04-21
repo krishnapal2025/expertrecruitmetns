@@ -26,6 +26,7 @@ import PostJobPage from "@/pages/post-job";
 import MyJobsPage from "@/pages/my-jobs";
 import EditJobPage from "@/pages/edit-job";
 import JobServicesPage from "@/pages/job-services";
+import AppliedJobsPage from "@/pages/applied-jobs";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import Navbar from "@/components/layout/navbar";
@@ -74,6 +75,7 @@ function Router() {
       <ProtectedRoute path="/post-job" component={PostJobPage} />
       <ProtectedRoute path="/my-jobs" component={MyJobsPage} />
       <ProtectedRoute path="/job-services" component={JobServicesPage} />
+      <ProtectedRoute path="/applied-jobs" component={AppliedJobsPage} />
       <Route path="/edit-job/:id">
         {params => <ProtectedRoute path={`/edit-job/${params.id}`} component={() => <EditJobPage />} />}
       </Route>
