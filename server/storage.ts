@@ -706,7 +706,32 @@ export class MemStorage implements IStorage {
       status: "pending"
     };
     this.applications.set(id, application);
+    
+    // Update job application count
+    const job = this.jobs.get(application.jobId);
+    if (job) {
+      job.applications = (job.applications || 0) + 1;
+      this.jobs.set(job.id, job);
+    }
+    
     return application;
+  }
+  
+  async deleteApplication(id: number): Promise<boolean> {
+    const application = this.applications.get(id);
+    if (!application) {
+      return false;
+    }
+    
+    // First reduce the job application count
+    const job = this.jobs.get(application.jobId);
+    if (job && job.applications > 0) {
+      job.applications -= 1;
+      this.jobs.set(job.id, job);
+    }
+    
+    // Then delete the application
+    return this.applications.delete(id);
   }
 
   // Testimonial methods

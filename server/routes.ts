@@ -376,6 +376,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch your applications" });
     }
   });
+  
+  // Delete an application (job seeker can delete their own applications)
+  app.delete("/api/applications/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to delete an application" });
+      }
+      
+      const user = req.user;
+      const applicationId = parseInt(req.params.id);
+      
+      if (isNaN(applicationId)) {
+        return res.status(400).json({ message: "Invalid application ID" });
+      }
+      
+      // Get the application
+      const application = await storage.getApplication(applicationId);
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      
+      // Check if this application belongs to the current user (for job seekers)
+      if (user.userType === "jobseeker") {
+        const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+        if (!jobSeeker || application.jobSeekerId !== jobSeeker.id) {
+          return res.status(403).json({ message: "You can only delete your own applications" });
+        }
+      } else if (user.userType === "employer") {
+        const employer = await storage.getEmployerByUserId(user.id);
+        const job = await storage.getJob(application.jobId);
+        
+        if (!employer || !job || job.employerId !== employer.id) {
+          return res.status(403).json({ message: "You can only delete applications for your own jobs" });
+        }
+      } else {
+        return res.status(403).json({ message: "Unauthorized to delete applications" });
+      }
+      
+      // Delete the application
+      const result = await storage.deleteApplication(applicationId);
+      
+      if (result) {
+        res.status(200).json({ message: "Application deleted successfully" });
+      } else {
+        res.status(500).json({ message: "Failed to delete application" });
+      }
+    } catch (error) {
+      console.error("Error deleting application:", error);
+      res.status(500).json({ message: "An error occurred while deleting the application" });
+    }
+  });
 
   // Get all testimonials
   app.get("/api/testimonials", async (req, res) => {

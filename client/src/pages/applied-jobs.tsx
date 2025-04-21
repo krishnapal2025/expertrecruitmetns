@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Helmet } from "react-helmet";
 import { Application, Job } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,10 +18,22 @@ import {
   Loader2,
   MapPin,
   Search,
-  AlertTriangle
+  AlertTriangle,
+  Trash2
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 // Extended type for Application with Job details
 interface ApplicationWithJobDetails extends Application {
@@ -35,6 +48,7 @@ export default function AppliedJobsPage() {
   const { currentUser } = useAuth();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("all");
+  const [applicationToDelete, setApplicationToDelete] = useState<number | null>(null);
   
   // Redirect if not logged in or not a job seeker
   useEffect(() => {
@@ -63,6 +77,31 @@ export default function AppliedJobsPage() {
   const { data: applications, isLoading, error } = useQuery<ApplicationWithJobDetails[]>({
     queryKey: ["/api/applications/my-applications"],
     enabled: !!currentUser && currentUser.user.userType === "jobseeker",
+  });
+  
+  // Delete application mutation
+  const deleteApplicationMutation = useMutation({
+    mutationFn: async (applicationId: number) => {
+      const res = await apiRequest("DELETE", `/api/applications/${applicationId}`);
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Application deleted",
+        description: "Your job application has been successfully deleted.",
+      });
+      // Invalidate applications query to refetch the data
+      queryClient.invalidateQueries({ queryKey: ["/api/applications/my-applications"] });
+      setApplicationToDelete(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error deleting application",
+        description: error.message || "Failed to delete application. Please try again.",
+        variant: "destructive",
+      });
+      setApplicationToDelete(null);
+    }
   });
   
   // Helper function to format date
@@ -215,14 +254,57 @@ export default function AppliedJobsPage() {
                             <Separator className="my-4" />
                             
                             <div className="flex justify-between items-center">
-                              <Button
-                                variant="outline"
-                                className="text-primary border-primary hover:bg-primary/5"
-                                onClick={() => navigate(`/job/${application.jobId}`)}
-                              >
-                                <ExternalLink className="h-4 w-4 mr-2" />
-                                View Job Details
-                              </Button>
+                              <div className="flex gap-2">
+                                <Button
+                                  variant="outline"
+                                  className="text-primary border-primary hover:bg-primary/5"
+                                  onClick={() => navigate(`/job/${application.jobId}`)}
+                                >
+                                  <ExternalLink className="h-4 w-4 mr-2" />
+                                  View Job Details
+                                </Button>
+                                
+                                <AlertDialog open={applicationToDelete === application.id} onOpenChange={(open) => !open && setApplicationToDelete(null)}>
+                                  <AlertDialogTrigger asChild>
+                                    <Button 
+                                      variant="outline" 
+                                      className="text-red-600 border-red-200 hover:bg-red-50"
+                                      onClick={() => setApplicationToDelete(application.id)}
+                                    >
+                                      <Trash2 className="h-4 w-4 mr-2" />
+                                      Delete
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Delete Job Application</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Are you sure you want to delete this application for <span className="font-semibold">{application.job.title}</span> at <span className="font-semibold">{application.job.company}</span>?
+                                        <br />
+                                        <br />
+                                        This action cannot be undone.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction 
+                                        onClick={() => deleteApplicationMutation.mutate(application.id)}
+                                        disabled={deleteApplicationMutation.isPending}
+                                        className="bg-red-600 hover:bg-red-700"
+                                      >
+                                        {deleteApplicationMutation.isPending ? (
+                                          <>
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            Deleting...
+                                          </>
+                                        ) : (
+                                          "Delete Application"
+                                        )}
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
                               <div className="text-sm text-gray-500">
                                 Reference ID: APP-{application.id}
                               </div>
