@@ -128,10 +128,7 @@ export default function JobBoardPage() {
         <meta name="description" content="Browse through our extensive collection of job listings across various sectors and locations. Find your perfect career opportunity today." />
       </Helmet>
 
-      <div className="relative pt-16 pb-6 overflow-hidden">
-        {/* Background elements */}
-        <div className="absolute inset-0 bg-gray-50"></div>
-        
+      <div className="relative py-12 bg-gray-50 overflow-hidden">
         {/* Accent lines */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
         
@@ -152,19 +149,19 @@ export default function JobBoardPage() {
               <span className="font-medium text-primary tracking-wider uppercase text-sm">Find Your Career</span>
             </div>
             
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-gray-800 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-gray-800 tracking-tight">
               Find Your Perfect Job
             </h1>
             
-            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed mb-4 max-w-3xl">
+            <p className="text-xl text-gray-600 leading-relaxed mb-6 max-w-3xl">
               Browse through thousands of opportunities from top employers worldwide
             </p>
             
-            <div className="relative w-full max-w-2xl mt-6 mb-4">
+            <div className="relative w-full max-w-2xl mb-2">
               <Input
                 type="text"
                 placeholder="Search for jobs, keywords, or companies..."
-                className="pl-10 py-6 text-gray-900 border border-gray-200 rounded-md shadow-sm"
+                className="pl-10 py-6 text-gray-900 border border-gray-200 rounded-lg shadow-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={(e) => {
@@ -190,8 +187,8 @@ export default function JobBoardPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-0 -mt-2">
-        <div className="flex flex-col md:flex-row gap-6">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row gap-8">
           {/* Filters sidebar */}
           <div className="w-full md:w-1/4">
             <JobFilter onFilterChange={applyFilters} />

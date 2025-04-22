@@ -43,42 +43,42 @@ export default function JobCard({ job }: JobCardProps) {
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-primary">
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between">
           <div className="flex-grow">
-            <div className="flex items-center text-sm text-gray-500 mb-2">
+            <div className="flex items-center text-sm text-gray-600 mb-2">
               {currentUser && (
                 <>
-                  <Building className="h-4 w-4 mr-1" />
-                  <span className="mr-4">{job.company || "Expert Recruitments"}</span>
+                  <Building className="h-4 w-4 mr-1 text-primary" />
+                  <span className="mr-4 font-medium">{job.company || "Expert Recruitments"}</span>
                 </>
               )}
-              <Calendar className="h-4 w-4 mr-1" />
+              <Calendar className="h-4 w-4 mr-1 text-primary" />
               <span>{formatDate(job.postedDate ? job.postedDate : null)}</span>
             </div>
             
-            <h3 className="text-xl font-bold mb-2 text-gray-800">
+            <h3 className="text-xl font-bold mb-3 text-gray-800">
               {job.title}
             </h3>
             
-            <div className="flex flex-wrap gap-2 mb-3">
-              <Badge variant="outline" className="text-primary bg-primary/5">
+            <div className="flex flex-wrap gap-2 mb-4">
+              <Badge variant="outline" className="text-primary border-primary/30 bg-primary/5 px-3 py-1 rounded-full">
                 {job.category}
               </Badge>
-              <Badge variant="outline" className="text-primary bg-primary/5">
+              <Badge variant="outline" className="text-primary border-primary/30 bg-primary/5 px-3 py-1 rounded-full">
                 {job.jobType}
               </Badge>
               {job.salary && (
-                <Badge variant="outline" className="text-primary bg-primary/5">
+                <Badge variant="outline" className="text-primary border-primary/30 bg-primary/5 px-3 py-1 rounded-full">
                   {job.salary}
                 </Badge>
               )}
             </div>
             
             <div className="flex items-center text-gray-600 mb-4">
-              <MapPin className="h-4 w-4 mr-1" />
-              <span>{job.location}</span>
+              <MapPin className="h-4 w-4 mr-1 text-primary" />
+              <span className="font-medium">{job.location}</span>
             </div>
             
             <p className="text-gray-600 line-clamp-2 mb-4">
@@ -88,23 +88,26 @@ export default function JobCard({ job }: JobCardProps) {
           
           <div className="mt-4 md:mt-0 md:ml-6 md:flex md:flex-col md:items-end">
             {isJobSeeker ? (
-              <Button onClick={() => {
-                // Set flag in sessionStorage to indicate we're coming from job-board
-                sessionStorage.setItem("fromJobBoard", "true");
-                window.location.href = `/job/${job.id}`;
-              }}>
+              <Button 
+                onClick={() => {
+                  // Set flag in sessionStorage to indicate we're coming from job-board
+                  sessionStorage.setItem("fromJobBoard", "true");
+                  window.location.href = `/job/${job.id}`;
+                }}
+                className="bg-[#4060e0] hover:bg-[#3050d0] px-5 py-2 font-medium"
+              >
                 View Job
               </Button>
             ) : (
               <Link href="/job-seeker-register">
-                <Button>
+                <Button className="bg-[#4060e0] hover:bg-[#3050d0] px-5 py-2 font-medium">
                   View Job
                 </Button>
               </Link>
             )}
             
-            <div className="mt-2 flex items-center text-sm text-gray-500">
-              <Briefcase className="h-4 w-4 mr-1" />
+            <div className="mt-3 flex items-center text-sm text-gray-600">
+              <Briefcase className="h-4 w-4 mr-1 text-primary" />
               <span>{job.jobType}</span>
             </div>
           </div>

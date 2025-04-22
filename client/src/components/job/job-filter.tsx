@@ -356,12 +356,12 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           </div>
       )}
     
-      <Card className={`${showFilters ? 'block' : 'hidden'} md:block transition-all duration-300 ease-in-out`}>
-        <CardContent className="space-y-6 pt-5">
+      <Card className={`${showFilters ? 'block' : 'hidden'} md:block transition-all duration-300 ease-in-out border-t-4 border-t-primary shadow-md`}>
+        <CardContent className="space-y-6 pt-6 px-5">
           {/* Job Categories */}
           <div>
-            <h3 className="font-medium mb-3 flex items-center">
-              <Briefcase className="mr-2 h-4 w-4" />
+            <h3 className="font-semibold mb-3 flex items-center text-gray-800">
+              <Briefcase className="mr-2 h-5 w-5 text-primary" />
               Job Category
             </h3>
             <Select
@@ -383,8 +383,8 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           
           {/* Job Location */}
           <div>
-            <h3 className="font-medium mb-3 flex items-center">
-              <MapPin className="mr-2 h-4 w-4" />
+            <h3 className="font-semibold mb-3 flex items-center text-gray-800">
+              <MapPin className="mr-2 h-5 w-5 text-primary" />
               Location
             </h3>
             <Select
@@ -497,11 +497,18 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
             </div>
           </div>
           
-          <div className="flex flex-col space-y-2 pt-4">
-            <Button onClick={applyFilters} className="bg-primary hover:bg-primary/90">
+          <div className="flex flex-col space-y-3 pt-5">
+            <Button 
+              onClick={applyFilters} 
+              className="bg-[#4060e0] hover:bg-[#3050d0] text-white font-medium py-5"
+            >
               Apply Filters
             </Button>
-            <Button variant="outline" onClick={resetFilters}>
+            <Button 
+              variant="outline" 
+              onClick={resetFilters}
+              className="border-gray-300 hover:bg-gray-50 text-gray-700 font-medium"
+            >
               Reset All Filters
             </Button>
           </div>
