@@ -68,49 +68,58 @@ export default function ServicesPage() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="transition-all hover:shadow-md">
-              <CardContent className="p-6">
-                <Search className="h-12 w-12 text-primary mb-4" />
-                <h3 className="text-xl font-bold mb-2">Talent Acquisition</h3>
-                <p className="text-gray-600 mb-4">
+            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+              <div className="h-2 bg-primary"></div>
+              <CardContent className="p-8">
+                <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+                  <Search className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3">Talent Acquisition</h3>
+                <p className="text-gray-600 mb-6 text-lg">
                   Access a diverse pool of qualified candidates through our extensive network and advanced matching technology.
                 </p>
                 <Link href="/employer-register">
-                  <Button variant="outline" className="w-full">Post a Job</Button>
+                  <Button variant="default" size="lg" className="w-full bg-primary hover:bg-primary/90 text-base py-6">Post a Job</Button>
                 </Link>
               </CardContent>
             </Card>
             
-            <Card className="transition-all hover:shadow-md">
-              <CardContent className="p-6">
-                <Award className="h-12 w-12 text-primary mb-4" />
-                <h3 className="text-xl font-bold mb-2">Executive Search</h3>
-                <p className="text-gray-600 mb-4">
+            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+              <div className="h-2 bg-primary"></div>
+              <CardContent className="p-8">
+                <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+                  <Award className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3">Executive Search</h3>
+                <p className="text-gray-600 mb-6 text-lg">
                   Specialized recruitment services for senior-level and executive positions tailored to your requirements.
                 </p>
                 <Link href="/contact-us">
-                  <Button variant="outline" className="w-full">Contact Us</Button>
+                  <Button variant="default" size="lg" className="w-full bg-primary hover:bg-primary/90 text-base py-6">Contact Us</Button>
                 </Link>
               </CardContent>
             </Card>
             
-            <Card className="transition-all hover:shadow-md">
-              <CardContent className="p-6">
-                <Clock className="h-12 w-12 text-primary mb-4" />
-                <h3 className="text-xl font-bold mb-2">Temporary Staffing</h3>
-                <p className="text-gray-600 mb-4">
+            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+              <div className="h-2 bg-primary"></div>
+              <CardContent className="p-8">
+                <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+                  <Clock className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3">Temporary Staffing</h3>
+                <p className="text-gray-600 mb-6 text-lg">
                   Flexible staffing solutions to address short-term needs, special projects, or seasonal demands.
                 </p>
                 <Link href="/contact-us">
-                  <Button variant="outline" className="w-full">Learn More</Button>
+                  <Button variant="default" size="lg" className="w-full bg-primary hover:bg-primary/90 text-base py-6">Learn More</Button>
                 </Link>
               </CardContent>
             </Card>
           </div>
           
-          <div className="mt-8 text-center">
+          <div className="mt-12 text-center">
             <Link href="/employer-register">
-              <Button size="lg">Register as Employer</Button>
+              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg">Register as Employer</Button>
             </Link>
           </div>
         </div>
@@ -128,49 +137,58 @@ export default function ServicesPage() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="transition-all hover:shadow-md">
-              <CardContent className="p-6">
-                <Search className="h-12 w-12 text-primary mb-4" />
-                <h3 className="text-xl font-bold mb-2">Job Matching</h3>
-                <p className="text-gray-600 mb-4">
+            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+              <div className="h-2 bg-primary"></div>
+              <CardContent className="p-8">
+                <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+                  <Search className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3">Job Matching</h3>
+                <p className="text-gray-600 mb-6 text-lg">
                   Our intelligent matching system connects you with positions that align with your skills, experience, and career goals.
                 </p>
                 <Link href="/job-board">
-                  <Button variant="outline" className="w-full">Browse Jobs</Button>
+                  <Button variant="default" size="lg" className="w-full bg-primary hover:bg-primary/90 text-base py-6">Browse Jobs</Button>
                 </Link>
               </CardContent>
             </Card>
             
-            <Card className="transition-all hover:shadow-md">
-              <CardContent className="p-6">
-                <TrendingUp className="h-12 w-12 text-primary mb-4" />
-                <h3 className="text-xl font-bold mb-2">Career Development</h3>
-                <p className="text-gray-600 mb-4">
+            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+              <div className="h-2 bg-primary"></div>
+              <CardContent className="p-8">
+                <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+                  <TrendingUp className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3">Career Development</h3>
+                <p className="text-gray-600 mb-6 text-lg">
                   Access resources and guidance to help you enhance your skills and advance your career path.
                 </p>
                 <Link href="/blogs">
-                  <Button variant="outline" className="w-full">View Resources</Button>
+                  <Button variant="default" size="lg" className="w-full bg-primary hover:bg-primary/90 text-base py-6">View Resources</Button>
                 </Link>
               </CardContent>
             </Card>
             
-            <Card className="transition-all hover:shadow-md">
-              <CardContent className="p-6">
-                <BookOpen className="h-12 w-12 text-primary mb-4" />
-                <h3 className="text-xl font-bold mb-2">Resume Building</h3>
-                <p className="text-gray-600 mb-4">
+            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+              <div className="h-2 bg-primary"></div>
+              <CardContent className="p-8">
+                <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+                  <BookOpen className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3">Resume Building</h3>
+                <p className="text-gray-600 mb-6 text-lg">
                   Get expert advice on crafting a compelling resume that showcases your strengths and experience.
                 </p>
                 <Link href="/contact-us">
-                  <Button variant="outline" className="w-full">Learn More</Button>
+                  <Button variant="default" size="lg" className="w-full bg-primary hover:bg-primary/90 text-base py-6">Learn More</Button>
                 </Link>
               </CardContent>
             </Card>
           </div>
           
-          <div className="mt-8 text-center">
+          <div className="mt-12 text-center">
             <Link href="/job-seeker-register">
-              <Button size="lg">Register as Job Seeker</Button>
+              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg">Register as Job Seeker</Button>
             </Link>
           </div>
         </div>
@@ -278,12 +296,12 @@ export default function ServicesPage() {
           <p className="text-lg text-gray-700 mb-8 max-w-3xl mx-auto">
             Whether you're looking for your next career opportunity or searching for top talent, we're here to help you succeed.
           </p>
-          <div className="flex justify-center gap-4 flex-wrap">
+          <div className="flex justify-center gap-6 flex-wrap">
             <Link href="/job-seeker-register">
-              <Button size="lg">For Job Seekers</Button>
+              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg">For Job Seekers</Button>
             </Link>
             <Link href="/employer-register">
-              <Button size="lg" variant="outline">For Employers</Button>
+              <Button size="lg" variant="outline" className="px-10 py-7 text-lg border-2 border-primary text-primary hover:bg-primary/5 shadow-lg">For Employers</Button>
             </Link>
           </div>
         </div>
