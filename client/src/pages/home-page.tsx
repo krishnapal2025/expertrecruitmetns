@@ -1,10 +1,8 @@
 import { Helmet } from "react-helmet";
-import Banner from "@/components/home/banner";
 import Welcome from "@/components/home/welcome";
 import HiringTrends from "@/components/home/hiring-trends";
 import FeaturedCategories from "@/components/home/featured-categories";
 import AnimatedTestimonials from "@/components/home/animated-testimonials";
-import SearchBar from "@/components/home/search-bar";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,13 +19,9 @@ export default function HomePage() {
   return (
     <>
       <Helmet>
-        <title>RH Job Portal | Find Your Next Career Opportunity</title>
-        <meta name="description" content="Connect with the best job opportunities and top talent through our professional job portal. For job seekers and employers." />
+        <title>Expert Recruitments LLC | Find Your Next Career Opportunity</title>
+        <meta name="description" content="Connect with the best job opportunities and top talent through our professional job portal. Specializing in executive search across UAE & GCC markets." />
       </Helmet>
-
-      <Banner />
-      
-      <SearchBar />
       
       <Welcome />
       
