@@ -79,7 +79,7 @@ export default function ServicesPage() {
                   Access a diverse pool of qualified candidates through our extensive network and advanced matching technology.
                 </p>
                 <Link href="/employer-register">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-gray-50 border-primary border-2 text-base py-6 shadow-sm">Post a Job</Button>
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">Post a Job</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -95,7 +95,7 @@ export default function ServicesPage() {
                   Specialized recruitment services for senior-level and executive positions tailored to your requirements.
                 </p>
                 <Link href="/contact-us">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-gray-50 border-primary border-2 text-base py-6 shadow-sm">Contact Us</Button>
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">Contact Us</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -111,7 +111,7 @@ export default function ServicesPage() {
                   Flexible staffing solutions to address short-term needs, special projects, or seasonal demands.
                 </p>
                 <Link href="/contact-us">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-gray-50 border-primary border-2 text-base py-6 shadow-sm">Learn More</Button>
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">Learn More</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -119,7 +119,7 @@ export default function ServicesPage() {
           
           <div className="mt-12 text-center">
             <Link href="/employer-register">
-              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg">Register as Employer</Button>
+              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg rounded-full transition-all duration-300">Register as Employer</Button>
             </Link>
           </div>
         </div>
@@ -148,7 +148,7 @@ export default function ServicesPage() {
                   Our intelligent matching system connects you with positions that align with your skills, experience, and career goals.
                 </p>
                 <Link href="/job-board">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-gray-50 border-primary border-2 text-base py-6 shadow-sm">Browse Jobs</Button>
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">Browse Jobs</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -164,7 +164,7 @@ export default function ServicesPage() {
                   Access resources and guidance to help you enhance your skills and advance your career path.
                 </p>
                 <Link href="/blogs">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-gray-50 border-primary border-2 text-base py-6 shadow-sm">View Resources</Button>
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">View Resources</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -180,7 +180,7 @@ export default function ServicesPage() {
                   Get expert advice on crafting a compelling resume that showcases your strengths and experience.
                 </p>
                 <Link href="/contact-us">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-gray-50 border-primary border-2 text-base py-6 shadow-sm">Learn More</Button>
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">Learn More</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -188,7 +188,7 @@ export default function ServicesPage() {
           
           <div className="mt-12 text-center">
             <Link href="/job-seeker-register">
-              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg">Register as Job Seeker</Button>
+              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg rounded-full transition-all duration-300">Register as Job Seeker</Button>
             </Link>
           </div>
         </div>
@@ -298,10 +298,10 @@ export default function ServicesPage() {
           </p>
           <div className="flex justify-center gap-6 flex-wrap">
             <Link href="/job-seeker-register">
-              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg">For Job Seekers</Button>
+              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg rounded-full transition-all duration-300">For Job Seekers</Button>
             </Link>
             <Link href="/employer-register">
-              <Button size="lg" variant="outline" className="px-10 py-7 text-lg border-2 border-primary text-primary hover:bg-primary/5 shadow-lg">For Employers</Button>
+              <Button size="lg" variant="outline" className="px-10 py-7 text-lg border border-primary text-primary hover:bg-primary/5 shadow-lg rounded-full transition-all duration-300">For Employers</Button>
             </Link>
           </div>
         </div>
