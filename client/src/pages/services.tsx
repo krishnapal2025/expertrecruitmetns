@@ -119,7 +119,13 @@ export default function ServicesPage() {
           
           <div className="mt-12 text-center">
             <Link href="/employer-register">
-              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg">Register as Employer</Button>
+              <Button size="lg" className="px-12 py-7 text-lg bg-gradient-to-r from-indigo-600 to-[#5372f1] hover:from-indigo-700 hover:to-[#4060e0] shadow-lg rounded-full">
+                <span className="mr-2">Register as Employer</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </Button>
             </Link>
           </div>
         </div>
@@ -188,7 +194,13 @@ export default function ServicesPage() {
           
           <div className="mt-12 text-center">
             <Link href="/job-seeker-register">
-              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg">Register as Job Seeker</Button>
+              <Button size="lg" className="px-12 py-7 text-lg bg-gradient-to-r from-blue-500 to-[#5372f1] hover:from-blue-600 hover:to-[#4060e0] shadow-lg rounded-full">
+                <span className="mr-2">Register as Job Seeker</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </Button>
             </Link>
           </div>
         </div>
@@ -298,10 +310,22 @@ export default function ServicesPage() {
           </p>
           <div className="flex justify-center gap-6 flex-wrap">
             <Link href="/job-seeker-register">
-              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg">For Job Seekers</Button>
+              <Button size="lg" className="px-12 py-7 text-lg bg-gradient-to-r from-blue-500 to-[#5372f1] hover:from-blue-600 hover:to-[#4060e0] shadow-lg rounded-full">
+                <span className="mr-2">For Job Seekers</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </Button>
             </Link>
             <Link href="/employer-register">
-              <Button size="lg" variant="outline" className="px-10 py-7 text-lg border-2 border-primary text-primary hover:bg-primary/5 shadow-lg">For Employers</Button>
+              <Button size="lg" variant="outline" className="px-12 py-7 text-lg border-2 border-[#5372f1] text-[#5372f1] hover:bg-[#5372f1]/5 shadow-lg rounded-full">
+                <span className="mr-2">For Employers</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </Button>
             </Link>
           </div>
         </div>
