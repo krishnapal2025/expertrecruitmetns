@@ -128,7 +128,7 @@ export default function JobBoardPage() {
         <meta name="description" content="Browse through our extensive collection of job listings across various sectors and locations. Find your perfect career opportunity today." />
       </Helmet>
 
-      <div className="relative py-20 overflow-hidden">
+      <div className="relative pt-16 pb-6 overflow-hidden">
         {/* Background elements */}
         <div className="absolute inset-0 bg-gray-50"></div>
         
@@ -147,12 +147,12 @@ export default function JobBoardPage() {
         
         <div className="container mx-auto px-4 relative">
           {/* Main content */}
-          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16">
-            <div className="inline-block mb-6 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md">
+          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-8">
+            <div className="inline-block mb-4 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md">
               <span className="font-medium text-primary tracking-wider uppercase text-sm">Find Your Career</span>
             </div>
             
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-gray-800 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-gray-800 tracking-tight">
               Find Your Perfect Job
             </h1>
             
@@ -160,7 +160,7 @@ export default function JobBoardPage() {
               Browse through thousands of opportunities from top employers worldwide
             </p>
             
-            <div className="relative w-full max-w-2xl mt-6">
+            <div className="relative w-full max-w-2xl mt-6 mb-4">
               <Input
                 type="text"
                 placeholder="Search for jobs, keywords, or companies..."
@@ -190,8 +190,8 @@ export default function JobBoardPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex flex-col md:flex-row gap-8">
+      <div className="container mx-auto px-4 py-0 -mt-2">
+        <div className="flex flex-col md:flex-row gap-6">
           {/* Filters sidebar */}
           <div className="w-full md:w-1/4">
             <JobFilter onFilterChange={applyFilters} />
