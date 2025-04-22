@@ -258,10 +258,10 @@ export default function ServicesPage() {
             With a presence in major cities around the world, we combine international reach with deep local market knowledge.
           </p>
           
-          <div className="grid md:grid-cols-5 gap-4 text-center">
-            {["North America", "Europe", "Asia Pacific", "Middle East", "Latin America"].map((region) => (
-              <div key={region} className="bg-gray-100 p-4 rounded-lg">
-                <h3 className="font-medium">{region}</h3>
+          <div className="flex justify-center items-center gap-6 flex-wrap">
+            {["UAE", "INDIA", "AMERICA"].map((region) => (
+              <div key={region} className="bg-gray-100 px-8 py-5 rounded-lg min-w-[160px] text-center shadow-md">
+                <h3 className="font-semibold text-lg">{region}</h3>
               </div>
             ))}
           </div>
@@ -274,7 +274,7 @@ export default function ServicesPage() {
               <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z"></path>
             </svg>
             <blockquote className="text-xl italic text-gray-700 mb-6">
-              "Working with the RH Job Portal team transformed our recruitment process. Their understanding of our industry and culture helped us find exceptional talent that has driven our business forward."
+              "Working with the Expert Recruitments LLC team transformed our recruitment process. Their understanding of our industry and culture helped us find exceptional talent that has driven our business forward."
             </blockquote>
             <div className="flex items-center justify-center">
               <img 
