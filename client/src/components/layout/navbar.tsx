@@ -139,8 +139,8 @@ export default function Navbar() {
                   />
                 </div>
                 <div className="ml-3 flex flex-col">
-                  <span className="text-white font-bold text-lg md:text-xl">EXPERT</span>
-                  <span className="text-white text-xs md:text-sm -mt-1">Recruitments LLC</span>
+                  <span className="text-white font-bold text-lg md:text-xl tracking-widest">EXPERT</span>
+                  <span className="text-white text-xs md:text-sm -mt-1 tracking-wider">Recruitments LLC</span>
                 </div>
               </div>
             </Link>
@@ -305,8 +305,8 @@ export default function Navbar() {
                       />
                     </div>
                     <div className="flex flex-col items-center">
-                      <span className="text-[#5372f1] font-bold text-xl">EXPERT</span>
-                      <span className="text-[#5372f1] text-xs -mt-1">Recruitments LLC</span>
+                      <span className="text-[#5372f1] font-bold text-xl tracking-widest">EXPERT</span>
+                      <span className="text-[#5372f1] text-xs -mt-1 tracking-wider">Recruitments LLC</span>
                     </div>
                   </div>
                   <SheetTitle>Menu</SheetTitle>
