@@ -569,12 +569,12 @@ export default function HireTalentPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                quote: "RH Job Portal helped us find exceptional talent quickly. Their understanding of our industry and company culture made all the difference.",
+                quote: "Expert Recruitments LLC  helped us find exceptional talent quickly. Their understanding of our industry and company culture made all the difference.",
                 author: "Sarah Johnson",
                 title: "HR Director, Tech Innovations Inc."
               },
               {
-                quote: "The quality of candidates provided by RH Job Portal exceeded our expectations. We've built a stronger team thanks to their recruitment expertise.",
+                quote: "The quality of candidates provided by Expert Recruitments LLC exceeded our expectations. We've built a stronger team thanks to their recruitment expertise.",
                 author: "Michael Chen",
                 title: "CEO, Financial Solutions Group"
               },

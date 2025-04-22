@@ -38,7 +38,7 @@ export default function AnimatedTestimonials() {
       id: 1,
       name: "Sarah Johnson",
       role: "Senior UX Designer at TechCorp",
-      content: "I found my dream job through RH Job Portal. Their matching algorithm is incredible - the job opportunities I was presented with were spot-on for my skills and career goals.",
+      content: "I found my dream job through Expert Recruitments LLC . Their matching algorithm is incredible - the job opportunities I was presented with were spot-on for my skills and career goals.",
       rating: 5,
       userId: null
     },
@@ -46,7 +46,7 @@ export default function AnimatedTestimonials() {
       id: 2,
       name: "Michael Chen",
       role: "Software Engineer",
-      content: "After struggling with my job search for months, I turned to RH Job Portal and landed three interviews in the first week. The platform is intuitive and the career resources are invaluable.",
+      content: "After struggling with my job search for months, I turned to Expert Recruitments LLC  and landed three interviews in the first week. The platform is intuitive and the career resources are invaluable.",
       rating: 5,
       userId: null
     },
@@ -54,7 +54,7 @@ export default function AnimatedTestimonials() {
       id: 3,
       name: "Priya Patel",
       role: "Finance Manager",
-      content: "As someone transitioning to a new industry, I was worried about finding the right opportunity. RH Job Portal made it easy with their specialized industry insights and personalized job recommendations.",
+      content: "As someone transitioning to a new industry, I was worried about finding the right opportunity. Expert Recruitments LLC  made it easy with their specialized industry insights and personalized job recommendations.",
       rating: 4,
       userId: null
     }

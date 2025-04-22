@@ -322,9 +322,6 @@ export default function Navbar() {
                     </div>
                   </div>
                   <SheetTitle>Menu</SheetTitle>
-                  <SheetDescription>
-                    EXPERT Recruitments LLC
-                  </SheetDescription>
                 </SheetHeader>
                 <div className="flex flex-col space-y-4 py-4">
                   {navigationLinks.map((link) => 

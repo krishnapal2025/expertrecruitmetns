@@ -650,7 +650,7 @@ export default function ContactUsPage() {
                 <div>
                   <h4 className="text-lg font-bold mb-3 text-primary">Do you offer international job placement?</h4>
                   <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                    Yes, we work with employers worldwide and can help connect you with opportunities both locally and internationally. •	Out global network spans across the continents with specialized focus on the UAE, India and the USA.
+                    Yes, we work with employers worldwide and can help connect you with opportunities both locally and internationally.Out global network spans across the continents with specialized focus on the UAE, India and the USA.
                   </p>
                 </div>
               </div>
