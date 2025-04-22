@@ -187,9 +187,9 @@ export default function AboutUsPage() {
                 </a>
                 <a 
                   href="#our-promise" 
-                  className="px-5 py-2.5 bg-white text-purple-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
+                  className="px-5 py-2.5 bg-white text-violet-600 text-sm font-medium rounded-full shadow-md hover:shadow-lg border border-gray-100 transition-all flex items-center space-x-2"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-purple-600">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-violet-600">
                     <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                   <span>Our Promise</span>
@@ -421,10 +421,7 @@ export default function AboutUsPage() {
             </motion.div>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">A Legacy of Excellence</h2>
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-              Collectively, we offer decades of experience in executive search in Dubai, talent acquisition, and head-hunting services. However, the story of Expert Recruitments began in 2015 – when our executive search company was founded as Expert Labor Supply Services.
-            </p>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              Since 2018, we've been transforming workforces in India under the name Expert Recruitments LLC. Today, that name is synonymous with premium talent acquisition services in Dubai and throughout the UAE. We opened our first US office in New Jersey in 2015 – making us a truly global executive search company.
+              Expert Recruitments LLC is a global executive search firm, established in Dubai in 2015 (initially as Expert Labor Supply Services) and now also operating as Expert Recruitments LLC in the UAE, India (Expert Recruitments since 2018), and the USA (New Jersey). This international journey has equipped us with decades of collective expertise in executive search, talent acquisition, and headhunting across diverse regions.  Our extensive candidate pool and experienced team are well-positioned to efficiently meet your talent needs.
             </p>
             
             <div className="mt-8 grid grid-cols-3 gap-6">
@@ -469,7 +466,7 @@ export default function AboutUsPage() {
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             >
               <div className="text-center">
-                <div className="font-bold text-2xl">8+</div>
+                <div className="font-bold text-2xl">10+</div>
                 <div className="text-xs">Years of Excellence</div>
               </div>
             </motion.div>
@@ -718,7 +715,7 @@ export default function AboutUsPage() {
                   variants={fadeIn}
                 >
                   <motion.div 
-                    className="inline-block bg-rose-500/10 text-rose-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
+                    className="inline-block bg-violet-500/10 text-violet-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
                     whileHover={{ scale: 1.05 }}
                   >
                     Our Promise
@@ -745,11 +742,11 @@ export default function AboutUsPage() {
                   className="lg:w-1/2 relative"
                   variants={scaleIn}
                 >
-                  <div className="absolute -inset-4 bg-gradient-to-tr from-rose-500/20 via-rose-500/5 to-transparent rounded-3xl blur-lg opacity-70"></div>
+                  <div className="absolute -inset-4 bg-gradient-to-tr from-violet-500/20 via-violet-500/5 to-transparent rounded-3xl blur-lg opacity-70"></div>
                   <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl relative">
                     <div className="flex items-center mb-6">
-                      <div className="w-12 h-12 bg-rose-500/10 rounded-full flex items-center justify-center mr-4">
-                        <svg className="w-6 h-6 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <div className="w-12 h-12 bg-violet-500/10 rounded-full flex items-center justify-center mr-4">
+                        <svg className="w-6 h-6 text-violet-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                           <polyline points="22 4 12 14.01 9 11.01"></polyline>
                         </svg>
@@ -775,7 +772,7 @@ export default function AboutUsPage() {
                           viewport={{ once: true }}
                           transition={{ delay: 0.2 + (index * 0.1) }}
                         >
-                          <svg className="w-5 h-5 text-rose-500 mt-1 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-5 h-5 text-violet-500 mt-1 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
                           <span className="text-gray-700 dark:text-gray-300">{item}</span>
