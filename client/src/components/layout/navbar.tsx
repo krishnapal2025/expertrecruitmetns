@@ -279,16 +279,16 @@ export default function Navbar() {
                   <DropdownMenuContent align="end" className="w-56 p-2 border-2 border-[#5372f1] bg-white shadow-lg rounded-md">
                     <DropdownMenuLabel className="text-lg font-bold text-center text-[#5372f1]">Register as:</DropdownMenuLabel>
                     <DropdownMenuSeparator className="my-1" />
-                    <Link href="/job-seeker-register" className="w-full">
-                      <DropdownMenuItem className="flex items-center py-3 px-4 rounded-md hover:bg-[#5372f1] hover:text-white cursor-pointer">
-                        <User className="mr-2 h-5 w-5" />
-                        <span className="text-base font-medium">Job Seeker</span>
-                      </DropdownMenuItem>
-                    </Link>
                     <Link href="/employer-register" className="w-full">
                       <DropdownMenuItem className="flex items-center py-3 px-4 rounded-md hover:bg-[#5372f1] hover:text-white cursor-pointer">
                         <Briefcase className="mr-2 h-5 w-5" />
                         <span className="text-base font-medium">Employer</span>
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/job-seeker-register" className="w-full">
+                      <DropdownMenuItem className="flex items-center py-3 px-4 rounded-md hover:bg-[#5372f1] hover:text-white cursor-pointer">
+                        <User className="mr-2 h-5 w-5" />
+                        <span className="text-base font-medium">Job Seeker</span>
                       </DropdownMenuItem>
                     </Link>
                   </DropdownMenuContent>
@@ -457,17 +457,6 @@ export default function Navbar() {
                           <div className="font-medium text-sm mb-2">Sign Up as:</div>
                           <div className="space-y-2">
                             <SheetClose asChild>
-                              <Link href="/job-seeker-register">
-                                <Button 
-                                  variant="default" 
-                                  className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                                >
-                                  <User className="mr-2 h-5 w-5" />
-                                  Job Seeker
-                                </Button>
-                              </Link>
-                            </SheetClose>
-                            <SheetClose asChild>
                               <Link href="/employer-register">
                                 <Button 
                                   variant="default" 
@@ -475,6 +464,17 @@ export default function Navbar() {
                                 >
                                   <Briefcase className="mr-2 h-5 w-5" />
                                   Employer
+                                </Button>
+                              </Link>
+                            </SheetClose>
+                            <SheetClose asChild>
+                              <Link href="/job-seeker-register">
+                                <Button 
+                                  variant="default" 
+                                  className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                                >
+                                  <User className="mr-2 h-5 w-5" />
+                                  Job Seeker
                                 </Button>
                               </Link>
                             </SheetClose>
