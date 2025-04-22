@@ -95,7 +95,7 @@ function CustomSlider() {
     <div className="w-full relative overflow-hidden">
       <Slider {...settings} className="full-width-slider">
         {slides.map((slide) => (
-          <div key={slide.id} className="relative h-[400px] md:h-[500px] lg:h-[550px] overflow-hidden">
+          <div key={slide.id} className="relative h-[400px] md:h-[600px] lg:h-[calc(100vh-6rem)] overflow-hidden">
             {/* Background Image with Parallax Effect */}
             <div 
               className="absolute inset-0 bg-cover bg-center scale-110"
@@ -136,7 +136,7 @@ function CustomSlider() {
 
 export default function Welcome() {
   return (
-    <section className="py-12 relative overflow-hidden">
+    <section className="pt-0 pb-16 relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"></div>
       <div className="absolute inset-0 -z-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMxLjIgMCAyLjMuNSAzLjIgMS4zLjkuOS0uNiAyLjEtLjYgMy4yIDAgMS4yIDEuNSAyLjQuNiAzLjItLjkuOS0yIDEuMy0zLjIgMS4zLTEuMiAwLTIuMy0uNS0zLjItMS4zLS45LS45LjYtMi4xLjYtMy4yIDAtMS4yLTEuNS0yLjQtLjYtMy4yLjktLjggMi0xLjMgMy4yLTEuM3oiIHN0cm9rZT0icmdiYSgxNDcsIDUxLCAyMzQsIDAuMSkiIHN0cm9rZS13aWR0aD0iMiIvPjwvZz48L3N2Zz4=')] opacity-5"></div>
