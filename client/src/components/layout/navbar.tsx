@@ -257,11 +257,20 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href="/auth">
-                  <Button variant="ghost" size="lg" className="text-lg text-white hover:text-white hover:bg-[#4060e0] px-6">Sign In</Button>
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="text-lg text-white hover:text-white hover:bg-[#4060e0] px-6 border-white border-2 font-medium shadow-md"
+                  >
+                    Sign In
+                  </Button>
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button size="lg" className="text-lg flex items-center justify-center bg-primary hover:bg-primary/90 px-6">
+                    <Button 
+                      size="lg" 
+                      className="text-lg flex items-center justify-center bg-white text-[#5372f1] hover:bg-gray-100 hover:text-[#4060e0] px-6 font-bold shadow-md"
+                    >
                       Sign Up
                       <ChevronDown className="ml-1 h-5 w-5" />
                     </Button>
@@ -433,7 +442,10 @@ export default function Navbar() {
                       <>
                         <SheetClose asChild>
                           <Link href="/auth">
-                            <Button variant="outline" className="w-full mb-2">
+                            <Button 
+                              variant="outline" 
+                              className="w-full mb-2 text-lg py-6 border-[#5372f1] border-2 font-medium text-[#5372f1]"
+                            >
                               Sign In
                             </Button>
                           </Link>
@@ -443,16 +455,22 @@ export default function Navbar() {
                           <div className="space-y-2">
                             <SheetClose asChild>
                               <Link href="/job-seeker-register">
-                                <Button variant="secondary" className="w-full flex items-center">
-                                  <User className="mr-2 h-4 w-4" />
+                                <Button 
+                                  variant="default" 
+                                  className="w-full flex items-center text-lg py-6 bg-[#5372f1] hover:bg-[#4060e0]"
+                                >
+                                  <User className="mr-2 h-5 w-5" />
                                   Job Seeker
                                 </Button>
                               </Link>
                             </SheetClose>
                             <SheetClose asChild>
                               <Link href="/employer-register">
-                                <Button variant="secondary" className="w-full flex items-center">
-                                  <Briefcase className="mr-2 h-4 w-4" />
+                                <Button 
+                                  variant="default" 
+                                  className="w-full flex items-center text-lg py-6 bg-[#5372f1] hover:bg-[#4060e0]"
+                                >
+                                  <Briefcase className="mr-2 h-5 w-5" />
                                   Employer
                                 </Button>
                               </Link>
