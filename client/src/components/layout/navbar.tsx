@@ -147,11 +147,11 @@ export default function Navbar() {
           </div>
 
           {/* Desktop navigation */}
-          <nav className="hidden md:flex space-x-8 items-center">
+          <nav className="hidden md:flex space-x-6 items-center">
             {navigationLinks.map((link) => (
               link.isDropdown ? (
                 <div key={link.name} className="relative group">
-                  <div className={`text-base font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-3 py-1 rounded-md cursor-pointer flex items-center ${
+                  <div className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer flex items-center ${
                     link.dropdownItems?.some(item => location === item.href) ? "text-white font-bold" : "text-gray-100"
                   }`}>
                     {link.name}
@@ -171,7 +171,7 @@ export default function Navbar() {
                 </div>
               ) : (
                 <Link key={link.name} href={link.href}>
-                  <div className={`text-base font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-3 py-1 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}>
+                  <div className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}>
                     {link.name}
                   </div>
                 </Link>
@@ -257,13 +257,13 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href="/auth">
-                  <Button variant="ghost" className="text-white hover:text-white hover:bg-[#4060e0]">Sign In</Button>
+                  <Button variant="ghost" size="lg" className="text-lg text-white hover:text-white hover:bg-[#4060e0] px-6">Sign In</Button>
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button className="flex items-center justify-center bg-primary hover:bg-primary/90">
+                    <Button size="lg" className="text-lg flex items-center justify-center bg-primary hover:bg-primary/90 px-6">
                       Sign Up
-                      <ChevronDown className="ml-1 h-4 w-4" />
+                      <ChevronDown className="ml-1 h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
