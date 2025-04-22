@@ -962,6 +962,7 @@ export default function AboutUsPage() {
             </motion.div>
           </motion.div>
           
+          {/* First row - the 4 cards that should remain unchanged */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Benefit 1 */}
             <motion.div
@@ -1059,15 +1060,19 @@ export default function AboutUsPage() {
               </div>
             </motion.div>
             
-            {/* Benefit 5 */}
+          </div>
+          
+          {/* Second row - the 3 specific cards that should be in one row with equal size */}
+          <div className="grid md:grid-cols-3 gap-6 mt-6">
+            {/* Card 1: Tap Proactive Headhunting Strategies */}
             <motion.div
-              className="group relative"
+              className="group relative h-full"
               variants={scaleIn}
               whileHover={{ y: -10 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
-              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg">
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg flex flex-col">
                 <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mb-5 group-hover:bg-amber-100 transition-colors duration-300">
                   <svg className="w-6 h-6 text-amber-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1077,21 +1082,21 @@ export default function AboutUsPage() {
                   </svg>
                 </div>
                 <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Tap Proactive Headhunting Strategies</h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                <p className="text-gray-600 dark:text-gray-300 text-sm flex-grow">
                   Discover hidden talent through our expert headhunting. We proactively seek out high-caliber candidates who aren't on the market, delivering game-changers to your doorstep and elevating your team.
                 </p>
               </div>
             </motion.div>
             
-            {/* Benefit 6 */}
+            {/* Card 2: Strengthen Competitive Positioning */}
             <motion.div
-              className="group relative"
+              className="group relative h-full"
               variants={scaleIn}
               whileHover={{ y: -10 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-rose-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
-              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg">
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg flex flex-col">
                 <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-5 group-hover:bg-red-100 transition-colors duration-300">
                   <svg className="w-6 h-6 text-red-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M13 14L17 9L22 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1101,33 +1106,31 @@ export default function AboutUsPage() {
                   </svg>
                 </div>
                 <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Strengthen Competitive Positioning</h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                <p className="text-gray-600 dark:text-gray-300 text-sm flex-grow">
                   Stay ahead in your industry with top talent uncovered by us. Our ability to identify and attract elite professionals gives your business a sharp edge, positioning you as a leader in the job market.
                 </p>
               </div>
             </motion.div>
             
-            {/* Benefit 7 */}
-            <motion.div
-              className="group relative md:col-span-2 lg:col-span-2"
+            {/* Card 3: Enjoy a Seamless Recruitment Experience */}
+            <motion.div 
+              className="group relative h-full"
               variants={scaleIn}
               whileHover={{ y: -10 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-primary/70 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
-              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg flex flex-col md:flex-row items-center">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-5 md:mb-0 md:mr-6 group-hover:bg-primary/20 transition-colors duration-300">
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg flex flex-col">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors duration-300">
                   <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M7.5 12L10.5 15L16.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white text-center md:text-left">Enjoy a Seamless Recruitment Experience</h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">
-                    Experience a hassle-free hiring journey with our expert support. From start to finish, we handle the details, ensuring a smooth, stress-free executive search process that delivers results and keeps your focus on growing your business.
-                  </p>
-                </div>
+                <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Enjoy a Seamless Recruitment Experience</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm flex-grow">
+                  Experience a hassle-free hiring journey with our expert support. From start to finish, we handle the details, ensuring a smooth, stress-free executive search process that delivers results and keeps your focus on growing your business.
+                </p>
               </div>
             </motion.div>
           </div>
