@@ -147,28 +147,19 @@ export default function ContactUsPage() {
             transition={{ delay: 0.6, duration: 0.8 }}
           >
             <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center h-full">
-              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-16 h-10 bg-white rounded flex items-center justify-center border border-gray-100 shadow-sm overflow-hidden">
-                <UAEFlag className="w-14 h-7" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2 text-center">Dubai, UAE</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2 text-center">Dubai, UAE</h3>
               <p className="text-gray-600 text-center">Middle East Headquarters</p>
               <div className="absolute -bottom-1 left-0 right-0 h-1 bg-primary/20 rounded-b-lg"></div>
             </div>
             
             <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center h-full">
-              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-16 h-10 bg-white rounded flex items-center justify-center border border-gray-100 shadow-sm overflow-hidden">
-                <IndiaFlag className="w-14 h-7" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2 text-center">Mumbai, India</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2 text-center">Mumbai, India</h3>
               <p className="text-gray-600 text-center">Asian Operations</p>
               <div className="absolute -bottom-1 left-0 right-0 h-1 bg-primary/20 rounded-b-lg"></div>
             </div>
             
             <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center h-full">
-              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-16 h-10 bg-white rounded flex items-center justify-center border border-gray-100 shadow-sm overflow-hidden">
-                <USAFlag className="w-14 h-7" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2 text-center">New Jersey, USA</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2 text-center">New Jersey, USA</h3>
               <p className="text-gray-600 text-center">North American Division</p>
               <div className="absolute -bottom-1 left-0 right-0 h-1 bg-primary/20 rounded-b-lg"></div>
             </div>
