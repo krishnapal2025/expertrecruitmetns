@@ -962,7 +962,7 @@ export default function AboutUsPage() {
             </motion.div>
           </motion.div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             {/* Benefit 1 */}
             <motion.div
               className="group relative"
@@ -1109,25 +1109,23 @@ export default function AboutUsPage() {
             
             {/* Benefit 7 */}
             <motion.div
-              className="group relative md:col-span-2 lg:col-span-2"
+              className="group relative"
               variants={scaleIn}
               whileHover={{ y: -10 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-primary/70 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
-              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg flex flex-col md:flex-row items-center">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-5 md:mb-0 md:mr-6 group-hover:bg-primary/20 transition-colors duration-300">
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors duration-300">
                   <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M7.5 12L10.5 15L16.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white text-center md:text-left">Enjoy a Seamless Recruitment Experience</h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">
-                    Experience a hassle-free hiring journey with our expert support. From start to finish, we handle the details, ensuring a smooth, stress-free executive search process that delivers results and keeps your focus on growing your business.
-                  </p>
-                </div>
+                <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Enjoy a Seamless Recruitment Experience</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                  Experience a hassle-free hiring journey with our expert support. From start to finish, we handle the details, ensuring a smooth, stress-free executive search process that delivers results and keeps your focus on growing your business.
+                </p>
               </div>
             </motion.div>
           </div>
