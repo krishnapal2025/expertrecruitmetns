@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Menu, User, LogOut, ChevronDown, Briefcase } from "lucide-react";
-import expertLogo from "../../assets/expert-logo.png";
+import expertLogo from "../../assets/expert-logo-new.png";
 import NotificationsPopover from "@/components/common/notifications";
 
 export default function Navbar() {
@@ -135,8 +135,8 @@ export default function Navbar() {
                   src={expertLogo} 
                   alt="Expert Recruitments LLC" 
                   width="250"
-                  height="250"
-                  className="w-[200px] h-auto max-w-[80vw] md:max-w-[250px] object-contain"
+                  height="70"
+                  className="h-[50px] md:h-[70px] w-auto max-w-[240px] object-contain bg-white p-1 rounded"
                 />
               </div>
             </Link>
@@ -292,6 +292,13 @@ export default function Navbar() {
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[350px]">
                 <SheetHeader className="mb-4">
+                  <div className="flex justify-center mb-3">
+                    <img 
+                      src={expertLogo} 
+                      alt="Expert Recruitments LLC" 
+                      className="h-12 w-auto object-contain bg-white p-1 rounded"
+                    />
+                  </div>
                   <SheetTitle>Menu</SheetTitle>
                   <SheetDescription>
                     EXPERT Recruitments LLC
