@@ -727,7 +727,7 @@ export default function AboutUsPage() {
                       When you choose Expert Recruitments for executive search in Dubai, you're guaranteed a personalized, fully tailored service based on the needs and objectives of your business.
                     </p>
                     <p className="leading-relaxed">
-                      We're not like other recruitment agencies in Dubai. We take the time to understand your organization before creating a custom solution designed to make the entire process fast, efficient, and productive.
+                      At Expert recruitment , We take the time to understand your organization before creating a custom solution designed to make the entire process fast, efficient, and productive.
                     </p>
                     <p className="leading-relaxed">
                       We understand the pressures and challenges associated with running a successful business in the UAE. That's why we've developed a comprehensive approach that lifts the burden of recruitment from your shoulders.
