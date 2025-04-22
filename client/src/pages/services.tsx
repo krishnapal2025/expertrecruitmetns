@@ -79,7 +79,7 @@ export default function ServicesPage() {
                   Access a diverse pool of qualified candidates through our extensive network and advanced matching technology.
                 </p>
                 <Link href="/employer-register">
-                  <Button variant="default" size="lg" className="w-full bg-primary hover:bg-primary/90 text-base py-6">Post a Job</Button>
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-gray-50 border-primary border-2 text-base py-6 shadow-sm">Post a Job</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -95,7 +95,7 @@ export default function ServicesPage() {
                   Specialized recruitment services for senior-level and executive positions tailored to your requirements.
                 </p>
                 <Link href="/contact-us">
-                  <Button variant="default" size="lg" className="w-full bg-primary hover:bg-primary/90 text-base py-6">Contact Us</Button>
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-gray-50 border-primary border-2 text-base py-6 shadow-sm">Contact Us</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -111,7 +111,7 @@ export default function ServicesPage() {
                   Flexible staffing solutions to address short-term needs, special projects, or seasonal demands.
                 </p>
                 <Link href="/contact-us">
-                  <Button variant="default" size="lg" className="w-full bg-primary hover:bg-primary/90 text-base py-6">Learn More</Button>
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-gray-50 border-primary border-2 text-base py-6 shadow-sm">Learn More</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -148,7 +148,7 @@ export default function ServicesPage() {
                   Our intelligent matching system connects you with positions that align with your skills, experience, and career goals.
                 </p>
                 <Link href="/job-board">
-                  <Button variant="default" size="lg" className="w-full bg-primary hover:bg-primary/90 text-base py-6">Browse Jobs</Button>
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-gray-50 border-primary border-2 text-base py-6 shadow-sm">Browse Jobs</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -164,7 +164,7 @@ export default function ServicesPage() {
                   Access resources and guidance to help you enhance your skills and advance your career path.
                 </p>
                 <Link href="/blogs">
-                  <Button variant="default" size="lg" className="w-full bg-primary hover:bg-primary/90 text-base py-6">View Resources</Button>
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-gray-50 border-primary border-2 text-base py-6 shadow-sm">View Resources</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -180,7 +180,7 @@ export default function ServicesPage() {
                   Get expert advice on crafting a compelling resume that showcases your strengths and experience.
                 </p>
                 <Link href="/contact-us">
-                  <Button variant="default" size="lg" className="w-full bg-primary hover:bg-primary/90 text-base py-6">Learn More</Button>
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-gray-50 border-primary border-2 text-base py-6 shadow-sm">Learn More</Button>
                 </Link>
               </CardContent>
             </Card>
