@@ -105,81 +105,10 @@ export default function HomePage() {
           
           {/* Interactive Feature Blocks - Distinctly different from categories */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-            {/* Find Jobs Feature */}
-            <motion.div
-              className="group relative"
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-            >
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-blue-600 rounded-3xl blur-xl opacity-25 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500">
-                {/* Image Area */}
-                <div className="md:w-2/5 aspect-video md:aspect-square rounded-xl overflow-hidden">
-                  <div className="w-full h-full relative">
-                    <img 
-                      src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=1500&auto=format&fit=crop"
-                      alt="Person searching for jobs on laptop" 
-                      className="w-full h-full object-cover object-center scale-105 group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 to-blue-600/60"></div>
-                    <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium text-primary">
-                      1,500+ Active Jobs
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Content Area */}
-                <div className="md:w-3/5 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center mb-4">
-                      <div className="w-10 h-10 mr-4 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-primary">
-                        <BriefcaseIcon className="w-5 h-5" />
-                      </div>
-                      <h3 className="text-2xl font-bold">Find Jobs</h3>
-                    </div>
-                    <p className="text-gray-600 dark:text-gray-300 mb-4">
-                      Discover opportunities matching your skills, experience, and career goals across various industries and locations.
-                    </p>
-                    
-                    {/* Features List */}
-                    <ul className="mb-6 space-y-2">
-                      {["Advanced search filters", "Job alerts", "Application tracking", "Salary insights"].map((feature, i) => (
-                        <motion.li 
-                          key={i}
-                          className="flex items-center text-sm"
-                          initial={{ opacity: 0, x: -20 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.1 * i, duration: 0.5 }}
-                        >
-                          <div className="w-5 h-5 mr-2 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                              <path d="M2.5 6L5 8.5L9.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </div>
-                          {feature}
-                        </motion.li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <Link href="/job-board">
-                    <Button variant="default" className="group w-full justify-between overflow-hidden">
-                      <span className="mr-2">Browse Jobs</span>
-                      <span className="relative inline-block transition-transform duration-300 group-hover:translate-x-1">
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-            
             {/* Hire Talent Feature */}
             <motion.div
               className="group relative"
-              initial={{ opacity: 0, x: 50 }}
+              initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
@@ -238,6 +167,77 @@ export default function HomePage() {
                   <Link href="/hire-talent">
                     <Button variant="default" className="group w-full justify-between bg-purple-600 hover:bg-purple-700 text-white">
                       <span className="mr-2">Hire Talent</span>
+                      <span className="relative inline-block transition-transform duration-300 group-hover:translate-x-1">
+                        <ArrowRight className="h-4 w-4" />
+                      </span>
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+            
+            {/* Find Jobs Feature */}
+            <motion.div
+              className="group relative"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-blue-600 rounded-3xl blur-xl opacity-25 group-hover:opacity-40 transition duration-500"></div>
+              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500">
+                {/* Image Area */}
+                <div className="md:w-2/5 aspect-video md:aspect-square rounded-xl overflow-hidden">
+                  <div className="w-full h-full relative">
+                    <img 
+                      src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=1500&auto=format&fit=crop"
+                      alt="Person searching for jobs on laptop" 
+                      className="w-full h-full object-cover object-center scale-105 group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 to-blue-600/60"></div>
+                    <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium text-primary">
+                      1,500+ Active Jobs
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Content Area */}
+                <div className="md:w-3/5 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center mb-4">
+                      <div className="w-10 h-10 mr-4 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-primary">
+                        <BriefcaseIcon className="w-5 h-5" />
+                      </div>
+                      <h3 className="text-2xl font-bold">Find Jobs</h3>
+                    </div>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4">
+                      Discover opportunities matching your skills, experience, and career goals across various industries and locations.
+                    </p>
+                    
+                    {/* Features List */}
+                    <ul className="mb-6 space-y-2">
+                      {["Advanced search filters", "Job alerts", "Application tracking", "Salary insights"].map((feature, i) => (
+                        <motion.li 
+                          key={i}
+                          className="flex items-center text-sm"
+                          initial={{ opacity: 0, x: -20 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.1 * i, duration: 0.5 }}
+                        >
+                          <div className="w-5 h-5 mr-2 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                              <path d="M2.5 6L5 8.5L9.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </div>
+                          {feature}
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <Link href="/job-board">
+                    <Button variant="default" className="group w-full justify-between overflow-hidden">
+                      <span className="mr-2">Browse Jobs</span>
                       <span className="relative inline-block transition-transform duration-300 group-hover:translate-x-1">
                         <ArrowRight className="h-4 w-4" />
                       </span>
