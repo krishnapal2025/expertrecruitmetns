@@ -139,7 +139,7 @@ export default function Navbar() {
                   />
                 </div>
                 <div className="ml-3 flex flex-col">
-                  <span className="text-white font-bold text-lg md:text-xl uppercase" style={{ letterSpacing: '0.2em' }}>Expert</span>
+                  <span className="text-white font-bold text-xl md:text-2xl uppercase" style={{ letterSpacing: '0.15em', width: '91%', display: 'inline-block' }}>Expert</span>
                   <span className="text-white text-xs md:text-sm -mt-1">Recruitments LLC</span>
                 </div>
               </div>
@@ -305,7 +305,7 @@ export default function Navbar() {
                       />
                     </div>
                     <div className="flex flex-col items-center">
-                      <span className="text-[#5372f1] font-bold text-xl uppercase" style={{ letterSpacing: '0.2em' }}>Expert</span>
+                      <span className="text-[#5372f1] font-bold text-xl md:text-2xl uppercase" style={{ letterSpacing: '0.15em', width: '91%', display: 'inline-block' }}>Expert</span>
                       <span className="text-[#5372f1] text-xs -mt-1">Recruitments LLC</span>
                     </div>
                   </div>
