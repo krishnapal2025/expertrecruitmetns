@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { 
   Users, Briefcase, Search, Award, 
-  TrendingUp, BookOpen, Clock, Globe 
+  TrendingUp, BookOpen, Clock, Globe,
+  MessageSquare
 } from "lucide-react";
 
 export default function ServicesPage() {
@@ -32,7 +33,7 @@ export default function ServicesPage() {
           <div className="absolute -left-20 bottom-0 w-64 h-64 bg-gray-100 rounded-full"></div>
         </div>
         
-        <div className="w-full max-w-[1440px] mx-auto px-4 relative">
+        <div className="w-full max-w-[1600px] mx-auto px-4 relative">
           {/* Main content */}
           <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16">
             <div className="inline-block mb-6 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md">
@@ -54,7 +55,7 @@ export default function ServicesPage() {
         </div>
       </div>
 
-      <div className="w-full max-w-[1440px] mx-auto px-4 py-12">
+      <div className="w-full max-w-[1600px] mx-auto px-4 py-12">
         {/* For Employers Section */}
         <div className="mb-16">
           <div className="text-center mb-12">
@@ -67,7 +68,7 @@ export default function ServicesPage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card className="transition-all hover:shadow-md">
               <CardContent className="p-6">
                 <Search className="h-12 w-12 text-primary mb-4" />
@@ -106,6 +107,19 @@ export default function ServicesPage() {
                 </Link>
               </CardContent>
             </Card>
+            
+            <Card className="transition-all hover:shadow-md">
+              <CardContent className="p-6">
+                <Globe className="h-12 w-12 text-primary mb-4" />
+                <h3 className="text-xl font-bold mb-2">Global Recruitment</h3>
+                <p className="text-gray-600 mb-4">
+                  Access talent from around the world with our international recruitment services in key markets.
+                </p>
+                <Link href="/contact-us">
+                  <Button variant="outline" className="w-full">Learn More</Button>
+                </Link>
+              </CardContent>
+            </Card>
           </div>
           
           <div className="mt-8 text-center">
@@ -127,7 +141,7 @@ export default function ServicesPage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card className="transition-all hover:shadow-md">
               <CardContent className="p-6">
                 <Search className="h-12 w-12 text-primary mb-4" />
@@ -162,6 +176,19 @@ export default function ServicesPage() {
                   Get expert advice on crafting a compelling resume that showcases your strengths and experience.
                 </p>
                 <Link href="/contact-us">
+                  <Button variant="outline" className="w-full">Learn More</Button>
+                </Link>
+              </CardContent>
+            </Card>
+            
+            <Card className="transition-all hover:shadow-md">
+              <CardContent className="p-6">
+                <MessageSquare className="h-12 w-12 text-primary mb-4" />
+                <h3 className="text-xl font-bold mb-2">Interview Coaching</h3>
+                <p className="text-gray-600 mb-4">
+                  Professional coaching to help you prepare for interviews and make a strong impression on potential employers.
+                </p>
+                <Link href="/job-services">
                   <Button variant="outline" className="w-full">Learn More</Button>
                 </Link>
               </CardContent>
