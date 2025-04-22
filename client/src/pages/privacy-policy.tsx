@@ -13,14 +13,14 @@ export default function PrivacyPolicyPage() {
         />
       </Helmet>
       
-      {/* Hero Section */}
-      <section className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 pt-28 pb-16">
+      {/* Hero Section with Content */}
+      <section className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 pt-28 pb-8">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white tracking-tight">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white tracking-tight">
               Privacy Policy
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+            <p className="text-lg text-gray-600 dark:text-gray-300 mb-0 leading-relaxed">
               How we collect, use, and protect your personal information
             </p>
           </div>
@@ -28,9 +28,9 @@ export default function PrivacyPolicyPage() {
       </section>
       
       {/* Privacy Policy Content */}
-      <section className="py-12 bg-white dark:bg-gray-800">
+      <section className="pt-0 pb-12 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 md:p-10 mb-12">
+          <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 md:p-10 mb-12 mt-0">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -39,7 +39,7 @@ export default function PrivacyPolicyPage() {
             >
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Introduction</h2>
               <p>
-                Expert Recruitments LLC ("we", "our", or "us") is an Executive Search and Head Hunting agency based in Dubai. We are committed to protecting the privacy and security of personal data we collect in the course of our business operations. This Privacy Policy outlines how we collect, use, store, and protect personal information of both candidates and employers.
+                Expert Recruitments LLC ("we", "our", or "us") is an Executive Search and Head Hunting agency based in Dubai (UAE) , India and the USA. We are committed to protecting the privacy and security of personal data we collect in the course of our business operations. This Privacy Policy outlines how we collect, use, store, and protect personal information of both candidates and employers.
               </p>
               
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-5 mt-8">Information We Collect</h2>
