@@ -96,20 +96,20 @@ export default function JobSeekerRegisterPage() {
   };
   
   return (
-    <div className="min-h-screen py-12 bg-gray-50">
+    <div className="min-h-screen pt-6 pb-12 bg-gray-50">
       <div className="container px-4 mx-auto">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-5 gap-8">
             {/* Left side: Registration form */}
             <div className="md:col-span-3">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Job Seeker Registration</CardTitle>
-                  <CardDescription>Create your job seeker account</CardDescription>
+              <Card className="shadow-lg border-t-4 border-t-primary">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-2xl text-primary font-bold">Job Seeker Registration</CardTitle>
+                  <CardDescription className="text-base">Create your job seeker account and find your dream job in UAE & GCC</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-6 py-2">
                   <Form {...jobSeekerForm}>
-                    <form onSubmit={jobSeekerForm.handleSubmit(onJobSeekerSubmit)} className="space-y-4">
+                    <form onSubmit={jobSeekerForm.handleSubmit(onJobSeekerSubmit)} className="space-y-6">
                       <div className="grid md:grid-cols-2 gap-4">
                         <FormField
                           control={jobSeekerForm.control}
@@ -283,11 +283,11 @@ export default function JobSeekerRegisterPage() {
                       
                       <Button 
                         type="submit" 
-                        className="w-full" 
+                        className="w-full text-base py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold" 
                         disabled={registerJobSeekerMutation.isPending}
                       >
                         {registerJobSeekerMutation.isPending ? (
-                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
                         ) : null}
                         Create Job Seeker Account
                       </Button>
@@ -306,56 +306,62 @@ export default function JobSeekerRegisterPage() {
             </div>
             
             {/* Right side: Hero section */}
-            <div className="md:col-span-2 bg-primary text-white rounded-lg p-8 flex flex-col justify-center">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold mb-2">For Job Seekers</h2>
-                <p className="text-primary-foreground/90">
+            <div className="md:col-span-2 bg-primary text-white rounded-lg p-8 flex flex-col justify-center shadow-lg h-full">
+              <div className="mb-8">
+                <h2 className="text-3xl font-bold mb-3">For Job Seekers</h2>
+                <p className="text-primary-foreground/90 text-lg">
                   Join thousands of job seekers who found their perfect role through our platform.
                 </p>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div className="flex items-start">
-                  <div className="bg-white/20 p-2 rounded mr-3 flex-shrink-0">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-medium">Personalized Job Matches</h3>
-                    <p className="text-sm text-primary-foreground/80">Get job recommendations based on your skills and experience</p>
+                    <h3 className="font-semibold text-lg">Personalized Job Matches</h3>
+                    <p className="text-base text-primary-foreground/90">Get job recommendations based on your skills and experience</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start">
-                  <div className="bg-white/20 p-2 rounded mr-3 flex-shrink-0">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-medium">Industry Connections</h3>
-                    <p className="text-sm text-primary-foreground/80">Network with leading employers across diverse sectors</p>
+                    <h3 className="font-semibold text-lg">Industry Connections</h3>
+                    <p className="text-base text-primary-foreground/90">Network with leading UAE & GCC employers across diverse sectors</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start">
-                  <div className="bg-white/20 p-2 rounded mr-3 flex-shrink-0">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-medium">Career Resources</h3>
-                    <p className="text-sm text-primary-foreground/80">Access tools and guidance to advance your professional journey</p>
+                    <h3 className="font-semibold text-lg">Career Resources</h3>
+                    <p className="text-base text-primary-foreground/90">Access tools and guidance to advance your professional journey</p>
                   </div>
                 </div>
               </div>
               
-              <div className="mt-auto pt-6">
-                <p className="text-sm text-primary-foreground/70">
-                  By joining, you agree to our terms of service and privacy policy
-                </p>
+              <div className="mt-auto pt-8">
+                <div className="bg-white/10 rounded-lg p-4 border border-white/20">
+                  <h3 className="font-semibold text-lg mb-2">Join Today and Get:</h3>
+                  <p className="text-base text-primary-foreground/90 mb-3">
+                    Access to exclusive job opportunities in Dubai & UAE's top companies
+                  </p>
+                  <p className="text-sm text-primary-foreground/70">
+                    By joining, you agree to our terms of service and privacy policy
+                  </p>
+                </div>
               </div>
             </div>
           </div>
