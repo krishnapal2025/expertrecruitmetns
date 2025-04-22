@@ -456,7 +456,7 @@ export default function AboutUsPage() {
               
               <div className="absolute bottom-5 left-5 right-5 bg-white/90 backdrop-blur-sm shadow-lg rounded-lg p-4">
                 <div className="text-gray-800 font-semibold mb-1">Global Presence</div>
-                <div className="text-sm text-gray-600"> UAE  |  INDIA  |  USA</div>
+                <div className="text-sm text-gray-600">Dubai | UAE | India | USA</div>
               </div>
             </div>
             
