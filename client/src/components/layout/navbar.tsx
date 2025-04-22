@@ -260,7 +260,7 @@ export default function Navbar() {
                   <Button 
                     variant="default" 
                     size="lg" 
-                    className="text-lg text-white bg-[#4060e0] hover:bg-[#3050d0] px-6 font-bold shadow-md"
+                    className="text-lg text-white bg-[#4060e0] hover:bg-[#3050d0] px-6 font-bold shadow-md focus:ring-0 focus:ring-offset-0 focus:outline-none"
                   >
                     Sign In
                   </Button>
@@ -270,7 +270,7 @@ export default function Navbar() {
                     <Button 
                       variant="default" 
                       size="lg" 
-                      className="text-lg flex items-center justify-center bg-[#4060e0] hover:bg-[#3050d0] text-white px-6 font-bold shadow-md"
+                      className="text-lg flex items-center justify-center bg-[#4060e0] hover:bg-[#3050d0] text-white px-6 font-bold shadow-md focus:ring-0 focus:ring-offset-0 focus:outline-none"
                     >
                       Sign Up
                       <ChevronDown className="ml-1 h-5 w-5" />
@@ -447,7 +447,7 @@ export default function Navbar() {
                           <Link href="/auth">
                             <Button 
                               variant="default" 
-                              className="w-full mb-2 text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold text-white"
+                              className="w-full mb-2 text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold text-white focus:ring-0 focus:ring-offset-0 focus:outline-none"
                             >
                               Sign In
                             </Button>
@@ -460,7 +460,7 @@ export default function Navbar() {
                               <Link href="/job-seeker-register">
                                 <Button 
                                   variant="default" 
-                                  className="w-full flex items-center text-lg py-6 bg-[#5372f1] hover:bg-[#4060e0]"
+                                  className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
                                 >
                                   <User className="mr-2 h-5 w-5" />
                                   Job Seeker
@@ -471,7 +471,7 @@ export default function Navbar() {
                               <Link href="/employer-register">
                                 <Button 
                                   variant="default" 
-                                  className="w-full flex items-center text-lg py-6 bg-[#5372f1] hover:bg-[#4060e0]"
+                                  className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
                                 >
                                   <Briefcase className="mr-2 h-5 w-5" />
                                   Employer
