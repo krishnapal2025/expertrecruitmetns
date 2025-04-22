@@ -157,11 +157,11 @@ export default function Navbar() {
                     {link.name}
                     <ChevronDown className="h-4 w-4 ml-1 transition-transform group-hover:rotate-180" />
                   </div>
-                  <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                    <div className="py-1 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                  <div className="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                    <div className="py-2 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                       {link.dropdownItems?.map((item) => (
                         <Link key={item.name} href={item.href}>
-                          <div className={`block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${location === item.href ? "text-primary dark:text-primary bg-primary/10 font-medium border-l-2 border-primary" : ""}`}>
+                          <div className={`block px-5 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-[#5372f1]/10 hover:text-[#5372f1] transition-colors duration-200 ${location === item.href ? "text-[#5372f1] bg-[#5372f1]/10 font-medium border-l-2 border-[#5372f1]" : ""}`}>
                             {item.name}
                           </div>
                         </Link>

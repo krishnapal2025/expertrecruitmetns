@@ -327,7 +327,7 @@ export default function ContactUsPage() {
                 </div>
               </div>
               
-              <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">DUBAI</h3>
+              <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">UAE</h3>
               
               <div className="space-y-8">
                 <div className="flex items-center space-x-4">
