@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
-import ERLogo from "@assets/ER.png";
+import expertLogo from "../../assets/er-logo-icon.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -14,8 +14,17 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 mb-12">
           <div>
             <div className="flex items-center mb-6">
-              <img src={ERLogo} alt="EXPERT Recruitments LLC" className="h-10 w-auto mr-3" />
-              <span className="text-2xl font-bold">EXPERT Recruitments LLC</span>
+              <div className="flex items-center justify-center h-12 w-12 rounded-full bg-white p-2 border-2 border-[#5372f1] shadow-md mr-3">
+                <img 
+                  src={expertLogo} 
+                  alt="Expert Recruitments LLC" 
+                  className="h-full w-full object-contain"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-white font-bold text-xl md:text-2xl uppercase" style={{ letterSpacing: '0.15em', width: '91%', display: 'inline-block' }}>Expert</span>
+                <span className="text-white text-xs md:text-sm -mt-1">Recruitments LLC</span>
+              </div>
             </div>
             <p className="text-gray-400 mb-8 max-w-3xl">
               Connecting talent with opportunity. Find your perfect job or the ideal candidate with our professional recruitment services.
@@ -226,7 +235,7 @@ export default function Footer() {
         
         <div className="flex flex-col md:flex-row md:justify-between md:items-center">
           <div className="text-gray-500 text-sm mb-4 md:mb-0">
-            © {currentYear} EXPERT Recruitments LLC. All rights reserved.
+            © {currentYear} <span className="uppercase" style={{ letterSpacing: '0.15em' }}>Expert</span> Recruitments LLC. All rights reserved.
           </div>
           <div className="flex flex-wrap gap-4">
             <a href="/privacy-policy" className="text-gray-500 hover:text-white transition-colors text-xs">
