@@ -1063,16 +1063,16 @@ export default function AboutUsPage() {
           </div>
           
           {/* Second row - the 3 specific cards that should be in one row with equal size */}
-          <div className="grid md:grid-cols-3 gap-6 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {/* Card 1: Tap Proactive Headhunting Strategies */}
             <motion.div
-              className="group relative h-full"
+              className="group relative flex h-full"
               variants={scaleIn}
               whileHover={{ y: -10 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
-              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg flex flex-col">
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 w-full shadow-lg flex flex-col">
                 <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mb-5 group-hover:bg-amber-100 transition-colors duration-300">
                   <svg className="w-6 h-6 text-amber-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1090,13 +1090,13 @@ export default function AboutUsPage() {
             
             {/* Card 2: Strengthen Competitive Positioning */}
             <motion.div
-              className="group relative h-full"
+              className="group relative flex h-full"
               variants={scaleIn}
               whileHover={{ y: -10 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-rose-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
-              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg flex flex-col">
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 w-full shadow-lg flex flex-col">
                 <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-5 group-hover:bg-red-100 transition-colors duration-300">
                   <svg className="w-6 h-6 text-red-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M13 14L17 9L22 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1114,13 +1114,13 @@ export default function AboutUsPage() {
             
             {/* Card 3: Enjoy a Seamless Recruitment Experience */}
             <motion.div 
-              className="group relative h-full"
+              className="group relative flex h-full"
               variants={scaleIn}
               whileHover={{ y: -10 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-primary/70 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
-              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full shadow-lg flex flex-col">
+              <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 w-full shadow-lg flex flex-col">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors duration-300">
                   <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
