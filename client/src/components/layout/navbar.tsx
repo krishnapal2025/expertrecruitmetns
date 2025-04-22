@@ -260,7 +260,7 @@ export default function Navbar() {
                   <Button 
                     variant="outline" 
                     size="lg" 
-                    className="text-lg text-white hover:text-white hover:bg-[#4060e0] px-6 border-white border-2 font-medium shadow-md"
+                    className="text-lg text-white hover:text-white bg-transparent hover:bg-[#4060e0] px-6 py-2 font-semibold border-2 border-white"
                   >
                     Sign In
                   </Button>
@@ -269,7 +269,7 @@ export default function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <Button 
                       size="lg" 
-                      className="text-lg flex items-center justify-center bg-white text-[#5372f1] hover:bg-gray-100 hover:text-[#4060e0] px-6 font-bold shadow-md"
+                      className="text-lg flex items-center justify-center bg-white text-[#5372f1] hover:bg-gray-200 px-6 py-2 font-bold"
                     >
                       Sign Up
                       <ChevronDown className="ml-1 h-5 w-5" />
@@ -444,20 +444,20 @@ export default function Navbar() {
                           <Link href="/auth">
                             <Button 
                               variant="outline" 
-                              className="w-full mb-2 text-lg py-6 border-[#5372f1] border-2 font-medium text-[#5372f1]"
+                              className="w-full mb-4 text-lg py-6 border-[#5372f1] border-2 font-medium text-[#5372f1]"
                             >
                               Sign In
                             </Button>
                           </Link>
                         </SheetClose>
                         <div className="mb-2">
-                          <div className="font-medium text-sm mb-2">Sign Up as:</div>
-                          <div className="space-y-2">
+                          <div className="font-medium text-base mb-3">Sign Up as:</div>
+                          <div className="space-y-3">
                             <SheetClose asChild>
                               <Link href="/job-seeker-register">
                                 <Button 
                                   variant="default" 
-                                  className="w-full flex items-center text-lg py-6 bg-[#5372f1] hover:bg-[#4060e0]"
+                                  className="w-full flex items-center text-lg py-6 bg-[#5372f1] hover:bg-[#4060e0] font-bold"
                                 >
                                   <User className="mr-2 h-5 w-5" />
                                   Job Seeker
@@ -468,7 +468,7 @@ export default function Navbar() {
                               <Link href="/employer-register">
                                 <Button 
                                   variant="default" 
-                                  className="w-full flex items-center text-lg py-6 bg-[#5372f1] hover:bg-[#4060e0]"
+                                  className="w-full flex items-center text-lg py-6 bg-[#5372f1] hover:bg-[#4060e0] font-bold"
                                 >
                                   <Briefcase className="mr-2 h-5 w-5" />
                                   Employer
