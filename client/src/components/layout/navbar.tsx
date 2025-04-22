@@ -258,9 +258,9 @@ export default function Navbar() {
               <>
                 <Link href="/auth">
                   <Button 
-                    variant="outline" 
+                    variant="default" 
                     size="lg" 
-                    className="text-lg text-white hover:text-white hover:bg-[#4060e0] px-6 border-white border-2 font-medium shadow-md"
+                    className="text-lg text-white bg-[#4060e0] hover:bg-[#3050d0] px-6 font-bold shadow-md"
                   >
                     Sign In
                   </Button>
@@ -443,8 +443,8 @@ export default function Navbar() {
                         <SheetClose asChild>
                           <Link href="/auth">
                             <Button 
-                              variant="outline" 
-                              className="w-full mb-2 text-lg py-6 border-[#5372f1] border-2 font-medium text-[#5372f1]"
+                              variant="default" 
+                              className="w-full mb-2 text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold text-white"
                             >
                               Sign In
                             </Button>
