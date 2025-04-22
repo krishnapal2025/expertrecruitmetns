@@ -124,7 +124,7 @@ export default function Navbar() {
   const navigationLinks = getNavigationLinks();
 
   return (
-    <header className={`sticky top-0 z-40 transition-colors duration-200 ${scrolled ? "bg-[#222a37] shadow-md" : "bg-[#222a37]"}`}>
+    <header className={`sticky top-0 z-40 transition-colors duration-200 ${scrolled ? "bg-white shadow-md" : "bg-white bg-opacity-95"}`}>
       <div className="container mx-auto px-4">
         <div className="flex h-[100px] md:h-[120px] items-center justify-between">
           {/* Logo */}
@@ -148,7 +148,7 @@ export default function Navbar() {
               link.isDropdown ? (
                 <div key={link.name} className="relative group">
                   <div className={`text-base font-medium transition-colors hover:text-primary cursor-pointer flex items-center ${
-                    link.dropdownItems?.some(item => location === item.href) ? "text-primary" : "text-white"
+                    link.dropdownItems?.some(item => location === item.href) ? "text-primary" : "text-gray-700"
                   }`}>
                     {link.name}
                     <ChevronDown className="h-4 w-4 ml-1 transition-transform group-hover:rotate-180" />
@@ -167,7 +167,7 @@ export default function Navbar() {
                 </div>
               ) : (
                 <Link key={link.name} href={link.href}>
-                  <div className={`text-base font-medium transition-colors hover:text-primary cursor-pointer ${location === link.href ? "text-primary" : "text-white"}`}>
+                  <div className={`text-base font-medium transition-colors hover:text-primary cursor-pointer ${location === link.href ? "text-primary" : "text-gray-700"}`}>
                     {link.name}
                   </div>
                 </Link>
@@ -182,7 +182,7 @@ export default function Navbar() {
                 <NotificationsPopover />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full text-white hover:text-white hover:bg-white/10">
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                       <Avatar className="h-8 w-8">
                         <AvatarFallback className="bg-primary text-white">
                           {getUserInitials()}
@@ -253,7 +253,7 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href="/auth">
-                  <Button variant="ghost" className="text-white hover:text-white hover:bg-white/10">Sign In</Button>
+                  <Button variant="ghost">Sign In</Button>
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -285,7 +285,7 @@ export default function Navbar() {
           <div className="flex md:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white hover:text-white hover:bg-white/10">
+                <Button variant="ghost" size="icon">
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
