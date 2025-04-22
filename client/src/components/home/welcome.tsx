@@ -175,57 +175,11 @@ export default function Welcome() {
       <div className="container mx-auto px-4 relative z-10">
 
         <div className="grid md:grid-cols-2 gap-12 mb-16 items-stretch">
-          {/* Left side - Job seekers content */}
+          {/* Left side - Employer content */}
           <motion.div 
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 h-full">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center mr-4 shadow-lg">
-                  <Users className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-                  For Job Seekers
-                </h3>
-              </div>
-
-              <p className="text-gray-600 dark:text-gray-300 mb-6 text-lg">
-                Take the next step in your career journey with us. We offer access to thousands of opportunities across various industries and locations.
-              </p>
-
-              <ul className="space-y-3 mb-6">
-                {[
-                  "Create a profile that showcases your skills",
-                  "Browse jobs that match your qualifications",
-                  "Get discovered by employers seeking talent",
-                  "Access resources to enhance your search"
-                ].map((item, index) => (
-                  <motion.li 
-                    key={index}
-                    className="flex items-start bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 + (index * 0.1), duration: 0.5 }}
-                  >
-                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
-                      <svg className="h-3 w-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <span className="text-gray-700 dark:text-gray-300">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-          </motion.div>
-
-          {/* Right side - Employer content */}
-          <motion.div 
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
           >
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 h-full">
               <div className="flex items-center mb-6">
@@ -241,7 +195,7 @@ export default function Welcome() {
                 Find the talent your organization needs to thrive. We provide access to a diverse pool of qualified candidates.
               </p>
 
-              <ul className="space-y-3">
+              <ul className="space-y-3 mb-6">
                 {[
                   "Post jobs and reach qualified candidates",
                   "Search for candidates with the right skills",
@@ -253,10 +207,56 @@ export default function Welcome() {
                     className="flex items-start bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.8 + (index * 0.1), duration: 0.5 }}
+                    transition={{ delay: 0.4 + (index * 0.1), duration: 0.5 }}
                   >
                     <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
                       <svg className="h-3 w-3 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-gray-700 dark:text-gray-300">{item}</span>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+          </motion.div>
+
+          {/* Right side - Job seekers content */}
+          <motion.div 
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 h-full">
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center mr-4 shadow-lg">
+                  <Users className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+                  For Job Seekers
+                </h3>
+              </div>
+
+              <p className="text-gray-600 dark:text-gray-300 mb-6 text-lg">
+                Take the next step in your career journey with us. We offer access to thousands of opportunities across various industries and locations.
+              </p>
+
+              <ul className="space-y-3">
+                {[
+                  "Create a profile that showcases your skills",
+                  "Browse jobs that match your qualifications",
+                  "Get discovered by employers seeking talent",
+                  "Access resources to enhance your search"
+                ].map((item, index) => (
+                  <motion.li 
+                    key={index}
+                    className="flex items-start bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.8 + (index * 0.1), duration: 0.5 }}
+                  >
+                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                      <svg className="h-3 w-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
