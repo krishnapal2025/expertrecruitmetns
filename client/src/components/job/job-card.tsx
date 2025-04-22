@@ -43,7 +43,7 @@ export default function JobCard({ job }: JobCardProps) {
   };
 
   return (
-    <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-primary">
+    <Card className="hover:shadow-lg transition-shadow border border-gray-200">
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between">
           <div className="flex-grow">

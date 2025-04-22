@@ -356,7 +356,7 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           </div>
       )}
     
-      <Card className={`${showFilters ? 'block' : 'hidden'} md:block transition-all duration-300 ease-in-out border-t-4 border-t-primary shadow-md`}>
+      <Card className={`${showFilters ? 'block' : 'hidden'} md:block transition-all duration-300 ease-in-out shadow-md border border-gray-200`}>
         <CardContent className="space-y-6 pt-6 px-5">
           {/* Job Categories */}
           <div>
@@ -408,8 +408,8 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           
           {/* Job Type */}
           <div>
-            <h3 className="font-medium mb-3 flex items-center">
-              <Clock className="mr-2 h-4 w-4" />
+            <h3 className="font-semibold mb-3 flex items-center text-gray-800">
+              <Clock className="mr-2 h-5 w-5 text-primary" />
               Job Type
             </h3>
             <div className="space-y-2">
@@ -431,7 +431,14 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
 
           {/* Specialization */}
           <div>
-            <h3 className="font-medium mb-3">Specialization</h3>
+            <h3 className="font-semibold mb-3 flex items-center text-gray-800">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-5 w-5 text-primary">
+                <path d="M6 2v6a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2"></path>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2"></path>
+                <path d="M10 22a2 2 0 1 1 4 0"></path>
+              </svg>
+              Specialization
+            </h3>
             <Select
               value={selectedSpecialization}
               onValueChange={setSelectedSpecialization}
@@ -453,7 +460,15 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           
           {/* Experience Level */}
           <div>
-            <h3 className="font-medium mb-3">Experience Level</h3>
+            <h3 className="font-semibold mb-3 flex items-center text-gray-800">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-5 w-5 text-primary">
+                <circle cx="12" cy="8" r="5"></circle>
+                <path d="M20 21a8 8 0 1 0-16 0"></path>
+                <line x1="12" y1="8" x2="12" y2="13"></line>
+                <line x1="12" y1="16" x2="12" y2="16"></line>
+              </svg>
+              Experience Level
+            </h3>
             <Select
               value={selectedExperience}
               onValueChange={setSelectedExperience}
@@ -473,7 +488,10 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           
           {/* Salary Range with interactive display */}
           <div>
-            <h3 className="font-medium mb-3">Salary Range</h3>
+            <h3 className="font-semibold mb-3 flex items-center text-gray-800">
+              <DollarSign className="mr-2 h-5 w-5 text-primary" />
+              Salary Range
+            </h3>
             <div className="pt-4">
               <div className="text-center mb-2 font-medium text-primary">
                 {displaySalary}
