@@ -36,6 +36,30 @@ export default function Footer() {
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-2">
                   <MapPin className="h-4 w-4 text-primary" />
                 </div>
+                <h3 className="text-lg font-bold">Dubai</h3>
+              </div>
+              <div className="space-y-3 pl-10">
+                <div className="flex items-start">
+                  <Phone className="h-4 w-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" />
+                  <span className="text-sm">+9714 331 5588</span>
+                </div>
+                <div className="flex items-start">
+                  <Mail className="h-4 w-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" />
+                  <a href="mailto:talent@expertrecruitments.com" className="text-sm text-gray-400 hover:text-white transition-colors">
+                    talent@expertrecruitments.com
+                  </a>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400">Office No. 306, Al Shali Building, Dubai, United Arab Emirates</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-gray-800 p-4 rounded-lg h-full">
+              <div className="flex items-center mb-3">
+                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-2">
+                  <MapPin className="h-4 w-4 text-primary" />
+                </div>
                 <h3 className="text-lg font-bold">India</h3>
               </div>
               <div className="space-y-3 pl-10">
@@ -53,30 +77,6 @@ export default function Footer() {
                   <p className="text-xs text-gray-400">Navi Mumbai: 302, Foundation Tower, CBD Belapur, Maharashtra</p>
                   <p className="text-xs text-gray-400">Lucknow: 05, Kisan Bazar, Bibhuti Nagar, Lucknow, Uttar Pradesh</p>
                   <p className="text-xs text-gray-400">Hyderabad: Level 1, Phase 2, N-Heights, Plot No 38, Siddiq Nagar, HITEC City, Hyderabad, Telangana</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-gray-800 p-4 rounded-lg h-full">
-              <div className="flex items-center mb-3">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-2">
-                  <MapPin className="h-4 w-4 text-primary" />
-                </div>
-                <h3 className="text-lg font-bold">Dubai</h3>
-              </div>
-              <div className="space-y-3 pl-10">
-                <div className="flex items-start">
-                  <Phone className="h-4 w-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" />
-                  <span className="text-sm">+9714 331 5588</span>
-                </div>
-                <div className="flex items-start">
-                  <Mail className="h-4 w-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" />
-                  <a href="mailto:talent@expertrecruitments.com" className="text-sm text-gray-400 hover:text-white transition-colors">
-                    talent@expertrecruitments.com
-                  </a>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-400">Office No. 306, Al Shali Building, Dubai, United Arab Emirates</p>
                 </div>
               </div>
             </div>
