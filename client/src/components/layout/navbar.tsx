@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Menu, User, LogOut, ChevronDown, Briefcase } from "lucide-react";
-import expertLogo from "../../assets/expert-logo-new.png";
+import expertLogo from "../../assets/er-logo-icon.png";
 import NotificationsPopover from "@/components/common/notifications";
 
 export default function Navbar() {
@@ -131,13 +131,14 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/">
               <div className="flex items-center cursor-pointer">
-                <img 
-                  src={expertLogo} 
-                  alt="Expert Recruitments LLC" 
-                  width="250"
-                  height="70"
-                  className="h-[50px] md:h-[70px] w-auto max-w-[240px] object-contain bg-white p-1 rounded"
-                />
+                <div className="flex items-center justify-center h-[50px] md:h-[70px] w-[50px] md:w-[70px] rounded-full bg-white p-2 border-2 border-white shadow-md">
+                  <img 
+                    src={expertLogo} 
+                    alt="Expert Recruitments LLC" 
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+                <span className="ml-3 text-white font-bold text-lg md:text-xl">EXPERT</span>
               </div>
             </Link>
           </div>
@@ -292,12 +293,15 @@ export default function Navbar() {
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[350px]">
                 <SheetHeader className="mb-4">
-                  <div className="flex justify-center mb-3">
-                    <img 
-                      src={expertLogo} 
-                      alt="Expert Recruitments LLC" 
-                      className="h-12 w-auto object-contain bg-white p-1 rounded"
-                    />
+                  <div className="flex flex-col items-center mb-3 space-y-2">
+                    <div className="flex items-center justify-center h-16 w-16 rounded-full bg-white p-2 border-2 border-[#5372f1] shadow-md">
+                      <img 
+                        src={expertLogo} 
+                        alt="Expert Recruitments LLC" 
+                        className="h-full w-full object-contain"
+                      />
+                    </div>
+                    <span className="text-[#5372f1] font-bold text-xl">EXPERT</span>
                   </div>
                   <SheetTitle>Menu</SheetTitle>
                   <SheetDescription>
