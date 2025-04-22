@@ -108,10 +108,10 @@ export default function ServicesPage() {
                 </div>
                 <h3 className="text-2xl font-bold mb-3">Temporary Staffing</h3>
                 <p className="text-gray-600 mb-6 text-lg">
-                  Flexible staffing solutions to address short-term needs, special projects, or seasonal demands.
+                  This service is currently available only in India and the USA. Employers interested in our Temporary Staffing services can register their interest by filling out the inquiry form below.
                 </p>
-                <Link href="/contact-us">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">Learn More</Button>
+                <Link href="/inquiry-form">
+                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">Inquiry Form</Button>
                 </Link>
               </CardContent>
             </Card>

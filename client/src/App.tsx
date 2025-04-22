@@ -29,6 +29,7 @@ import JobServicesPage from "@/pages/job-services";
 import AppliedJobsPage from "@/pages/applied-jobs";
 import ApplicationsManagerPage from "@/pages/applications-manager";
 import VacancyFormPage from "@/pages/vacancy-form";
+import InquiryFormPage from "@/pages/inquiry-form";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import Navbar from "@/components/layout/navbar";
@@ -73,6 +74,7 @@ function Router() {
       <Route path="/employer-register" component={EmployerRegisterPage} />
       <Route path="/hire-talent" component={HireTalentPage} />
       <Route path="/vacancy-form" component={VacancyFormPage} />
+      <Route path="/inquiry-form" component={InquiryFormPage} />
       <Route path="/seo-insights" component={SEOInsightsPage} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
       <ProtectedRoute path="/post-job" component={PostJobPage} />
