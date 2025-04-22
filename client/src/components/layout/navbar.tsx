@@ -147,8 +147,8 @@ export default function Navbar() {
             {navigationLinks.map((link) => (
               link.isDropdown ? (
                 <div key={link.name} className="relative group">
-                  <div className={`text-base font-medium transition-colors hover:text-primary cursor-pointer flex items-center ${
-                    link.dropdownItems?.some(item => location === item.href) ? "text-primary" : "text-gray-300"
+                  <div className={`text-base font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-3 py-1 rounded-md cursor-pointer flex items-center ${
+                    link.dropdownItems?.some(item => location === item.href) ? "text-white font-bold" : "text-gray-100"
                   }`}>
                     {link.name}
                     <ChevronDown className="h-4 w-4 ml-1 transition-transform group-hover:rotate-180" />
@@ -157,7 +157,7 @@ export default function Navbar() {
                     <div className="py-1 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                       {link.dropdownItems?.map((item) => (
                         <Link key={item.name} href={item.href}>
-                          <div className={`block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${location === item.href ? "text-primary dark:text-primary bg-primary/5" : ""}`}>
+                          <div className={`block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${location === item.href ? "text-primary dark:text-primary bg-primary/10 font-medium border-l-2 border-primary" : ""}`}>
                             {item.name}
                           </div>
                         </Link>
@@ -167,7 +167,7 @@ export default function Navbar() {
                 </div>
               ) : (
                 <Link key={link.name} href={link.href}>
-                  <div className={`text-base font-medium transition-colors hover:text-primary cursor-pointer ${location === link.href ? "text-primary" : "text-white"}`}>
+                  <div className={`text-base font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-3 py-1 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}>
                     {link.name}
                   </div>
                 </Link>
