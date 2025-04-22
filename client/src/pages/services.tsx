@@ -32,7 +32,7 @@ export default function ServicesPage() {
           <div className="absolute -left-20 bottom-0 w-64 h-64 bg-gray-100 rounded-full"></div>
         </div>
         
-        <div className="container mx-auto px-4 relative">
+        <div className="w-full max-w-[1440px] mx-auto px-4 relative">
           {/* Main content */}
           <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16">
             <div className="inline-block mb-6 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md">
@@ -54,7 +54,7 @@ export default function ServicesPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="w-full max-w-[1440px] mx-auto px-4 py-12">
         {/* For Employers Section */}
         <div className="mb-16">
           <div className="text-center mb-12">
