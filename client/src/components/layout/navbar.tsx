@@ -124,7 +124,7 @@ export default function Navbar() {
   const navigationLinks = getNavigationLinks();
 
   return (
-    <header className={`sticky top-0 z-40 transition-colors duration-200 ${scrolled ? "bg-gray-900 shadow-md" : "bg-gray-900 bg-opacity-95"}`}>
+    <header className={`sticky top-0 z-40 transition-colors duration-200 ${scrolled ? "bg-[#5372f1] shadow-md" : "bg-[#5372f1] bg-opacity-95"}`}>
       <div className="container mx-auto px-4">
         <div className="flex h-[100px] md:h-[120px] items-center justify-between">
           {/* Logo */}
@@ -182,7 +182,7 @@ export default function Navbar() {
                 <NotificationsPopover />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-gray-800">
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-[#4060e0]">
                       <Avatar className="h-8 w-8">
                         <AvatarFallback className="bg-primary text-white">
                           {getUserInitials()}
@@ -253,7 +253,7 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href="/auth">
-                  <Button variant="ghost" className="text-white hover:text-white hover:bg-gray-800">Sign In</Button>
+                  <Button variant="ghost" className="text-white hover:text-white hover:bg-[#4060e0]">Sign In</Button>
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -285,7 +285,7 @@ export default function Navbar() {
           <div className="flex md:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white hover:text-white hover:bg-gray-800">
+                <Button variant="ghost" size="icon" className="text-white hover:text-white hover:bg-[#4060e0]">
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
