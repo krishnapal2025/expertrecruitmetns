@@ -268,8 +268,9 @@ export default function Navbar() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
+                      variant="default" 
                       size="lg" 
-                      className="text-lg flex items-center justify-center bg-white text-[#5372f1] hover:bg-gray-100 hover:text-[#4060e0] px-6 font-bold shadow-md"
+                      className="text-lg flex items-center justify-center bg-[#4060e0] hover:bg-[#3050d0] text-white px-6 font-bold shadow-md"
                     >
                       Sign Up
                       <ChevronDown className="ml-1 h-5 w-5" />
