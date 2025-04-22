@@ -301,7 +301,7 @@ export default function ServicesPage() {
               <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg rounded-full transition-all duration-300">For Job Seekers</Button>
             </Link>
             <Link href="/employer-register">
-              <Button size="lg" variant="outline" className="px-10 py-7 text-lg border border-primary text-primary hover:bg-primary/5 shadow-lg rounded-full transition-all duration-300">For Employers</Button>
+              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg rounded-full transition-all duration-300">For Employers</Button>
             </Link>
           </div>
         </div>
