@@ -218,6 +218,22 @@ export default function Welcome() {
                   </motion.li>
                 ))}
               </ul>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9, duration: 0.5 }}
+              >
+                <a 
+                  href="/hire-talent" 
+                  className="inline-flex items-center justify-center rounded-md bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-md hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-300"
+                >
+                  Hire Talent
+                  <svg className="ml-2 -mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </a>
+              </motion.div>
             </div>
           </motion.div>
 
@@ -241,7 +257,7 @@ export default function Welcome() {
                 Take the next step in your career journey with us. We offer access to thousands of opportunities across various industries and locations.
               </p>
 
-              <ul className="space-y-3">
+              <ul className="space-y-3 mb-6">
                 {[
                   "Create a profile that showcases your skills",
                   "Browse jobs that match your qualifications",
@@ -264,6 +280,22 @@ export default function Welcome() {
                   </motion.li>
                 ))}
               </ul>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.3, duration: 0.5 }}
+              >
+                <a 
+                  href="/job-board" 
+                  className="inline-flex items-center justify-center rounded-md bg-gradient-to-r from-primary to-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-md hover:from-primary/90 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-300"
+                >
+                  Browse Jobs
+                  <svg className="ml-2 -mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </a>
+              </motion.div>
             </div>
           </motion.div>
         </div>
