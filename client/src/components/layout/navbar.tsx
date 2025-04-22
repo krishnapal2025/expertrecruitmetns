@@ -275,17 +275,19 @@ export default function Navbar() {
                       <ChevronDown className="ml-1 h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <Link href="/job-seeker-register">
-                      <DropdownMenuItem>
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Register as Job Seeker</span>
+                  <DropdownMenuContent align="end" className="w-56 p-2 border-2 border-[#5372f1] bg-white shadow-lg rounded-md">
+                    <DropdownMenuLabel className="text-lg font-bold text-center text-[#5372f1]">Register as:</DropdownMenuLabel>
+                    <DropdownMenuSeparator className="my-1" />
+                    <Link href="/job-seeker-register" className="w-full">
+                      <DropdownMenuItem className="flex items-center py-3 px-4 rounded-md hover:bg-[#5372f1] hover:text-white cursor-pointer">
+                        <User className="mr-2 h-5 w-5" />
+                        <span className="text-base font-medium">Job Seeker</span>
                       </DropdownMenuItem>
                     </Link>
-                    <Link href="/employer-register">
-                      <DropdownMenuItem>
-                        <Briefcase className="mr-2 h-4 w-4" />
-                        <span>Register as Employer</span>
+                    <Link href="/employer-register" className="w-full">
+                      <DropdownMenuItem className="flex items-center py-3 px-4 rounded-md hover:bg-[#5372f1] hover:text-white cursor-pointer">
+                        <Briefcase className="mr-2 h-5 w-5" />
+                        <span className="text-base font-medium">Employer</span>
                       </DropdownMenuItem>
                     </Link>
                   </DropdownMenuContent>
