@@ -138,7 +138,10 @@ export default function Navbar() {
                     className="h-full w-full object-contain"
                   />
                 </div>
-                <span className="ml-3 text-white font-bold text-lg md:text-xl">EXPERT</span>
+                <div className="ml-3 flex flex-col">
+                  <span className="text-white font-bold text-lg md:text-xl">EXPERT</span>
+                  <span className="text-white text-xs md:text-sm -mt-1">Recruitments LLC</span>
+                </div>
               </div>
             </Link>
           </div>
@@ -301,7 +304,10 @@ export default function Navbar() {
                         className="h-full w-full object-contain"
                       />
                     </div>
-                    <span className="text-[#5372f1] font-bold text-xl">EXPERT</span>
+                    <div className="flex flex-col items-center">
+                      <span className="text-[#5372f1] font-bold text-xl">EXPERT</span>
+                      <span className="text-[#5372f1] text-xs -mt-1">Recruitments LLC</span>
+                    </div>
                   </div>
                   <SheetTitle>Menu</SheetTitle>
                   <SheetDescription>
