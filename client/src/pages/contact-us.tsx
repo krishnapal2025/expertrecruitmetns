@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { Mail, Phone, Send, Loader2, Globe, ArrowRight } from "lucide-react";
 import { IndiaFlag, UAEFlag, USAFlag } from "@/components/flags";
 import { motion } from "framer-motion";
-import contactHeroBg from "../assets/images/contact-hero-bg.webp";
+import contactHeroBg from "../assets/images/contact-hero-bg.jpg";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -85,12 +85,13 @@ export default function ContactUsPage() {
       {/* Hero Section with Executive Theme - matching About Us page */}
       <div className="relative py-20 overflow-hidden">
         {/* Background elements */}
-        <div className="absolute inset-0 bg-gray-900/40 z-10"></div>
+        <div className="absolute inset-0 bg-gray-900/30 z-10"></div>
         <div 
-          className="absolute inset-0 bg-cover bg-center z-0" 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0" 
           style={{ 
             backgroundImage: `url(${contactHeroBg})`,
-            filter: 'brightness(0.9)'
+            backgroundSize: '100% auto',
+            backgroundPosition: 'center 20%'
           }}
         ></div>
         
