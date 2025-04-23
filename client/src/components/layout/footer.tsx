@@ -223,7 +223,7 @@ export default function Footer() {
               </ul>
             </div>
             
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col h-full pr-8">
               <h3 className="text-lg font-bold mb-3">Newsletter</h3>
               <p className="text-sm text-gray-400 mb-4">
                 Subscribe for job updates.
@@ -240,7 +240,7 @@ export default function Footer() {
               </form>
             </div>
             
-            <div className="flex flex-col h-full justify-start">
+            <div className="flex flex-col h-full justify-start pl-8">
               <h3 className="text-lg font-bold mb-3">Follow Us</h3>
               <div className="flex flex-col space-y-4">
                 <div className="flex space-x-4">
