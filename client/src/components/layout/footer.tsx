@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Star } from "lucide-react";
 import expertLogo from "../../assets/er-logo-icon.png";
+import ReviewDialog from "@/components/common/review-dialog";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -255,6 +256,22 @@ export default function Footer() {
                 <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-pink-600 transition-colors">
                   <Instagram className="h-5 w-5 text-white" />
                 </a>
+              </div>
+              
+              <div className="mt-8">
+                <h3 className="text-lg font-bold mb-3">Your voice matters to us</h3>
+                <p className="text-sm text-gray-400 mb-4">
+                  Share your thoughts and help us improve.
+                </p>
+                <ReviewDialog 
+                  googleReviewUrl="https://g.co/kgs/PGtpiiT"
+                  trigger={
+                    <Button className="flex items-center gap-2 bg-primary/20 hover:bg-primary/30 text-white border border-primary/40">
+                      <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                      Write a Review
+                    </Button>
+                  }
+                />
               </div>
             </div>
           </div>
