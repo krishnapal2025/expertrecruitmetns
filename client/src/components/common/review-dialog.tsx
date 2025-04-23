@@ -158,17 +158,47 @@ export default function ReviewDialog({ trigger, googleReviewUrl }: ReviewDialogP
     
     setIsSubmitting(true);
     
-    // Normally you would send this data to your backend
-    // Here we're simulating an API call and then redirecting to Google Reviews
+    // Save the review data in sessionStorage so it can be retrieved after redirection
+    const reviewData = {
+      name,
+      email,
+      rating,
+      review,
+      timestamp: new Date().toISOString()
+    };
+    
+    try {
+      // Store the review data temporarily
+      sessionStorage.setItem('pendingReview', JSON.stringify(reviewData));
+    } catch (error) {
+      console.error("Error saving review data:", error);
+    }
+    
     setTimeout(() => {
       setIsSubmitting(false);
       
-      // Show success message
-      toast({
-        title: "Thank you for your review!",
-        description: "Your feedback is valuable to us. You will now be redirected to Google to post your review.",
-        variant: "default"
-      });
+      // Copy review to clipboard to make it easier for users to paste
+      try {
+        navigator.clipboard.writeText(review);
+        
+        // Show success message with detailed instructions
+        toast({
+          title: "Review copied to clipboard!",
+          description: "Your review has been copied. You'll be redirected to Google Maps where you can paste it directly.",
+          duration: 5000,
+          variant: "default"
+        });
+      } catch (error) {
+        console.error("Could not copy review to clipboard:", error);
+        
+        // Fallback toast if clipboard access fails
+        toast({
+          title: "Thank you for your review!",
+          description: "Please remember your review text to paste it into Google's review form.",
+          duration: 5000,
+          variant: "default"
+        });
+      }
       
       // Reset form and close dialog
       setName("");
@@ -181,11 +211,19 @@ export default function ReviewDialog({ trigger, googleReviewUrl }: ReviewDialogP
       setRating(0);
       setOpen(false);
       
-      // Open the Google review URL with pre-filled data (if possible)
-      // Note: Google doesn't allow direct pre-filling of reviews, but we can open their page
+      // Open the Google review URL in a new tab with instructions
       setTimeout(() => {
+        // Instruct user about what to do in Google's review page
+        toast({
+          title: "How to submit your review on Google",
+          description: "1. Click 'Write a review' on the Google page\n2. Sign in if prompted\n3. Select " + rating + " stars\n4. Press Ctrl+V to paste your review\n5. Submit your review",
+          duration: 10000,
+          variant: "default"
+        });
+        
+        // Open Google Maps review page in a new tab
         window.open(googleReviewUrl, "_blank");
-      }, 1500);
+      }, 2000);
     }, 1000);
   };
 
