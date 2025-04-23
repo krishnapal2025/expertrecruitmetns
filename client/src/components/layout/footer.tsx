@@ -102,7 +102,7 @@ export default function Footer() {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-6 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-7 gap-6 mt-6">
             <div>
               <h3 className="text-lg font-bold mb-3">Quick Links</h3>
               <ul className="space-y-2">
@@ -258,10 +258,10 @@ export default function Footer() {
               </div>
             </div>
             
-            <div className="md:col-span-2">
-              <h3 className="text-lg font-bold mb-3">Your voice matters to us — share your thoughts.</h3>
+            <div className="md:col-span-1 md:order-7">
+              <h3 className="text-lg font-bold mb-3">Your voice matters to us</h3>
               <p className="text-sm text-gray-400 mb-4">
-                We value your feedback. Help us serve you better by sharing your experience.
+                Share your thoughts and help us improve.
               </p>
               <a 
                 href="https://g.page/r/CfeX4Gp1NP7PEAE/review" 
