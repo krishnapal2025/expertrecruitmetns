@@ -231,10 +231,10 @@ export default function Footer() {
               <form className="flex flex-col sm:flex-row gap-2" onSubmit={(e) => e.preventDefault()}>
                 <Input 
                   type="email" 
-                  placeholder="Your email address"
-                  className="bg-gray-700 border-gray-600 text-white sm:rounded-r-none w-full"
+                  placeholder="Enter your email"
+                  className="bg-gray-700 border-gray-600 focus:border-primary text-white sm:rounded-r-none w-full placeholder:text-gray-500 placeholder:text-sm"
                 />
-                <Button type="submit" className="bg-primary hover:bg-primary/90 text-white sm:rounded-l-none whitespace-nowrap">
+                <Button type="submit" className="bg-primary hover:bg-primary/90 text-white font-medium sm:rounded-l-none whitespace-nowrap transition-all duration-300">
                   Subscribe
                 </Button>
               </form>
