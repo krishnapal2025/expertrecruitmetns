@@ -102,7 +102,7 @@ export default function Footer() {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-6 mt-6">
             <div>
               <h3 className="text-lg font-bold mb-3">Quick Links</h3>
               <ul className="space-y-2">
@@ -188,6 +188,36 @@ export default function Footer() {
                   <a href="/blogs" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Career Advice
+                  </a>
+                </li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-bold mb-3">Information</h3>
+              <ul className="space-y-2">
+                <li>
+                  <a href="/contact-us" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Contact Us
+                  </a>
+                </li>
+                <li>
+                  <a href="/site-map" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Site Map
+                  </a>
+                </li>
+                <li>
+                  <a href="/privacy-policy" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="/terms-conditions" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Terms & Conditions
                   </a>
                 </li>
               </ul>
