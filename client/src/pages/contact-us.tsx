@@ -357,14 +357,10 @@ export default function ContactUsPage() {
             className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
             variants={fadeIn}
           >
-            <div className="h-2 bg-primary"></div>
+            <div className="w-full h-24 overflow-hidden">
+              <USAFlag className="w-full h-full object-cover" />
+            </div>
             <div className="p-8">
-              <div className="flex items-center justify-center mb-6">
-                <div className="w-36 h-20 bg-white rounded-lg flex items-center justify-center shadow-md">
-                  <USAFlag className="h-16 w-32 rounded-md shadow-sm" />
-                </div>
-              </div>
-              
               <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">USA</h3>
               
               <div className="space-y-8">
