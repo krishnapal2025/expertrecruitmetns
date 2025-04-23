@@ -240,8 +240,8 @@ export default function Footer() {
             <a href="/privacy-policy" className="text-gray-500 hover:text-white transition-colors text-xs">
               Privacy Policy
             </a>
-            <a href="/terms" className="text-gray-500 hover:text-white transition-colors text-xs">
-              Terms of Service
+            <a href="/terms-conditions" className="text-gray-500 hover:text-white transition-colors text-xs">
+              Terms & Conditions
             </a>
             <a href="/accessibility" className="text-gray-500 hover:text-white transition-colors text-xs">
               Accessibility

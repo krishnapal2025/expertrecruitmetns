@@ -10,6 +10,7 @@ import JobBoardPage from "@/pages/job-board";
 import SectorsPage from "@/pages/sectors";
 import ContactUsPage from "@/pages/contact-us";
 import PrivacyPolicyPage from "@/pages/privacy-policy";
+import TermsConditionsPage from "@/pages/terms-conditions";
 import BlogsPage from "@/pages/blogs";
 import CareersPage from "@/pages/careers";
 import AuthPage from "@/pages/auth-page";
@@ -65,6 +66,7 @@ function Router() {
       <Route path="/sectors" component={SectorsPage} />
       <Route path="/contact-us" component={ContactUsPage} />
       <Route path="/privacy-policy" component={PrivacyPolicyPage} />
+      <Route path="/terms-conditions" component={TermsConditionsPage} />
       <Route path="/blogs" component={BlogsPage} />
       <Route path="/careers" component={CareersPage} />
       <Route path="/auth" component={AuthPage} />
