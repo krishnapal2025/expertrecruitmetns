@@ -12,6 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { Mail, Phone, Send, Loader2, Globe, ArrowRight } from "lucide-react";
 import { IndiaFlag, UAEFlag, USAFlag } from "@/components/flags";
 import { motion } from "framer-motion";
+import contactHeroBg from "../assets/images/contact-hero-bg.webp";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -84,26 +85,33 @@ export default function ContactUsPage() {
       {/* Hero Section with Executive Theme - matching About Us page */}
       <div className="relative py-20 overflow-hidden">
         {/* Background elements */}
-        <div className="absolute inset-0 bg-gray-50"></div>
+        <div className="absolute inset-0 bg-gray-900/40 z-10"></div>
+        <div 
+          className="absolute inset-0 bg-cover bg-center z-0" 
+          style={{ 
+            backgroundImage: `url(${contactHeroBg})`,
+            filter: 'brightness(0.9)'
+          }}
+        ></div>
         
         {/* Accent lines */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-20"></div>
         
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-1/3 h-full overflow-hidden">
-          <div className="absolute -right-20 top-1/4 w-80 h-80 bg-primary/5 rounded-full"></div>
-          <div className="absolute -right-10 bottom-1/4 w-40 h-40 bg-primary/5 rounded-full"></div>
+        {/* Decorative elements with reduced opacity for better readability against the image */}
+        <div className="absolute top-0 right-0 w-1/3 h-full overflow-hidden z-10">
+          <div className="absolute -right-20 top-1/4 w-80 h-80 bg-primary/10 rounded-full"></div>
+          <div className="absolute -right-10 bottom-1/4 w-40 h-40 bg-primary/10 rounded-full"></div>
         </div>
         
-        <div className="absolute left-0 bottom-0 w-1/4 h-80 overflow-hidden">
-          <div className="absolute -left-20 bottom-0 w-64 h-64 bg-gray-100 rounded-full"></div>
+        <div className="absolute left-0 bottom-0 w-1/4 h-80 overflow-hidden z-10">
+          <div className="absolute -left-20 bottom-0 w-64 h-64 bg-white/10 rounded-full"></div>
         </div>
         
         <div className="container mx-auto px-4 relative">
           {/* Main content */}
           <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16">
             <motion.div 
-              className="inline-block mb-6 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md"
+              className="inline-block mb-6 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-md rounded-md z-20 relative"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -112,7 +120,7 @@ export default function ContactUsPage() {
             </motion.div>
             
             <motion.h1 
-              className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-gray-800 tracking-tight"
+              className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-white tracking-tight z-20 relative"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.7 }}
@@ -121,7 +129,7 @@ export default function ContactUsPage() {
             </motion.h1>
             
             <motion.p 
-              className="text-xl md:text-2xl text-gray-600 leading-relaxed mb-4 max-w-3xl"
+              className="text-xl md:text-2xl text-white/80 leading-relaxed mb-4 max-w-3xl z-20 relative"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.6 }}
@@ -130,7 +138,7 @@ export default function ContactUsPage() {
             </motion.p>
             
             <motion.p 
-              className="text-lg text-gray-600 leading-relaxed mb-6 max-w-3xl"
+              className="text-lg text-white/80 leading-relaxed mb-6 max-w-3xl z-20 relative"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.6 }}
