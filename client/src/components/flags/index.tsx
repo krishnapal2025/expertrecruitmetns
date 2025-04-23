@@ -4,7 +4,7 @@ type FlagProps = {
   className?: string;
 };
 
-export function IndiaFlag({ className = "h-6 w-9" }: FlagProps) {
+export function IndiaFlag({ className =  "h-6 w-9" }: FlagProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

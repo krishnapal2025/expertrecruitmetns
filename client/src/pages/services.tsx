@@ -297,11 +297,12 @@ export default function ServicesPage() {
             Whether you're looking for your next career opportunity or searching for top talent, we're here to help you succeed.
           </p>
           <div className="flex justify-center gap-6 flex-wrap">
-            <Link href="/job-seeker-register">
-              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg rounded-full transition-all duration-300">For Job Seekers</Button>
-            </Link>
+            
             <Link href="/employer-register">
               <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg rounded-full transition-all duration-300">For Employers</Button>
+            </Link>
+            <Link href="/job-seeker-register">
+              <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg rounded-full transition-all duration-300">For Job Seekers</Button>
             </Link>
           </div>
         </div>

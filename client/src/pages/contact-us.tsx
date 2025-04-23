@@ -251,82 +251,17 @@ export default function ContactUsPage() {
             }
           }}
         >
-          {/* India Office */}
-          <motion.div 
-            className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                transition: {
-                  duration: 0.6
-                }
-              }
-            }}
-          >
-            <div className="h-2 bg-primary"></div>
-            <div className="p-8">
-              <div className="flex items-center justify-center mb-6">
-                <div className="w-48 h-20 bg-white rounded-lg flex items-center justify-center shadow-md">
-                  <IndiaFlag className="h-16 w-32 rounded-md shadow-sm" />
-                </div>
-              </div>
-              
-              <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">INDIA</h3>
-              
-              <div className="space-y-8">
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center">
-                    <Phone className="h-5 w-5 text-primary" />
-                  </div>
-                  <p className="text-gray-700 dark:text-gray-300 text-lg">+91 84509 79450</p>
-                </div>
-                
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center">
-                    <Mail className="h-5 w-5 text-primary" />
-                  </div>
-                  <a href="mailto:info@expertrecruitments.com" className="text-primary hover:underline text-lg">
-                    info@expertrecruitments.com
-                  </a>
-                </div>
-                
-                <div className="pt-6 border-t border-gray-100 dark:border-gray-700">
-                  <h4 className="font-medium text-primary mb-4">Our Locations:</h4>
-                  
-                  <div className="mb-5">
-                    <p className="font-medium text-gray-800 dark:text-gray-200 mb-1">Navi Mumbai</p>
-                    <p className="text-gray-600 dark:text-gray-400">302, Foundation Tower, CBD Belapur, Maharashtra</p>
-                  </div>
-                  
-                  <div className="mb-5">
-                    <p className="font-medium text-gray-800 dark:text-gray-200 mb-1">Lucknow</p>
-                    <p className="text-gray-600 dark:text-gray-400">05, Kisan Bazar, Bibhuti Nagar, Uttar Pradesh</p>
-                  </div>
-                  
-                  <div>
-                    <p className="font-medium text-gray-800 dark:text-gray-200 mb-1">Hyderabad</p>
-                    <p className="text-gray-600 dark:text-gray-400">Level 1, Phase 2, N-Heights, Plot No 38, Siddiq Nagar, HITEC City</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+         
           
           {/* Dubai Office */}
           <motion.div 
             className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
             variants={fadeIn}
           >
-            <div className="h-2 bg-primary"></div>
+            <div className="w-full h-24 overflow-hidden">
+              <UAEFlag className="w-full h-full object-cover" />
+            </div>
             <div className="p-8">
-              <div className="flex items-center justify-center mb-6">
-                <div className="w-48 h-20 bg-white rounded-lg flex items-center justify-center shadow-md">
-                  <UAEFlag className="h-16 w-32 rounded-md shadow-sm" />
-                </div>
-              </div>
-              
               <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">UAE</h3>
               
               <div className="space-y-8">
@@ -358,6 +293,65 @@ export default function ContactUsPage() {
             </div>
           </motion.div>
           
+          {/* India Office */}
+          <motion.div 
+            className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.6
+                }
+              }
+            }}
+          >
+            <div className="w-full h-24 overflow-hidden">
+              <IndiaFlag className="w-full h-full object-cover" />
+            </div>
+            <div className="p-8">
+              <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">INDIA</h3>
+
+              <div className="space-y-8">
+                <div className="flex items-center space-x-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center">
+                    <Phone className="h-5 w-5 text-primary" />
+                  </div>
+                  <p className="text-gray-700 dark:text-gray-300 text-lg">+91 84509 79450</p>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center">
+                    <Mail className="h-5 w-5 text-primary" />
+                  </div>
+                  <a href="mailto:info@expertrecruitments.com" className="text-primary hover:underline text-lg">
+                    info@expertrecruitments.com
+                  </a>
+                </div>
+
+                <div className="pt-6 border-t border-gray-100 dark:border-gray-700">
+                  <h4 className="font-medium text-primary mb-4">Our Locations:</h4>
+
+                  <div className="mb-5">
+                    <p className="font-medium text-gray-800 dark:text-gray-200 mb-1">Navi Mumbai</p>
+                    <p className="text-gray-600 dark:text-gray-400">302, Foundation Tower, CBD Belapur, Maharashtra</p>
+                  </div>
+
+                  <div className="mb-5">
+                    <p className="font-medium text-gray-800 dark:text-gray-200 mb-1">Lucknow</p>
+                    <p className="text-gray-600 dark:text-gray-400">05, Kisan Bazar, Bibhuti Nagar, Uttar Pradesh</p>
+                  </div>
+
+                  <div>
+                    <p className="font-medium text-gray-800 dark:text-gray-200 mb-1">Hyderabad</p>
+                    <p className="text-gray-600 dark:text-gray-400">Level 1, Phase 2, N-Heights, Plot No 38, Siddiq Nagar, HITEC City</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+          
           {/* USA Office */}
           <motion.div 
             className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
@@ -366,7 +360,7 @@ export default function ContactUsPage() {
             <div className="h-2 bg-primary"></div>
             <div className="p-8">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-48 h-20 bg-white rounded-lg flex items-center justify-center shadow-md">
+                <div className="w-36 h-20 bg-white rounded-lg flex items-center justify-center shadow-md">
                   <USAFlag className="h-16 w-32 rounded-md shadow-sm" />
                 </div>
               </div>

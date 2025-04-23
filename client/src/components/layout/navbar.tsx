@@ -69,8 +69,9 @@ export default function Navbar() {
     const defaultLinks = [
       { name: "Home", href: "/" },
       { name: "About Us", href: "/about-us" },
-      { name: "Find Jobs", href: "/job-board" },
       { name: "Hire Talent", href: "/hire-talent" },
+      { name: "Find Jobs", href: "/job-board" },
+      
       { 
         name: "Solutions", 
         href: "#",

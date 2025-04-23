@@ -132,7 +132,7 @@ export default function PrivacyPolicyPage() {
                 <p className="font-medium text-primary mb-1">Expert Recruitments LLC</p>
                 <p>Office no: 306, Al Shali Building, Dubai, United Arab Emirates</p>
                 <p>Email: <a href="mailto:talent@expertrecruitments.com" className="text-primary hover:underline">talent@expertrecruitments.com</a></p>
-                <p>Phone: <a href="tel:+971526207777" className="text-primary hover:underline">+971 52 620 7777</a></p>
+                <p>Phone: <a href="tel:+971526207777" className="text-primary hover:underline">+9714 331 5588</a></p>
               </div>
               
               <p className="text-sm text-gray-500 mt-8 border-t border-gray-100 pt-6">
