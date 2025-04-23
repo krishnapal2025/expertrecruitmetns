@@ -228,16 +228,16 @@ export default function Footer() {
               <p className="text-sm text-gray-400 mb-4">
                 Subscribe for job updates.
               </p>
-              <div className="flex items-center">
+              <form className="flex flex-col sm:flex-row gap-2" onSubmit={(e) => e.preventDefault()}>
                 <Input 
                   type="email" 
-                  placeholder="Your email"
-                  className="bg-gray-700 border-gray-600 text-white rounded-r-none w-36"
+                  placeholder="Your email address"
+                  className="bg-gray-700 border-gray-600 text-white sm:rounded-r-none w-full"
                 />
-                <Button className="bg-primary hover:bg-primary/90 text-white rounded-l-none">
-                  Go
+                <Button type="submit" className="bg-primary hover:bg-primary/90 text-white sm:rounded-l-none whitespace-nowrap">
+                  Subscribe
                 </Button>
-              </div>
+              </form>
             </div>
             
             <div>

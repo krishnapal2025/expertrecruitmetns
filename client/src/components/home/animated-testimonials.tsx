@@ -36,9 +36,9 @@ export default function AnimatedTestimonials() {
   const defaultTestimonials = [
     {
       id: 1,
-      name: "Sarah Johnson",
-      role: "Senior UX Designer at TechCorp",
-      content: "I found my dream job through Expert Recruitments LLC . Their matching algorithm is incredible - the job opportunities I was presented with were spot-on for my skills and career goals.",
+      name: "Vincy John",
+      role : "Media Fusion",
+      content: "Experts Recruitment Services is an excellent agency for finding the right candidates for the job description, with a strong follow-up process to ensure seamless hiring",
       rating: 5,
       userId: null
     },
