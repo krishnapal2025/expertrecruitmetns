@@ -12,6 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { Mail, Phone, Send, Loader2, Globe, ArrowRight } from "lucide-react";
 import { IndiaFlag, UAEFlag, USAFlag } from "@/components/flags";
 import { motion } from "framer-motion";
+import globalPresenceBg from "../assets/global-presence-bg.webp";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -167,7 +168,19 @@ export default function ContactUsPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="relative py-16">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 z-0 opacity-10" 
+          style={{ 
+            backgroundImage: `url(${globalPresenceBg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        ></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
         {/* Office Locations Section */}
         <motion.div 
           className="text-center mb-16"
@@ -776,6 +789,7 @@ export default function ContactUsPage() {
             </div>
           </div>
         </motion.div>
+        </div>
       </div>
     </>
   );
