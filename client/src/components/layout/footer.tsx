@@ -224,20 +224,28 @@ export default function Footer() {
             </div>
             
             <div>
-              <h3 className="text-lg font-bold mb-3">Newsletter</h3>
+              <h3 className="text-lg font-bold mb-3 text-primary">Newsletter</h3>
               <p className="text-sm text-gray-400 mb-4">
-                Subscribe for job updates.
+                Stay updated with the latest opportunities in your field.
               </p>
-              <form className="flex flex-col sm:flex-row gap-2" onSubmit={(e) => e.preventDefault()}>
-                <Input 
-                  type="email" 
-                  placeholder="Your email address"
-                  className="bg-gray-700 border-gray-600 text-white sm:rounded-r-none w-full"
-                />
-                <Button type="submit" className="bg-primary hover:bg-primary/90 text-white sm:rounded-l-none whitespace-nowrap">
-                  Subscribe
-                </Button>
-              </form>
+              <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 shadow-md">
+                <form className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
+                  <Input 
+                    type="email" 
+                    placeholder="Your email address"
+                    className="bg-gray-700 border-gray-700 focus:border-primary text-white w-full px-3 py-2"
+                  />
+                  <Button 
+                    type="submit" 
+                    className="bg-primary hover:bg-primary/90 text-white w-full transition-all duration-300 transform hover:translate-y-[-2px]"
+                  >
+                    Subscribe Now
+                  </Button>
+                </form>
+                <p className="text-xs text-gray-500 mt-3">
+                  By subscribing, you agree to our <a href="/privacy-policy" className="text-primary hover:underline">privacy policy</a>.
+                </p>
+              </div>
             </div>
             
             <div>
@@ -259,19 +267,24 @@ export default function Footer() {
             </div>
             
             <div className="md:col-span-1 md:order-7">
-              <h3 className="text-lg font-bold mb-3 whitespace-nowrap">Share your voice</h3>
+              <h3 className="text-lg font-bold mb-3 whitespace-nowrap text-primary">Share your voice</h3>
               <p className="text-sm text-gray-400 mb-4">
-                Help us improve our services.
+                Your feedback helps us improve our services.
               </p>
-              <a 
-                href="https://g.page/r/CfeX4Gp1NP7PEAE/review" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="inline-flex items-center bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors"
-              >
-                <Star className="h-5 w-5 mr-2 text-yellow-400" />
-                Leave a Review
-              </a>
+              <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 shadow-md">
+                <p className="text-sm text-gray-300 mb-3">
+                  How was your experience with us?
+                </p>
+                <a 
+                  href="https://g.page/r/CfeX4Gp1NP7PEAE/review" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded w-full transition-all duration-300 transform hover:translate-y-[-2px]"
+                >
+                  <Star className="h-5 w-5 mr-2 text-yellow-400" />
+                  Leave a Review
+                </a>
+              </div>
             </div>
           </div>
         </div>
