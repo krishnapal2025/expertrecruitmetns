@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Star } from "lucide-react";
 import expertLogo from "../../assets/er-logo-icon.png";
 
 export default function Footer() {
@@ -256,6 +256,22 @@ export default function Footer() {
                   <Instagram className="h-5 w-5 text-white" />
                 </a>
               </div>
+            </div>
+            
+            <div className="md:col-span-2">
+              <h3 className="text-lg font-bold mb-3">Your voice matters to us — share your thoughts.</h3>
+              <p className="text-sm text-gray-400 mb-4">
+                We value your feedback. Help us serve you better by sharing your experience.
+              </p>
+              <a 
+                href="https://g.page/r/CfeX4Gp1NP7PEAE/review" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="inline-flex items-center bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors"
+              >
+                <Star className="h-5 w-5 mr-2 text-yellow-400" />
+                Leave a Review
+              </a>
             </div>
           </div>
         </div>
