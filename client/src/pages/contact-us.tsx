@@ -85,13 +85,12 @@ export default function ContactUsPage() {
       {/* Hero Section with Executive Theme - matching About Us page */}
       <div className="relative py-20 overflow-hidden">
         {/* Background elements */}
-        <div className="absolute inset-0 bg-gray-900/30 z-10"></div>
+        <div className="absolute inset-0 bg-gray-900/40 z-10"></div>
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0" 
+          className="absolute inset-0 bg-cover bg-center z-0" 
           style={{ 
             backgroundImage: `url(${contactHeroBg})`,
-            backgroundSize: '100% auto',
-            backgroundPosition: 'center 20%'
+            filter: 'brightness(0.9)'
           }}
         ></div>
         
@@ -112,7 +111,7 @@ export default function ContactUsPage() {
           {/* Main content */}
           <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16">
             <motion.div 
-              className="inline-block mb-6 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-md rounded-md z-20 relative"
+              className="inline-block mb-12 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-md rounded-md z-20 relative"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
