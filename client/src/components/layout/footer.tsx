@@ -102,8 +102,8 @@ export default function Footer() {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-7 gap-8 mt-6">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-7 gap-6 mt-6">
+            <div className="flex flex-col h-full">
               <h3 className="text-lg font-bold mb-3">Quick Links</h3>
               <ul className="space-y-2">
                 <li>
@@ -133,7 +133,7 @@ export default function Footer() {
               </ul>
             </div>
             
-            <div>
+            <div className="flex flex-col h-full">
               <h3 className="text-lg font-bold mb-3">For Employers</h3>
               <ul className="space-y-2">
                 <li>
@@ -163,7 +163,7 @@ export default function Footer() {
               </ul>
             </div>
             
-            <div>
+            <div className="flex flex-col h-full">
               <h3 className="text-lg font-bold mb-3">For Job Seekers</h3>
               <ul className="space-y-2">
                 <li>
@@ -193,7 +193,7 @@ export default function Footer() {
               </ul>
             </div>
             
-            <div>
+            <div className="flex flex-col h-full">
               <h3 className="text-lg font-bold mb-3">Information</h3>
               <ul className="space-y-2">
                 <li>
@@ -223,12 +223,12 @@ export default function Footer() {
               </ul>
             </div>
             
-            <div className="pr-4">
+            <div className="flex flex-col h-full">
               <h3 className="text-lg font-bold mb-3">Newsletter</h3>
               <p className="text-sm text-gray-400 mb-4">
                 Subscribe for job updates.
               </p>
-              <form className="flex flex-col sm:flex-row gap-2" onSubmit={(e) => e.preventDefault()}>
+              <form className="flex flex-col sm:flex-row gap-2 mt-auto" onSubmit={(e) => e.preventDefault()}>
                 <Input 
                   type="email" 
                   placeholder="Enter your email"
@@ -240,7 +240,7 @@ export default function Footer() {
               </form>
             </div>
             
-            <div className="pl-4">
+            <div className="flex flex-col h-full justify-start">
               <h3 className="text-lg font-bold mb-3">Follow Us</h3>
               <div className="flex flex-col space-y-4">
                 <div className="flex space-x-4">
@@ -262,7 +262,7 @@ export default function Footer() {
               </div>
             </div>
             
-            <div className="md:col-span-1 md:order-7">
+            <div className="flex flex-col h-full md:col-span-1 md:order-7">
               <h3 className="text-lg font-bold mb-3 whitespace-nowrap">Share your voice</h3>
               <p className="text-sm text-gray-400 mb-4">
                 Help us improve our services.
