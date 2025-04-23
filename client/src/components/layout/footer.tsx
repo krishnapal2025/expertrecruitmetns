@@ -102,7 +102,7 @@ export default function Footer() {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-7 gap-6 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-7 gap-8 mt-6">
             <div>
               <h3 className="text-lg font-bold mb-3">Quick Links</h3>
               <ul className="space-y-2">
@@ -223,7 +223,7 @@ export default function Footer() {
               </ul>
             </div>
             
-            <div>
+            <div className="pr-4">
               <h3 className="text-lg font-bold mb-3">Newsletter</h3>
               <p className="text-sm text-gray-400 mb-4">
                 Subscribe for job updates.
@@ -240,7 +240,7 @@ export default function Footer() {
               </form>
             </div>
             
-            <div>
+            <div className="pl-4">
               <h3 className="text-lg font-bold mb-3">Follow Us</h3>
               <div className="flex flex-col space-y-4">
                 <div className="flex space-x-4">
