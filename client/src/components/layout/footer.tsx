@@ -259,9 +259,9 @@ export default function Footer() {
             </div>
             
             <div className="md:col-span-1 md:order-7">
-              <h3 className="text-lg font-bold mb-3">Your voice matters to us</h3>
+              <h3 className="text-lg font-bold mb-3 whitespace-nowrap">Share your voice</h3>
               <p className="text-sm text-gray-400 mb-4">
-                Share your thoughts and help us improve.
+                Help us improve our services.
               </p>
               <a 
                 href="https://g.page/r/CfeX4Gp1NP7PEAE/review" 
