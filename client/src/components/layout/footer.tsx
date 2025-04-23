@@ -264,7 +264,7 @@ export default function Footer() {
                   Share your thoughts and help us improve.
                 </p>
                 <ReviewDialog 
-                  googleReviewUrl="https://www.google.com/maps/place/Expert+Recruitments+Executive+Search+Firm+%26+Headhunters+Dubai/@25.2804148,55.3509682,17z/data=!4m17!1m8!3m7!1s0x3e5f682830000001:0xcffe34756ae097f7!2sExpert+Recruitments+Executive+Search+Firm+%26+Headhunters+Dubai!8m2!3d25.2804148!4d55.3535431!10e4!16s%2Fg%2F1hhwkrm34!3m7!1s0x3e5f682830000001:0xcffe34756ae097f7!8m2!3d25.2804148!4d55.3535431!9m1!1b1!16s%2Fg%2F1hhwkrm34?entry=ttu&g_ep=EgoyMDI1MDQyMC4wIKXMDSoASAFQAw%3D%3D"
+                  googleReviewUrl="https://search.google.com/local/writereview?placeid=ChIJAQAAMChoXz4R95fganU0_s8"
                   trigger={
                     <Button className="flex items-center gap-2 bg-primary/20 hover:bg-primary/30 text-white border border-primary/40">
                       <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />

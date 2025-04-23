@@ -184,7 +184,7 @@ export default function ReviewDialog({ trigger, googleReviewUrl }: ReviewDialogP
         // Show success message with detailed instructions
         toast({
           title: "Review copied to clipboard!",
-          description: "Your review has been copied. You'll be redirected to Google Maps where you can paste it directly.",
+          description: "Your review has been copied. You'll be redirected to the Google review form where you can paste it directly.",
           duration: 5000,
           variant: "default"
         });
@@ -216,7 +216,7 @@ export default function ReviewDialog({ trigger, googleReviewUrl }: ReviewDialogP
         // Instruct user about what to do in Google's review page
         toast({
           title: "How to submit your review on Google",
-          description: "1. Click 'Write a review' on the Google page\n2. Sign in if prompted\n3. Select " + rating + " stars\n4. Press Ctrl+V to paste your review\n5. Submit your review",
+          description: "1. Sign in to Google if prompted\n2. Select " + rating + " stars\n3. Press Ctrl+V to paste your review\n4. Click Post",
           duration: 10000,
           variant: "default"
         });
