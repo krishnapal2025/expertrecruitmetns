@@ -232,7 +232,7 @@ export default function Footer() {
                 <Input 
                   type="email" 
                   placeholder="Enter your email"
-                  className="bg-gray-700 border-gray-600 text-white sm:rounded-r-none w-full placeholder:text-gray-500 placeholder:text-sm"
+                  className="bg-gray-700 border-gray-600 text-white sm:rounded-r-none w-full placeholder:text-gray-500 placeholder:text-sm focus:ring-0 focus:ring-offset-0 focus:border-gray-600 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
                 />
                 <Button type="submit" className="bg-primary hover:bg-primary/90 text-white font-medium sm:rounded-l-none whitespace-nowrap transition-all duration-300">
                   Subscribe
