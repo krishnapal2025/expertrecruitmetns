@@ -23,6 +23,7 @@ import JobDetailsPage from "@/pages/job-details";
 import JobApplicationPage from "@/pages/job-application";
 import HireTalentPage from "@/pages/hire-talent";
 import SEOInsightsPage from "@/pages/seo-insights";
+import AdminPage from "@/pages/admin-page";
 import ProfilePage from "@/pages/profile-page";
 import PostJobPage from "@/pages/post-job";
 import PostManagerPage from "@/pages/post-manager";
@@ -80,6 +81,7 @@ function Router() {
       <Route path="/vacancy-form" component={VacancyFormPage} />
       <Route path="/inquiry-form" component={InquiryFormPage} />
       <Route path="/seo-insights" component={SEOInsightsPage} />
+      <Route path="/admin" component={AdminPage} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
       <ProtectedRoute path="/post-job" component={PostJobPage} />
       <ProtectedRoute path="/my-jobs" component={PostManagerPage} />
