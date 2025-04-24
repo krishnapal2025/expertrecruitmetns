@@ -4,7 +4,9 @@ import {
   employers, Employer, InsertEmployer,
   jobs, Job, InsertJob,
   applications, Application, InsertApplication,
-  testimonials, Testimonial, InsertTestimonial
+  testimonials, Testimonial, InsertTestimonial,
+  admins, Admin, InsertAdmin,
+  invitationCodes, InvitationCode, InsertInvitationCode
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -65,6 +67,20 @@ export interface IStorage {
   getTestimonial(id: number): Promise<Testimonial | undefined>;
   getTestimonials(): Promise<Testimonial[]>;
   createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial>;
+  
+  // Admin methods
+  getAdmin(id: number): Promise<Admin | undefined>;
+  getAdminByUserId(userId: number): Promise<Admin | undefined>;
+  createAdmin(admin: InsertAdmin): Promise<Admin>;
+  updateAdminLastLogin(id: number): Promise<Admin>;
+  getAllAdmins(): Promise<Admin[]>;
+  
+  // Invitation code methods
+  getInvitationCode(code: string): Promise<InvitationCode | undefined>;
+  getInvitationCodes(): Promise<InvitationCode[]>;
+  createInvitationCode(invitationCode: InsertInvitationCode): Promise<InvitationCode>;
+  verifyInvitationCode(code: string, email: string): Promise<boolean>;
+  markInvitationCodeAsUsed(code: string): Promise<InvitationCode | undefined>;
   
   // Session store
   sessionStore: session.Store;
@@ -355,6 +371,85 @@ export class DatabaseStorage implements IStorage {
     const [testimonial] = await db.insert(testimonials).values(insertTestimonial).returning();
     return testimonial;
   }
+  
+  // Admin methods
+  async getAdmin(id: number): Promise<Admin | undefined> {
+    const [admin] = await db.select().from(admins).where(eq(admins.id, id));
+    return admin;
+  }
+  
+  async getAdminByUserId(userId: number): Promise<Admin | undefined> {
+    const [admin] = await db.select().from(admins).where(eq(admins.userId, userId));
+    return admin;
+  }
+  
+  async createAdmin(insertAdmin: InsertAdmin): Promise<Admin> {
+    const [admin] = await db.insert(admins).values(insertAdmin).returning();
+    return admin;
+  }
+  
+  async updateAdminLastLogin(id: number): Promise<Admin> {
+    const [admin] = await db
+      .update(admins)
+      .set({ lastLogin: new Date() })
+      .where(eq(admins.id, id))
+      .returning();
+    return admin;
+  }
+  
+  async getAllAdmins(): Promise<Admin[]> {
+    return await db.select().from(admins);
+  }
+  
+  // Invitation code methods
+  async getInvitationCode(code: string): Promise<InvitationCode | undefined> {
+    const [invitationCode] = await db.select().from(invitationCodes).where(eq(invitationCodes.code, code));
+    return invitationCode;
+  }
+  
+  async getInvitationCodes(): Promise<InvitationCode[]> {
+    return await db.select().from(invitationCodes);
+  }
+  
+  async createInvitationCode(insertInvitationCode: InsertInvitationCode): Promise<InvitationCode> {
+    const [invitationCode] = await db.insert(invitationCodes).values(insertInvitationCode).returning();
+    return invitationCode;
+  }
+  
+  async verifyInvitationCode(code: string, email: string): Promise<boolean> {
+    const invitationCode = await this.getInvitationCode(code);
+    
+    if (!invitationCode) {
+      return false;
+    }
+    
+    // Check if the code is for the specific email
+    if (invitationCode.email !== email) {
+      return false;
+    }
+    
+    // Check if the code is already used
+    if (invitationCode.isUsed) {
+      return false;
+    }
+    
+    // Check if the code has expired
+    if (new Date() > invitationCode.expiresAt) {
+      return false;
+    }
+    
+    return true;
+  }
+  
+  async markInvitationCodeAsUsed(code: string): Promise<InvitationCode | undefined> {
+    const [invitationCode] = await db
+      .update(invitationCodes)
+      .set({ isUsed: true })
+      .where(eq(invitationCodes.code, code))
+      .returning();
+    
+    return invitationCode;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -364,6 +459,8 @@ export class MemStorage implements IStorage {
   private jobs: Map<number, Job>;
   private applications: Map<number, Application>;
   private testimonials: Map<number, Testimonial>;
+  private admins: Map<number, Admin>;
+  private invitationCodes: Map<string, InvitationCode>;
   
   sessionStore: session.Store;
   
@@ -374,6 +471,7 @@ export class MemStorage implements IStorage {
   private jobIdCounter: number;
   private applicationIdCounter: number;
   private testimonialIdCounter: number;
+  private adminIdCounter: number;
 
   constructor() {
     this.users = new Map();
@@ -382,6 +480,8 @@ export class MemStorage implements IStorage {
     this.jobs = new Map();
     this.applications = new Map();
     this.testimonials = new Map();
+    this.admins = new Map();
+    this.invitationCodes = new Map();
     
     this.userIdCounter = 1;
     this.jobSeekerIdCounter = 1;
@@ -389,6 +489,7 @@ export class MemStorage implements IStorage {
     this.jobIdCounter = 1;
     this.applicationIdCounter = 1;
     this.testimonialIdCounter = 1;
+    this.adminIdCounter = 1;
     
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // prune expired entries every 24h
@@ -790,6 +891,109 @@ export class MemStorage implements IStorage {
     };
     this.testimonials.set(id, testimonial);
     return testimonial;
+  }
+  
+  // Admin methods
+  async getAdmin(id: number): Promise<Admin | undefined> {
+    return this.admins.get(id);
+  }
+  
+  async getAdminByUserId(userId: number): Promise<Admin | undefined> {
+    return Array.from(this.admins.values()).find(
+      (admin) => admin.userId === userId
+    );
+  }
+  
+  async createAdmin(insertAdmin: InsertAdmin): Promise<Admin> {
+    const id = this.adminIdCounter++;
+    const admin: Admin = { 
+      ...insertAdmin, 
+      id,
+      lastLogin: null
+    };
+    this.admins.set(id, admin);
+    return admin;
+  }
+  
+  async updateAdminLastLogin(id: number): Promise<Admin> {
+    const admin = this.admins.get(id);
+    if (!admin) {
+      throw new Error('Admin not found');
+    }
+    
+    const updatedAdmin: Admin = {
+      ...admin,
+      lastLogin: new Date()
+    };
+    
+    this.admins.set(id, updatedAdmin);
+    return updatedAdmin;
+  }
+  
+  async getAllAdmins(): Promise<Admin[]> {
+    return Array.from(this.admins.values());
+  }
+  
+  // Invitation code methods
+  async getInvitationCode(code: string): Promise<InvitationCode | undefined> {
+    return this.invitationCodes.get(code);
+  }
+  
+  async getInvitationCodes(): Promise<InvitationCode[]> {
+    return Array.from(this.invitationCodes.values());
+  }
+  
+  async createInvitationCode(insertInvitationCode: InsertInvitationCode): Promise<InvitationCode> {
+    const invitationCode: InvitationCode = {
+      ...insertInvitationCode,
+      id: this.invitationCodes.size + 1,
+      isUsed: false,
+      createdAt: new Date()
+    };
+    
+    this.invitationCodes.set(invitationCode.code, invitationCode);
+    return invitationCode;
+  }
+  
+  async verifyInvitationCode(code: string, email: string): Promise<boolean> {
+    const invitationCode = await this.getInvitationCode(code);
+    
+    if (!invitationCode) {
+      return false;
+    }
+    
+    // Check if the code is for the specific email
+    if (invitationCode.email !== email) {
+      return false;
+    }
+    
+    // Check if the code is already used
+    if (invitationCode.isUsed) {
+      return false;
+    }
+    
+    // Check if the code has expired
+    if (new Date() > invitationCode.expiresAt) {
+      return false;
+    }
+    
+    return true;
+  }
+  
+  async markInvitationCodeAsUsed(code: string): Promise<InvitationCode | undefined> {
+    const invitationCode = await this.getInvitationCode(code);
+    
+    if (!invitationCode) {
+      return undefined;
+    }
+    
+    const updatedInvitationCode: InvitationCode = {
+      ...invitationCode,
+      isUsed: true
+    };
+    
+    this.invitationCodes.set(code, updatedInvitationCode);
+    return updatedInvitationCode;
   }
 }
 
