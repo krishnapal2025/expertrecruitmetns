@@ -10,7 +10,8 @@ export function IndiaFlag({ className =  "h-6 w-9" }: FlagProps) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 900 600"
       className={className}
-      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+      preserveAspectRatio="none"
+      style={{ width: '100%', height: '100%' }}
     >
       <rect width="900" height="600" fill="#f8f9fa" />
       <rect width="900" height="200" fill="#FF9933" />
@@ -42,7 +43,8 @@ export function UAEFlag({ className = "h-6 w-9" }: FlagProps) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 900 600"
       className={className}
-      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+      preserveAspectRatio="none"
+      style={{ width: '100%', height: '100%' }}
     >
       <rect width="900" height="600" fill="#f8f9fa" />
       <rect width="900" height="200" fill="#00732F" />
@@ -59,7 +61,8 @@ export function USAFlag({ className = "h-6 w-9" }: FlagProps) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 900 600"
       className={className}
-      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+      preserveAspectRatio="none"
+      style={{ width: '100%', height: '100%' }}
     >
       <rect width="900" height="600" fill="#f8f9fa" />
       <g fill="#BF0A30">
