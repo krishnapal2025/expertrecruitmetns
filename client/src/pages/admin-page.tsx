@@ -1,791 +1,716 @@
-import React, { useState } from 'react';
-import { useAuth } from '@/hooks/use-auth';
-import { Helmet } from 'react-helmet';
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
+import { useAuth } from "@/hooks/use-auth";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { Admin, InvitationCode, User, Job, JobSeeker, Employer } from "@shared/schema";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// Remove DataTable import as we're using a regular table instead
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { PlusCircle, UserPlus, Building2, Briefcase, Users, Activity, BarChart3, Layers, Settings, FileText, Shield } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { useLocation, Link } from 'wouter';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Loader2,
+  UserPlus,
+  Users,
+  Briefcase,
+  Building,
+  Settings,
+  FileText,
+  Calendar,
+  Mail,
+  Copy,
+  Check,
+  RefreshCw,
+  UserCog
+} from "lucide-react";
+import { format } from "date-fns";
 
-const AdminPage = () => {
-  const { currentUser } = useAuth();
-  const [location, navigate] = useLocation();
+// Admin Dashboard Page
+function AdminPage() {
+  const [, navigate] = useLocation();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("dashboard");
-
-  // Mock data for demonstration
-  const userStats = [
-    { name: 'Job Seekers', value: 145 },
-    { name: 'Employers', value: 67 },
-  ];
-
-  const jobStats = [
-    { name: 'Active', value: 84 },
-    { name: 'Filled', value: 35 },
-    { name: 'Expired', value: 21 },
-  ];
-
-  const applicationStats = [
-    { name: 'Jan', applications: 12 },
-    { name: 'Feb', applications: 19 },
-    { name: 'Mar', applications: 25 },
-    { name: 'Apr', applications: 32 },
-    { name: 'May', applications: 28 },
-    { name: 'Jun', applications: 43 },
-  ];
-
-  const pieColors = ['#5372f1', '#36A2EB', '#ff6384', '#4BC0C0', '#9966FF', '#FF9F40'];
-
-  // If not admin, show access denied
-  if (currentUser?.user.userType !== 'admin') {
+  const [currentAdminTab, setCurrentAdminTab] = useState("admins");
+  const [createInvitationOpen, setCreateInvitationOpen] = useState(false);
+  const [newInvitation, setNewInvitation] = useState({
+    email: "",
+    code: generateRandomCode(),
+    expiresAt: getDefaultExpiryDate()
+  });
+  
+  // Check if user is admin
+  const { data: adminData, isLoading: adminLoading } = useQuery({
+    queryKey: ["/api/admin/user"],
+    queryFn: async () => {
+      if (!user || user.userType !== "admin") return null;
+      try {
+        const res = await fetch("/api/admin/user");
+        if (!res.ok) return null;
+        return await res.json();
+      } catch (error) {
+        return null;
+      }
+    },
+    enabled: !!user
+  });
+  
+  // Fetch admin data
+  const { data: admins, isLoading: adminsLoading } = useQuery({
+    queryKey: ["/api/admin/all"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/all");
+      if (!res.ok) throw new Error("Failed to fetch admin data");
+      return await res.json();
+    },
+    enabled: !!user && user.userType === "admin"
+  });
+  
+  // Fetch invitation codes
+  const { data: invitationCodes, isLoading: invitationsLoading } = useQuery({
+    queryKey: ["/api/admin/invitation-codes"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/invitation-codes");
+      if (!res.ok) throw new Error("Failed to fetch invitation codes");
+      return await res.json();
+    },
+    enabled: !!user && user.userType === "admin"
+  });
+  
+  // Fetch users
+  const { data: users, isLoading: usersLoading } = useQuery({
+    queryKey: ["/api/users"],
+    queryFn: async () => {
+      const res = await fetch("/api/users");
+      if (!res.ok) throw new Error("Failed to fetch users data");
+      return await res.json();
+    },
+    enabled: !!user && user.userType === "admin"
+  });
+  
+  // Fetch jobs
+  const { data: jobs, isLoading: jobsLoading } = useQuery({
+    queryKey: ["/api/jobs"],
+    queryFn: async () => {
+      const res = await fetch("/api/jobs");
+      if (!res.ok) throw new Error("Failed to fetch jobs data");
+      return await res.json();
+    },
+    enabled: !!user && user.userType === "admin"
+  });
+  
+  // Create invitation code mutation
+  const createInvitationMutation = useMutation({
+    mutationFn: async (data: { email: string, code: string, expiresAt: string }) => {
+      const res = await apiRequest("POST", "/api/admin/invitation-codes", data);
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to create invitation code");
+      }
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Invitation code created",
+        description: "The invitation code has been created successfully.",
+      });
+      setCreateInvitationOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/invitation-codes"] });
+      // Reset form
+      setNewInvitation({
+        email: "",
+        code: generateRandomCode(),
+        expiresAt: getDefaultExpiryDate()
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to create invitation code",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // Redirect if not admin
+  useEffect(() => {
+    if (user && user.userType !== "admin") {
+      toast({
+        title: "Access denied",
+        description: "You don't have permission to access the admin dashboard.",
+        variant: "destructive",
+      });
+      navigate("/");
+    } else if (!user && !adminLoading) {
+      navigate("/auth");
+    }
+  }, [user, adminLoading, navigate, toast]);
+  
+  // Generate random code
+  function generateRandomCode() {
+    return Math.random().toString(36).substring(2, 10).toUpperCase();
+  }
+  
+  // Get default expiry date (7 days from now)
+  function getDefaultExpiryDate() {
+    const date = new Date();
+    date.setDate(date.getDate() + 7);
+    return date.toISOString().split("T")[0];
+  }
+  
+  // Handle copy code to clipboard
+  const handleCopyCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    toast({
+      title: "Copied to clipboard",
+      description: `Invitation code ${code} copied to clipboard`,
+    });
+  };
+  
+  // Create invitation code
+  const handleCreateInvitation = () => {
+    if (!newInvitation.email) {
+      toast({
+        title: "Email required",
+        description: "Please enter an email address for the invitation.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    createInvitationMutation.mutate({
+      email: newInvitation.email,
+      code: newInvitation.code,
+      expiresAt: new Date(newInvitation.expiresAt).toISOString()
+    });
+  };
+  
+  // Generate new code
+  const handleRegenerateCode = () => {
+    setNewInvitation({
+      ...newInvitation,
+      code: generateRandomCode()
+    });
+  };
+  
+  // Loading state
+  if (!user || adminLoading) {
     return (
-      <div className="container mx-auto px-4 py-16 min-h-[calc(100vh-20rem)]">
-        <Helmet>
-          <title>Admin Dashboard | Expert Recruitments</title>
-        </Helmet>
-        <div className="flex flex-col items-center justify-center h-64 bg-gray-100 rounded-lg shadow-md">
-          <Shield className="h-16 w-16 text-red-500 mb-4" />
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Access Denied</h1>
-          <p className="text-gray-600 mb-6">You don't have permission to access the admin dashboard.</p>
-          <Button onClick={() => navigate('/')} variant="default">
-            Return to Home
-          </Button>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
-
+  
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Helmet>
-        <title>Admin Dashboard | Expert Recruitments</title>
-      </Helmet>
-
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
-        <p className="text-gray-600">Manage your recruitment platform</p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Sidebar Navigation */}
-        <div className="lg:col-span-3">
-          <Card className="sticky top-20">
-            <CardContent className="p-0">
-              <div className="flex flex-col">
-                <button 
-                  className={`flex items-center gap-3 p-4 hover:bg-gray-100 transition-colors text-left ${activeTab === "dashboard" ? "bg-gray-100 border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("dashboard")}
-                >
-                  <Activity className="h-5 w-5 text-primary" />
-                  <span>Dashboard</span>
-                </button>
-                <button 
-                  className={`flex items-center gap-3 p-4 hover:bg-gray-100 transition-colors text-left ${activeTab === "users" ? "bg-gray-100 border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("users")}
-                >
-                  <Users className="h-5 w-5 text-primary" />
-                  <span>Users</span>
-                </button>
-                <button 
-                  className={`flex items-center gap-3 p-4 hover:bg-gray-100 transition-colors text-left ${activeTab === "jobs" ? "bg-gray-100 border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("jobs")}
-                >
-                  <Briefcase className="h-5 w-5 text-primary" />
-                  <span>Jobs</span>
-                </button>
-                <button 
-                  className={`flex items-center gap-3 p-4 hover:bg-gray-100 transition-colors text-left ${activeTab === "companies" ? "bg-gray-100 border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("companies")}
-                >
-                  <Building2 className="h-5 w-5 text-primary" />
-                  <span>Companies</span>
-                </button>
-                <button 
-                  className={`flex items-center gap-3 p-4 hover:bg-gray-100 transition-colors text-left ${activeTab === "content" ? "bg-gray-100 border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("content")}
-                >
-                  <FileText className="h-5 w-5 text-primary" />
-                  <span>Content</span>
-                </button>
-                <button 
-                  className={`flex items-center gap-3 p-4 hover:bg-gray-100 transition-colors text-left ${activeTab === "settings" ? "bg-gray-100 border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("settings")}
-                >
-                  <Settings className="h-5 w-5 text-primary" />
-                  <span>Settings</span>
-                </button>
-              </div>
+    <div className="container mx-auto py-8">
+      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+      
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid grid-cols-6 mb-8">
+          <TabsTrigger value="dashboard">
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="users">
+            <Users className="mr-2 h-4 w-4" />
+            Users
+          </TabsTrigger>
+          <TabsTrigger value="jobs">
+            <Briefcase className="mr-2 h-4 w-4" />
+            Jobs
+          </TabsTrigger>
+          <TabsTrigger value="companies">
+            <Building className="mr-2 h-4 w-4" />
+            Companies
+          </TabsTrigger>
+          <TabsTrigger value="content">
+            <FileText className="mr-2 h-4 w-4" />
+            Content
+          </TabsTrigger>
+          <TabsTrigger value="settings">
+            <Settings className="mr-2 h-4 w-4" />
+            Settings
+          </TabsTrigger>
+        </TabsList>
+        
+        {/* Dashboard Tab */}
+        <TabsContent value="dashboard" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Total Users</CardTitle>
+                <CardDescription>User accounts overview</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{users?.length || 0}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {usersLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      Job Seekers: {users?.filter((u: User) => u.userType === "jobseeker").length || 0} | 
+                      Employers: {users?.filter((u: User) => u.userType === "employer").length || 0} |
+                      Admins: {users?.filter((u: User) => u.userType === "admin").length || 0}
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Active Jobs</CardTitle>
+                <CardDescription>Job listings overview</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{jobs?.length || 0}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {jobsLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      Last 7 days: {jobs?.filter((j: Job) => {
+                        const date = new Date(j.createdAt);
+                        const now = new Date();
+                        const diff = now.getTime() - date.getTime();
+                        return diff <= 7 * 24 * 60 * 60 * 1000;
+                      }).length || 0}
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Pending Invitations</CardTitle>
+                <CardDescription>Admin invitation codes</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">
+                  {invitationsLoading ? (
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  ) : (
+                    invitationCodes?.filter((code: InvitationCode) => 
+                      !code.isUsed && new Date(code.expiresAt) > new Date()
+                    ).length || 0
+                  )}
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  Expired: {invitationCodes?.filter((code: InvitationCode) => 
+                    !code.isUsed && new Date(code.expiresAt) <= new Date()
+                  ).length || 0} | 
+                  Used: {invitationCodes?.filter((code: InvitationCode) => code.isUsed).length || 0}
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button variant="outline" size="sm" className="w-full" onClick={() => setActiveTab("settings")}>
+                  Manage Invitations
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+          
+          {/* Recent activity section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>Latest platform activities</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Coming soon: Activity log showing recent user registrations, job postings, and admin actions
+              </p>
             </CardContent>
           </Card>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="lg:col-span-9">
-          {/* Dashboard Content */}
-          {activeTab === "dashboard" && (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base font-medium">Total Users</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-3xl font-bold">212</span>
-                      <Users className="h-8 w-8 text-primary" />
-                    </div>
-                    <p className="text-sm text-gray-500 mt-2">+12% from last month</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base font-medium">Active Jobs</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-3xl font-bold">84</span>
-                      <Briefcase className="h-8 w-8 text-primary" />
-                    </div>
-                    <p className="text-sm text-gray-500 mt-2">+8% from last month</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base font-medium">Applications</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-3xl font-bold">356</span>
-                      <FileText className="h-8 w-8 text-primary" />
-                    </div>
-                    <p className="text-sm text-gray-500 mt-2">+15% from last month</p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Applications Trend</CardTitle>
-                    <CardDescription>Monthly applications over the last 6 months</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-[300px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={applicationStats}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="name" />
-                          <YAxis />
-                          <Tooltip />
-                          <Legend />
-                          <Bar dataKey="applications" fill="#5372f1" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <div className="grid grid-rows-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>User Distribution</CardTitle>
-                      <CardDescription>Job seekers vs employers</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="h-[150px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={userStats}
-                              cx="50%"
-                              cy="50%"
-                              outerRadius={60}
-                              fill="#8884d8"
-                              dataKey="value"
-                              label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                            >
-                              {userStats.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />
-                              ))}
-                            </Pie>
-                            <Tooltip />
-                          </PieChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Job Status</CardTitle>
-                      <CardDescription>Distribution of job listings</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="h-[150px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={jobStats}
-                              cx="50%"
-                              cy="50%"
-                              outerRadius={60}
-                              fill="#8884d8"
-                              dataKey="value"
-                              label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                            >
-                              {jobStats.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />
-                              ))}
-                            </Pie>
-                            <Tooltip />
-                          </PieChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </CardContent>
-                  </Card>
+        </TabsContent>
+        
+        {/* Users Tab */}
+        <TabsContent value="users" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>User Management</CardTitle>
+              <CardDescription>All registered users on the platform</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {usersLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
-              </div>
-
-              <Card className="mb-8">
-                <CardHeader>
-                  <CardTitle>Recent Activities</CardTitle>
-                  <CardDescription>Latest platform activities</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-                      <div className="rounded-full bg-primary/10 p-2">
-                        <UserPlus className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <p className="font-medium">New user registration</p>
-                        <p className="text-sm text-gray-500">John Doe registered as a job seeker</p>
-                        <p className="text-xs text-gray-400">2 hours ago</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-                      <div className="rounded-full bg-primary/10 p-2">
-                        <Building2 className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <p className="font-medium">New company registration</p>
-                        <p className="text-sm text-gray-500">Acme Corp registered as an employer</p>
-                        <p className="text-xs text-gray-400">5 hours ago</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-                      <div className="rounded-full bg-primary/10 p-2">
-                        <Briefcase className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <p className="font-medium">New job posting</p>
-                        <p className="text-sm text-gray-500">Software Engineer position posted by TechCorp</p>
-                        <p className="text-xs text-gray-400">1 day ago</p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button variant="outline" className="w-full">View All Activity</Button>
-                </CardFooter>
-              </Card>
-            </>
-          )}
-
-          {/* Users Tab */}
-          {activeTab === "users" && (
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle>User Management</CardTitle>
-                  <CardDescription>Manage all users on the platform</CardDescription>
+              ) : (
+                <ScrollArea className="h-[400px]">
+                  <Table>
+                    <TableCaption>List of all registered users</TableCaption>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>User Type</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Registered</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {users?.map((user: User) => (
+                        <TableRow key={user.id}>
+                          <TableCell>{user.id}</TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              user.userType === "admin" 
+                                ? "bg-purple-100 text-purple-800" 
+                                : user.userType === "employer"
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-green-100 text-green-800"
+                            }`}>
+                              {user.userType}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              user.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                            }`}>
+                              {user.isActive ? "Active" : "Inactive"}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            {user.createdAt ? format(new Date(user.createdAt), "MMM d, yyyy") : "N/A"}
+                          </TableCell>
+                          <TableCell>
+                            <Button variant="outline" size="sm">
+                              View
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        {/* Jobs Tab */}
+        <TabsContent value="jobs" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Job Listings</CardTitle>
+              <CardDescription>All job postings on the platform</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {jobsLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
-                <Button>
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Add User
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex gap-2">
-                    <Select defaultValue="all">
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Filter by type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Users</SelectItem>
-                        <SelectItem value="jobseeker">Job Seekers</SelectItem>
-                        <SelectItem value="employer">Employers</SelectItem>
-                        <SelectItem value="admin">Admins</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Select defaultValue="active">
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Filter by status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                        <SelectItem value="suspended">Suspended</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="relative">
-                    <Input placeholder="Search users..." className="w-[250px]" />
-                  </div>
-                </div>
-
-                <div className="border rounded-md">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Type</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                              <span className="text-gray-600 font-medium">JD</span>
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">John Doe</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">john.doe@example.com</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                            Job Seeker
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            Active
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm">Edit</Button>
-                            <Button variant="destructive" size="sm">Delete</Button>
-                          </div>
-                        </td>
-                      </tr>
-                      {/* More user rows would go here */}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="flex items-center justify-between mt-4">
-                  <div className="text-sm text-gray-700">
-                    Showing <span className="font-medium">1</span> to <span className="font-medium">10</span> of <span className="font-medium">212</span> results
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" disabled>Previous</Button>
-                    <Button variant="outline" size="sm">Next</Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Jobs Tab */}
-          {activeTab === "jobs" && (
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle>Job Management</CardTitle>
-                  <CardDescription>Manage all job listings on the platform</CardDescription>
-                </div>
-                <Button>
-                  <PlusCircle className="h-4 w-4 mr-2" />
-                  Add Job
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex gap-2">
-                    <Select defaultValue="all">
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Filter by status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Jobs</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="filled">Filled</SelectItem>
-                        <SelectItem value="expired">Expired</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Select defaultValue="all">
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Filter by company" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Companies</SelectItem>
-                        <SelectItem value="company1">TechCorp</SelectItem>
-                        <SelectItem value="company2">Acme Inc</SelectItem>
-                        <SelectItem value="company3">Global Solutions</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="relative">
-                    <Input placeholder="Search jobs..." className="w-[250px]" />
-                  </div>
-                </div>
-
-                <div className="border rounded-md">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applications</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">Senior Software Engineer</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">TechCorp</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">Dubai, UAE</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            Active
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          12
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm">Edit</Button>
-                            <Button variant="destructive" size="sm">Delete</Button>
-                          </div>
-                        </td>
-                      </tr>
-                      {/* More job rows would go here */}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="flex items-center justify-between mt-4">
-                  <div className="text-sm text-gray-700">
-                    Showing <span className="font-medium">1</span> to <span className="font-medium">10</span> of <span className="font-medium">84</span> results
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" disabled>Previous</Button>
-                    <Button variant="outline" size="sm">Next</Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Settings Tab */}
-          {activeTab === "settings" && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Platform Settings</CardTitle>
-                <CardDescription>Manage your platform configuration</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Tabs defaultValue="general">
-                  <TabsList className="mb-4">
-                    <TabsTrigger value="general">General</TabsTrigger>
-                    <TabsTrigger value="email">Email Templates</TabsTrigger>
-                    <TabsTrigger value="api">API Integration</TabsTrigger>
-                    <TabsTrigger value="security">Security</TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="general">
-                    <div className="space-y-6">
-                      <div>
-                        <h3 className="text-lg font-medium mb-4">Site Information</h3>
-                        <div className="grid grid-cols-1 gap-4">
+              ) : (
+                <ScrollArea className="h-[400px]">
+                  <Table>
+                    <TableCaption>List of all job listings</TableCaption>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead>Posted</TableHead>
+                        <TableHead>Applications</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {jobs?.map((job: Job) => (
+                        <TableRow key={job.id}>
+                          <TableCell>{job.id}</TableCell>
+                          <TableCell>{job.title}</TableCell>
+                          <TableCell>{job.company}</TableCell>
+                          <TableCell>{job.location}</TableCell>
+                          <TableCell>
+                            {job.createdAt ? format(new Date(job.createdAt), "MMM d, yyyy") : "N/A"}
+                          </TableCell>
+                          <TableCell>{job.applicationCount || 0}</TableCell>
+                          <TableCell>
+                            <Button variant="outline" size="sm">
+                              View
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        {/* Companies Tab */}
+        <TabsContent value="companies" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Company Management</CardTitle>
+              <CardDescription>All registered employers</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Coming soon: Company management interface showing all registered employers and their details
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        {/* Content Tab */}
+        <TabsContent value="content" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Content Management</CardTitle>
+              <CardDescription>Manage testimonials and site content</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Coming soon: Content management interface for testimonials, success stories, and other site content
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        {/* Settings Tab */}
+        <TabsContent value="settings" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Admin Settings</CardTitle>
+              <CardDescription>Manage admin users and invitations</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs value={currentAdminTab} onValueChange={setCurrentAdminTab} className="w-full">
+                <TabsList className="grid grid-cols-2 mb-6">
+                  <TabsTrigger value="admins">
+                    <UserCog className="mr-2 h-4 w-4" />
+                    Admin Users
+                  </TabsTrigger>
+                  <TabsTrigger value="invitations">
+                    <Mail className="mr-2 h-4 w-4" />
+                    Invitation Codes
+                  </TabsTrigger>
+                </TabsList>
+                
+                {/* Admin Users Tab */}
+                <TabsContent value="admins" className="space-y-4">
+                  <ScrollArea className="h-[300px]">
+                    <Table>
+                      <TableCaption>List of admin users</TableCaption>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>ID</TableHead>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Role</TableHead>
+                          <TableHead>Last Login</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {adminsLoading ? (
+                          <TableRow>
+                            <TableCell colSpan={5} className="text-center">
+                              <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                            </TableCell>
+                          </TableRow>
+                        ) : admins?.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={5} className="text-center">
+                              No admin users found
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          admins?.map((admin: Admin & { user: User }) => (
+                            <TableRow key={admin.id}>
+                              <TableCell>{admin.id}</TableCell>
+                              <TableCell>{admin.firstName} {admin.lastName}</TableCell>
+                              <TableCell>{admin.user?.email || "N/A"}</TableCell>
+                              <TableCell>{admin.role}</TableCell>
+                              <TableCell>
+                                {admin.lastLogin ? format(new Date(admin.lastLogin), "MMM d, yyyy H:mm") : "Never"}
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </ScrollArea>
+                </TabsContent>
+                
+                {/* Invitation Codes Tab */}
+                <TabsContent value="invitations" className="space-y-4">
+                  <div className="flex justify-end mb-4">
+                    <Dialog open={createInvitationOpen} onOpenChange={setCreateInvitationOpen}>
+                      <DialogTrigger asChild>
+                        <Button>
+                          <UserPlus className="mr-2 h-4 w-4" />
+                          Create Invitation
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Create Invitation Code</DialogTitle>
+                          <DialogDescription>
+                            Generate a new invitation code for admin registration
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
                           <div className="space-y-2">
-                            <Label htmlFor="site-name">Site Name</Label>
-                            <Input id="site-name" value="Expert Recruitments" />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="site-desc">Site Description</Label>
-                            <Textarea 
-                              id="site-desc" 
-                              value="A cutting-edge job recruitment platform specializing in talent acquisition across UAE, India, and America markets."
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                              id="email"
+                              placeholder="admin@example.com"
+                              value={newInvitation.email}
+                              onChange={(e) => setNewInvitation({...newInvitation, email: e.target.value})}
                             />
+                            <p className="text-sm text-muted-foreground">
+                              The email address of the person you want to invite
+                            </p>
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="contact-email">Contact Email</Label>
-                            <Input id="contact-email" value="contact@expertrecruitments.com" />
+                            <Label htmlFor="code">Invitation Code</Label>
+                            <div className="flex space-x-2">
+                              <Input
+                                id="code"
+                                value={newInvitation.code}
+                                onChange={(e) => setNewInvitation({...newInvitation, code: e.target.value})}
+                                className="flex-1"
+                              />
+                              <Button variant="outline" onClick={handleRegenerateCode} type="button">
+                                <RefreshCw className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="expiresAt">Expires At</Label>
+                            <Input
+                              id="expiresAt"
+                              type="date"
+                              value={newInvitation.expiresAt}
+                              onChange={(e) => setNewInvitation({...newInvitation, expiresAt: e.target.value})}
+                            />
+                            <p className="text-sm text-muted-foreground">
+                              The invitation code will expire after this date
+                            </p>
                           </div>
                         </div>
-                      </div>
-                      
-                      <div>
-                        <h3 className="text-lg font-medium mb-4">Job Settings</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="job-expiry">Default Job Expiry (days)</Label>
-                            <Input id="job-expiry" type="number" value="30" />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="jobs-per-page">Jobs Per Page</Label>
-                            <Input id="jobs-per-page" type="number" value="10" />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="featured-duration">Featured Job Duration (days)</Label>
-                            <Input id="featured-duration" type="number" value="14" />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="job-approval">Job Approval Required</Label>
-                            <Select defaultValue="yes">
-                              <SelectTrigger id="job-approval">
-                                <SelectValue placeholder="Select option" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="yes">Yes</SelectItem>
-                                <SelectItem value="no">No</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <Button>Save Changes</Button>
-                    </div>
-                  </TabsContent>
+                        <DialogFooter>
+                          <Button variant="outline" onClick={() => setCreateInvitationOpen(false)}>
+                            Cancel
+                          </Button>
+                          <Button onClick={handleCreateInvitation} disabled={createInvitationMutation.isPending}>
+                            {createInvitationMutation.isPending ? (
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                              <Mail className="mr-2 h-4 w-4" />
+                            )}
+                            Create Invitation
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                   
-                  <TabsContent value="email">
-                    <div className="space-y-6">
-                      <div>
-                        <h3 className="text-lg font-medium mb-4">Email Templates</h3>
-                        <div className="space-y-4">
-                          <Card>
-                            <CardHeader className="pb-2">
-                              <CardTitle className="text-base">Welcome Email</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="space-y-2">
-                                <Label htmlFor="welcome-subject">Subject</Label>
-                                <Input id="welcome-subject" value="Welcome to Expert Recruitments!" />
-                              </div>
-                              <div className="space-y-2 mt-4">
-                                <Label htmlFor="welcome-body">Email Body</Label>
-                                <Textarea 
-                                  id="welcome-body" 
-                                  className="min-h-[200px]" 
-                                  value="Dear {{name}},
-
-Thank you for joining Expert Recruitments! We're excited to have you on board.
-
-Your account has been successfully created and you can now access all the features of our platform.
-
-Best regards,
-The Expert Recruitments Team"
-                                />
-                              </div>
-                            </CardContent>
-                          </Card>
-                          
-                          <Card>
-                            <CardHeader className="pb-2">
-                              <CardTitle className="text-base">Job Application Confirmation</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="space-y-2">
-                                <Label htmlFor="application-subject">Subject</Label>
-                                <Input id="application-subject" value="Your application for {{job_title}} has been received" />
-                              </div>
-                              <div className="space-y-2 mt-4">
-                                <Label htmlFor="application-body">Email Body</Label>
-                                <Textarea 
-                                  id="application-body" 
-                                  className="min-h-[200px]" 
-                                  value="Dear {{name}},
-
-Your application for the position of {{job_title}} at {{company}} has been successfully submitted.
-
-We will review your application and get back to you as soon as possible.
-
-Best regards,
-The Expert Recruitments Team"
-                                />
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </div>
-                      </div>
-                      
-                      <Button>Save Templates</Button>
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="api">
-                    <div className="space-y-6">
-                      <div>
-                        <h3 className="text-lg font-medium mb-4">API Keys</h3>
-                        <Card>
-                          <CardHeader className="pb-2">
-                            <div className="flex justify-between items-center">
-                              <CardTitle className="text-base">Your API Keys</CardTitle>
-                              <Button>Generate New Key</Button>
-                            </div>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="rounded-md bg-gray-50 p-4 mb-4">
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="font-medium">Production Key</p>
-                                  <p className="text-sm text-gray-500">Created on Apr 10, 2025</p>
-                                </div>
-                                <div className="flex gap-2">
-                                  <Button variant="outline" size="sm">Reveal</Button>
-                                  <Button variant="destructive" size="sm">Revoke</Button>
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <div className="rounded-md bg-gray-50 p-4">
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="font-medium">Development Key</p>
-                                  <p className="text-sm text-gray-500">Created on Apr 15, 2025</p>
-                                </div>
-                                <div className="flex gap-2">
-                                  <Button variant="outline" size="sm">Reveal</Button>
-                                  <Button variant="destructive" size="sm">Revoke</Button>
-                                </div>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-                      
-                      <div>
-                        <h3 className="text-lg font-medium mb-4">Webhooks</h3>
-                        <Card>
-                          <CardHeader className="pb-2">
-                            <div className="flex justify-between items-center">
-                              <CardTitle className="text-base">Webhook Endpoints</CardTitle>
-                              <Button>Add Endpoint</Button>
-                            </div>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="text-sm text-gray-500 mb-4">
-                              Configure webhook endpoints to receive real-time notifications for events on your platform.
-                            </div>
-                            <div className="rounded-md bg-gray-50 p-4">
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="font-medium">https://example.com/webhooks/jobs</p>
-                                  <p className="text-sm text-gray-500">Events: job.created, job.updated, job.expired</p>
-                                </div>
-                                <div className="flex gap-2">
-                                  <Button variant="outline" size="sm">Edit</Button>
-                                  <Button variant="destructive" size="sm">Delete</Button>
-                                </div>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="security">
-                    <div className="space-y-6">
-                      <div>
-                        <h3 className="text-lg font-medium mb-4">Authentication</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="min-password">Minimum Password Length</Label>
-                            <Input id="min-password" type="number" value="8" />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="password-expiry">Password Expiry (days)</Label>
-                            <Input id="password-expiry" type="number" value="90" />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="mfa-required">Require 2FA for Admins</Label>
-                            <Select defaultValue="yes">
-                              <SelectTrigger id="mfa-required">
-                                <SelectValue placeholder="Select option" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="yes">Yes</SelectItem>
-                                <SelectItem value="no">No</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="lockout-attempts">Login Attempts Before Lockout</Label>
-                            <Input id="lockout-attempts" type="number" value="5" />
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <h3 className="text-lg font-medium mb-4">Activity Logging</h3>
-                        <div className="space-y-2">
-                          <Label htmlFor="log-retention">Log Retention Period (days)</Label>
-                          <Input id="log-retention" type="number" value="30" />
-                        </div>
-                        <div className="space-y-2 mt-4">
-                          <Label>Log Actions</Label>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="flex items-center space-x-2">
-                              <input type="checkbox" id="log-login" className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" checked />
-                              <Label htmlFor="log-login" className="text-sm font-normal">Login Attempts</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <input type="checkbox" id="log-job" className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" checked />
-                              <Label htmlFor="log-job" className="text-sm font-normal">Job Management</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <input type="checkbox" id="log-user" className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" checked />
-                              <Label htmlFor="log-user" className="text-sm font-normal">User Management</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <input type="checkbox" id="log-settings" className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" checked />
-                              <Label htmlFor="log-settings" className="text-sm font-normal">Settings Changes</Label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <Button>Save Security Settings</Button>
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      </div>
+                  <ScrollArea className="h-[300px]">
+                    <Table>
+                      <TableCaption>List of invitation codes</TableCaption>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Code</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Created</TableHead>
+                          <TableHead>Expires</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {invitationsLoading ? (
+                          <TableRow>
+                            <TableCell colSpan={6} className="text-center">
+                              <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                            </TableCell>
+                          </TableRow>
+                        ) : invitationCodes?.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={6} className="text-center">
+                              No invitation codes found
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          invitationCodes?.map((code: InvitationCode) => (
+                            <TableRow key={code.id}>
+                              <TableCell>
+                                <div className="font-mono text-sm">{code.code}</div>
+                              </TableCell>
+                              <TableCell>{code.email}</TableCell>
+                              <TableCell>
+                                {code.isUsed ? (
+                                  <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
+                                    Used
+                                  </span>
+                                ) : new Date(code.expiresAt) <= new Date() ? (
+                                  <span className="px-2 py-1 rounded-full text-xs bg-red-100 text-red-800">
+                                    Expired
+                                  </span>
+                                ) : (
+                                  <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                                    Active
+                                  </span>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {code.createdAt ? format(new Date(code.createdAt), "MMM d, yyyy") : "N/A"}
+                              </TableCell>
+                              <TableCell>
+                                {format(new Date(code.expiresAt), "MMM d, yyyy")}
+                              </TableCell>
+                              <TableCell>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  disabled={code.isUsed}
+                                  onClick={() => handleCopyCode(code.code)}
+                                >
+                                  {code.isUsed ? (
+                                    <Check className="h-4 w-4" />
+                                  ) : (
+                                    <Copy className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </ScrollArea>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
-};
+}
 
 export default AdminPage;

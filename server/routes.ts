@@ -4,7 +4,14 @@ import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
-import { insertJobSchema, insertApplicationSchema, User } from "@shared/schema";
+import { 
+  insertJobSchema, 
+  insertApplicationSchema, 
+  adminRegisterSchema, 
+  insertInvitationCodeSchema,
+  User,
+  Admin
+} from "@shared/schema";
 import { seedJobs } from "./seed-jobs";
 
 // In-memory store for real-time updates
@@ -777,6 +784,189 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error marking notifications as read:", error);
       res.status(500).json({ message: "Failed to update notifications" });
+    }
+  });
+
+  // Admin endpoints
+  
+  // Verify invitation code
+  app.post("/api/admin/verify-invitation", async (req, res) => {
+    try {
+      const { code, email } = req.body;
+      
+      if (!code || !email) {
+        return res.status(400).json({ message: "Invitation code and email are required" });
+      }
+      
+      const isValid = await storage.verifyInvitationCode(code, email);
+      
+      if (!isValid) {
+        return res.status(400).json({ message: "Invalid or expired invitation code" });
+      }
+      
+      res.json({ valid: true });
+    } catch (error) {
+      console.error("Error verifying invitation code:", error);
+      res.status(500).json({ message: "Failed to verify invitation code" });
+    }
+  });
+  
+  // Create invitation code (requires admin authentication)
+  app.post("/api/admin/invitation-codes", async (req, res) => {
+    try {
+      // Check if user is authenticated and is an admin
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const user = req.user;
+      
+      // Get admin profile
+      const admin = await storage.getAdminByUserId(user.id);
+      
+      if (!admin) {
+        return res.status(403).json({ message: "Only administrators can create invitation codes" });
+      }
+      
+      // Validate invitation code data
+      const validatedData = insertInvitationCodeSchema.parse(req.body);
+      
+      // Create invitation code (valid for 7 days by default)
+      const expiresAt = req.body.expiresAt 
+        ? new Date(req.body.expiresAt) 
+        : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      
+      const invitationCode = await storage.createInvitationCode({
+        ...validatedData,
+        expiresAt,
+        createdBy: user.id
+      });
+      
+      res.status(201).json(invitationCode);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      
+      console.error("Error creating invitation code:", error);
+      res.status(500).json({ message: "Failed to create invitation code" });
+    }
+  });
+  
+  // Admin registration with invitation code
+  app.post("/api/admin/register", async (req, res) => {
+    try {
+      // Validate registration data
+      const validatedData = adminRegisterSchema.parse(req.body);
+      
+      // Verify invitation code
+      const isValid = await storage.verifyInvitationCode(
+        validatedData.invitationCode, 
+        validatedData.email
+      );
+      
+      if (!isValid) {
+        return res.status(400).json({ message: "Invalid or expired invitation code" });
+      }
+      
+      // Create user with admin userType
+      const user = await storage.createUser({
+        email: validatedData.email,
+        password: validatedData.password,
+        userType: "admin",
+        isActive: true
+      });
+      
+      // Create admin profile
+      const admin = await storage.createAdmin({
+        userId: user.id,
+        firstName: validatedData.firstName,
+        lastName: validatedData.lastName,
+        role: validatedData.role,
+        phoneNumber: validatedData.phoneNumber || null
+      });
+      
+      // Mark invitation code as used
+      await storage.markInvitationCodeAsUsed(validatedData.invitationCode);
+      
+      // Log in the user
+      req.login(user, (err) => {
+        if (err) {
+          console.error("Error logging in after registration:", err);
+          return res.status(500).json({ message: "Registration successful, but failed to log in" });
+        }
+        
+        // Return user and admin profile
+        res.status(201).json({ user, admin });
+      });
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      
+      console.error("Error registering admin:", error);
+      res.status(500).json({ message: "Failed to register admin account" });
+    }
+  });
+  
+  // Get all invitation codes (admin only)
+  app.get("/api/admin/invitation-codes", async (req, res) => {
+    try {
+      // Check if user is authenticated and is an admin
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const user = req.user;
+      
+      // Get admin profile
+      const admin = await storage.getAdminByUserId(user.id);
+      
+      if (!admin) {
+        return res.status(403).json({ message: "Only administrators can view invitation codes" });
+      }
+      
+      const invitationCodes = await storage.getInvitationCodes();
+      res.json(invitationCodes);
+    } catch (error) {
+      console.error("Error fetching invitation codes:", error);
+      res.status(500).json({ message: "Failed to fetch invitation codes" });
+    }
+  });
+  
+  // Get all admins (admin only)
+  app.get("/api/admin/all", async (req, res) => {
+    try {
+      // Check if user is authenticated and is an admin
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const user = req.user;
+      
+      // Get admin profile
+      const admin = await storage.getAdminByUserId(user.id);
+      
+      if (!admin) {
+        return res.status(403).json({ message: "Only administrators can view admin list" });
+      }
+      
+      const admins = await storage.getAllAdmins();
+      
+      // Get user info for each admin
+      const adminsWithUsers = await Promise.all(
+        admins.map(async (adminItem) => {
+          const user = await storage.getUser(adminItem.userId);
+          return { ...adminItem, user };
+        })
+      );
+      
+      res.json(adminsWithUsers);
+    } catch (error) {
+      console.error("Error fetching admins:", error);
+      res.status(500).json({ message: "Failed to fetch admin list" });
     }
   });
 
