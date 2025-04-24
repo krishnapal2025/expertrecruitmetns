@@ -25,6 +25,7 @@ export interface IStorage {
   getAllUsers(): Promise<User[]>;
   getUserByEmployerId(employerId: number): Promise<User | undefined>;
   getUserByJobSeekerId(jobSeekerId: number): Promise<User | undefined>;
+  updateUserPassword(userId: number, password: string): Promise<User | undefined>;
   
   // JobSeeker methods
   getJobSeeker(id: number): Promise<JobSeeker | undefined>;
@@ -73,6 +74,10 @@ export interface IStorage {
   getAdminByUserId(userId: number): Promise<Admin | undefined>;
   createAdmin(admin: InsertAdmin): Promise<Admin>;
   updateAdminLastLogin(id: number): Promise<Admin>;
+  updateAdminRecoveryEmail(id: number, recoveryEmail: string): Promise<Admin>;
+  setPasswordResetToken(adminId: number, token: string, expiryDate: Date): Promise<Admin>;
+  getAdminByResetToken(token: string): Promise<Admin | undefined>;
+  clearPasswordResetToken(adminId: number): Promise<Admin>;
   getAllAdmins(): Promise<Admin[]>;
   
   // Invitation code methods

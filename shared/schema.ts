@@ -90,6 +90,9 @@ export const admins = pgTable("admins", {
   role: text("role").notNull(), // 'super_admin', 'admin', 'content_manager', etc.
   phoneNumber: text("phone_number"),
   lastLogin: timestamp("last_login"),
+  recoveryEmail: text("recovery_email"),
+  resetToken: text("reset_token"),
+  resetTokenExpires: timestamp("reset_token_expires"),
 });
 
 // Invitation codes table for admin registration
