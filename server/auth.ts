@@ -178,6 +178,9 @@ export function setupAuth(app: Express) {
           profile = await storage.getJobSeekerByUserId(user.id);
         } else if (user.userType === "employer") {
           profile = await storage.getEmployerByUserId(user.id);
+        } else if (user.userType === "admin") {
+          // For admin users, we don't need to fetch additional profile data
+          profile = { id: user.id, role: "admin" };
         }
         
         res.status(200).json({ user, profile });
@@ -204,6 +207,9 @@ export function setupAuth(app: Express) {
       profile = await storage.getJobSeekerByUserId(user.id);
     } else if (user.userType === "employer") {
       profile = await storage.getEmployerByUserId(user.id);
+    } else if (user.userType === "admin") {
+      // For admin users, we don't need to fetch additional profile data
+      profile = { id: user.id, role: "admin" };
     }
     
     res.json({ user, profile });
