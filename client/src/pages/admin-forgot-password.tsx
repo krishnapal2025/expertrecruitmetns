@@ -91,19 +91,18 @@ export default function AdminForgotPassword() {
                     {previewUrl ? (
                       <>
                         <p className="text-xs text-muted-foreground mb-2">
-                          In development mode, we use Ethereal (a test email service). No actual emails are sent to real inboxes.
-                          Click the link below to view the email that would have been sent:
+                          In development mode, we're bypassing the email service. 
+                          Click the button below to go directly to the password reset page:
                         </p>
                         <a
                           href={previewUrl}
-                          target="_blank"
                           rel="noopener noreferrer"
                           className="block mt-3 px-4 py-2 bg-primary text-white rounded text-center hover:bg-primary/90 transition-colors"
                         >
-                          View Test Email
+                          Reset Password Now
                         </a>
                         <p className="text-xs text-muted-foreground mt-2">
-                          URL: <span className="break-all">{previewUrl}</span>
+                          This link contains a valid reset token for development testing.
                         </p>
                       </>
                     ) : (

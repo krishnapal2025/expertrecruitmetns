@@ -41,50 +41,29 @@ export const sendPasswordResetEmail = async (
     console.log(`Sending password reset email to ${user.email} with token ${resetToken}`);
     console.log(`Using origin: ${origin}`);
     
-    // If we're in a development environment, use Ethereal for testing
-    let transporter;
-    let previewUrl: string | false = false;
-    
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Creating Ethereal test account for email testing');
-      
-      try {
-        // Create a test account on Ethereal
-        const testAccount = await nodemailer.createTestAccount();
-        console.log(`Ethereal test account created: ${testAccount.user}`);
-        
-        // Create a transporter with the test account
-        transporter = nodemailer.createTransport({
-          host: 'smtp.ethereal.email',
-          port: 587,
-          secure: false,
-          auth: {
-            user: testAccount.user,
-            pass: testAccount.pass,
-          },
-        });
-        
-        console.log('Ethereal SMTP transporter created successfully');
-      } catch (etherealError) {
-        console.error('Error creating Ethereal test account:', etherealError);
-        return { success: false };
-      }
-    } else {
-      // In production, use a real email service like Gmail or SendGrid
-      console.log('Setting up production email transport');
-      
-      // This example uses Gmail SMTP
-      transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASSWORD,
-        },
-      });
-    }
-    
     // Create the reset URL
     const resetUrl = `${origin}/admin/reset-password?token=${resetToken}`;
+    
+    // In development mode, we'll skip actually sending an email
+    // and just return a direct link to the reset page
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Development mode - using direct reset link instead of sending email');
+      console.log(`Reset URL: ${resetUrl}`);
+      
+      return {
+        success: true,
+        previewUrl: resetUrl // Pass the direct reset URL as the preview URL
+      };
+    }
+    
+    // For production, use a real email service
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER || 'noreply@expertrecruitments.com',
+        pass: process.env.EMAIL_PASSWORD || 'placeholder_password',
+      },
+    });
     
     // Set up email data
     const mailOptions = {
@@ -132,24 +111,7 @@ export const sendPasswordResetEmail = async (
     try {
       const info = await transporter.sendMail(mailOptions);
       console.log(`Email sent successfully, message ID: ${info.messageId}`);
-      
-      // For development, get the preview URL
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Getting Ethereal preview URL...');
-        previewUrl = nodemailer.getTestMessageUrl(info);
-        console.log(`Raw preview URL value: ${previewUrl}`);
-        
-        if (previewUrl) {
-          console.log(`Preview URL available: ${previewUrl}`);
-        } else {
-          console.log('No preview URL available from Ethereal');
-        }
-      }
-      
-      return {
-        success: true,
-        previewUrl: typeof previewUrl === 'string' ? previewUrl : undefined
-      };
+      return { success: true };
     } catch (mailError) {
       console.error('Error sending email:', mailError);
       return { success: false };
