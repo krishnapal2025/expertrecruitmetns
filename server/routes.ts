@@ -1007,17 +1007,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Request password reset (forgot password)
   app.post("/api/admin/forgot-password", async (req, res) => {
     try {
+      console.log("Password reset request received");
       const { email } = req.body;
       
       if (!email) {
+        console.log("Email is required but not provided");
         return res.status(400).json({ message: "Email is required" });
       }
+      
+      console.log(`Processing password reset for email: ${email}`);
       
       // Find the user by email
       const user = await storage.getUserByEmail(email);
       
       // Don't reveal if user exists or not for security reasons
       if (!user || user.userType !== "admin") {
+        console.log(`User not found or not an admin: ${email}`);
         return res.status(200).json({ 
           message: "If an account with that email exists, a password reset link has been sent" 
         });
@@ -1025,8 +1030,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get admin record
       const admin = await storage.getAdminByUserId(user.id);
+      console.log(`Admin record found: ${!!admin}`);
       
       if (!admin) {
+        console.log(`Admin record not found for user ID: ${user.id}`);
         return res.status(200).json({ 
           message: "If an account with that email exists, a password reset link has been sent" 
         });
@@ -1036,7 +1043,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // since we're using Ethereal test accounts
       if (process.env.NODE_ENV !== 'development') {
         // Check if recovery email is set
+        console.log(`Recovery email: ${admin.recoveryEmail || 'Not set'}`);
         if (!admin.recoveryEmail) {
+          console.log("Recovery email not set");
           return res.status(200).json({ 
             message: "If an account with that email exists, a password reset link has been sent" 
           });
@@ -1046,17 +1055,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate reset token
       const resetToken = generateResetToken();
       const tokenExpires = new Date(Date.now() + 3600000); // 1 hour
+      console.log(`Generated reset token: ${resetToken}, expires: ${tokenExpires}`);
       
       // Save reset token to database
       await storage.setPasswordResetToken(admin.id, resetToken, tokenExpires);
+      console.log("Reset token saved to database");
       
       // Send password reset email
       const origin = `${req.protocol}://${req.get('host')}`;
+      console.log(`Using origin for reset link: ${origin}`);
+      
       const emailResult = await sendPasswordResetEmail(user, resetToken, origin);
+      console.log(`Email sending result: ${JSON.stringify(emailResult)}`);
       
       if (emailResult.success) {
         // For development/testing, return the preview URL
         if (process.env.NODE_ENV === 'development' && emailResult.previewUrl) {
+          console.log(`Preview URL available: ${emailResult.previewUrl}`);
           return res.status(200).json({
             message: "Password reset email sent successfully",
             previewUrl: emailResult.previewUrl
