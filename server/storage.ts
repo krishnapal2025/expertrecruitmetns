@@ -402,6 +402,57 @@ export class DatabaseStorage implements IStorage {
     return admin;
   }
   
+  async updateUserPassword(userId: number, password: string): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({ password })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+  
+  async updateAdminRecoveryEmail(id: number, recoveryEmail: string): Promise<Admin> {
+    const [admin] = await db
+      .update(admins)
+      .set({ recoveryEmail })
+      .where(eq(admins.id, id))
+      .returning();
+    return admin;
+  }
+  
+  async setPasswordResetToken(adminId: number, token: string, expiryDate: Date): Promise<Admin> {
+    const [admin] = await db
+      .update(admins)
+      .set({ 
+        resetToken: token,
+        resetTokenExpires: expiryDate
+      })
+      .where(eq(admins.id, adminId))
+      .returning();
+    return admin;
+  }
+  
+  async getAdminByResetToken(token: string): Promise<Admin | undefined> {
+    const [admin] = await db
+      .select()
+      .from(admins)
+      .where(eq(admins.resetToken, token))
+      .where(gt(admins.resetTokenExpires as any, new Date()));
+    return admin;
+  }
+  
+  async clearPasswordResetToken(adminId: number): Promise<Admin> {
+    const [admin] = await db
+      .update(admins)
+      .set({ 
+        resetToken: null,
+        resetTokenExpires: null
+      })
+      .where(eq(admins.id, adminId))
+      .returning();
+    return admin;
+  }
+  
   async getAllAdmins(): Promise<Admin[]> {
     return await db.select().from(admins);
   }

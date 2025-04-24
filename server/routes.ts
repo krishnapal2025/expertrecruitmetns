@@ -12,6 +12,8 @@ import {
   User,
   Admin
 } from "@shared/schema";
+import { hashPassword } from "./auth";
+import { generateResetToken, sendPasswordResetEmail } from "./email-service";
 import { seedJobs } from "./seed-jobs";
 
 // In-memory store for real-time updates
