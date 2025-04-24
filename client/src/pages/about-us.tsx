@@ -429,15 +429,20 @@ export default function AboutUsPage() {
                 <div className="text-2xl font-bold text-amber-600 mb-1">2015</div>
                 <p className="text-sm text-gray-600">Founded as Expert Labor Supply Services</p>
               </div>
-              <div className="bg-amber-50 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-amber-600 mb-1">2015</div>
-                <p className="text-sm text-gray-600">First US office in New Jersey</p>
-              </div>
+              
+              
               <div className="bg-amber-50 rounded-lg p-4 text-center">
                 <div className="text-2xl font-bold text-amber-600 mb-1">2018</div>
-                <p className="text-sm text-gray-600">Expanded to India as Expert Recruitments LLC</p>
+                <p className="text-sm text-gray-600">Expanded to India as Expert Recruitments</p>
               </div>
+
+              <div className="bg-amber-50 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-amber-600 mb-1">2025</div>
+                <p className="text-sm text-gray-600">UAE And USA offices registered in 2025 as Expert Recruitments LLC</p>
+              </div>
+              
             </div>
+            
           </motion.div>
           
           <motion.div 
