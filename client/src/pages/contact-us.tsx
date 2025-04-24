@@ -278,16 +278,7 @@ export default function ContactUsPage() {
           {/* India Office */}
           <motion.div 
             className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                transition: {
-                  duration: 0.6
-                }
-              }
-            }}
+            variants={fadeIn}
           >
             <div className="w-full h-48">
               <IndiaFlag className="w-full h-full object-cover" />
