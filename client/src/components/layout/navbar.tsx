@@ -81,7 +81,7 @@ export default function Navbar() {
           { name: "Sectors", href: "/sectors" },
           { name: "Blogs", href: "/blogs" },
           { name: "Insights", href: "/seo-insights" },
-          ...(currentUser && currentUser.user.userType === "admin" ? [{ name: "Admin", href: "/admin" }] : []),
+          ...(currentUser && currentUser.user.userType === "admin" ? [{ name: "Admin", href: "/admin" }] : [{ name: "Admin", href: "/admin-login" }]),
           { name: "Contact Us", href: "/contact-us" },
         ]
       },
