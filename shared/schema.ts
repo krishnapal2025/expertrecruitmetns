@@ -7,7 +7,8 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
-  userType: text("user_type").notNull(), // 'employer' or 'jobseeker'
+  userType: text("user_type").notNull(), // 'employer', 'jobseeker', or 'admin'
+  isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -81,6 +82,28 @@ export const testimonials = pgTable("testimonials", {
   rating: integer("rating").notNull(),
 });
 
+// Admin table
+export const admins = pgTable("admins", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  role: text("role").notNull(), // 'super_admin', 'admin', 'content_manager', etc.
+  phoneNumber: text("phone_number"),
+  lastLogin: timestamp("last_login"),
+});
+
+// Invitation codes table for admin registration
+export const invitationCodes = pgTable("invitation_codes", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  email: text("email").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  isUsed: boolean("is_used").default(false),
+  createdBy: integer("created_by").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Create insert schemas using Zod
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -122,6 +145,17 @@ export const insertTestimonialSchema = createInsertSchema(testimonials).omit({
   id: true,
 });
 
+export const insertAdminSchema = createInsertSchema(admins).omit({
+  id: true,
+  lastLogin: true,
+});
+
+export const insertInvitationCodeSchema = createInsertSchema(invitationCodes).omit({
+  id: true,
+  isUsed: true,
+  createdAt: true,
+});
+
 // Registration schemas
 export const jobSeekerRegisterSchema = insertUserSchema.extend({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -154,6 +188,21 @@ export const employerRegisterSchema = insertUserSchema.extend({
   path: ["confirmPassword"],
 });
 
+// Admin registration schema with invitation code
+export const adminRegisterSchema = insertUserSchema.extend({
+  firstName: z.string().min(2, "First name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+  role: z.enum(["super_admin", "admin", "content_manager"], {
+    invalid_type_error: "Please select a valid role",
+  }),
+  phoneNumber: z.string().min(5, "Please enter a valid phone number").optional(),
+  invitationCode: z.string().min(8, "Invitation code is required"),
+  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
+
 // Login schema
 export const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -167,6 +216,8 @@ export type Employer = typeof employers.$inferSelect;
 export type Job = typeof jobs.$inferSelect;
 export type Application = typeof applications.$inferSelect;
 export type Testimonial = typeof testimonials.$inferSelect;
+export type Admin = typeof admins.$inferSelect;
+export type InvitationCode = typeof invitationCodes.$inferSelect;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertJobSeeker = z.infer<typeof insertJobSeekerSchema>;
@@ -174,7 +225,10 @@ export type InsertEmployer = z.infer<typeof insertEmployerSchema>;
 export type InsertJob = z.infer<typeof insertJobSchema>;
 export type InsertApplication = z.infer<typeof insertApplicationSchema>;
 export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
+export type InsertAdmin = z.infer<typeof insertAdminSchema>;
+export type InsertInvitationCode = z.infer<typeof insertInvitationCodeSchema>;
 
 export type JobSeekerRegister = z.infer<typeof jobSeekerRegisterSchema>;
 export type EmployerRegister = z.infer<typeof employerRegisterSchema>;
+export type AdminRegister = z.infer<typeof adminRegisterSchema>;
 export type LoginCredentials = z.infer<typeof loginSchema>;
