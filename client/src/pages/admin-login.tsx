@@ -154,7 +154,7 @@ export default function AdminLoginPage() {
 
                 <div className="flex justify-between items-center text-sm">
                   <div></div>
-                  <Link href="/admin-forgot-password" className="text-primary hover:text-primary/80 font-medium">
+                  <Link href="/admin/forgot-password" className="text-primary hover:text-primary/80 font-medium">
                     Forgot password?
                   </Link>
                 </div>

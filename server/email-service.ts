@@ -2,96 +2,138 @@ import nodemailer from 'nodemailer';
 import { randomBytes } from 'crypto';
 import jwt from 'jsonwebtoken';
 import { User } from '@shared/schema';
+import { log } from './vite';
 
-// Create a transporter using a free email service (Ethereal)
-// In production, you would replace this with your actual email provider
-const createTransporter = async () => {
-  // Create a test account on Ethereal for development
-  const testAccount = await nodemailer.createTestAccount();
+// Secret for JWT token signing
+const JWT_SECRET = process.env.SESSION_SECRET || 'your-jwt-secret';
 
-  // Create reusable transporter object using SMTP transport
-  const transporter = nodemailer.createTransport({
-    host: testAccount.smtp.host,
-    port: testAccount.smtp.port,
-    secure: testAccount.smtp.secure, // true for 465, false for other ports
-    auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass, // generated ethereal password
-    },
-  });
-
-  return { transporter, testAccount };
-};
-
-// Generate a reset token
+/**
+ * Generate a random token for password reset
+ */
 export const generateResetToken = (): string => {
   return randomBytes(20).toString('hex');
 };
 
-// Generate a JWT token for reset URL
+/**
+ * Generate a JWT token for various authentication purposes
+ */
 export const generateJwtToken = (userId: number, email: string): string => {
   return jwt.sign(
-    { userId, email },
-    process.env.JWT_SECRET || 'expert-recruitment-default-secret',
+    {
+      userId,
+      email,
+      timestamp: new Date().getTime()
+    },
+    JWT_SECRET,
     { expiresIn: '1h' }
   );
 };
 
-// Send password reset email
+/**
+ * Send a password reset email to the admin
+ */
 export const sendPasswordResetEmail = async (
   user: User,
   resetToken: string,
-  recoveryEmail: string
+  origin: string
 ): Promise<{ success: boolean; previewUrl?: string }> => {
   try {
-    const { transporter, testAccount } = await createTransporter();
+    // If we're in a development environment, use Ethereal for testing
+    let transporter;
+    let previewUrl: string | false = false;
     
-    // Create JWT token for added security
-    const jwtToken = generateJwtToken(user.id, user.email);
+    if (process.env.NODE_ENV === 'development') {
+      // Create a test account on Ethereal
+      const testAccount = await nodemailer.createTestAccount();
+      
+      // Create a transporter with the test account
+      transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false,
+        auth: {
+          user: testAccount.user,
+          pass: testAccount.pass,
+        },
+      });
+      
+      log('Using Ethereal test account for email testing', 'email');
+    } else {
+      // In production, use a real email service like Gmail or SendGrid
+      // This example uses Gmail SMTP
+      transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      });
+    }
     
-    // Setup reset URL
-    const resetUrl = `${process.env.APP_URL || 'http://localhost:5000'}/admin/reset-password?token=${resetToken}&jwtToken=${jwtToken}`;
+    // Create the reset URL
+    const resetUrl = `${origin}/admin/reset-password?token=${resetToken}`;
     
-    // Send email
-    const info = await transporter.sendMail({
-      from: `"Expert Recruitments" <admin@expertrecruitments.com>`,
-      to: recoveryEmail,
-      subject: 'Password Reset Request',
-      text: `Hello Admin,\n\nYou are receiving this email because a password reset has been requested for your account.\n\nPlease click the following link to reset your password:\n\n${resetUrl}\n\nDefault credentials are:\nEmail: ${user.email}\nPassword: admin@ER2025\n\nIf you did not request this, please ignore this email and your password will remain unchanged.\n\nRegards,\nExpert Recruitments Team`,
+    // Set up email data
+    const mailOptions = {
+      from: '"Expert Recruitments" <admin@expertrecruitments.com>',
+      to: user.email,
+      subject: 'Password Reset - Expert Recruitments',
+      text: `
+        Hello,
+        
+        You recently requested to reset your password for your Expert Recruitments admin account. Click the link below to reset it:
+        
+        ${resetUrl}
+        
+        This link will expire in 1 hour.
+        
+        If you did not request a password reset, please ignore this email or contact support if you have concerns.
+        
+        Regards,
+        Expert Recruitments Team
+      `,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
           <div style="text-align: center; margin-bottom: 20px;">
-            <img src="cid:logo" alt="Expert Recruitments Logo" style="max-height: 60px;" />
+            <img src="https://expertrecruitments.com/logo.png" alt="Expert Recruitments Logo" style="max-width: 200px;">
           </div>
           <h2 style="color: #333; text-align: center;">Password Reset Request</h2>
-          <p>Hello Admin,</p>
-          <p>You are receiving this email because a password reset has been requested for your account.</p>
-          <div style="background-color: #f8f8f8; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <p style="margin: 0;"><strong>Default Admin Credentials:</strong></p>
-            <p style="margin: 5px 0;"><strong>Email:</strong> ${user.email}</p>
-            <p style="margin: 5px 0;"><strong>Password:</strong> admin@ER2025</p>
+          <p>Hello,</p>
+          <p>You recently requested to reset your password for your Expert Recruitments admin account. Click the button below to reset it:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetUrl}" style="background-color: #ff0077; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">Reset Password</a>
           </div>
-          <p>Please click the button below to reset your password:</p>
-          <div style="text-align: center; margin: 25px 0;">
-            <a href="${resetUrl}" style="background-color: #4A90E2; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold;">Reset Password</a>
-          </div>
-          <p style="color: #777; font-size: 0.9em;">If you did not request this, please ignore this email and your password will remain unchanged.</p>
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; color: #999; font-size: 0.8em; text-align: center;">
-            <p>Regards,<br />Expert Recruitments Team</p>
+          <p style="font-size: 0.9em; color: #666;">This link will expire in 1 hour.</p>
+          <p>If you did not request a password reset, please ignore this email or contact support if you have concerns.</p>
+          <p>Regards,<br>Expert Recruitments Team</p>
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; font-size: 0.8em; color: #888; text-align: center;">
+            <p>Expert Recruitments LLC, Dubai, UAE</p>
+            <p>© ${new Date().getFullYear()} Expert Recruitments. All rights reserved.</p>
           </div>
         </div>
-      `,
-    });
-
-    console.log('Password reset email sent successfully');
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      `
+    };
     
-    return { 
-      success: true, 
-      previewUrl: nodemailer.getTestMessageUrl(info)
+    // Send the email
+    const info = await transporter.sendMail(mailOptions);
+    log(`Email sent: ${info.messageId}`, 'email');
+    
+    // For development, get the preview URL
+    if (process.env.NODE_ENV === 'development') {
+      previewUrl = nodemailer.getTestMessageUrl(info);
+      if (previewUrl) {
+        log(`Preview URL: ${previewUrl}`, 'email');
+      }
+    }
+    
+    return {
+      success: true,
+      previewUrl: typeof previewUrl === 'string' ? previewUrl : undefined
     };
   } catch (error) {
-    console.error('Error sending password reset email:', error);
-    return { success: false };
+    console.error('Error sending email:', error);
+    return { 
+      success: false
+    };
   }
 };

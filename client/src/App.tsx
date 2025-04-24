@@ -26,6 +26,8 @@ import SEOInsightsPage from "@/pages/seo-insights";
 import AdminPage from "@/pages/admin-page";
 import AdminRegisterPage from "@/pages/admin-register";
 import AdminLoginPage from "@/pages/admin-login";
+import AdminForgotPasswordPage from "@/pages/admin-forgot-password";
+import AdminResetPasswordPage from "@/pages/admin-reset-password";
 import ProfilePage from "@/pages/profile-page";
 import PostJobPage from "@/pages/post-job";
 import PostManagerPage from "@/pages/post-manager";
@@ -86,6 +88,8 @@ function Router() {
       <Route path="/admin" component={AdminPage} />
       <Route path="/admin-register" component={AdminRegisterPage} />
       <Route path="/admin-login" component={AdminLoginPage} />
+      <Route path="/admin/forgot-password" component={AdminForgotPasswordPage} />
+      <Route path="/admin/reset-password" component={AdminResetPasswordPage} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
       <ProtectedRoute path="/post-job" component={PostJobPage} />
       <ProtectedRoute path="/my-jobs" component={PostManagerPage} />
