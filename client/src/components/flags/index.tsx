@@ -6,101 +6,143 @@ type FlagProps = {
 
 export function IndiaFlag({ className =  "h-6 w-9" }: FlagProps) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 900 600"
-      className={className}
-      preserveAspectRatio="none"
-      style={{ width: '100%', height: '100%' }}
-    >
-      <rect width="900" height="600" fill="#f8f9fa" />
-      <rect width="900" height="200" fill="#FF9933" />
-      <rect width="900" height="200" fill="#FFFFFF" y="200" />
-      <rect width="900" height="200" fill="#138808" y="400" />
-      <circle cx="450" cy="300" r="60" fill="#000080" />
-      <circle cx="450" cy="300" r="55" fill="#FFFFFF" />
-      <circle cx="450" cy="300" r="16" fill="#000080" />
-      <g fill="#000080">
-        {Array.from({ length: 24 }).map((_, i) => (
-          <line
-            key={i}
-            x1="450"
-            y1="300"
-            x2={450 + 39 * Math.cos((i * 15 * Math.PI) / 180)}
-            y2={300 + 39 * Math.sin((i * 15 * Math.PI) / 180)}
-            strokeWidth="3"
-            stroke="#000080"
-          />
-        ))}
-      </g>
-    </svg>
+    <div className={className} style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Top orange/saffron band */}
+      <div style={{ flex: 1, backgroundColor: '#FF9933' }}></div>
+      
+      {/* Middle white band with Ashoka Chakra */}
+      <div style={{ flex: 1, backgroundColor: '#FFFFFF', position: 'relative' }}>
+        <div 
+          style={{ 
+            position: 'absolute', 
+            left: '50%', 
+            top: '50%', 
+            transform: 'translate(-50%, -50%)',
+            width: '40%',
+            height: '80%',
+            maxWidth: '80px',
+            maxHeight: '80px',
+            aspectRatio: '1/1',
+            borderRadius: '50%',
+            border: '2px solid #000080',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <div 
+            style={{ 
+              width: '85%', 
+              height: '85%', 
+              borderRadius: '50%', 
+              backgroundColor: '#FFFFFF',
+              position: 'relative',
+            }}
+          >
+            <div 
+              style={{ 
+                position: 'absolute', 
+                left: '50%', 
+                top: '50%', 
+                transform: 'translate(-50%, -50%)',
+                width: '25%', 
+                height: '25%', 
+                borderRadius: '50%', 
+                backgroundColor: '#000080',
+              }}
+            ></div>
+            {/* Simplified spokes */}
+            {Array.from({ length: 24 }).map((_, i) => (
+              <div 
+                key={i} 
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  width: '35%',
+                  height: '2px',
+                  backgroundColor: '#000080',
+                  transformOrigin: 'left center',
+                  transform: `rotate(${i * 15}deg)`,
+                }}
+              ></div>
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      {/* Bottom green band */}
+      <div style={{ flex: 1, backgroundColor: '#138808' }}></div>
+    </div>
   );
 }
 
 export function UAEFlag({ className = "h-6 w-9" }: FlagProps) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 900 600"
-      className={className}
-      preserveAspectRatio="none"
-      style={{ width: '100%', height: '100%' }}
-    >
-      <rect width="900" height="600" fill="#f8f9fa" />
-      <rect width="900" height="200" fill="#00732F" />
-      <rect width="900" height="200" fill="#FFFFFF" y="200" />
-      <rect width="900" height="200" fill="#000000" y="400" />
-      <rect width="300" height="600" fill="#FF0000" />
-    </svg>
+    <div className={className} style={{ width: '100%', height: '100%', display: 'flex', position: 'relative' }}>
+      {/* Red vertical band on left */}
+      <div style={{ width: '33%', backgroundColor: '#FF0000', height: '100%' }}></div>
+      
+      {/* Three horizontal bands */}
+      <div style={{ width: '67%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1, backgroundColor: '#00732F' }}></div>
+        <div style={{ flex: 1, backgroundColor: '#FFFFFF' }}></div>
+        <div style={{ flex: 1, backgroundColor: '#000000' }}></div>
+      </div>
+    </div>
   );
 }
 
 export function USAFlag({ className = "h-6 w-9" }: FlagProps) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 900 600"
-      className={className}
-      preserveAspectRatio="none"
-      style={{ width: '100%', height: '100%' }}
-    >
-      <rect width="900" height="600" fill="#f8f9fa" />
-      <g fill="#BF0A30">
-        {Array.from({ length: 7 }).map((_, i) => (
-          <rect
-            key={i}
-            width="900"
-            height="42.857"
-            y={i * 85.714}
-            fill="#BF0A30"
-          />
-        ))}
-      </g>
-      <rect width="342.857" height="314.286" fill="#002868" />
-      <g fill="#FFFFFF">
-        {Array.from({ length: 9 }).map((_, row) =>
-          Array.from({ length: row % 2 === 0 ? 6 : 5 }).map((_, col) => (
-            <circle
-              key={`${row}-${col}`}
-              cx={col * 60 + 30 + (row % 2 === 0 ? 0 : 30)}
-              cy={row * 35 + 30}
-              r="12"
-              fill="#FFFFFF"
+    <div className={className} style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      {/* 13 alternating stripes */}
+      {Array.from({ length: 13 }).map((_, i) => (
+        <div 
+          key={i} 
+          style={{ 
+            flex: 1, 
+            backgroundColor: i % 2 === 0 ? '#BF0A30' : '#FFFFFF'
+          }}
+        ></div>
+      ))}
+      
+      {/* Blue canton */}
+      <div 
+        style={{ 
+          position: 'absolute', 
+          width: '40%', 
+          height: '53.85%', // 7/13 of the flag height
+          backgroundColor: '#002868',
+          top: 0,
+          left: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        {/* Just a simple representation of stars */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(5, 1fr)', 
+          gridTemplateRows: 'repeat(4, 1fr)',
+          width: '80%',
+          height: '80%',
+          gap: '5%'
+        }}>
+          {Array.from({ length: 20 }).map((_, i) => (
+            <div 
+              key={i}
+              style={{
+                width: '100%',
+                height: '100%',
+                backgroundColor: '#FFFFFF',
+                borderRadius: '50%'
+              }}
             />
-          ))
-        )}
-      </g>
-      <g fill="#FFFFFF">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <rect
-            key={i}
-            width="900"
-            height="42.857"
-            y={i * 85.714 + 42.857}
-            fill="#FFFFFF"
-          />
-        ))}
-      </g>
-    </svg>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
