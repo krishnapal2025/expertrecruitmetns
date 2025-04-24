@@ -240,7 +240,7 @@ export default function ContactUsPage() {
             className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
             variants={fadeIn}
           >
-            <div className="w-full h-16">
+            <div className="w-full h-20">
               <UAEFlag className="w-full h-full" />
             </div>
             <div className="p-8">
@@ -289,7 +289,7 @@ export default function ContactUsPage() {
               }
             }}
           >
-            <div className="w-full h-16">
+            <div className="w-full h-20">
               <IndiaFlag className="w-full h-full" />
             </div>
             <div className="p-8">
@@ -339,7 +339,7 @@ export default function ContactUsPage() {
             className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
             variants={fadeIn}
           >
-            <div className="w-full h-16">
+            <div className="w-full h-20">
               <USAFlag className="w-full h-full" />
             </div>
             <div className="p-8">
