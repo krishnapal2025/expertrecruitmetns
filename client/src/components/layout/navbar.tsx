@@ -461,6 +461,17 @@ export default function Navbar() {
                           </>
                         )}
                         
+                        {currentUser.user.userType === "admin" && (
+                          <SheetClose asChild>
+                            <Link href="/admin">
+                              <div className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer">
+                                <ShieldCheck className="mr-2 h-4 w-4" />
+                                Admin Dashboard
+                              </div>
+                            </Link>
+                          </SheetClose>
+                        )}
+                        
                         <button
                           onClick={handleLogout}
                           className="w-full text-left px-4 py-2 rounded-md hover:bg-gray-100 flex items-center"
