@@ -20,7 +20,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, User, LogOut, ChevronDown, Briefcase } from "lucide-react";
+import { Menu, User, LogOut, ChevronDown, Briefcase, ShieldCheck } from "lucide-react";
 import expertLogo from "../../assets/er-logo-icon.png";
 import NotificationsPopover from "@/components/common/notifications";
 
@@ -81,7 +81,7 @@ export default function Navbar() {
           { name: "Sectors", href: "/sectors" },
           { name: "Blogs", href: "/blogs" },
           { name: "Insights", href: "/seo-insights" },
-          { name: "Admin", href: "/admin" },
+          ...(currentUser && currentUser.user.userType === "admin" ? [{ name: "Admin", href: "/admin" }] : []),
           { name: "Contact Us", href: "/contact-us" },
         ]
       },
@@ -115,6 +115,27 @@ export default function Navbar() {
         { name: "Applications Manager", href: "/applications-manager" },
         { name: "Blogs", href: "/blogs" },
         { name: "Contact Us", href: "/contact-us" },
+      ];
+    }
+    
+    // Admin specific links
+    if (currentUser.user.userType === "admin") {
+      return [
+        { name: "Home", href: "/" },
+        { name: "About Us", href: "/about-us" },
+        { 
+          name: "Solutions", 
+          href: "#",
+          isDropdown: true,
+          dropdownItems: [
+            { name: "Services", href: "/services" },
+            { name: "Sectors", href: "/sectors" },
+            { name: "Blogs", href: "/blogs" },
+            { name: "Insights", href: "/seo-insights" },
+            { name: "Admin", href: "/admin" },
+            { name: "Contact Us", href: "/contact-us" },
+          ]
+        },
       ];
     }
     
@@ -247,6 +268,14 @@ export default function Navbar() {
                           </DropdownMenuItem>
                         </Link>
                       </>
+                    )}
+                    {currentUser.user.userType === "admin" && (
+                      <Link href="/admin">
+                        <DropdownMenuItem>
+                          <ShieldCheck className="mr-2 h-4 w-4" />
+                          <span>Admin Dashboard</span>
+                        </DropdownMenuItem>
+                      </Link>
                     )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout}>

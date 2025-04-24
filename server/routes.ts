@@ -911,6 +911,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Get the current admin's profile
+  app.get("/api/admin/user", async (req, res) => {
+    try {
+      // Check if user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const user = req.user;
+      
+      if (user.userType !== "admin") {
+        return res.status(403).json({ message: "Only administrators can access this resource" });
+      }
+      
+      // Get admin profile
+      const admin = await storage.getAdminByUserId(user.id);
+      
+      if (!admin) {
+        return res.status(404).json({ message: "Admin profile not found" });
+      }
+      
+      // Update last login time
+      await storage.updateAdminLastLogin(admin.id);
+      
+      res.json(admin);
+    } catch (error) {
+      console.error("Error fetching admin profile:", error);
+      res.status(500).json({ message: "Failed to fetch admin profile" });
+    }
+  });
+  
   // Get all invitation codes (admin only)
   app.get("/api/admin/invitation-codes", async (req, res) => {
     try {
@@ -933,6 +964,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching invitation codes:", error);
       res.status(500).json({ message: "Failed to fetch invitation codes" });
+    }
+  });
+  
+  // Get all users (admin only)
+  app.get("/api/users", async (req, res) => {
+    try {
+      // Check if user is authenticated and is an admin
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const user = req.user;
+      
+      // Get admin profile
+      const admin = await storage.getAdminByUserId(user.id);
+      
+      if (!admin) {
+        return res.status(403).json({ message: "Only administrators can view user data" });
+      }
+      
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Failed to fetch user data" });
     }
   });
   
