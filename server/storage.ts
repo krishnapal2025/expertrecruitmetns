@@ -1051,6 +1051,85 @@ export class MemStorage implements IStorage {
     this.invitationCodes.set(code, updatedInvitationCode);
     return updatedInvitationCode;
   }
+  
+  // Admin password reset methods
+  
+  async updateUserPassword(userId: number, password: string): Promise<User | undefined> {
+    const user = this.users.get(userId);
+    if (!user) return undefined;
+    
+    const updatedUser: User = {
+      ...user,
+      password
+    };
+    
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+  
+  async updateAdminRecoveryEmail(id: number, recoveryEmail: string): Promise<Admin> {
+    const admin = this.admins.get(id);
+    if (!admin) {
+      throw new Error("Admin not found");
+    }
+    
+    const updatedAdmin: Admin = {
+      ...admin,
+      recoveryEmail
+    };
+    
+    this.admins.set(id, updatedAdmin);
+    return updatedAdmin;
+  }
+  
+  async setPasswordResetToken(adminId: number, token: string, expiryDate: Date): Promise<Admin> {
+    const admin = this.admins.get(adminId);
+    if (!admin) {
+      throw new Error("Admin not found");
+    }
+    
+    const updatedAdmin: Admin = {
+      ...admin,
+      resetToken: token,
+      resetTokenExpires: expiryDate
+    };
+    
+    this.admins.set(adminId, updatedAdmin);
+    return updatedAdmin;
+  }
+  
+  async getAdminByResetToken(token: string): Promise<Admin | undefined> {
+    const now = new Date();
+    
+    // Find admin with matching token and non-expired timestamp
+    for (const admin of this.admins.values()) {
+      if (
+        admin.resetToken === token && 
+        admin.resetTokenExpires && 
+        admin.resetTokenExpires > now
+      ) {
+        return admin;
+      }
+    }
+    
+    return undefined;
+  }
+  
+  async clearPasswordResetToken(adminId: number): Promise<Admin> {
+    const admin = this.admins.get(adminId);
+    if (!admin) {
+      throw new Error("Admin not found");
+    }
+    
+    const updatedAdmin: Admin = {
+      ...admin,
+      resetToken: null,
+      resetTokenExpires: null
+    };
+    
+    this.admins.set(adminId, updatedAdmin);
+    return updatedAdmin;
+  }
 }
 
 // Use Database storage for persistent data
