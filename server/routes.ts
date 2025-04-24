@@ -968,6 +968,171 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Admin Password Reset Routes
+  
+  // Update admin recovery email
+  app.post("/api/admin/recovery-email", async (req, res) => {
+    try {
+      // Ensure user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const user = req.user;
+      
+      // Check if user is an admin
+      const admin = await storage.getAdminByUserId(user.id);
+      if (!admin) {
+        return res.status(403).json({ message: "Only administrators can update recovery email" });
+      }
+      
+      const { recoveryEmail } = req.body;
+      if (!recoveryEmail || !recoveryEmail.trim()) {
+        return res.status(400).json({ message: "Recovery email is required" });
+      }
+      
+      // Update recovery email
+      const updatedAdmin = await storage.updateAdminRecoveryEmail(admin.id, recoveryEmail);
+      
+      res.status(200).json({
+        message: "Recovery email updated successfully",
+        recoveryEmail: updatedAdmin.recoveryEmail
+      });
+    } catch (error) {
+      console.error("Error updating recovery email:", error);
+      res.status(500).json({ message: "Failed to update recovery email" });
+    }
+  });
+  
+  // Request password reset (forgot password)
+  app.post("/api/admin/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      // Find the user by email
+      const user = await storage.getUserByEmail(email);
+      
+      // Don't reveal if user exists or not for security reasons
+      if (!user || user.userType !== "admin") {
+        return res.status(200).json({ 
+          message: "If an account with that email exists, a password reset link has been sent" 
+        });
+      }
+      
+      // Get admin record
+      const admin = await storage.getAdminByUserId(user.id);
+      
+      if (!admin) {
+        return res.status(200).json({ 
+          message: "If an account with that email exists, a password reset link has been sent" 
+        });
+      }
+      
+      // Check if recovery email is set
+      if (!admin.recoveryEmail) {
+        return res.status(200).json({ 
+          message: "If an account with that email exists, a password reset link has been sent" 
+        });
+      }
+      
+      // Generate reset token
+      const resetToken = generateResetToken();
+      const tokenExpires = new Date(Date.now() + 3600000); // 1 hour
+      
+      // Save reset token to database
+      await storage.setPasswordResetToken(admin.id, resetToken, tokenExpires);
+      
+      // Send password reset email
+      const emailResult = await sendPasswordResetEmail(user, resetToken, admin.recoveryEmail);
+      
+      if (emailResult.success) {
+        // For development/testing, return the preview URL
+        if (process.env.NODE_ENV === 'development' && emailResult.previewUrl) {
+          return res.status(200).json({
+            message: "Password reset email sent successfully",
+            previewUrl: emailResult.previewUrl
+          });
+        }
+        
+        return res.status(200).json({ 
+          message: "If an account with that email exists, a password reset link has been sent" 
+        });
+      } else {
+        console.error("Failed to send password reset email");
+        return res.status(500).json({ message: "Failed to send password reset email" });
+      }
+    } catch (error) {
+      console.error("Error handling forgot password:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+  
+  // Reset password using token
+  app.post("/api/admin/reset-password", async (req, res) => {
+    try {
+      const { token, password } = req.body;
+      
+      if (!token || !password) {
+        return res.status(400).json({ message: "Token and password are required" });
+      }
+      
+      // Find admin by reset token
+      const admin = await storage.getAdminByResetToken(token);
+      
+      if (!admin) {
+        return res.status(400).json({ message: "Invalid or expired token" });
+      }
+      
+      // Get the user
+      const user = await storage.getUser(admin.userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Hash the new password
+      const hashedPassword = await hashPassword(password);
+      
+      // Update password
+      await storage.updateUserPassword(user.id, hashedPassword);
+      
+      // Clear the reset token
+      await storage.clearPasswordResetToken(admin.id);
+      
+      res.status(200).json({ message: "Password reset successful" });
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      res.status(500).json({ message: "Failed to reset password" });
+    }
+  });
+  
+  // Verify reset token
+  app.get("/api/admin/verify-reset-token/:token", async (req, res) => {
+    try {
+      const { token } = req.params;
+      
+      if (!token) {
+        return res.status(400).json({ message: "Token is required" });
+      }
+      
+      // Find admin by reset token
+      const admin = await storage.getAdminByResetToken(token);
+      
+      if (!admin) {
+        return res.status(400).json({ message: "Invalid or expired token" });
+      }
+      
+      res.status(200).json({ valid: true });
+    } catch (error) {
+      console.error("Error verifying reset token:", error);
+      res.status(500).json({ message: "Failed to verify token" });
+    }
+  });
+  
   // Get all users (admin only)
   app.get("/api/users", async (req, res) => {
     try {
