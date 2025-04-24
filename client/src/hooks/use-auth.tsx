@@ -15,6 +15,7 @@ type UserWithProfile = {
 
 type AuthContextType = {
   currentUser: UserWithProfile | null;
+  user: User | null; // Add direct access to the user object
   isLoading: boolean;
   error: Error | null;
   loginMutation: UseMutationResult<UserWithProfile, Error, LoginCredentials>;
@@ -124,6 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         currentUser: currentUser ?? null,
+        user: currentUser?.user ?? null,
         isLoading,
         error,
         loginMutation,
