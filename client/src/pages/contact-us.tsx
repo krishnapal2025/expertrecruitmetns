@@ -240,8 +240,8 @@ export default function ContactUsPage() {
             className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
             variants={fadeIn}
           >
-            <div className="w-full h-20">
-              <UAEFlag className="w-full h-full" />
+            <div className="w-full h-48">
+              <UAEFlag className="w-full h-full object-cover" />
             </div>
             <div className="p-8">
               <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">UAE</h3>
@@ -289,8 +289,8 @@ export default function ContactUsPage() {
               }
             }}
           >
-            <div className="w-full h-20">
-              <IndiaFlag className="w-full h-full" />
+            <div className="w-full h-48">
+              <IndiaFlag className="w-full h-full object-cover" />
             </div>
             <div className="p-8">
               <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">INDIA</h3>
@@ -339,8 +339,8 @@ export default function ContactUsPage() {
             className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
             variants={fadeIn}
           >
-            <div className="w-full h-20">
-              <USAFlag className="w-full h-full" />
+            <div className="w-full h-48">
+              <USAFlag className="w-full h-full object-cover" />
             </div>
             <div className="p-8">
               <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">USA</h3>
