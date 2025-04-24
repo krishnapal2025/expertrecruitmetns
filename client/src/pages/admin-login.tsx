@@ -31,7 +31,7 @@ export default function AdminLoginPage() {
   
   // If already logged in, redirect to appropriate page
   if (user) {
-    if (user.user_type === "admin") {
+    if (user.userType === "admin") {
       setLocation("/admin");
     } else {
       setLocation("/");
@@ -51,7 +51,7 @@ export default function AdminLoginPage() {
   const onSubmit = (data: FormValues) => {
     loginMutation.mutate(data, {
       onSuccess: (userData) => {
-        if (userData.user.user_type !== "admin") {
+        if (userData.user.userType !== "admin") {
           toast({
             title: "Access Denied",
             description: "This login is for administrators only.",

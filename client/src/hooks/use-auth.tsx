@@ -4,7 +4,7 @@ import {
   useMutation,
   UseMutationResult,
 } from "@tanstack/react-query";
-import { User, JobSeeker, Employer, JobSeekerRegister, EmployerRegister, LoginCredentials } from "@shared/schema";
+import { User, JobSeeker, Employer, JobSeekerRegister, EmployerRegister, LoginCredentials, Admin } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
