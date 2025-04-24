@@ -10,7 +10,7 @@ import { z } from "zod";
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, CheckCircle } from "lucide-react";
+import { Loader2, CheckCircle, AlertTriangle } from "lucide-react";
 import ExpertRecruitmentsBanner from "@/components/common/expert-recruitments-banner";
 
 const forgotPasswordSchema = z.object({
@@ -82,25 +82,42 @@ export default function AdminForgotPassword() {
                     <CheckCircle className="h-12 w-12 text-green-500" />
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    If an account with that email exists, a password reset link has been sent.
-                    Please check your email for instructions to reset your password.
+                    Reset request processed. In production, an email would be sent.
                   </p>
-                  {previewUrl && (
-                    <div className="bg-muted p-4 rounded-md text-left">
-                      <p className="text-sm font-medium mb-2">Development Mode</p>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        Since you're in development mode, you can view the email here:
-                      </p>
-                      <a
-                        href={previewUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-primary underline break-all"
-                      >
-                        {previewUrl}
-                      </a>
-                    </div>
-                  )}
+                  
+                  <div className="bg-muted p-4 rounded-md text-left">
+                    <p className="text-sm font-medium mb-2">Development Mode Information</p>
+                    
+                    {previewUrl ? (
+                      <>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          In development mode, we use Ethereal (a test email service). No actual emails are sent to real inboxes.
+                          Click the link below to view the email that would have been sent:
+                        </p>
+                        <a
+                          href={previewUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block mt-3 px-4 py-2 bg-primary text-white rounded text-center hover:bg-primary/90 transition-colors"
+                        >
+                          View Test Email
+                        </a>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          URL: <span className="break-all">{previewUrl}</span>
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-xs mb-2 text-amber-600 flex items-center">
+                          <AlertTriangle className="inline-block mr-1 h-4 w-4" />
+                          <span>No preview URL was returned. Check the console for debugging information.</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          This could happen if there was an issue with the Ethereal test email service.
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <Form {...form}>
