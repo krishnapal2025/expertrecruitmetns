@@ -38,10 +38,14 @@ export default function AdminForgotPassword() {
     },
     onSuccess: (data) => {
       setResetSuccess(true);
+      
       // For development, show the preview URL if available
+      console.log("Password reset response:", data);
       if (data.previewUrl) {
         setPreviewUrl(data.previewUrl);
+        console.log("Setting preview URL:", data.previewUrl);
       }
+      
       toast({
         title: "Reset email sent",
         description: "If an account with that email exists, a password reset link has been sent.",

@@ -1032,11 +1032,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Check if recovery email is set
-      if (!admin.recoveryEmail) {
-        return res.status(200).json({ 
-          message: "If an account with that email exists, a password reset link has been sent" 
-        });
+      // In development mode, we don't need to check for recovery email
+      // since we're using Ethereal test accounts
+      if (process.env.NODE_ENV !== 'development') {
+        // Check if recovery email is set
+        if (!admin.recoveryEmail) {
+          return res.status(200).json({ 
+            message: "If an account with that email exists, a password reset link has been sent" 
+          });
+        }
       }
       
       // Generate reset token
@@ -1047,7 +1051,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.setPasswordResetToken(admin.id, resetToken, tokenExpires);
       
       // Send password reset email
-      const emailResult = await sendPasswordResetEmail(user, resetToken, admin.recoveryEmail);
+      const origin = `${req.protocol}://${req.get('host')}`;
+      const emailResult = await sendPasswordResetEmail(user, resetToken, origin);
       
       if (emailResult.success) {
         // For development/testing, return the preview URL
