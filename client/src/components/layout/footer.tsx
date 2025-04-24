@@ -203,6 +203,12 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
+                  <a href="/admin" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Admin
+                  </a>
+                </li>
+                <li>
                   <a href="/site-map" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Site Map
