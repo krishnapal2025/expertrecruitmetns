@@ -13,48 +13,77 @@ async function seedJobs() {
   } catch (error) {
     console.log('Error checking for existing jobs, continuing with seed operation');
   }
-  
+
   // Create a demo employer first
-  let employerId = 1;
-  
+  let employerId: number = 1; // Default to 1, will be updated if we create a new employer
+
   // Check if employer already exists
   try {
-    const existingEmployer = await storage.getEmployer(employerId);
+    // Try to get the existing employer first
+    const existingEmployer = await storage.getEmployer(1);
     if (!existingEmployer) {
       // Check if the user already exists
       let user = await storage.getUserByEmail('demo@employer.com');
-      
+
       if (!user) {
-        // Create demo user for employer
-        user = await storage.createUser({
-          email: 'demo@employer.com',
-          password: '$2b$10$vCeMRZ.hpIyEvHe1qqrVTuGsXSHEjvkS48zNvGnR5WBR4hFKU3Nru', // hashed 'password123'
-          userType: 'employer'
-        });
-        console.log('Created demo user for employer');
+        try {
+          // Create demo user for employer
+          user = await storage.createUser({
+            email: 'demo@employer.com',
+            password: '$2b$10$vCeMRZ.hpIyEvHe1qqrVTuGsXSHEjvkS48zNvGnR5WBR4hFKU3Nru', // hashed 'password123'
+            userType: 'employer'
+          });
+          console.log('Created demo user for employer');
+        } catch (userError) {
+          console.error('Failed to create demo user:', userError);
+          // Try to get the user again, it might have been created in a previous attempt
+          user = await storage.getUserByEmail('demo@employer.com');
+          if (!user) {
+            // If still no user, we can't proceed with proper employer creation
+            console.log('Using default employer ID:', employerId);
+            throw new Error('Could not create or find demo user');
+          }
+        }
       } else {
         console.log('Using existing user for employer');
       }
-      
-      // Create employer profile
-      const employer = await storage.createEmployer({
-        userId: user.id,
-        companyName: 'Demo Recruiting Company',
-        industry: 'Staffing & Recruiting',
-        companyType: 'Corporation',
-        phoneNumber: '+1234567890',
-        country: 'United States',
-        website: 'https://demorecruiter.example.com'
-      });
-      
-      employerId = employer.id;
-      console.log(`Created demo employer with ID: ${employerId}`);
+
+      if (user) {
+        try {
+          // Create employer profile with proper error handling
+          const employer = await storage.createEmployer({
+            userId: user.id,
+            companyName: 'Demo Recruiting Company',
+            industry: 'Staffing & Recruiting',
+            companyType: 'Corporation',
+            phoneNumber: '+1234567890',
+            country: 'United States',
+            website: 'https://demorecruiter.example.com'
+          });
+
+          employerId = employer.id;
+          console.log(`Created demo employer with ID: ${employerId}`);
+        } catch (employerError) {
+          console.error('Failed to create employer profile:', employerError);
+          // Check if employer already exists for this user
+          const existingEmployerByUser = await storage.getEmployerByUserId(user.id);
+          if (existingEmployerByUser) {
+            employerId = existingEmployerByUser.id;
+            console.log(`Found existing employer for user with ID: ${employerId}`);
+          } else {
+            // Keep using default employerId = 1
+            console.log('Using fallback employer ID:', employerId);
+          }
+        }
+      }
     } else {
+      employerId = existingEmployer.id;
       console.log(`Using existing employer with ID: ${employerId}`);
     }
   } catch (error) {
-    console.error('Error creating demo employer:', error);
-    throw error;
+    console.error('Error in employer creation process:', error);
+    // Keep using default employerId = 1
+    console.log('Using default employer ID after error:', employerId);
   }
 
   // FINANCE JOBS
@@ -114,7 +143,7 @@ async function seedJobs() {
       employerId: 5,
     }
   ];
-  
+
   // TECHNOLOGY JOBS
   const techJobs: InsertJob[] = [
     {
@@ -399,7 +428,7 @@ async function seedJobs() {
       employerId: 6,
     }
   ];
-  
+
   // HOSPITALITY JOBS
   const hospitalityJobs: InsertJob[] = [
     {
@@ -448,7 +477,7 @@ async function seedJobs() {
     const now = new Date();
     const deadline = new Date();
     deadline.setDate(now.getDate() + 30);
-    
+
     // Extract company name from title if not provided
     let company = job.company;
     if (!company && job.title?.includes("at ")) {
@@ -457,12 +486,12 @@ async function seedJobs() {
         company = parts[1];
       }
     }
-    
+
     // Build default requirements and benefits from description
     const description = job.description || "";
     let requirements = job.requirements;
     let benefits = job.benefits;
-    
+
     if (!requirements && description.includes("Requirements:")) {
       const reqParts = description.split("Requirements:");
       if (reqParts.length >= 2) {
@@ -470,7 +499,7 @@ async function seedJobs() {
         requirements = reqSection.trim();
       }
     }
-    
+
     if (!benefits && description.includes("Benefits:")) {
       const benParts = description.split("Benefits:");
       if (benParts.length >= 2) {
@@ -478,11 +507,11 @@ async function seedJobs() {
         benefits = benSection.trim();
       }
     }
-    
+
     // Parse salary range from text format
     let minSalary = job.minSalary;
     let maxSalary = job.maxSalary;
-    
+
     if ((!minSalary || !maxSalary) && job.salary) {
       const salaryText = job.salary;
       const numbers = salaryText.match(/[\d,]+/g);
@@ -495,10 +524,10 @@ async function seedJobs() {
         maxSalary = Math.floor(value * 1.1);
       }
     }
-    
+
     // Set a default deadline if not provided
     const applicationDeadline = job.applicationDeadline || deadline;
-    
+
     // Defaults for all required fields
     return {
       employerId: employerId,
@@ -522,7 +551,7 @@ async function seedJobs() {
       salary: job.salary || null
     };
   };
-  
+
   // Add all jobs to the database with complete data
   for (const jobData of allJobs) {
     const completeJob = createCompleteJob(jobData);
