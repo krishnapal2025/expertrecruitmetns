@@ -35,6 +35,96 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // API routes
   
   // Profile endpoints
+  // Get job seeker profile
+  app.get("/api/profile/jobseeker/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const jobSeeker = await storage.getJobSeeker(parseInt(id));
+      
+      if (!jobSeeker) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      
+      // If not authenticated or not the owner, return public profile
+      if (!req.isAuthenticated()) {
+        // Return public profile (exclude sensitive data)
+        const publicProfile = {
+          id: jobSeeker.id,
+          firstName: jobSeeker.firstName,
+          lastName: jobSeeker.lastName,
+          country: jobSeeker.country,
+        };
+        return res.json(publicProfile);
+      }
+      
+      // Check if current user is the owner
+      const user = await storage.getUserByJobSeekerId(parseInt(id));
+      if (user && user.id === req.user.id) {
+        // Owner can see full profile
+        return res.json(jobSeeker);
+      } else {
+        // Other authenticated users see public profile
+        const publicProfile = {
+          id: jobSeeker.id,
+          firstName: jobSeeker.firstName,
+          lastName: jobSeeker.lastName,
+          country: jobSeeker.country,
+        };
+        return res.json(publicProfile);
+      }
+    } catch (error) {
+      console.error("Error fetching job seeker profile:", error);
+      res.status(500).json({ message: "Failed to fetch profile" });
+    }
+  });
+  
+  // Get employer profile
+  app.get("/api/profile/employer/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const employer = await storage.getEmployer(parseInt(id));
+      
+      if (!employer) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      
+      // If not authenticated, return public profile
+      if (!req.isAuthenticated()) {
+        // Return public profile
+        const publicProfile = {
+          id: employer.id,
+          companyName: employer.companyName,
+          industry: employer.industry,
+          description: employer.description,
+          logoPath: employer.logoPath,
+          websiteUrl: employer.websiteUrl
+        };
+        return res.json(publicProfile);
+      }
+      
+      // Check if current user is the owner
+      const user = await storage.getUserByEmployerId(parseInt(id));
+      if (user && user.id === req.user.id) {
+        // Owner can see full profile
+        return res.json(employer);
+      } else {
+        // Other authenticated users see public profile
+        const publicProfile = {
+          id: employer.id,
+          companyName: employer.companyName,
+          industry: employer.industry,
+          description: employer.description,
+          logoPath: employer.logoPath,
+          websiteUrl: employer.websiteUrl
+        };
+        return res.json(publicProfile);
+      }
+    } catch (error) {
+      console.error("Error fetching employer profile:", error);
+      res.status(500).json({ message: "Failed to fetch profile" });
+    }
+  });
+  
   // Update job seeker profile
   app.patch("/api/profile/jobseeker/:id", async (req, res) => {
     if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
@@ -98,6 +188,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating employer profile:", error);
       res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+  
+  // Get all employers (for directory or search)
+  app.get("/api/employers", async (req, res) => {
+    try {
+      // Get all users
+      const users = await storage.getAllUsers();
+      
+      // Filter employer users
+      const employerUsers = users.filter(user => user.userType === "employer");
+      
+      // Get employer profiles for each employer user
+      const employers = await Promise.all(
+        employerUsers.map(async (user) => {
+          const employer = await storage.getEmployerByUserId(user.id);
+          if (employer) {
+            // Return public profile only
+            return {
+              id: employer.id,
+              companyName: employer.companyName,
+              industry: employer.industry,
+              description: employer.description || "",
+              logoPath: employer.logoPath || "",
+              websiteUrl: employer.website || ""
+            };
+          }
+          return null;
+        })
+      );
+      
+      // Filter out null values (in case any employer user didn't have a profile)
+      const validEmployers = employers.filter(employer => employer !== null);
+      
+      res.json(validEmployers);
+    } catch (error) {
+      console.error("Error fetching employers:", error);
+      res.status(500).json({ message: "Failed to fetch employers" });
+    }
+  });
+  
+  // Get all job seekers (for talent directory)
+  app.get("/api/jobseekers", async (req, res) => {
+    try {
+      // Get all users
+      const users = await storage.getAllUsers();
+      
+      // Filter job seeker users
+      const jobSeekerUsers = users.filter(user => user.userType === "jobseeker");
+      
+      // Get job seeker profiles for each job seeker user
+      const jobSeekers = await Promise.all(
+        jobSeekerUsers.map(async (user) => {
+          const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+          if (jobSeeker) {
+            // Return public profile only to protect privacy
+            return {
+              id: jobSeeker.id,
+              firstName: jobSeeker.firstName,
+              lastName: jobSeeker.lastName,
+              country: jobSeeker.country,
+              skills: jobSeeker.skills || [],
+              experience: jobSeeker.experience || ""
+            };
+          }
+          return null;
+        })
+      );
+      
+      // Filter out null values (in case any job seeker user didn't have a profile)
+      const validJobSeekers = jobSeekers.filter(jobSeeker => jobSeeker !== null);
+      
+      res.json(validJobSeekers);
+    } catch (error) {
+      console.error("Error fetching job seekers:", error);
+      res.status(500).json({ message: "Failed to fetch job seekers" });
     }
   });
   
