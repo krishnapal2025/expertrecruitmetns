@@ -9,6 +9,7 @@ import {
   insertApplicationSchema, 
   adminRegisterSchema, 
   insertInvitationCodeSchema,
+  insertTestimonialSchema,
   User,
   Admin
 } from "@shared/schema";
@@ -512,6 +513,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching testimonials:", error);
       res.status(500).json({ message: "Failed to fetch testimonials" });
+    }
+  });
+  
+  // Create a new testimonial
+  app.post("/api/testimonials", async (req, res) => {
+    try {
+      // Validate required fields
+      const validatedData = insertTestimonialSchema.parse(req.body);
+      
+      // If user is authenticated, associate testimonial with user
+      let userId = null;
+      if (req.isAuthenticated()) {
+        userId = req.user.id;
+      }
+      
+      // Create the testimonial
+      const testimonial = await storage.createTestimonial({
+        ...validatedData,
+        userId: userId || validatedData.userId
+      });
+      
+      res.status(201).json(testimonial);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      
+      console.error("Error creating testimonial:", error);
+      res.status(500).json({ message: "Failed to create testimonial" });
     }
   });
   
