@@ -13,25 +13,19 @@ import createMemoryStore from "memorystore";
 import connectPg from "connect-pg-simple";
 import { db, type DatabaseInstance } from "./db";
 import { eq, like, gte, lte, or, and, sql } from "drizzle-orm";
-import type { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
+import type { Pool as PgPool } from 'pg';
 
 const MemoryStore = createMemoryStore(session);
 const PostgresSessionStore = connectPg(session);
 
 // For session store - get connection configuration from environment
-let pgPool: Pool | undefined;
+let pgPool: PgPool | undefined;
 try {
   // Only import pool if we're using a database
   if (process.env.DATABASE_URL) {
-    if (process.env.DATABASE_URL.includes('neon.tech')) {
-      // For Neon database, use neon-serverless
-      const { Pool } = require('@neondatabase/serverless');
-      pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
-    } else {
-      // For standard PostgreSQL, use node-postgres
-      const pg = require('pg');
-      pgPool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-    }
+    pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
   }
 } catch (error) {
   console.error("Error setting up database pool for session store:", error);
