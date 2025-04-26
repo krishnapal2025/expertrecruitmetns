@@ -357,6 +357,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch applications" });
     }
   });
+  
+  // Get applications by job ID - Used by employers to view applications for a specific job
+  app.get("/api/applications/job/:jobId", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to view applications" });
+      }
+      
+      const user = req.user;
+      if (user.userType !== "employer") {
+        return res.status(403).json({ message: "Only employers can access job applications" });
+      }
+      
+      const jobId = parseInt(req.params.jobId);
+      if (isNaN(jobId)) {
+        return res.status(400).json({ message: "Invalid job ID" });
+      }
+      
+      // Verify the job exists
+      const job = await storage.getJob(jobId);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+      
+      // Verify the employer owns this job
+      const employer = await storage.getEmployerByUserId(user.id);
+      if (!employer) {
+        return res.status(404).json({ message: "Employer profile not found" });
+      }
+      
+      if (job.employerId !== employer.id) {
+        return res.status(403).json({ message: "You can only view applications for your own jobs" });
+      }
+      
+      // Get applications for this job
+      const applications = await storage.getApplicationsByJobId(jobId);
+      
+      // Add job seeker data to each application
+      const applicationsWithJobSeekers = await Promise.all(
+        applications.map(async (app) => {
+          const jobSeeker = await storage.getJobSeeker(app.jobSeekerId);
+          return { 
+            ...app, 
+            jobSeeker,
+            jobSeekerName: jobSeeker ? `${jobSeeker.firstName} ${jobSeeker.lastName}` : 'Unknown',
+            appliedDate: app.appliedDate || new Date(),
+          };
+        })
+      );
+      
+      res.json(applicationsWithJobSeekers);
+    } catch (error) {
+      console.error("Error fetching applications by job ID:", error);
+      res.status(500).json({ message: "Failed to fetch applications" });
+    }
+  });
+  
+  // Get applications by job seeker ID - Used by job seekers to view their own applications
+  app.get("/api/applications/jobseeker", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to view applications" });
+      }
+      
+      const user = req.user;
+      if (user.userType !== "jobseeker") {
+        return res.status(403).json({ message: "Only job seekers can access this endpoint" });
+      }
+      
+      // Get the job seeker profile
+      const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+      if (!jobSeeker) {
+        return res.status(404).json({ message: "Job seeker profile not found" });
+      }
+      
+      // Get all applications for this jobseeker
+      const applications = await storage.getApplicationsByJobSeekerId(jobSeeker.id);
+      
+      // Get job details for each application
+      const applicationsWithJobs = await Promise.all(
+        applications.map(async (app) => {
+          const job = await storage.getJob(app.jobId);
+          return { 
+            ...app, 
+            job,
+            jobTitle: job?.title || 'Unknown',
+            jobLocation: job?.location || 'Unknown',
+            jobType: job?.jobType || 'Unknown',
+            companyName: job?.companyName || 'Unknown',
+            appliedDate: app.appliedDate || new Date()
+          };
+        })
+      );
+      
+      res.json(applicationsWithJobs);
+    } catch (error) {
+      console.error("Error fetching job seeker applications:", error);
+      res.status(500).json({ message: "Failed to fetch applications" });
+    }
+  });
 
   // Get applications for the current job seeker (for the Applied Jobs page)
   app.get("/api/applications/my-applications", async (req, res) => {
