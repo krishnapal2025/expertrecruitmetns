@@ -76,6 +76,77 @@ export function setupAuth(app: Express) {
     }
   });
 
+  // Generic registration endpoint to match PHP API
+  app.post("/api/register", async (req, res, next) => {
+    try {
+      const { 
+        email, password, userType, 
+        // Job seeker fields
+        firstName, lastName, gender, dateOfBirth, country, phoneNumber,
+        // Employer fields 
+        companyName, industry, companySize, description, logoPath, websiteUrl
+      } = req.body;
+
+      if (!email || !password || !userType) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      if (!['jobseeker', 'employer'].includes(userType)) {
+        return res.status(400).json({ message: "Invalid user type" });
+      }
+
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(400).json({ message: "Email already exists" });
+      }
+
+      // Create user first
+      const user = await storage.createUser({
+        email,
+        password: await hashPassword(password),
+        userType
+      });
+
+      let profile;
+      if (userType === 'jobseeker') {
+        // Create job seeker profile
+        profile = await storage.createJobSeeker({
+          userId: user.id,
+          firstName: firstName || '',
+          lastName: lastName || '',
+          gender: gender || '',
+          dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : new Date(),
+          country: country || '',
+          phoneNumber: phoneNumber || ''
+        });
+      } else if (userType === 'employer') {
+        // Create employer profile
+        profile = await storage.createEmployer({
+          userId: user.id,
+          companyName: companyName || '',
+          industry: industry || '',
+          companySize: companySize || '',
+          description: description || '',
+          logoPath: logoPath || null,
+          websiteUrl: websiteUrl || null
+        });
+      }
+
+      // Log user in
+      req.login(user, (err) => {
+        if (err) return next(err);
+        res.status(201).json({
+          id: user.id,
+          email: user.email,
+          userType: user.userType,
+          profile
+        });
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
   // Jobseeker registration
   app.post("/api/register/jobseeker", async (req, res, next) => {
     try {
