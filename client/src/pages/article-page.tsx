@@ -5,10 +5,10 @@ import { ChevronLeft, Clock, User, Share2, BookmarkPlus, Calendar, Tag, ChevronR
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import headhuntersDubaiImage from "../assets/pexels-photo-7709181.jpg";
 import recruitmentAgenciesImage from "../assets/career-meeting.png";
 import bestRecruitmentAgencyImage from "../assets/dubai-office-meeting.jpeg";
 import executiveSearchImage from "../assets/pexels-photo-4344878.webp";
+import headhuntersDubaiImage from "../assets/pexels-photo-5685937.webp";
 
 type Article = {
   id: number;
