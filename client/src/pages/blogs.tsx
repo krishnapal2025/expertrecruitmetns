@@ -26,7 +26,7 @@ const blogPosts = [
     author: "Sarah Ahmed",
     date: "April 25, 2025",
     readTime: "7 min read",
-    image: "https://images.unsplash.com/photo-1582647509771-5aa9755b620d"
+    image: "/assets/pexels-photo-7709181.jpg"
   },
   {
     id: 3,

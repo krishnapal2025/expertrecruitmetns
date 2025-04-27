@@ -253,7 +253,7 @@ const articlesData: Article[] = [
     authorImage: "https://randomuser.me/api/portraits/women/36.jpg",
     date: "April 25, 2025",
     readTime: "7 min read",
-    image: "https://images.unsplash.com/photo-1582647509771-5aa9755b620d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+    image: "/assets/pexels-photo-7709181.jpg",
     tags: ["Executive Search", "Dubai", "UAE", "C-Suite", "Tech Industry", "Case Study", "Leadership"]
   }
 ];
