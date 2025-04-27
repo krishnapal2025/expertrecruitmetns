@@ -32,7 +32,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Briefcase, Building, Clock, DollarSign, MapPin, Save } from "lucide-react";
+import { Briefcase, Building, Check, Clock, DollarSign, MapPin, Save } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -264,6 +264,13 @@ export default function PostJobPage() {
   
   // Handle form submission
   const onSubmit = (data: JobPostFormValues) => {
+    // Update submission status to submitting
+    setSubmissionStatus({
+      status: "submitting",
+      message: "Submitting your vacancy..."
+    });
+    
+    // Submit the form data
     createJobMutation.mutate(data);
   };
   
@@ -410,15 +417,37 @@ export default function PostJobPage() {
                       </div>
                     </div>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="flex flex-col gap-4">
+                    {/* Display submission status message if status is not idle */}
+                    {submissionStatus.status !== "idle" && (
+                      <div className={`w-full p-4 rounded-lg text-center ${
+                        submissionStatus.status === "success" 
+                          ? "bg-green-50 text-green-700 border border-green-200" 
+                          : submissionStatus.status === "error"
+                          ? "bg-red-50 text-red-700 border border-red-200"
+                          : "bg-blue-50 text-blue-700 border border-blue-200"
+                      }`}>
+                        {submissionStatus.status === "success" && (
+                          <Check className="inline-block h-5 w-5 mr-2 -mt-1" />
+                        )}
+                        {submissionStatus.message}
+                      </div>
+                    )}
+                    
                     <Button 
                       className="w-full" 
                       onClick={() => {
                         form.handleSubmit(onSubmit)();
                       }}
-                      disabled={createJobMutation.isPending}
+                      disabled={createJobMutation.isPending || submissionStatus.status === "success"}
                     >
-                      {createJobMutation.isPending ? "Posting..." : "Post Job Now"}
+                      {
+                        submissionStatus.status === "success" 
+                          ? "Vacancy Submitted Successfully!"
+                          : createJobMutation.isPending 
+                          ? "Posting..." 
+                          : "Post Job Now"
+                      }
                     </Button>
                   </CardFooter>
                 </Card>
@@ -775,10 +804,16 @@ export default function PostJobPage() {
                     </Button>
                     <Button 
                       type="submit"
-                      disabled={createJobMutation.isPending}
+                      disabled={createJobMutation.isPending || submissionStatus.status === "success"}
                     >
                       <Save className="mr-2 h-4 w-4" />
-                      {createJobMutation.isPending ? "Posting..." : "Post Job"}
+                      {
+                        submissionStatus.status === "success" 
+                          ? "Vacancy Submitted Successfully!"
+                          : createJobMutation.isPending 
+                          ? "Posting..." 
+                          : "Post Job"
+                      }
                     </Button>
                   </div>
                 </form>
