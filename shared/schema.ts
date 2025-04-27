@@ -106,6 +106,27 @@ export const invitationCodes = pgTable("invitation_codes", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Vacancies table (from vacancy form submissions)
+export const vacancies = pgTable("vacancies", {
+  id: serial("id").primaryKey(),
+  companyName: text("company_name").notNull(),
+  contactName: text("contact_name").notNull(),
+  contactEmail: text("contact_email").notNull(),
+  contactPhone: text("contact_phone").notNull(),
+  jobTitle: text("job_title").notNull(),
+  jobDescription: text("job_description").notNull(),
+  location: text("location").notNull(),
+  industry: text("industry").notNull(),
+  employmentType: text("employment_type").notNull(),
+  salaryRange: text("salary_range"),
+  requiredSkills: text("required_skills").notNull(),
+  experienceLevel: text("experience_level").notNull(),
+  applicationDeadline: timestamp("application_deadline").notNull(),
+  additionalInformation: text("additional_information"),
+  status: text("status").default("new"), // 'new', 'reviewed', 'contacted', 'rejected'
+  submittedAt: timestamp("submitted_at").defaultNow(),
+});
+
 // Create insert schemas using Zod
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -156,6 +177,17 @@ export const insertInvitationCodeSchema = createInsertSchema(invitationCodes).om
   id: true,
   isUsed: true,
   createdAt: true,
+});
+
+export const insertVacancySchema = createInsertSchema(vacancies).omit({
+  id: true,
+  status: true,
+  submittedAt: true,
+}).extend({
+  // Override the applicationDeadline field to accept string
+  applicationDeadline: z.string()
+    .min(1, "Application deadline is required")
+    .transform((val) => new Date(val))
 });
 
 // Registration schemas
