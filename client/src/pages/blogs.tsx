@@ -11,6 +11,9 @@ import recruitmentAgenciesImage from "../assets/pexels-photo-4344860.webp";
 import bestRecruitmentAgencyImage from "../assets/pexels-photo-3307862.webp";
 import partnerHeadhuntersDubaiImage from "../assets/pexels-photo-5668858.webp";
 import recruitmentAgenciesForMNCs from "../assets/pexels-photo-7078666.jpeg";
+import techGrowthImage from "../assets/pexels-photo-4344878.webp";
+import remoteWorkImage from "../assets/pexels-photo-7709181.jpg";
+import healthcareImage from "../assets/photo-1556761175-4b46a572b786.jpeg";
 
 // Sample blog data
 const blogPosts = [
@@ -73,13 +76,80 @@ const blogPosts = [
     date: "April 27, 2025",
     readTime: "9 min read",
     image: recruitmentAgenciesForMNCs
+  },
+  {
+    id: 7,
+    title: "Tech Growth Outlook",
+    excerpt: "Google, Microsoft, and NVIDIA lead unprecedented demand for AI engineers and data scientists with 35% growth projected for 2025.",
+    category: "Technology",
+    author: "Dr. Sara Menendez",
+    date: "April 20, 2025",
+    readTime: "8 min read",
+    image: techGrowthImage
+  },
+  {
+    id: 8,
+    title: "Remote Work Trends",
+    excerpt: "Amazon, GitLab, and Spotify lead the remote work revolution, now offering 76% of positions as permanent remote across departments.",
+    category: "Workplace Trends",
+    author: "Alex Robertson",
+    date: "April 15, 2025",
+    readTime: "9 min read",
+    image: remoteWorkImage
+  },
+  {
+    id: 9,
+    title: "Healthcare Expansion",
+    excerpt: "Mayo Clinic, Kaiser Permanente, and Cleveland Clinic projected to add 1.5 million healthcare jobs over the next five years.",
+    category: "Healthcare",
+    author: "Dr. Priya Sharma",
+    date: "April 18, 2025",
+    readTime: "10 min read",
+    image: healthcareImage
+  },
+  {
+    id: 10,
+    title: "Sustainability Roles",
+    excerpt: "Tesla, Patagonia & Unilever lead Fortune 500 growth with ESG positions increasing by 45% in the past year.",
+    category: "Sustainability",
+    author: "Michael Cohen",
+    date: "April 17, 2025",
+    readTime: "9 min read",
+    image: bestRecruitmentAgencyImage
+  },
+  {
+    id: 11,
+    title: "Education Evolution",
+    excerpt: "Coursera, Udemy & Khan Academy EdTech specialists among fastest-growing education roles as digital learning transforms the sector.",
+    category: "Education",
+    author: "Dr. Emily Washington",
+    date: "April 15, 2025",
+    readTime: "8 min read",
+    image: partnerHeadhuntersDubaiImage
+  },
+  {
+    id: 12,
+    title: "Gig Economy Expansion",
+    excerpt: "Upwork, Fiverr & Toptal freelance marketplace expected to represent 50% of workforce by 2027, transforming traditional employment models.",
+    category: "Employment Trends",
+    author: "Daniel Fernandez",
+    date: "April 19, 2025",
+    readTime: "9 min read",
+    image: recruitmentAgenciesImage
   }
 ];
 
 const categories = [
   "All Categories",
   "Executive Recruitment",
+  "Recruitment",
   "UAE Recruitment",
+  "Technology",
+  "Workplace Trends",
+  "Healthcare",
+  "Sustainability",
+  "Education",
+  "Employment Trends",
   "Career Advice",
   "Interview Tips",
   "Industry Trends",
