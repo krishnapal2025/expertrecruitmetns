@@ -168,7 +168,7 @@ const articlesData: Article[] = [
     authorImage: "https://randomuser.me/api/portraits/men/42.jpg",
     date: "April 27, 2025",
     readTime: "10 min read",
-    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
+    image: executiveSearchImage,
     tags: ["Executive Search", "Recruitment", "Leadership", "Talent Acquisition", "HR Strategy", "Career Development", "Business Growth"]
   },
   {
