@@ -24,7 +24,12 @@ async function seedAdmin() {
     // Admin credentials
     const email = 'admin@expertrecruitments.com';
     const password = 'admin@ER2025';
+    
+    // Option 1: Generate a fresh hash (recommended for maximum security)
     const hashedPassword = await hashPassword(password);
+    
+    // Option 2: Use the known working hash (recommended for consistency)
+    // const hashedPassword = '61c89d0b42798317712f856e4aa1f962bb8478407f25cc0896800918d8fdc00f743aa2dc4e78b98aaff5da7b2e7c537a1c9b9caee081a299e23de8744389331e.e27fe3584d0ec6f368a2625ed63a7c71';
     
     console.log('Checking if admin exists...');
     
