@@ -37,7 +37,6 @@ import AppliedJobsPage from "@/pages/applied-jobs";
 import ApplicationsManagerPage from "@/pages/applications-manager";
 import VacancyFormPage from "@/pages/vacancy-form";
 import InquiryFormPage from "@/pages/inquiry-form";
-import ArticlePage from "@/pages/article-page";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import Navbar from "@/components/layout/navbar";
@@ -86,9 +85,6 @@ function Router() {
       <Route path="/vacancy-form" component={VacancyFormPage} />
       <Route path="/inquiry-form" component={InquiryFormPage} />
       <Route path="/seo-insights" component={SEOInsightsPage} />
-      <Route path="/article/:slug">
-        {params => <ArticlePage />}
-      </Route>
       <Route path="/admin" component={AdminPage} />
       <Route path="/admin-register" component={AdminRegisterPage} />
       <Route path="/admin-login" component={AdminLoginPage} />

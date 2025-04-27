@@ -79,7 +79,7 @@ export default function Navbar() {
         dropdownItems: [
           { name: "Services", href: "/services" },
           { name: "Sectors", href: "/sectors" },
-          { name: "Articles", href: "/articles" },
+          { name: "Blogs", href: "/blogs" },
           { name: "Insights", href: "/seo-insights" },
           ...(currentUser && currentUser.user.userType === "admin" ? [{ name: "Admin", href: "/admin" }] : [{ name: "Admin", href: "/admin-login" }]),
           { name: "Contact Us", href: "/contact-us" },
@@ -100,7 +100,7 @@ export default function Navbar() {
         { name: "Find Jobs", href: "/job-board" },
         { name: "Applied Jobs", href: "/applied-jobs" },
         { name: "Job Services", href: "/job-services" },
-        { name: "Articles", href: "/articles" },
+        { name: "Blogs", href: "/blogs" },
         { name: "Contact Us", href: "/contact-us" },
       ];
     }
@@ -113,7 +113,7 @@ export default function Navbar() {
         { name: "Hire Talent", href: "/hire-talent" },
         { name: "Post Manager", href: "/my-jobs" },
         { name: "Applications Manager", href: "/applications-manager" },
-        { name: "Articles", href: "/articles" },
+        { name: "Blogs", href: "/blogs" },
         { name: "Contact Us", href: "/contact-us" },
       ];
     }

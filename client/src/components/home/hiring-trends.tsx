@@ -4,55 +4,55 @@ import { Link } from "wouter";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
 
-// Industry insights data with article links
+// Sample hiring trends data with consistent image dimensions (800x450, 16:9 aspect ratio)
 const trendingIndustries = [
   {
     id: 1,
-    title: "Recruitment Market Trends",
-    description: "Discover key trends shaping the job market in 2025, from AI-powered talent acquisition to specialized skills",
-    image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=800&h=450&fit=crop",
-    icon: <TrendingUp className="h-5 w-5" />,
-    link: "/article/recruitment-market-trends-2025"
+    title: "Tech Growth Outlook",
+    description: "Google & Microsoft AI engineers and NVIDIA data scientists see 35% higher demand in 2025",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&h=450&fit=crop",
+    icon: <Code className="h-5 w-5" />,
+    link: "/sectors/tech"
   },
   {
     id: 2,
-    title: "Executive Search Strategies",
-    description: "Effective approaches for identifying and securing C-suite and senior leadership talent in competitive markets",
-    image: "https://images.unsplash.com/photo-1551836022-aadb801c60ae?q=80&w=800&h=450&fit=crop",
-    icon: <Users className="h-5 w-5" />,
-    link: "/article/executive-search-strategies"
+    title: "Remote Work Trends",
+    description: "Amazon, GitLab & Spotify now offer 76% of positions as permanent remote across departments",
+    image: "https://images.unsplash.com/photo-1593642634367-d91a135587b5?q=80&w=800&h=450&fit=crop",
+    icon: <Globe className="h-5 w-5" />,
+    link: "/blogs/remote-work"
   },
   {
     id: 3,
-    title: "Diversity Recruitment",
-    description: "Comprehensive approaches to building diverse teams and creating inclusive recruitment processes",
-    image: "https://images.unsplash.com/photo-1522202176750-1a3d9771bd73?q=80&w=800&h=450&fit=crop",
+    title: "Healthcare Expansion",
+    description: "Mayo Clinic, Kaiser Permanente & Cleveland Clinic projected to add 1.5M jobs in five years",
+    image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&h=450&fit=crop",
     icon: <Users className="h-5 w-5" />,
-    link: "/article/diversity-recruitment-excellence"
+    link: "/sectors/healthcare"
   },
   {
     id: 4,
-    title: "Remote Work Recruitment",
-    description: "How leading companies are adapting hiring processes for distributed teams and remote-first workforces",
-    image: "https://images.unsplash.com/photo-1593642634367-d91a135587b5?q=80&w=800&h=450&fit=crop",
-    icon: <Globe className="h-5 w-5" />,
-    link: "/article/remote-work-recruitment-strategies"
+    title: "Sustainability Roles",
+    description: "Tesla, Patagonia & Unilever ESG positions increased by 45% and lead Fortune 500 growth",
+    image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=800&h=450&fit=crop",
+    icon: <TrendingUp className="h-5 w-5" />,
+    link: "/sectors/sustainability"
   },
   {
     id: 5,
-    title: "Executive Onboarding",
-    description: "Designing comprehensive onboarding programs that accelerate executive integration and performance",
-    image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=800&h=450&fit=crop",
-    icon: <Briefcase className="h-5 w-5" />,
-    link: "/article/effective-onboarding-strategies"
+    title: "Education Evolution",
+    description: "Coursera, Udemy & Khan Academy EdTech specialists among fastest-growing education roles",
+    image: "https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?q=80&w=800&h=450&fit=crop",
+    icon: <GraduationCap className="h-5 w-5" />,
+    link: "/sectors/education"
   },
   {
     id: 6,
-    title: "Talent Retention Strategies",
-    description: "Proven approaches for retaining key talent through strategic engagement, development, and recognition",
-    image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=800&h=450&fit=crop",
-    icon: <Code className="h-5 w-5" />,
-    link: "/article/talent-retention-strategies"
+    title: "Gig Economy Expansion",
+    description: "Upwork, Fiverr & Toptal freelance marketplace expected to represent 50% of workforce by 2027",
+    image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=800&h=450&fit=crop",
+    icon: <Briefcase className="h-5 w-5" />,
+    link: "/blogs/gig-economy"
   }
 ];
 
@@ -236,7 +236,7 @@ export default function HiringTrends() {
             to navigate your professional journey.
           </p>
           
-          <Link href="/blogs">
+          <Link href="/seo-insights">
             <motion.button 
               className="px-6 py-3 bg-gradient-to-r from-primary to-purple-600 text-white rounded-full shadow-lg shadow-primary/20 overflow-hidden relative group"
               whileHover={{ scale: 1.05 }}
@@ -246,7 +246,7 @@ export default function HiringTrends() {
               <span className="absolute inset-0 w-0 bg-white/20 skew-x-12 group-hover:w-full transform transition-all duration-500 z-10"></span>
               <span className="relative z-20 flex items-center">
                 <TrendingUp className="mr-2 h-5 w-5" /> 
-                Explore All Insights
+                Explore SEO Insights
                 <ArrowUpRight className="ml-2 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
               </span>
             </motion.button>
