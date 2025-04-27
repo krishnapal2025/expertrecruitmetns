@@ -792,29 +792,47 @@ export default function PostJobPage() {
                     </CardContent>
                   </Card>
                   
-                  <div className="flex justify-end space-x-2">
-                    <Button variant="outline" type="button" onClick={() => form.reset()}>
-                      Reset
-                    </Button>
-                    <Button 
-                      type="button" 
-                      onClick={() => setIsPreview(true)}
-                    >
-                      Preview
-                    </Button>
-                    <Button 
-                      type="submit"
-                      disabled={createJobMutation.isPending || submissionStatus.status === "success"}
-                    >
-                      <Save className="mr-2 h-4 w-4" />
-                      {
+                  <div className="space-y-4">
+                    {/* Display submission status message if status is not idle */}
+                    {submissionStatus.status !== "idle" && (
+                      <div className={`w-full p-4 rounded-lg text-center ${
                         submissionStatus.status === "success" 
-                          ? "Vacancy Submitted Successfully!"
-                          : createJobMutation.isPending 
-                          ? "Posting..." 
-                          : "Post Job"
-                      }
-                    </Button>
+                          ? "bg-green-50 text-green-700 border border-green-200" 
+                          : submissionStatus.status === "error"
+                          ? "bg-red-50 text-red-700 border border-red-200"
+                          : "bg-blue-50 text-blue-700 border border-blue-200"
+                      }`}>
+                        {submissionStatus.status === "success" && (
+                          <Check className="inline-block h-5 w-5 mr-2 -mt-1" />
+                        )}
+                        {submissionStatus.message}
+                      </div>
+                    )}
+                    
+                    <div className="flex justify-end space-x-2">
+                      <Button variant="outline" type="button" onClick={() => form.reset()}>
+                        Reset
+                      </Button>
+                      <Button 
+                        type="button" 
+                        onClick={() => setIsPreview(true)}
+                      >
+                        Preview
+                      </Button>
+                      <Button 
+                        type="submit"
+                        disabled={createJobMutation.isPending || submissionStatus.status === "success"}
+                      >
+                        <Save className="mr-2 h-4 w-4" />
+                        {
+                          submissionStatus.status === "success" 
+                            ? "Vacancy Submitted Successfully!"
+                            : createJobMutation.isPending 
+                            ? "Posting..." 
+                            : "Post Job"
+                        }
+                      </Button>
+                    </div>
                   </div>
                 </form>
               </Form>
