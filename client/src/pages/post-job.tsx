@@ -220,15 +220,24 @@ export default function PostJobPage() {
     onSuccess: (data) => {
       toast({
         title: "Job Posted Successfully",
-        description: "Your job has been posted and is now visible in the Jobs Found section.",
+        description: "Your job has been posted and is now visible in the Admin Dashboard.",
       });
       
       // Invalidate all queries related to jobs to ensure immediate visibility
       queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
       queryClient.invalidateQueries({ queryKey: ["/api/realtime/jobs"] });
       
-      // Immediately redirect to job board to see the newly posted job
-      setLocation("/job-board");
+      // Update the UI to show success state but stay on the page to allow the user to see the confirmation
+      setSubmissionStatus({
+        status: "success",
+        message: "Vacancy submitted successfully! Your job posting is now visible in the Admin Dashboard."
+      });
+      
+      // Don't redirect immediately to allow user to see the confirmation
+      // Wait 5 seconds before redirecting to the job board
+      setTimeout(() => {
+        setLocation("/job-board");
+      }, 5000);
     },
     onError: (error: Error) => {
       toast({
@@ -236,7 +245,21 @@ export default function PostJobPage() {
         description: error.message,
         variant: "destructive",
       });
+      
+      setSubmissionStatus({
+        status: "error",
+        message: "Failed to submit vacancy. Please try again."
+      });
     },
+  });
+  
+  // Submission status state
+  const [submissionStatus, setSubmissionStatus] = useState<{
+    status: "idle" | "submitting" | "success" | "error";
+    message: string;
+  }>({
+    status: "idle",
+    message: ""
   });
   
   // Handle form submission

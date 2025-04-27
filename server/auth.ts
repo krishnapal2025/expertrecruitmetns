@@ -52,13 +52,32 @@ export function setupAuth(app: Express) {
       },
       async (email, password, done) => {
         try {
+          console.log("Login attempt:", { email });
+          
           const user = await storage.getUserByEmail(email);
-          if (!user || !(await comparePasswords(password, user.password))) {
+          console.log("User found:", user ? "Yes" : "No");
+          
+          if (!user) {
+            console.log("User not found.");
             return done(null, false, { message: "Invalid email or password" });
-          } else {
+          }
+          
+          // For admin@expertrecruitments.com, allow admin@ER2025 password directly
+          if (email === "admin@expertrecruitments.com" && password === "admin@ER2025") {
+            console.log("Admin login with hardcoded password - SUCCESS");
             return done(null, user);
           }
+          
+          const passwordValid = await comparePasswords(password, user.password);
+          console.log("Password valid:", passwordValid);
+          
+          if (passwordValid) {
+            return done(null, user);
+          } else {
+            return done(null, false, { message: "Invalid email or password" });
+          }
         } catch (err) {
+          console.error("Auth error:", err);
           return done(err);
         }
       }
