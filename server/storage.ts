@@ -283,17 +283,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createJob(insertJob: InsertJob): Promise<Job> {
-    console.log("Creating job with insertJob data:", insertJob);
-    
-    // Ensure isActive is set to true
-    const jobData = {
-      ...insertJob,
-      isActive: true
-    };
-    
-    console.log("Final job data being inserted:", jobData);
-    const [job] = await db.insert(jobs).values(jobData).returning();
-    console.log("Job created in database:", job);
+    const [job] = await db.insert(jobs).values(insertJob).returning();
     return job;
   }
 

@@ -32,7 +32,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Briefcase, Building, Check, Clock, DollarSign, MapPin, Save } from "lucide-react";
+import { Briefcase, Building, Clock, DollarSign, MapPin, Save } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -211,44 +211,24 @@ export default function PostJobPage() {
   // Create job mutation
   const createJobMutation = useMutation({
     mutationFn: async (data: JobPostFormValues) => {
-      console.log("Submitting job with data:", { ...data, employerId: currentUser?.profile?.id });
-      
-      // Make sure we have a valid employer ID
-      if (!currentUser?.profile?.id) {
-        throw new Error("Unable to determine employer ID. Please try again.");
-      }
-      
       const res = await apiRequest("POST", "/api/jobs", {
         ...data,
-        employerId: currentUser.profile.id,
+        employerId: currentUser?.profile.id,
       });
-      
-      // Log response for debugging
-      const responseData = await res.json();
-      console.log("Job creation response:", responseData);
-      return responseData;
+      return await res.json();
     },
     onSuccess: (data) => {
       toast({
         title: "Job Posted Successfully",
-        description: "Your job has been posted and is now visible in the Admin Dashboard.",
+        description: "Your job has been posted and is now visible in the Jobs Found section.",
       });
       
       // Invalidate all queries related to jobs to ensure immediate visibility
       queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
       queryClient.invalidateQueries({ queryKey: ["/api/realtime/jobs"] });
       
-      // Update the UI to show success state but stay on the page to allow the user to see the confirmation
-      setSubmissionStatus({
-        status: "success",
-        message: "Vacancy submitted successfully! Your job posting is now visible in the Admin Dashboard."
-      });
-      
-      // Don't redirect immediately to allow user to see the confirmation
-      // Wait 5 seconds before redirecting to the job board
-      setTimeout(() => {
-        setLocation("/job-board");
-      }, 5000);
+      // Immediately redirect to job board to see the newly posted job
+      setLocation("/job-board");
     },
     onError: (error: Error) => {
       toast({
@@ -256,32 +236,11 @@ export default function PostJobPage() {
         description: error.message,
         variant: "destructive",
       });
-      
-      setSubmissionStatus({
-        status: "error",
-        message: "Failed to submit vacancy. Please try again."
-      });
     },
-  });
-  
-  // Submission status state
-  const [submissionStatus, setSubmissionStatus] = useState<{
-    status: "idle" | "submitting" | "success" | "error";
-    message: string;
-  }>({
-    status: "idle",
-    message: ""
   });
   
   // Handle form submission
   const onSubmit = (data: JobPostFormValues) => {
-    // Update submission status to submitting
-    setSubmissionStatus({
-      status: "submitting",
-      message: "Submitting your vacancy..."
-    });
-    
-    // Submit the form data
     createJobMutation.mutate(data);
   };
   
@@ -428,37 +387,15 @@ export default function PostJobPage() {
                       </div>
                     </div>
                   </CardContent>
-                  <CardFooter className="flex flex-col gap-4">
-                    {/* Display submission status message if status is not idle */}
-                    {submissionStatus.status !== "idle" && (
-                      <div className={`w-full p-4 rounded-lg text-center ${
-                        submissionStatus.status === "success" 
-                          ? "bg-green-50 text-green-700 border border-green-200" 
-                          : submissionStatus.status === "error"
-                          ? "bg-red-50 text-red-700 border border-red-200"
-                          : "bg-blue-50 text-blue-700 border border-blue-200"
-                      }`}>
-                        {submissionStatus.status === "success" && (
-                          <Check className="inline-block h-5 w-5 mr-2 -mt-1" />
-                        )}
-                        {submissionStatus.message}
-                      </div>
-                    )}
-                    
+                  <CardFooter>
                     <Button 
                       className="w-full" 
                       onClick={() => {
                         form.handleSubmit(onSubmit)();
                       }}
-                      disabled={createJobMutation.isPending || submissionStatus.status === "success"}
+                      disabled={createJobMutation.isPending}
                     >
-                      {
-                        submissionStatus.status === "success" 
-                          ? "Vacancy Submitted Successfully!"
-                          : createJobMutation.isPending 
-                          ? "Posting..." 
-                          : "Post Job Now"
-                      }
+                      {createJobMutation.isPending ? "Posting..." : "Post Job Now"}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -803,47 +740,23 @@ export default function PostJobPage() {
                     </CardContent>
                   </Card>
                   
-                  <div className="space-y-4">
-                    {/* Display submission status message if status is not idle */}
-                    {submissionStatus.status !== "idle" && (
-                      <div className={`w-full p-4 rounded-lg text-center ${
-                        submissionStatus.status === "success" 
-                          ? "bg-green-50 text-green-700 border border-green-200" 
-                          : submissionStatus.status === "error"
-                          ? "bg-red-50 text-red-700 border border-red-200"
-                          : "bg-blue-50 text-blue-700 border border-blue-200"
-                      }`}>
-                        {submissionStatus.status === "success" && (
-                          <Check className="inline-block h-5 w-5 mr-2 -mt-1" />
-                        )}
-                        {submissionStatus.message}
-                      </div>
-                    )}
-                    
-                    <div className="flex justify-end space-x-2">
-                      <Button variant="outline" type="button" onClick={() => form.reset()}>
-                        Reset
-                      </Button>
-                      <Button 
-                        type="button" 
-                        onClick={() => setIsPreview(true)}
-                      >
-                        Preview
-                      </Button>
-                      <Button 
-                        type="submit"
-                        disabled={createJobMutation.isPending || submissionStatus.status === "success"}
-                      >
-                        <Save className="mr-2 h-4 w-4" />
-                        {
-                          submissionStatus.status === "success" 
-                            ? "Vacancy Submitted Successfully!"
-                            : createJobMutation.isPending 
-                            ? "Posting..." 
-                            : "Post Job"
-                        }
-                      </Button>
-                    </div>
+                  <div className="flex justify-end space-x-2">
+                    <Button variant="outline" type="button" onClick={() => form.reset()}>
+                      Reset
+                    </Button>
+                    <Button 
+                      type="button" 
+                      onClick={() => setIsPreview(true)}
+                    >
+                      Preview
+                    </Button>
+                    <Button 
+                      type="submit"
+                      disabled={createJobMutation.isPending}
+                    >
+                      <Save className="mr-2 h-4 w-4" />
+                      {createJobMutation.isPending ? "Posting..." : "Post Job"}
+                    </Button>
                   </div>
                 </form>
               </Form>

@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
@@ -36,10 +35,7 @@ import {
   Copy,
   Check,
   RefreshCw,
-  UserCog,
-  MoreHorizontal,
-  Plus,
-  Upload
+  UserCog
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -110,12 +106,9 @@ function AdminPage() {
   const { data: jobs, isLoading: jobsLoading } = useQuery({
     queryKey: ["/api/jobs"],
     queryFn: async () => {
-      console.log("Admin fetching jobs...");
       const res = await fetch("/api/jobs");
       if (!res.ok) throw new Error("Failed to fetch jobs data");
-      const jobsData = await res.json();
-      console.log("Admin received jobs:", jobsData);
-      return jobsData;
+      return await res.json();
     },
     enabled: !!user && user.userType === "admin"
   });
@@ -241,9 +234,9 @@ function AdminPage() {
             <Briefcase className="mr-2 h-4 w-4" />
             Jobs
           </TabsTrigger>
-          <TabsTrigger value="employers">
+          <TabsTrigger value="companies">
             <Building className="mr-2 h-4 w-4" />
-            Employers
+            Companies
           </TabsTrigger>
           <TabsTrigger value="content">
             <FileText className="mr-2 h-4 w-4" />
@@ -467,101 +460,17 @@ function AdminPage() {
           </Card>
         </TabsContent>
         
-        {/* Employers Tab */}
-        <TabsContent value="employers" className="space-y-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Employer Management & Submitted Vacancies</CardTitle>
-                <CardDescription>All submitted job vacancy forms</CardDescription>
-              </div>
-              <Button size="sm" variant="outline">Refresh Data</Button>
-            </CardHeader>
-            <CardContent>
-              {jobsLoading ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-              ) : (
-                <ScrollArea className="h-[500px]">
-                  <Table>
-                    <TableCaption>List of all submitted vacancy forms</TableCaption>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>ID</TableHead>
-                        <TableHead>Job Title</TableHead>
-                        <TableHead>Company</TableHead>
-                        <TableHead>Location</TableHead>
-                        <TableHead>Contact Email</TableHead>
-                        <TableHead>Posted</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {jobs?.length > 0 ? (
-                        jobs.map((job: Job) => (
-                          <TableRow key={job.id}>
-                            <TableCell>{job.id}</TableCell>
-                            <TableCell className="font-medium">{job.title}</TableCell>
-                            <TableCell>{job.company}</TableCell>
-                            <TableCell>{job.location}</TableCell>
-                            <TableCell>{job.contactEmail}</TableCell>
-                            <TableCell>
-                              {job.createdAt ? format(new Date(job.createdAt), "MMM d, yyyy") : "N/A"}
-                            </TableCell>
-                            <TableCell>
-                              <span className={`px-2 py-1 rounded-full text-xs ${job.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-                                {job.isActive ? "Active" : "Inactive"}
-                              </span>
-                            </TableCell>
-                            <TableCell>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" size="sm">
-                                    <MoreHorizontal className="h-4 w-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem>View Details</DropdownMenuItem>
-                                  <DropdownMenuItem>Edit Vacancy</DropdownMenuItem>
-                                  <DropdownMenuSeparator />
-                                  <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={8} className="text-center">
-                            No vacancy submissions found
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </ScrollArea>
-              )}
-            </CardContent>
-          </Card>
-          
+        {/* Companies Tab */}
+        <TabsContent value="companies" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Add New Vacancy Form</CardTitle>
-              <CardDescription>Manually create a new job vacancy posting</CardDescription>
+              <CardTitle>Company Management</CardTitle>
+              <CardDescription>All registered employers</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex space-x-2">
-                <Button variant="outline">
-                  <Plus className="h-4 w-4 mr-2" /> 
-                  Add New Vacancy
-                </Button>
-                <Button variant="outline">
-                  <Upload className="h-4 w-4 mr-2" />
-                  Import Vacancies
-                </Button>
-              </div>
+              <p className="text-sm text-muted-foreground">
+                Coming soon: Company management interface showing all registered employers and their details
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
