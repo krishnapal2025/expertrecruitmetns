@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Star } from "lucide-react";
 import expertLogo from "../../assets/er-logo-icon.png";
+import qrCodeImage from "../../assets/qr-code.jpeg";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -277,11 +278,19 @@ export default function Footer() {
                 href="https://g.page/r/CfeX4Gp1NP7PEAE/review" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="inline-flex items-center bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors"
+                className="inline-flex items-center bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors mb-4"
               >
                 <Star className="h-5 w-5 mr-2 text-yellow-400" />
                 Leave a Review
               </a>
+              
+              <div className="mt-2">
+                <img 
+                  src={qrCodeImage} 
+                  alt="Scan QR Code" 
+                  className="w-24 h-24 mx-auto bg-white p-1 rounded"
+                />
+              </div>
             </div>
           </div>
         </div>
