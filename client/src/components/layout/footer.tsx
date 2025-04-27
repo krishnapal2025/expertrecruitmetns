@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Star } from "lucide-react";
 import expertLogo from "../../assets/er-logo-icon.png";
 import qrCodeImage from "../../assets/qr-code.jpeg";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { toast } = useToast();
   
   return (
     <footer className="bg-gray-900 text-white pt-12 pb-8">
@@ -233,17 +235,51 @@ export default function Footer() {
             <div className="flex flex-col h-full pr-8">
               <h3 className="text-lg font-bold mb-3">Newsletter</h3>
               <p className="text-sm text-gray-400 mb-4">
-                Subscribe for job updates.
+                Get expert job insights and opportunity alerts.
               </p>
-              <form className="flex flex-col sm:flex-row gap-2 mt-auto" onSubmit={(e) => e.preventDefault()}>
-                <Input 
-                  type="email" 
-                  placeholder="Enter your email"
-                  className="bg-gray-700 border-gray-600 text-white sm:rounded-r-none w-full placeholder:text-gray-500 placeholder:text-sm focus:ring-0 focus:ring-offset-0 focus:border-gray-600 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
-                />
-                <Button type="submit" className="bg-primary hover:bg-primary/90 text-white font-medium sm:rounded-l-none whitespace-nowrap transition-all duration-300">
-                  Subscribe
-                </Button>
+              <form 
+                className="flex flex-col gap-3 mt-auto" 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const form = e.target as HTMLFormElement;
+                  const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+                  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                  
+                  if (email && emailRegex.test(email)) {
+                    // Here you would normally send the email to your newsletter service
+                    toast({
+                      title: "Subscription successful!",
+                      description: "Thank you for subscribing to our newsletter.",
+                      variant: "success"
+                    });
+                    form.reset();
+                  } else {
+                    toast({
+                      title: "Invalid email",
+                      description: "Please enter a valid email address.",
+                      variant: "destructive"
+                    });
+                  }
+                }}
+              >
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Input 
+                    name="email"
+                    type="email" 
+                    placeholder="Enter your email address"
+                    required
+                    className="bg-gray-700 border-gray-600 text-white sm:rounded-r-none w-full placeholder:text-gray-500 placeholder:text-sm focus:ring-1 focus:ring-primary focus:border-primary focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none"
+                  />
+                  <Button 
+                    type="submit" 
+                    className="bg-primary hover:bg-primary/90 text-white font-medium sm:rounded-l-none whitespace-nowrap transition-all duration-300"
+                  >
+                    Subscribe
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-500">
+                  We respect your privacy. Unsubscribe anytime.
+                </p>
               </form>
             </div>
             
