@@ -9,6 +9,7 @@ import headhuntersDubaiImage from "../assets/pexels-photo-5685937.webp";
 import executiveSearchImage from "../assets/pexels-photo-8730284.webp";
 import recruitmentAgenciesImage from "../assets/pexels-photo-4344860.webp";
 import bestRecruitmentAgencyImage from "../assets/pexels-photo-3307862.webp";
+import partnerHeadhuntersDubaiImage from "../assets/pexels-photo-5668858.webp";
 
 // Sample blog data
 const blogPosts = [
@@ -54,13 +55,13 @@ const blogPosts = [
   },
   {
     id: 5,
-    title: "Mastering the Art of Salary Negotiation",
-    excerpt: "Learn effective techniques for negotiating your salary and securing the compensation package you deserve.",
-    category: "Career Advice",
-    author: "James Wilson",
-    date: "June 10, 2023",
-    readTime: "7 min read",
-    image: "https://images.unsplash.com/photo-1573496130407-57329f01f769"
+    title: "Partner with HeadHunters Dubai",
+    excerpt: "Why Partnering with a HeadHunter in Dubai Can Skyrocket Your Talent Acquisition",
+    category: "Executive Recruitment",
+    author: "David Chen",
+    date: "April 27, 2025",
+    readTime: "8 min read",
+    image: partnerHeadhuntersDubaiImage
   },
   {
     id: 6,
