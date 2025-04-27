@@ -166,7 +166,7 @@ function AdminPage() {
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-6 mb-8">
+        <TabsList className="grid grid-cols-5 mb-8">
           <TabsTrigger value="dashboard">
             <RefreshCw className="mr-2 h-4 w-4" />
             Dashboard
@@ -178,10 +178,6 @@ function AdminPage() {
           <TabsTrigger value="jobs">
             <Briefcase className="mr-2 h-4 w-4" />
             Jobs
-          </TabsTrigger>
-          <TabsTrigger value="companies">
-            <Building className="mr-2 h-4 w-4" />
-            Companies
           </TabsTrigger>
           <TabsTrigger value="content">
             <FileText className="mr-2 h-4 w-4" />
@@ -406,20 +402,7 @@ function AdminPage() {
           </Card>
         </TabsContent>
         
-        {/* Companies Tab */}
-        <TabsContent value="companies" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Company Management</CardTitle>
-              <CardDescription>All registered employers</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Coming soon: Company management interface showing all registered employers and their details
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+        {/* Companies Tab removed */}
         
         {/* Content Tab */}
         <TabsContent value="content" className="space-y-4">
