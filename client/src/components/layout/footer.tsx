@@ -234,11 +234,11 @@ export default function Footer() {
             
             <div className="flex flex-col h-full pr-8">
               <h3 className="text-lg font-bold mb-3">Newsletter</h3>
-              <p className="text-sm text-gray-400 mb-4">
+              <p className="text-sm text-gray-400 mb-2">
                 Get expert job insights and opportunity alerts.
               </p>
               <form 
-                className="flex flex-col gap-3 mt-auto" 
+                className="flex flex-col gap-2" 
                 onSubmit={(e) => {
                   e.preventDefault();
                   const form = e.target as HTMLFormElement;
@@ -249,8 +249,7 @@ export default function Footer() {
                     // Here you would normally send the email to your newsletter service
                     toast({
                       title: "Subscription successful!",
-                      description: "Thank you for subscribing to our newsletter.",
-                      variant: "success"
+                      description: "Thank you for subscribing to our newsletter."
                     });
                     form.reset();
                   } else {
@@ -262,22 +261,22 @@ export default function Footer() {
                   }
                 }}
               >
-                <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex flex-row gap-2">
                   <Input 
                     name="email"
                     type="email" 
-                    placeholder="Enter your email address"
+                    placeholder="Enter your email"
                     required
-                    className="bg-gray-700 border-gray-600 text-white sm:rounded-r-none w-full placeholder:text-gray-500 placeholder:text-sm focus:ring-1 focus:ring-primary focus:border-primary focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none"
+                    className="bg-gray-700 border-gray-600 text-white rounded-r-none w-full placeholder:text-gray-500 placeholder:text-sm focus:ring-1 focus:ring-primary focus:border-primary focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none"
                   />
                   <Button 
                     type="submit" 
-                    className="bg-primary hover:bg-primary/90 text-white font-medium sm:rounded-l-none whitespace-nowrap transition-all duration-300"
+                    className="bg-primary hover:bg-primary/90 text-white font-medium rounded-l-none whitespace-nowrap transition-all duration-300"
                   >
                     Subscribe
                   </Button>
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 mt-1">
                   We respect your privacy. Unsubscribe anytime.
                 </p>
               </form>
