@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useLocation, Link } from "wouter";
 import headhuntersDubaiImage from "../assets/pexels-photo-7709181.jpg";
 import recruitmentAgenciesImage from "../assets/career-meeting.png";
+import bestRecruitmentAgencyImage from "../assets/dubai-office-meeting.jpeg";
 
 // Sample blog data
 const blogPosts = [
@@ -42,13 +43,13 @@ const blogPosts = [
   },
   {
     id: 4,
-    title: "Navigating Career Changes: A Step-by-Step Guide",
-    excerpt: "Considering a career change? This comprehensive guide will help you transition smoothly to a new professional path.",
-    category: "Career Development",
-    author: "Emma Rodriguez",
-    date: "May 22, 2023",
+    title: "Best Recruitment Agency in Dubai",
+    excerpt: "Best Recruitment Agency in Dubai – Find Skilled Talent Today through effective partnership with a top recruitment agency.",
+    category: "Recruitment",
+    author: "Sarah Khan",
+    date: "April 27, 2025",
     readTime: "10 min read",
-    image: "https://images.unsplash.com/photo-1556761175-4b46a572b786"
+    image: bestRecruitmentAgencyImage
   },
   {
     id: 5,
@@ -76,6 +77,7 @@ const categories = [
   "All Categories",
   "Executive Recruitment",
   "UAE Recruitment",
+  "Recruitment",
   "Career Advice",
   "Interview Tips",
   "Industry Trends",
