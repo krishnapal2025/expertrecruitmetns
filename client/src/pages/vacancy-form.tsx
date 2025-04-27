@@ -118,11 +118,30 @@ export default function VacancyFormPage() {
     setIsSubmitting(true);
     
     try {
-      // For demo purposes - simulating API call with timeout
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Convert data.applicationDeadline to ISO string
+      const formData = {
+        ...data,
+        applicationDeadline: data.applicationDeadline.toISOString(),
+        
+        // Mapping from form field names to backend field names
+        experienceRequired: data.experienceLevel,
+        skillsRequired: data.requiredSkills,
+        requirements: data.employmentType + " - " + data.salaryRange,
+      };
       
-      // Log the form data (would be sent to the server in a real app)
-      console.log("Vacancy form data:", data);
+      // Make the actual API call to the backend
+      const response = await fetch("/api/vacancy", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to submit vacancy");
+      }
       
       // Show success message
       toast({
@@ -136,9 +155,10 @@ export default function VacancyFormPage() {
       setIsSuccess(true);
       window.scrollTo(0, 0);
     } catch (error) {
+      console.error("Vacancy submission error:", error);
       toast({
         title: "Error submitting vacancy",
-        description: "There was a problem submitting your vacancy. Please try again.",
+        description: error instanceof Error ? error.message : "There was a problem submitting your vacancy. Please try again.",
         variant: "destructive",
       });
     } finally {

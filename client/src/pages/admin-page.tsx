@@ -115,9 +115,9 @@ function AdminPage() {
   
   // Fetch vacancies
   const { data: vacancies, isLoading: vacanciesLoading } = useQuery({
-    queryKey: ["/api/vacancies"],
+    queryKey: ["/api/admin/vacancies"],
     queryFn: async () => {
-      const res = await fetch("/api/vacancies");
+      const res = await fetch("/api/admin/vacancies");
       if (!res.ok) throw new Error("Failed to fetch vacancies data");
       return await res.json();
     },
@@ -160,7 +160,7 @@ function AdminPage() {
   // Update vacancy status mutation
   const updateVacancyStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: number, status: string }) => {
-      const res = await apiRequest("PATCH", `/api/vacancies/${id}/status`, { status });
+      const res = await apiRequest("PATCH", `/api/admin/vacancies/${id}/status`, { status });
       if (!res.ok) {
         const error = await res.json();
         throw new Error(error.message || "Failed to update vacancy status");
@@ -172,7 +172,7 @@ function AdminPage() {
         title: "Vacancy status updated",
         description: "The vacancy status has been updated successfully.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/vacancies"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/vacancies"] });
     },
     onError: (error: Error) => {
       toast({
