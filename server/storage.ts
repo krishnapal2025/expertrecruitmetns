@@ -1281,6 +1281,50 @@ export class MemStorage implements IStorage {
     this.admins.set(adminId, updatedAdmin);
     return updatedAdmin;
   }
+
+  // Vacancy methods
+  async getVacancy(id: number): Promise<Vacancy | undefined> {
+    return this.vacancies.get(id);
+  }
+
+  async getVacancies(): Promise<Vacancy[]> {
+    return Array.from(this.vacancies.values());
+  }
+
+  async createVacancy(insertVacancy: InsertVacancy): Promise<Vacancy> {
+    const id = this.vacancyIdCounter++;
+    const now = new Date();
+    
+    const vacancy: Vacancy = {
+      ...insertVacancy,
+      id,
+      status: insertVacancy.status || "pending",
+      submittedAt: insertVacancy.submittedAt || now,
+      reviewedAt: null,
+      reviewedBy: null,
+      notes: null
+    };
+    
+    this.vacancies.set(id, vacancy);
+    return vacancy;
+  }
+
+  async updateVacancyStatus(id: number, status: string): Promise<Vacancy | undefined> {
+    const vacancy = this.vacancies.get(id);
+    if (!vacancy) {
+      return undefined;
+    }
+
+    const now = new Date();
+    const updatedVacancy: Vacancy = {
+      ...vacancy,
+      status,
+      reviewedAt: now
+    };
+
+    this.vacancies.set(id, updatedVacancy);
+    return updatedVacancy;
+  }
 }
 
 // Use Database storage for persistent data
