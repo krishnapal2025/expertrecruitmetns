@@ -8,6 +8,7 @@ import { useLocation, Link } from "wouter";
 import headhuntersDubaiImage from "../assets/pexels-photo-7709181.jpg";
 import recruitmentAgenciesImage from "../assets/career-meeting.png";
 import bestRecruitmentAgencyImage from "../assets/dubai-office-meeting.jpeg";
+import executiveSearchImage from "../assets/pexels-photo-4344878.webp";
 
 // Sample blog data
 const blogPosts = [
@@ -19,7 +20,7 @@ const blogPosts = [
     author: "James Wilson",
     date: "April 27, 2025",
     readTime: "10 min read",
-    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf"
+    image: executiveSearchImage
   },
   {
     id: 2,
@@ -77,7 +78,6 @@ const categories = [
   "All Categories",
   "Executive Recruitment",
   "UAE Recruitment",
-  "Recruitment",
   "Career Advice",
   "Interview Tips",
   "Industry Trends",
@@ -187,7 +187,7 @@ export default function BlogsPage() {
               <div className="flex flex-col md:flex-row">
                 <div className="md:w-1/2 h-60 md:h-auto">
                   <img
-                    src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf"
+                    src={executiveSearchImage}
                     alt="Executive Search Firms article"
                     className="w-full h-full object-cover"
                   />
