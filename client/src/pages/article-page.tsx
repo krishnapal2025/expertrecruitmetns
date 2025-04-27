@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import headhuntersDubaiImage from "../assets/pexels-photo-7709181.jpg";
+import recruitmentAgenciesImage from "../assets/career-meeting.png";
 
 type Article = {
   id: number;
@@ -363,7 +364,7 @@ const articlesData: Article[] = [
     authorImage: "https://randomuser.me/api/portraits/men/22.jpg",
     date: "April 27, 2025",
     readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf",
+    image: recruitmentAgenciesImage,
     tags: ["Recruitment", "UAE", "Dubai", "Headhunting", "Talent Acquisition", "Employment"]
   }
 ];

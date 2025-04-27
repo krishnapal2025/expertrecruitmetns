@@ -6,6 +6,7 @@ import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen, Calenda
 import { useState } from "react";
 import { useLocation, Link } from "wouter";
 import headhuntersDubaiImage from "../assets/pexels-photo-7709181.jpg";
+import recruitmentAgenciesImage from "../assets/career-meeting.png";
 
 // Sample blog data
 const blogPosts = [
@@ -37,7 +38,7 @@ const blogPosts = [
     author: "David Chen",
     date: "April 27, 2025",
     readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf"
+    image: recruitmentAgenciesImage
   },
   {
     id: 4,
