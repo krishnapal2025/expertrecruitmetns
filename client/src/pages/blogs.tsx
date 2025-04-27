@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen } from "lucide-react";
 import { useState } from "react";
+import { useLocation } from "wouter";
 
 // Sample blog data
 const blogPosts = [
@@ -83,6 +84,7 @@ const categories = [
 export default function BlogsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [, setLocation] = useLocation();
 
   // Filter blogs based on search term and category
   const filteredBlogs = blogPosts.filter(blog => {
@@ -201,7 +203,7 @@ export default function BlogsPage() {
                     </div>
                   </CardContent>
                   <CardFooter className="p-0">
-                    <Button className="mt-2">
+                    <Button className="mt-2" onClick={() => setLocation("/article/1")}>
                       Read Article
                       <ChevronRight className="ml-1 h-4 w-4" />
                     </Button>
@@ -244,7 +246,13 @@ export default function BlogsPage() {
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Button variant="outline" className="w-full">Read Article</Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => setLocation(`/article/${post.id}`)}
+                    >
+                      Read Article
+                    </Button>
                   </CardFooter>
                 </Card>
               ))}
