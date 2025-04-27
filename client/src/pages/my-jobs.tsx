@@ -184,7 +184,9 @@ export default function PostManagerPage() {
               </Button>
             )}
             
-            <Dialog>
+            <Dialog onOpenChange={(open) => {
+                if (!open) setJobToDelete(null);
+              }}>
               <DialogTrigger asChild>
                 <Button 
                   variant="destructive" 
@@ -209,7 +211,10 @@ export default function PostManagerPage() {
                   </Button>
                   <Button 
                     variant="destructive" 
-                    onClick={confirmDelete}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      confirmDelete();
+                    }}
                     disabled={deleteJobMutation.isPending}
                   >
                     {deleteJobMutation.isPending ? "Deleting..." : "Delete Job"}
