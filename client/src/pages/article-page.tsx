@@ -166,6 +166,95 @@ const articlesData: Article[] = [
     readTime: "10 min read",
     image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
     tags: ["Executive Search", "Recruitment", "Leadership", "Talent Acquisition", "HR Strategy", "Career Development", "Business Growth"]
+  },
+  {
+    id: 2,
+    title: "Top Headhunters in Dubai",
+    content: `
+      <h2>Top Headhunters in Dubai</h2>
+      
+      <h3>How We Helped a Tech Firm Hire the Perfect C-Suite Candidate</h3>
+      
+      <p>Finding the right leadership is crucial for any company's success, but for a rapidly growing tech firm in Dubai, securing a top-tier C-suite executive was proving to be a significant challenge. The company required a visionary leader with deep industry expertise, a proven track record of scaling businesses, and the ability to drive innovation in a competitive market.</p>
+      
+      <p>Expert Recruitments, one of the leading executive search firms in Dubai, stepped in to streamline the recruitment process and ensure a perfect match. This case study highlights how our strategic approach, industry insights, and extensive network helped this tech firm secure an outstanding leader.</p>
+      
+      <h3>The Challenge: Hiring the Right C-Suite Executive</h3>
+      
+      <p>The firm faced several hurdles in its search for the right executive:</p>
+      
+      <ul>
+        <li><strong>Limited Talent Pool:</strong> The demand for high-caliber executives in the tech industry exceeded supply, making it difficult to find candidates with the right mix of experience and vision.</li>
+        <li><strong>Market Competition:</strong> Other major players in Dubai and the UAE were also vying for top talent, increasing hiring complexity.</li>
+        <li><strong>Cultural Fit:</strong> Beyond skills and experience, the company needed an executive who could seamlessly align with its mission, values, and corporate culture.</li>
+      </ul>
+      
+      <p>Despite internal recruitment efforts, the firm struggled to identify candidates who met all their requirements. That's when they turned to Expert Recruitments, a premier recruitment agency in Dubai specializing in executive searches.</p>
+      
+      <h3>The Solution: A Targeted Executive Search Approach</h3>
+      
+      <h4>Step 1: Understanding Client Needs</h4>
+      
+      <p>Our first step was an in-depth consultation with the firm's leadership team to understand their specific needs, business objectives, and expectations for the role. We developed a comprehensive candidate profile based on the following key criteria:</p>
+      
+      <ul>
+        <li>Proven leadership experience in the tech industry</li>
+        <li>Expertise in digital transformation and innovation</li>
+        <li>Strong strategic and financial acumen</li>
+        <li>Ability to lead cross-functional teams in a dynamic environment</li>
+        <li>Cultural alignment with the company's vision</li>
+      </ul>
+      
+      <h4>Step 2: Market Research & Talent Mapping</h4>
+      
+      <p>Using our proprietary database and industry connections, we conducted a talent mapping exercise to identify potential candidates in Dubai and beyond. As one of the top headhunters in Dubai, we leveraged:</p>
+      
+      <ul>
+        <li>A network of senior executives and passive candidates not actively looking for jobs</li>
+        <li>Insights into competitors' leadership structures</li>
+        <li>Data-driven assessment tools to shortlist the best prospects</li>
+      </ul>
+      
+      <h4>Step 3: Executive Outreach & Screening</h4>
+      
+      <p>We engaged in confidential discussions with potential candidates, assessing their experience, leadership style, and long-term career aspirations. Our rigorous screening process included:</p>
+      
+      <ul>
+        <li><strong>Behavioral Interviews:</strong> Evaluating leadership capabilities, problem-solving skills, and strategic mindset.</li>
+        <li><strong>Technical Assessments:</strong> Ensuring the candidate's expertise aligned with the firm's technological advancements.</li>
+        <li><strong>Cultural Fit Analysis:</strong> Using psychometric assessments and structured interviews to gauge compatibility with the company's culture.</li>
+      </ul>
+      
+      <h4>Step 4: Presenting Shortlisted Candidates</h4>
+      
+      <p>After a detailed evaluation, we presented a shortlist of three highly qualified candidates, each with unique strengths that met the firm's criteria. We facilitated interviews, provided insights into compensation trends, and assisted in contract negotiations to ensure a smooth hiring process.</p>
+      
+      <h3>The Outcome: Transformational Leadership and Business Growth</h3>
+      
+      <p>The selected candidate, a seasoned tech executive with over 15 years of industry experience, seamlessly integrated into the organization and made an immediate impact. Within six months of onboarding:</p>
+      
+      <ul>
+        <li>The company saw a 15% increase in operational efficiency through strategic process optimizations.</li>
+        <li>New revenue streams were introduced, boosting profitability by 20%.</li>
+        <li>Employee engagement and retention improved due to enhanced leadership and vision alignment.</li>
+      </ul>
+      
+      <p>The success of this placement reinforced Expert Recruitments' reputation as a trusted headhunter in Dubai, specializing in executive search and UAE recruitment.</p>
+      
+      <h3>Let's Find Your Next Executive Leader</h3>
+      
+      <p>Hiring the right executive is a game-changer for any business. If your company is struggling to secure top-tier leadership, Expert Recruitments can help. With a proven track record in executive search, we connect you with the best talent to drive your business forward.</p>
+      
+      <p>Contact us today to find out how we can help you secure the leadership your company deserves.</p>
+    `,
+    category: "UAE Recruitment",
+    author: "Sarah Ahmed",
+    authorTitle: "Executive Search Consultant",
+    authorImage: "https://randomuser.me/api/portraits/women/36.jpg",
+    date: "April 25, 2025",
+    readTime: "7 min read",
+    image: "https://images.unsplash.com/photo-1582647509771-5aa9755b620d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+    tags: ["Executive Search", "Dubai", "UAE", "C-Suite", "Tech Industry", "Case Study", "Leadership"]
   }
 ];
 
@@ -195,7 +284,8 @@ export default function ArticlePage() {
         setLocation("/blogs");
       }
     }
-  }, [params, setLocation]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params?.id]);
   
   if (!article) {
     return (

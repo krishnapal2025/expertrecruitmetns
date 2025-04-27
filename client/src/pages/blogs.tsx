@@ -20,13 +20,13 @@ const blogPosts = [
   },
   {
     id: 2,
-    title: "How to Ace Your Job Interview: Expert Strategies",
-    excerpt: "Prepare for your next job interview with these proven strategies that will help you make a great impression.",
-    category: "Interview Tips",
-    author: "Michael Anderson",
-    date: "April 28, 2023",
-    readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf"
+    title: "Top Headhunters in Dubai",
+    excerpt: "How we helped a tech firm hire the perfect C-Suite candidate through our specialized executive search process and industry network.",
+    category: "UAE Recruitment",
+    author: "Sarah Ahmed",
+    date: "April 25, 2025",
+    readTime: "7 min read",
+    image: "https://images.unsplash.com/photo-1582647509771-5aa9755b620d"
   },
   {
     id: 3,
@@ -73,6 +73,7 @@ const blogPosts = [
 const categories = [
   "All Categories",
   "Executive Recruitment",
+  "UAE Recruitment",
   "Career Advice",
   "Interview Tips",
   "Industry Trends",
