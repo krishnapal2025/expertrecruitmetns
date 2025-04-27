@@ -931,7 +931,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "You can only delete your own job listings" });
       }
 
-      // Delete the job
+      // First, get all applications for this job
+      const applications = await storage.getApplicationsByJobId(jobId);
+      
+      // Delete all applications associated with this job
+      if (applications.length > 0) {
+        try {
+          for (const application of applications) {
+            await storage.deleteApplication(application.id);
+          }
+        } catch (err) {
+          console.error("Error deleting job applications:", err);
+          return res.status(500).json({ message: "Failed to delete associated applications" });
+        }
+      }
+      
+      // Now delete the job
       const success = await storage.deleteJob(jobId);
       if (!success) {
         return res.status(500).json({ message: "Failed to delete job" });
