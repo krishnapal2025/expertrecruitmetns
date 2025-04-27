@@ -12,6 +12,7 @@ import RealtimeJobs from "@/components/job/real-time-jobs";
 import RealtimeApplications from "@/components/job/real-time-applications";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
+import hireTalentImage from "../assets/hire-talent-image.webp";
 
 export default function HomePage() {
   const { currentUser } = useAuth();
@@ -121,8 +122,8 @@ export default function HomePage() {
                 <div className="md:w-2/5 aspect-video md:aspect-square rounded-xl overflow-hidden">
                   <div className="w-full h-full relative">
                     <img 
-                      src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1500&auto=format&fit=crop"
-                      alt="Team of business professionals" 
+                      src={hireTalentImage}
+                      alt="Professional business handshake" 
                       className="w-full h-full object-cover object-center scale-105 group-hover:scale-110 transition-transform duration-700"
                     />
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 to-purple-600/60"></div>
