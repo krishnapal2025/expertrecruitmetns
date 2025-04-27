@@ -73,16 +73,7 @@ function AdminPage() {
     enabled: !!user && user.userType === "admin"
   });
   
-  // Fetch invitation codes
-  const { data: invitationCodes, isLoading: invitationsLoading } = useQuery({
-    queryKey: ["/api/admin/invitation-codes"],
-    queryFn: async () => {
-      const res = await fetch("/api/admin/invitation-codes");
-      if (!res.ok) throw new Error("Failed to fetch invitation codes");
-      return await res.json();
-    },
-    enabled: !!user && user.userType === "admin"
-  });
+  // Removed invitation codes fetching
   
   // Fetch users
   const { data: users, isLoading: usersLoading } = useQuery({
@@ -117,38 +108,7 @@ function AdminPage() {
     enabled: !!user && user.userType === "admin"
   });
   
-  // Create invitation code mutation
-  const createInvitationMutation = useMutation({
-    mutationFn: async (data: { email: string, code: string, expiresAt: string }) => {
-      const res = await apiRequest("POST", "/api/admin/invitation-codes", data);
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Failed to create invitation code");
-      }
-      return await res.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Invitation code created",
-        description: "The invitation code has been created successfully.",
-      });
-      setCreateInvitationOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/invitation-codes"] });
-      // Reset form
-      setNewInvitation({
-        email: "",
-        code: generateRandomCode(),
-        expiresAt: getDefaultExpiryDate()
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Failed to create invitation code",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+  // Removed invitation code mutation
   
   // Update vacancy status mutation
   const updateVacancyStatusMutation = useMutation({
@@ -190,52 +150,7 @@ function AdminPage() {
     }
   }, [user, adminLoading, navigate, toast]);
   
-  // Generate random code
-  function generateRandomCode() {
-    return Math.random().toString(36).substring(2, 10).toUpperCase();
-  }
-  
-  // Get default expiry date (7 days from now)
-  function getDefaultExpiryDate() {
-    const date = new Date();
-    date.setDate(date.getDate() + 7);
-    return date.toISOString().split("T")[0];
-  }
-  
-  // Handle copy code to clipboard
-  const handleCopyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-    toast({
-      title: "Copied to clipboard",
-      description: `Invitation code ${code} copied to clipboard`,
-    });
-  };
-  
-  // Create invitation code
-  const handleCreateInvitation = () => {
-    if (!newInvitation.email) {
-      toast({
-        title: "Email required",
-        description: "Please enter an email address for the invitation.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    createInvitationMutation.mutate({
-      email: newInvitation.email,
-      code: newInvitation.code,
-      expiresAt: new Date(newInvitation.expiresAt).toISOString()
-    });
-  };
-  
-  // Generate new code
-  const handleRegenerateCode = () => {
-    setNewInvitation({
-      ...newInvitation,
-      code: generateRandomCode()
-    });
-  };
+  // Removed invitation code helper functions
   
   // Loading state
   if (!user || adminLoading) {
@@ -328,29 +243,30 @@ function AdminPage() {
             
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle>Pending Invitations</CardTitle>
-                <CardDescription>Admin invitation codes</CardDescription>
+                <CardTitle>Vacancies</CardTitle>
+                <CardDescription>Submitted vacancy requests</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">
-                  {invitationsLoading ? (
+                  {vacanciesLoading ? (
                     <Loader2 className="h-6 w-6 animate-spin" />
                   ) : (
-                    invitationCodes?.filter((code: InvitationCode) => 
-                      !code.isUsed && new Date(code.expiresAt) > new Date()
-                    ).length || 0
+                    vacancies?.length || 0
                   )}
                 </div>
                 <div className="text-xs text-muted-foreground mt-1">
-                  Expired: {invitationCodes?.filter((code: InvitationCode) => 
-                    !code.isUsed && new Date(code.expiresAt) <= new Date()
-                  ).length || 0} | 
-                  Used: {invitationCodes?.filter((code: InvitationCode) => code.isUsed).length || 0}
+                  {!vacanciesLoading && vacancies?.length > 0 && (
+                    <>
+                      Pending: {vacancies?.filter((v: any) => v.status === "pending").length || 0} | 
+                      Approved: {vacancies?.filter((v: any) => v.status === "approved").length || 0} | 
+                      Rejected: {vacancies?.filter((v: any) => v.status === "rejected").length || 0}
+                    </>
+                  )}
                 </div>
               </CardContent>
               <CardFooter>
-                <Button variant="outline" size="sm" className="w-full" onClick={() => setActiveTab("settings")}>
-                  Manage Invitations
+                <Button variant="outline" size="sm" className="w-full" onClick={() => setActiveTab("content")}>
+                  Manage Vacancies
                 </Button>
               </CardFooter>
             </Card>
