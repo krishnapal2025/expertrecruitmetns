@@ -323,8 +323,8 @@ export default function AboutUsPage() {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <img 
-                src="/attached_assets/pexels-photo-3184296.webp" 
-                alt="Business professionals collaborating on recruitment strategy"
+                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf" 
+                alt="Executive recruitment professionals in Dubai"
                 className="w-full h-auto rounded-xl"
               />
             </motion.div>
