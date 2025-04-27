@@ -11,6 +11,12 @@ import recruitmentAgenciesImage from "../assets/pexels-photo-4344860.webp";
 import bestRecruitmentAgencyImage from "../assets/pexels-photo-3307862.webp";
 import partnerHeadhuntersDubaiImage from "../assets/pexels-photo-5668858.webp";
 import recruitmentAgenciesForMNCs from "../assets/pexels-photo-7078666.jpeg";
+import techGrowthImage from "../assets/articles/tech-growth.jpg";
+import remoteWorkImage from "../assets/articles/remote-work.jpg";
+import healthcareImage from "../assets/articles/healthcare.jpg";
+import sustainabilityImage from "../assets/articles/sustainability.jpg";
+import educationImage from "../assets/articles/education.jpg";
+import gigEconomyImage from "../assets/articles/gig-economy.jpg";
 
 type Article = {
   id: number;
@@ -742,7 +748,7 @@ const articlesData: Article[] = [
     author: "Dr. Sara Menendez",
     date: "April 20, 2025",
     readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&h=450&fit=crop",
+    image: techGrowthImage,
     excerpt: "Google, Microsoft, and NVIDIA lead unprecedented demand for AI engineers and data scientists with 35% growth projected for 2025.",
     authorImage: "https://randomuser.me/api/portraits/women/23.jpg",
     authorTitle: "Technology Recruitment Director",
@@ -837,7 +843,7 @@ const articlesData: Article[] = [
     author: "Alex Robertson",
     date: "April 15, 2025",
     readTime: "9 min read",
-    image: "https://images.unsplash.com/photo-1593642634367-d91a135587b5?q=80&w=800&h=450&fit=crop",
+    image: remoteWorkImage,
     excerpt: "Amazon, GitLab, and Spotify lead the remote work revolution, now offering 76% of positions as permanent remote across departments.",
     authorImage: "https://randomuser.me/api/portraits/men/32.jpg",
     authorTitle: "Future of Work Consultant",
@@ -933,7 +939,7 @@ const articlesData: Article[] = [
     author: "Dr. Priya Sharma",
     date: "April 18, 2025",
     readTime: "10 min read",
-    image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&h=450&fit=crop",
+    image: healthcareImage,
     excerpt: "Mayo Clinic, Kaiser Permanente, and Cleveland Clinic projected to add 1.5 million healthcare jobs over the next five years.",
     authorImage: "https://randomuser.me/api/portraits/women/65.jpg",
     authorTitle: "Healthcare Workforce Analyst",
@@ -1045,7 +1051,7 @@ const articlesData: Article[] = [
     author: "Michael Cohen",
     date: "April 17, 2025",
     readTime: "9 min read",
-    image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=800&h=450&fit=crop",
+    image: sustainabilityImage,
     excerpt: "Tesla, Patagonia & Unilever lead Fortune 500 growth with ESG positions increasing by 45% in the past year.",
     authorImage: "https://randomuser.me/api/portraits/men/54.jpg",
     authorTitle: "Sustainable Business Consultant",
@@ -1173,7 +1179,7 @@ const articlesData: Article[] = [
     author: "Dr. Emily Washington",
     date: "April 15, 2025",
     readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?q=80&w=800&h=450&fit=crop",
+    image: educationImage,
     excerpt: "Coursera, Udemy & Khan Academy EdTech specialists among fastest-growing education roles as digital learning transforms the sector.",
     authorImage: "https://randomuser.me/api/portraits/women/76.jpg",
     authorTitle: "Educational Innovation Researcher",
@@ -1297,7 +1303,7 @@ const articlesData: Article[] = [
     author: "Daniel Fernandez",
     date: "April 19, 2025",
     readTime: "9 min read",
-    image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=800&h=450&fit=crop",
+    image: gigEconomyImage,
     excerpt: "Upwork, Fiverr & Toptal freelance marketplace expected to represent 50% of workforce by 2027, transforming traditional employment models.",
     authorImage: "https://randomuser.me/api/portraits/men/29.jpg",
     authorTitle: "Future of Work Strategist",

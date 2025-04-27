@@ -11,9 +11,12 @@ import recruitmentAgenciesImage from "../assets/pexels-photo-4344860.webp";
 import bestRecruitmentAgencyImage from "../assets/pexels-photo-3307862.webp";
 import partnerHeadhuntersDubaiImage from "../assets/pexels-photo-5668858.webp";
 import recruitmentAgenciesForMNCs from "../assets/pexels-photo-7078666.jpeg";
-import techGrowthImage from "../assets/pexels-photo-4344878.webp";
-import remoteWorkImage from "../assets/pexels-photo-7709181.jpg";
-import healthcareImage from "../assets/photo-1556761175-4b46a572b786.jpeg";
+import techGrowthImage from "../assets/articles/tech-growth.jpg";
+import remoteWorkImage from "../assets/articles/remote-work.jpg";
+import healthcareImage from "../assets/articles/healthcare.jpg";
+import sustainabilityImage from "../assets/articles/sustainability.jpg";
+import educationImage from "../assets/articles/education.jpg";
+import gigEconomyImage from "../assets/articles/gig-economy.jpg";
 
 // Sample blog data
 const blogPosts = [
