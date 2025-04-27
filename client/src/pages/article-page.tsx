@@ -10,6 +10,7 @@ import executiveSearchImage from "../assets/pexels-photo-8730284.webp";
 import recruitmentAgenciesImage from "../assets/pexels-photo-4344860.webp";
 import bestRecruitmentAgencyImage from "../assets/pexels-photo-3307862.webp";
 import partnerHeadhuntersDubaiImage from "../assets/pexels-photo-5668858.webp";
+import recruitmentAgenciesForMNCs from "../assets/pexels-photo-7078666.jpeg";
 
 type Article = {
   id: number;
