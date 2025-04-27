@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useLocation, useRoute, Link } from "wouter";
 import { Helmet } from "react-helmet";
-import { ChevronLeft, Clock, User, Share2, BookmarkPlus, Calendar, Tag } from "lucide-react";
+import { ChevronLeft, Clock, User, Share2, BookmarkPlus, Calendar, Tag, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import headhuntersDubaiImage from "../assets/pexels-photo-7709181.jpg";
 
 type Article = {
   id: number;
@@ -253,7 +254,7 @@ const articlesData: Article[] = [
     authorImage: "https://randomuser.me/api/portraits/women/36.jpg",
     date: "April 25, 2025",
     readTime: "7 min read",
-    image: "/assets/pexels-photo-7709181.jpg",
+    image: headhuntersDubaiImage,
     tags: ["Executive Search", "Dubai", "UAE", "C-Suite", "Tech Industry", "Case Study", "Leadership"]
   }
 ];
