@@ -1572,11 +1572,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-
-      // Get admin profile
-      const admin = await storage.getAdminByUserId(user.id);
-
-      if (!admin) {
+      
+      // Check userType directly
+      if (user.userType !== "admin") {
         return res.status(403).json({ message: "Only administrators can access vacancies" });
       }
 
