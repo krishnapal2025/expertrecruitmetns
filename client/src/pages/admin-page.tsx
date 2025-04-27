@@ -45,13 +45,6 @@ function AdminPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [currentAdminTab, setCurrentAdminTab] = useState("admins");
-  const [createInvitationOpen, setCreateInvitationOpen] = useState(false);
-  const [newInvitation, setNewInvitation] = useState({
-    email: "",
-    code: generateRandomCode(),
-    expiresAt: getDefaultExpiryDate()
-  });
   
   // Check if user is admin
   const { data: adminData, isLoading: adminLoading } = useQuery({
@@ -699,216 +692,50 @@ Additional Info: ${vacancy.additionalInformation || "None provided"}
           <Card>
             <CardHeader>
               <CardTitle>Admin Settings</CardTitle>
-              <CardDescription>Manage admin users and invitations</CardDescription>
+              <CardDescription>Manage admin users</CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs value={currentAdminTab} onValueChange={setCurrentAdminTab} className="w-full">
-                <TabsList className="grid grid-cols-2 mb-6">
-                  <TabsTrigger value="admins">
-                    <UserCog className="mr-2 h-4 w-4" />
-                    Admin Users
-                  </TabsTrigger>
-                  <TabsTrigger value="invitations">
-                    <Mail className="mr-2 h-4 w-4" />
-                    Invitation Codes
-                  </TabsTrigger>
-                </TabsList>
-                
-                {/* Admin Users Tab */}
-                <TabsContent value="admins" className="space-y-4">
-                  <ScrollArea className="h-[300px]">
-                    <Table>
-                      <TableCaption>List of admin users</TableCaption>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>ID</TableHead>
-                          <TableHead>Name</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Role</TableHead>
-                          <TableHead>Last Login</TableHead>
+              <ScrollArea className="h-[400px]">
+                <Table>
+                  <TableCaption>List of admin users</TableCaption>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>ID</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Last Login</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {adminsLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center">
+                          <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                        </TableCell>
+                      </TableRow>
+                    ) : admins?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center">
+                          No admin users found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      admins?.map((admin: Admin & { user: User }) => (
+                        <TableRow key={admin.id}>
+                          <TableCell>{admin.id}</TableCell>
+                          <TableCell>{admin.firstName} {admin.lastName}</TableCell>
+                          <TableCell>{admin.user?.email || "N/A"}</TableCell>
+                          <TableCell>{admin.role}</TableCell>
+                          <TableCell>
+                            {admin.lastLogin ? format(new Date(admin.lastLogin), "MMM d, yyyy H:mm") : "Never"}
+                          </TableCell>
                         </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {adminsLoading ? (
-                          <TableRow>
-                            <TableCell colSpan={5} className="text-center">
-                              <Loader2 className="h-6 w-6 animate-spin mx-auto" />
-                            </TableCell>
-                          </TableRow>
-                        ) : admins?.length === 0 ? (
-                          <TableRow>
-                            <TableCell colSpan={5} className="text-center">
-                              No admin users found
-                            </TableCell>
-                          </TableRow>
-                        ) : (
-                          admins?.map((admin: Admin & { user: User }) => (
-                            <TableRow key={admin.id}>
-                              <TableCell>{admin.id}</TableCell>
-                              <TableCell>{admin.firstName} {admin.lastName}</TableCell>
-                              <TableCell>{admin.user?.email || "N/A"}</TableCell>
-                              <TableCell>{admin.role}</TableCell>
-                              <TableCell>
-                                {admin.lastLogin ? format(new Date(admin.lastLogin), "MMM d, yyyy H:mm") : "Never"}
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        )}
-                      </TableBody>
-                    </Table>
-                  </ScrollArea>
-                </TabsContent>
-                
-                {/* Invitation Codes Tab */}
-                <TabsContent value="invitations" className="space-y-4">
-                  <div className="flex justify-end mb-4">
-                    <Dialog open={createInvitationOpen} onOpenChange={setCreateInvitationOpen}>
-                      <DialogTrigger asChild>
-                        <Button>
-                          <UserPlus className="mr-2 h-4 w-4" />
-                          Create Invitation
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Create Invitation Code</DialogTitle>
-                          <DialogDescription>
-                            Generate a new invitation code for admin registration
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                              id="email"
-                              placeholder="admin@example.com"
-                              value={newInvitation.email}
-                              onChange={(e) => setNewInvitation({...newInvitation, email: e.target.value})}
-                            />
-                            <p className="text-sm text-muted-foreground">
-                              The email address of the person you want to invite
-                            </p>
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="code">Invitation Code</Label>
-                            <div className="flex space-x-2">
-                              <Input
-                                id="code"
-                                value={newInvitation.code}
-                                onChange={(e) => setNewInvitation({...newInvitation, code: e.target.value})}
-                                className="flex-1"
-                              />
-                              <Button variant="outline" onClick={handleRegenerateCode} type="button">
-                                <RefreshCw className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="expiresAt">Expires At</Label>
-                            <Input
-                              id="expiresAt"
-                              type="date"
-                              value={newInvitation.expiresAt}
-                              onChange={(e) => setNewInvitation({...newInvitation, expiresAt: e.target.value})}
-                            />
-                            <p className="text-sm text-muted-foreground">
-                              The invitation code will expire after this date
-                            </p>
-                          </div>
-                        </div>
-                        <DialogFooter>
-                          <Button variant="outline" onClick={() => setCreateInvitationOpen(false)}>
-                            Cancel
-                          </Button>
-                          <Button onClick={handleCreateInvitation} disabled={createInvitationMutation.isPending}>
-                            {createInvitationMutation.isPending ? (
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : (
-                              <Mail className="mr-2 h-4 w-4" />
-                            )}
-                            Create Invitation
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                  
-                  <ScrollArea className="h-[300px]">
-                    <Table>
-                      <TableCaption>List of invitation codes</TableCaption>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Code</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Created</TableHead>
-                          <TableHead>Expires</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {invitationsLoading ? (
-                          <TableRow>
-                            <TableCell colSpan={6} className="text-center">
-                              <Loader2 className="h-6 w-6 animate-spin mx-auto" />
-                            </TableCell>
-                          </TableRow>
-                        ) : invitationCodes?.length === 0 ? (
-                          <TableRow>
-                            <TableCell colSpan={6} className="text-center">
-                              No invitation codes found
-                            </TableCell>
-                          </TableRow>
-                        ) : (
-                          invitationCodes?.map((code: InvitationCode) => (
-                            <TableRow key={code.id}>
-                              <TableCell>
-                                <div className="font-mono text-sm">{code.code}</div>
-                              </TableCell>
-                              <TableCell>{code.email}</TableCell>
-                              <TableCell>
-                                {code.isUsed ? (
-                                  <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
-                                    Used
-                                  </span>
-                                ) : new Date(code.expiresAt) <= new Date() ? (
-                                  <span className="px-2 py-1 rounded-full text-xs bg-red-100 text-red-800">
-                                    Expired
-                                  </span>
-                                ) : (
-                                  <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                                    Active
-                                  </span>
-                                )}
-                              </TableCell>
-                              <TableCell>
-                                {code.createdAt ? format(new Date(code.createdAt), "MMM d, yyyy") : "N/A"}
-                              </TableCell>
-                              <TableCell>
-                                {format(new Date(code.expiresAt), "MMM d, yyyy")}
-                              </TableCell>
-                              <TableCell>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  disabled={code.isUsed}
-                                  onClick={() => handleCopyCode(code.code)}
-                                >
-                                  {code.isUsed ? (
-                                    <Check className="h-4 w-4" />
-                                  ) : (
-                                    <Copy className="h-4 w-4" />
-                                  )}
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        )}
-                      </TableBody>
-                    </Table>
-                  </ScrollArea>
-                </TabsContent>
-              </Tabs>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </ScrollArea>
             </CardContent>
           </Card>
         </TabsContent>
