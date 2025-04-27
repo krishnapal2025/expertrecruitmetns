@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import headhuntersDubaiImage from "../assets/pexels-photo-7709181.jpg";
 import recruitmentAgenciesImage from "../assets/career-meeting.png";
+import bestRecruitmentAgencyImage from "../assets/dubai-office-meeting.jpeg";
 
 type Article = {
   id: number;
@@ -261,8 +262,7 @@ const articlesData: Article[] = [
     id: 3,
     title: "Recruitment Agencies in the UAE",
     content: `
-      <h2>Recruitment Agencies in the UAE</h2>
-      <h3>Top Recruitment Agency in UAE: Premier Headhunting Services in Dubai</h3>
+      <h2>Top Recruitment Agency in UAE: Premier Headhunting Services in Dubai</h3>
       
       <p>In an increasingly competitive job market, finding the right talent is essential for businesses striving to achieve their goals. In the UAE, recruitment agencies play a crucial role in connecting employers with potential candidates, particularly in vibrant cities like Dubai. This article delves into the significance of recruitment agencies, their key features, and the headhunting process in Dubai.</p>
       

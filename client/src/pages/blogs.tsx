@@ -34,7 +34,7 @@ const blogPosts = [
     id: 3,
     title: "Recruitment Agencies in the UAE",
     excerpt: "Top Recruitment Agency in UAE: Premier Headhunting Services in Dubai",
-    category: "Industry Trends",
+    category: "Executive Recruitment",
     author: "David Chen",
     date: "April 27, 2025",
     readTime: "8 min read",
