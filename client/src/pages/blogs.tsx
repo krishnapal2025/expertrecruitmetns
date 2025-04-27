@@ -118,7 +118,7 @@ const blogPosts = [
     author: "Michael Cohen",
     date: "April 17, 2025",
     readTime: "9 min read",
-    image: bestRecruitmentAgencyImage
+    image: sustainabilityImage
   },
   {
     id: 11,
@@ -128,7 +128,7 @@ const blogPosts = [
     author: "Dr. Emily Washington",
     date: "April 15, 2025",
     readTime: "8 min read",
-    image: partnerHeadhuntersDubaiImage
+    image: educationImage
   },
   {
     id: 12,
@@ -138,7 +138,7 @@ const blogPosts = [
     author: "Daniel Fernandez",
     date: "April 19, 2025",
     readTime: "9 min read",
-    image: recruitmentAgenciesImage
+    image: gigEconomyImage
   }
 ];
 
