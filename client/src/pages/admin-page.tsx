@@ -106,9 +106,12 @@ function AdminPage() {
   const { data: jobs, isLoading: jobsLoading } = useQuery({
     queryKey: ["/api/jobs"],
     queryFn: async () => {
+      console.log("Admin fetching jobs...");
       const res = await fetch("/api/jobs");
       if (!res.ok) throw new Error("Failed to fetch jobs data");
-      return await res.json();
+      const jobsData = await res.json();
+      console.log("Admin received jobs:", jobsData);
+      return jobsData;
     },
     enabled: !!user && user.userType === "admin"
   });

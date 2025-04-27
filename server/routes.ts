@@ -343,11 +343,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Employer profile not found" });
       }
 
-      // Create the job
+      // Create the job with debugging
+      console.log("Creating job with data:", {
+        ...validatedData,
+        employerId: employer.id
+      });
+      
       const job = await storage.createJob({
         ...validatedData,
         employerId: employer.id
       });
+      
+      console.log("Job created successfully:", job);
 
       // Update real-time store and create notifications for job seekers
       realtimeStore.lastJobId = Math.max(realtimeStore.lastJobId, job.id);
