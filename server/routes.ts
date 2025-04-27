@@ -10,8 +10,10 @@ import {
   adminRegisterSchema,
   insertInvitationCodeSchema,
   insertTestimonialSchema,
+  insertVacancySchema,
   User,
-  Admin
+  Admin,
+  Vacancy
 } from "@shared/schema";
 import { hashPassword } from "./auth";
 import { generateResetToken, sendPasswordResetEmail } from "./email-service";
@@ -1521,6 +1523,105 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching admins:", error);
       res.status(500).json({ message: "Failed to fetch admin list" });
+    }
+  });
+
+  // Vacancy form submission endpoint (public)
+  app.post("/api/vacancy", async (req, res) => {
+    try {
+      // Validate the vacancy data
+      const validatedData = insertVacancySchema.parse(req.body);
+      
+      // Set status to "pending" and submitted timestamp
+      const vacancy = await storage.createVacancy({
+        ...validatedData,
+        status: "pending",
+        submittedAt: new Date()
+      });
+      
+      res.status(201).json({ 
+        success: true, 
+        message: "Vacancy form submitted successfully", 
+        vacancy 
+      });
+    } catch (error) {
+      console.error("Error submitting vacancy form:", error);
+      
+      if (error instanceof ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ 
+          success: false,
+          message: "Validation error", 
+          errors: validationError.details 
+        });
+      }
+      
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to submit vacancy form" 
+      });
+    }
+  });
+
+  // Get all vacancies (admin only)
+  app.get("/api/admin/vacancies", async (req, res) => {
+    try {
+      // Check if user is authenticated and is an admin
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = req.user;
+
+      // Get admin profile
+      const admin = await storage.getAdminByUserId(user.id);
+
+      if (!admin) {
+        return res.status(403).json({ message: "Only administrators can access vacancies" });
+      }
+
+      const vacancies = await storage.getVacancies();
+      res.json(vacancies);
+    } catch (error) {
+      console.error("Error fetching vacancies:", error);
+      res.status(500).json({ message: "Failed to fetch vacancies" });
+    }
+  });
+
+  // Update vacancy status (admin only)
+  app.patch("/api/admin/vacancies/:id/status", async (req, res) => {
+    try {
+      // Check if user is authenticated and is an admin
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = req.user;
+      const { id } = req.params;
+      const { status } = req.body;
+
+      if (!status || !["pending", "approved", "rejected"].includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+      }
+
+      // Get admin profile
+      const admin = await storage.getAdminByUserId(user.id);
+
+      if (!admin) {
+        return res.status(403).json({ message: "Only administrators can update vacancy status" });
+      }
+
+      const vacancy = await storage.getVacancy(parseInt(id));
+      
+      if (!vacancy) {
+        return res.status(404).json({ message: "Vacancy not found" });
+      }
+
+      const updatedVacancy = await storage.updateVacancyStatus(parseInt(id), status);
+      res.json(updatedVacancy);
+    } catch (error) {
+      console.error("Error updating vacancy status:", error);
+      res.status(500).json({ message: "Failed to update vacancy status" });
     }
   });
 

@@ -664,6 +664,7 @@ export class MemStorage implements IStorage {
   private testimonials: Map<number, Testimonial>;
   private admins: Map<number, Admin>;
   private invitationCodes: Map<string, InvitationCode>;
+  private vacancies: Map<number, Vacancy>;
 
   sessionStore: session.Store;
 
@@ -675,6 +676,7 @@ export class MemStorage implements IStorage {
   private applicationIdCounter: number;
   private testimonialIdCounter: number;
   private adminIdCounter: number;
+  private vacancyIdCounter: number;
 
   constructor() {
     this.users = new Map();
@@ -685,6 +687,7 @@ export class MemStorage implements IStorage {
     this.testimonials = new Map();
     this.admins = new Map();
     this.invitationCodes = new Map();
+    this.vacancies = new Map();
 
     this.userIdCounter = 1;
     this.jobSeekerIdCounter = 1;
@@ -693,6 +696,7 @@ export class MemStorage implements IStorage {
     this.applicationIdCounter = 1;
     this.testimonialIdCounter = 1;
     this.adminIdCounter = 1;
+    this.vacancyIdCounter = 1;
 
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // prune expired entries every 24h
