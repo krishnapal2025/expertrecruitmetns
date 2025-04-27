@@ -74,7 +74,7 @@ const blogPosts = [
     id: 6,
     title: "Recruitment Agencies for MNCs",
     excerpt: "How Recruitment Agencies Simplify Hiring for Multinational Companies",
-    category: "Recruitment",
+    category: "Executive Recruitment",
     author: "Michael Roberts",
     date: "April 27, 2025",
     readTime: "9 min read",
@@ -145,21 +145,12 @@ const blogPosts = [
 const categories = [
   "All Categories",
   "Executive Recruitment",
-  "Recruitment",
-  "UAE Recruitment",
   "Technology",
   "Workplace Trends",
   "Healthcare",
   "Sustainability",
   "Education",
   "Employment Trends",
-  "Career Advice",
-  "Interview Tips",
-  "Industry Trends",
-  "Career Development",
-  "Networking",
-  "Workplace Culture",
-  "Job Search Strategies"
 ];
 
 export default function BlogsPage() {
