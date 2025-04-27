@@ -11,7 +11,7 @@ import headhuntersDubaiImage from "../assets/pexels-photo-7709181.jpg";
 const blogPosts = [
   {
     id: 1,
-    title: "Discover the Secrets of Successful Executive Search Firms",
+    title: "Executive Search Firms Find Top Talent",
     excerpt: "Explore how executive search firms help organizations find top leadership talent and what makes them essential partners in the hiring process.",
     category: "Executive Recruitment",
     author: "James Wilson",
@@ -23,7 +23,7 @@ const blogPosts = [
     id: 2,
     title: "Top Headhunters in Dubai",
     excerpt: "How we helped a tech firm hire the perfect C-Suite candidate through our specialized executive search process and industry network.",
-    category: "UAE Recruitment",
+    category: "Executive Recruitment",
     author: "Sarah Ahmed",
     date: "April 25, 2025",
     readTime: "7 min read",
@@ -31,12 +31,12 @@ const blogPosts = [
   },
   {
     id: 3,
-    title: "The Future of Work: Remote and Hybrid Models",
-    excerpt: "Explore how remote and hybrid work models are shaping the future of employment and what it means for job seekers.",
+    title: "Recruitment Agencies in the UAE",
+    excerpt: "Top Recruitment Agency in UAE: Premier Headhunting Services in Dubai",
     category: "Industry Trends",
     author: "David Chen",
-    date: "June 3, 2023",
-    readTime: "6 min read",
+    date: "April 27, 2025",
+    readTime: "8 min read",
     image: "https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf"
   },
   {
@@ -192,7 +192,7 @@ export default function BlogsPage() {
                 <div className="md:w-1/2 p-6">
                   <CardHeader className="p-0 pb-4">
                     <div className="text-sm font-medium text-primary mb-2">Executive Recruitment</div>
-                    <CardTitle className="text-2xl">Discover the Secrets of Successful Executive Search Firms</CardTitle>
+                    <CardTitle className="text-2xl">Executive Search Firms Find Top Talent</CardTitle>
                     <CardDescription className="text-base mt-2">
                       Explore how executive search firms help organizations find top leadership talent and what makes them essential partners in the hiring process.
                     </CardDescription>
