@@ -211,11 +211,22 @@ export default function PostJobPage() {
   // Create job mutation
   const createJobMutation = useMutation({
     mutationFn: async (data: JobPostFormValues) => {
+      console.log("Submitting job with data:", { ...data, employerId: currentUser?.profile?.id });
+      
+      // Make sure we have a valid employer ID
+      if (!currentUser?.profile?.id) {
+        throw new Error("Unable to determine employer ID. Please try again.");
+      }
+      
       const res = await apiRequest("POST", "/api/jobs", {
         ...data,
-        employerId: currentUser?.profile.id,
+        employerId: currentUser.profile.id,
       });
-      return await res.json();
+      
+      // Log response for debugging
+      const responseData = await res.json();
+      console.log("Job creation response:", responseData);
+      return responseData;
     },
     onSuccess: (data) => {
       toast({
