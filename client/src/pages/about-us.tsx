@@ -15,6 +15,7 @@ import {
   ArrowRight,
   MapPin
 } from "lucide-react";
+import ourApproachImage from "../assets/our-approach-image.webp";
 
 export default function AboutUsPage() {
   // Animation variants
@@ -323,8 +324,8 @@ export default function AboutUsPage() {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <img 
-                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf" 
-                alt="Executive recruitment professionals in Dubai"
+                src={ourApproachImage} 
+                alt="Team collaborating on recruitment strategy"
                 className="w-full h-auto rounded-xl"
               />
             </motion.div>
