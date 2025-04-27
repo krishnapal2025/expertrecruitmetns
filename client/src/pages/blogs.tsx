@@ -2,9 +2,10 @@ import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen } from "lucide-react";
+import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen, Calendar, Tag } from "lucide-react";
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
+import headhuntersDubaiImage from "../assets/pexels-photo-7709181.jpg";
 
 // Sample blog data
 const blogPosts = [
@@ -26,7 +27,7 @@ const blogPosts = [
     author: "Sarah Ahmed",
     date: "April 25, 2025",
     readTime: "7 min read",
-    image: "/assets/pexels-photo-7709181.jpg"
+    image: headhuntersDubaiImage
   },
   {
     id: 3,
