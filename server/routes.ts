@@ -1602,10 +1602,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid status" });
       }
 
-      // Get admin profile
-      const admin = await storage.getAdminByUserId(user.id);
-
-      if (!admin) {
+      // Check userType directly
+      if (user.userType !== "admin") {
         return res.status(403).json({ message: "Only administrators can update vacancy status" });
       }
 
