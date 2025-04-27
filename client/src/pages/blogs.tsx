@@ -5,10 +5,10 @@ import { Input } from "@/components/ui/input";
 import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen, Calendar, Tag } from "lucide-react";
 import { useState } from "react";
 import { useLocation, Link } from "wouter";
-import bestRecruitmentAgencyImage from "../assets/dubai-office-meeting.jpeg";
 import headhuntersDubaiImage from "../assets/pexels-photo-5685937.webp";
 import executiveSearchImage from "../assets/pexels-photo-8730284.webp";
 import recruitmentAgenciesImage from "../assets/pexels-photo-4344860.webp";
+import bestRecruitmentAgencyImage from "../assets/pexels-photo-3307862.webp";
 
 // Sample blog data
 const blogPosts = [
@@ -46,7 +46,7 @@ const blogPosts = [
     id: 4,
     title: "Best Recruitment Agency in Dubai",
     excerpt: "Best Recruitment Agency in Dubai – Find Skilled Talent Today through effective partnership with a top recruitment agency.",
-    category: "Recruitment",
+    category: "Executive Recruitment",
     author: "Sarah Khan",
     date: "April 27, 2025",
     readTime: "10 min read",

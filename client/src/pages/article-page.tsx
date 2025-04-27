@@ -5,10 +5,10 @@ import { ChevronLeft, Clock, User, Share2, BookmarkPlus, Calendar, Tag, ChevronR
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import bestRecruitmentAgencyImage from "../assets/dubai-office-meeting.jpeg";
 import headhuntersDubaiImage from "../assets/pexels-photo-5685937.webp";
 import executiveSearchImage from "../assets/pexels-photo-8730284.webp";
 import recruitmentAgenciesImage from "../assets/pexels-photo-4344860.webp";
+import bestRecruitmentAgencyImage from "../assets/pexels-photo-3307862.webp";
 
 type Article = {
   id: number;
@@ -372,7 +372,7 @@ const articlesData: Article[] = [
     id: 4,
     title: "Best Recruitment Agency in Dubai",
     content: `
-      <h3>Best Recruitment Agency in Dubai – Find Skilled Talent Today</h3>
+      <h2>Best Recruitment Agency in Dubai – Find Skilled Talent Today</h2>
       
       <p>In the dynamic economic landscape of Dubai, finding the right talent is imperative for organizations striving for excellence. Whether you are a startup or an established enterprise, partnering with a top recruitment agency can be your gateway to effective talent acquisition. This article explores the vital role recruitment agencies play, the unique challenges of hiring in Dubai, and how to select the right partner in your quest for the best talent.</p>
       
