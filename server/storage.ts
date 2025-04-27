@@ -297,8 +297,46 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteJob(id: number): Promise<boolean> {
-    const result = await db.delete(jobs).where(eq(jobs.id, id));
-    return result.rowCount > 0;
+    // If pgPool is available, use a transaction
+    if (pgPool) {
+      const client = await pgPool.connect();
+      try {
+        await client.query('BEGIN');
+        
+        // First delete all applications for this job
+        await client.query('DELETE FROM applications WHERE job_id = $1', [id]);
+        
+        // Then delete the job
+        const result = await client.query('DELETE FROM jobs WHERE id = $1', [id]);
+        
+        if (result.rowCount === 0) {
+          await client.query('ROLLBACK');
+          return false;
+        }
+        
+        await client.query('COMMIT');
+        return true;
+      } catch (error) {
+        await client.query('ROLLBACK');
+        console.error("Error in deleteJob transaction:", error);
+        throw error;
+      } finally {
+        client.release();
+      }
+    } else {
+      // Fallback to direct delete if no transaction support
+      try {
+        // First delete all applications via Drizzle ORM
+        await db.delete(applications).where(eq(applications.jobId, id));
+        
+        // Then delete the job
+        const result = await db.delete(jobs).where(eq(jobs.id, id));
+        return result.rowCount > 0;
+      } catch (error) {
+        console.error("Error in deleteJob without transaction:", error);
+        throw error;
+      }
+    }
   }
 
   // Application methods
