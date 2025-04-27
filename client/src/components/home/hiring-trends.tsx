@@ -5,6 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
 
 // Sample hiring trends data with consistent image dimensions (800x450, 16:9 aspect ratio)
+// Links now point to our blog articles
 const trendingIndustries = [
   {
     id: 1,
@@ -12,7 +13,7 @@ const trendingIndustries = [
     description: "Google & Microsoft AI engineers and NVIDIA data scientists see 35% higher demand in 2025",
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&h=450&fit=crop",
     icon: <Code className="h-5 w-5" />,
-    link: "/sectors/tech"
+    link: "/article/1" // Executive Search Firms Find Top Talent
   },
   {
     id: 2,
@@ -20,7 +21,7 @@ const trendingIndustries = [
     description: "Amazon, GitLab & Spotify now offer 76% of positions as permanent remote across departments",
     image: "https://images.unsplash.com/photo-1593642634367-d91a135587b5?q=80&w=800&h=450&fit=crop",
     icon: <Globe className="h-5 w-5" />,
-    link: "/blogs/remote-work"
+    link: "/article/2" // Top Headhunters in Dubai
   },
   {
     id: 3,
@@ -28,7 +29,7 @@ const trendingIndustries = [
     description: "Mayo Clinic, Kaiser Permanente & Cleveland Clinic projected to add 1.5M jobs in five years",
     image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&h=450&fit=crop",
     icon: <Users className="h-5 w-5" />,
-    link: "/sectors/healthcare"
+    link: "/article/3" // Recruitment Agencies in the UAE
   },
   {
     id: 4,
@@ -36,7 +37,7 @@ const trendingIndustries = [
     description: "Tesla, Patagonia & Unilever ESG positions increased by 45% and lead Fortune 500 growth",
     image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=800&h=450&fit=crop",
     icon: <TrendingUp className="h-5 w-5" />,
-    link: "/sectors/sustainability"
+    link: "/article/4" // Best Recruitment Agency in Dubai
   },
   {
     id: 5,
@@ -44,7 +45,7 @@ const trendingIndustries = [
     description: "Coursera, Udemy & Khan Academy EdTech specialists among fastest-growing education roles",
     image: "https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?q=80&w=800&h=450&fit=crop",
     icon: <GraduationCap className="h-5 w-5" />,
-    link: "/sectors/education"
+    link: "/article/5" // Partner with HeadHunters Dubai
   },
   {
     id: 6,
@@ -52,7 +53,7 @@ const trendingIndustries = [
     description: "Upwork, Fiverr & Toptal freelance marketplace expected to represent 50% of workforce by 2027",
     image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=800&h=450&fit=crop",
     icon: <Briefcase className="h-5 w-5" />,
-    link: "/blogs/gig-economy"
+    link: "/article/6" // Recruitment Agencies for MNCs
   }
 ];
 
@@ -236,7 +237,7 @@ export default function HiringTrends() {
             to navigate your professional journey.
           </p>
           
-          <Link href="/seo-insights">
+          <Link href="/blogs">
             <motion.button 
               className="px-6 py-3 bg-gradient-to-r from-primary to-purple-600 text-white rounded-full shadow-lg shadow-primary/20 overflow-hidden relative group"
               whileHover={{ scale: 1.05 }}
@@ -246,7 +247,7 @@ export default function HiringTrends() {
               <span className="absolute inset-0 w-0 bg-white/20 skew-x-12 group-hover:w-full transform transition-all duration-500 z-10"></span>
               <span className="relative z-20 flex items-center">
                 <TrendingUp className="mr-2 h-5 w-5" /> 
-                Explore SEO Insights
+                Explore All Articles
                 <ArrowUpRight className="ml-2 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
               </span>
             </motion.button>
@@ -473,7 +474,7 @@ export default function HiringTrends() {
                     </div>
                     
                     <Link href={trend.link} className="group/link inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary/90 px-4 py-2 rounded-full transition-colors duration-300">
-                      <span>View Trends</span>
+                      <span>Read Article</span>
                       <motion.span 
                         className="ml-2"
                         initial={{ x: 0 }}
