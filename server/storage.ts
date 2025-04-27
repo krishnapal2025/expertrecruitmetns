@@ -6,7 +6,8 @@ import {
   applications, Application, InsertApplication,
   testimonials, Testimonial, InsertTestimonial,
   admins, Admin, InsertAdmin,
-  invitationCodes, InvitationCode, InsertInvitationCode
+  invitationCodes, InvitationCode, InsertInvitationCode,
+  vacancies, Vacancy, InsertVacancy
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -101,6 +102,12 @@ export interface IStorage {
   createInvitationCode(invitationCode: InsertInvitationCode): Promise<InvitationCode>;
   verifyInvitationCode(code: string, email: string): Promise<boolean>;
   markInvitationCodeAsUsed(code: string): Promise<InvitationCode | undefined>;
+
+  // Vacancy methods
+  getVacancy(id: number): Promise<Vacancy | undefined>;
+  getVacancies(): Promise<Vacancy[]>;
+  createVacancy(vacancy: InsertVacancy): Promise<Vacancy>;
+  updateVacancyStatus(id: number, status: string): Promise<Vacancy | undefined>;
 
   // Session store
   sessionStore: session.Store;
@@ -621,6 +628,30 @@ export class DatabaseStorage implements IStorage {
       .returning();
 
     return invitationCode;
+  }
+
+  // Vacancy methods
+  async getVacancy(id: number): Promise<Vacancy | undefined> {
+    const [vacancy] = await db.select().from(vacancies).where(eq(vacancies.id, id));
+    return vacancy;
+  }
+
+  async getVacancies(): Promise<Vacancy[]> {
+    return await db.select().from(vacancies).orderBy(vacancies.submittedAt);
+  }
+
+  async createVacancy(insertVacancy: InsertVacancy): Promise<Vacancy> {
+    const [vacancy] = await db.insert(vacancies).values(insertVacancy).returning();
+    return vacancy;
+  }
+
+  async updateVacancyStatus(id: number, status: string): Promise<Vacancy | undefined> {
+    const [vacancy] = await db
+      .update(vacancies)
+      .set({ status })
+      .where(eq(vacancies.id, id))
+      .returning();
+    return vacancy;
   }
 }
 

@@ -252,6 +252,7 @@ export type Application = typeof applications.$inferSelect;
 export type Testimonial = typeof testimonials.$inferSelect;
 export type Admin = typeof admins.$inferSelect;
 export type InvitationCode = typeof invitationCodes.$inferSelect;
+export type Vacancy = typeof vacancies.$inferSelect;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertJobSeeker = z.infer<typeof insertJobSeekerSchema>;
@@ -261,6 +262,7 @@ export type InsertApplication = z.infer<typeof insertApplicationSchema>;
 export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
 export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 export type InsertInvitationCode = z.infer<typeof insertInvitationCodeSchema>;
+export type InsertVacancy = z.infer<typeof insertVacancySchema>;
 
 export type JobSeekerRegister = z.infer<typeof jobSeekerRegisterSchema>;
 export type EmployerRegister = z.infer<typeof employerRegisterSchema>;
