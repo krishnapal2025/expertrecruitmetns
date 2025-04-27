@@ -10,13 +10,13 @@ import { useLocation } from "wouter";
 const blogPosts = [
   {
     id: 1,
-    title: "10 Tips for Crafting a Resume That Stands Out",
-    excerpt: "Learn how to create a compelling resume that captures attention and showcases your skills effectively.",
-    category: "Career Advice",
-    author: "Sarah Johnson",
-    date: "May 15, 2023",
-    readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643"
+    title: "Discover the Secrets of Successful Executive Search Firms",
+    excerpt: "Explore how executive search firms help organizations find top leadership talent and what makes them essential partners in the hiring process.",
+    category: "Executive Recruitment",
+    author: "James Wilson",
+    date: "April 27, 2025",
+    readTime: "10 min read",
+    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf"
   },
   {
     id: 2,
@@ -72,6 +72,7 @@ const blogPosts = [
 
 const categories = [
   "All Categories",
+  "Executive Recruitment",
   "Career Advice",
   "Interview Tips",
   "Industry Trends",
@@ -181,25 +182,25 @@ export default function BlogsPage() {
               <div className="flex flex-col md:flex-row">
                 <div className="md:w-1/2 h-60 md:h-auto">
                   <img
-                    src="https://images.unsplash.com/photo-1521791136064-7986c2920216"
-                    alt="Featured article"
+                    src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf"
+                    alt="Executive Search Firms article"
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="md:w-1/2 p-6">
                   <CardHeader className="p-0 pb-4">
-                    <div className="text-sm font-medium text-primary mb-2">Career Development</div>
-                    <CardTitle className="text-2xl">How to Position Yourself for a Promotion in 2023</CardTitle>
+                    <div className="text-sm font-medium text-primary mb-2">Executive Recruitment</div>
+                    <CardTitle className="text-2xl">Discover the Secrets of Successful Executive Search Firms</CardTitle>
                     <CardDescription className="text-base mt-2">
-                      Strategic steps to demonstrate your value, showcase your skills, and prepare for your next career advancement.
+                      Explore how executive search firms help organizations find top leadership talent and what makes them essential partners in the hiring process.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-0 py-4">
                     <div className="flex items-center text-sm text-gray-500 mb-4">
                       <User className="mr-1 h-4 w-4" />
-                      <span className="mr-4">Emma Rodriguez</span>
+                      <span className="mr-4">James Wilson</span>
                       <Clock className="mr-1 h-4 w-4" />
-                      <span>June 15, 2023</span>
+                      <span>April 27, 2025</span>
                     </div>
                   </CardContent>
                   <CardFooter className="p-0">
