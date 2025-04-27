@@ -5,10 +5,10 @@ import { Input } from "@/components/ui/input";
 import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen, Calendar, Tag } from "lucide-react";
 import { useState } from "react";
 import { useLocation, Link } from "wouter";
-import recruitmentAgenciesImage from "../assets/career-meeting.png";
 import bestRecruitmentAgencyImage from "../assets/dubai-office-meeting.jpeg";
 import headhuntersDubaiImage from "../assets/pexels-photo-5685937.webp";
 import executiveSearchImage from "../assets/pexels-photo-8730284.webp";
+import recruitmentAgenciesImage from "../assets/pexels-photo-4344860.webp";
 
 // Sample blog data
 const blogPosts = [
