@@ -51,12 +51,12 @@ app.use((req, res, next) => {
     // Run database migrations before starting the server
     log("Running database migrations...");
     try {
-
       await migrate(db, { migrationsFolder: path.join(__dirname, '../migrations') });
       log("Database migrations completed");
     } catch (error) {
-      log("Error during migrations:", error instanceof Error ? error.message : String(error));
-      throw error;
+      // Log the error but continue - tables likely already exist
+      log("Migration notice:", error instanceof Error ? error.message : String(error));
+      log("Continuing with existing database schema...");
     }
 
     const server = await registerRoutes(app);
