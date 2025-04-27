@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Admin, InvitationCode, User, Job, JobSeeker, Employer } from "@shared/schema";
+import { Admin, InvitationCode, User, Job, JobSeeker, Employer, Vacancy } from "@shared/schema";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -113,6 +113,17 @@ function AdminPage() {
     enabled: !!user && user.userType === "admin"
   });
   
+  // Fetch vacancies
+  const { data: vacancies, isLoading: vacanciesLoading } = useQuery({
+    queryKey: ["/api/vacancies"],
+    queryFn: async () => {
+      const res = await fetch("/api/vacancies");
+      if (!res.ok) throw new Error("Failed to fetch vacancies data");
+      return await res.json();
+    },
+    enabled: !!user && user.userType === "admin"
+  });
+  
   // Create invitation code mutation
   const createInvitationMutation = useMutation({
     mutationFn: async (data: { email: string, code: string, expiresAt: string }) => {
@@ -140,6 +151,32 @@ function AdminPage() {
     onError: (error: Error) => {
       toast({
         title: "Failed to create invitation code",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // Update vacancy status mutation
+  const updateVacancyStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: number, status: string }) => {
+      const res = await apiRequest("PATCH", `/api/vacancies/${id}/status`, { status });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to update vacancy status");
+      }
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Vacancy status updated",
+        description: "The vacancy status has been updated successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/vacancies"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to update vacancy status",
         description: error.message,
         variant: "destructive",
       });
@@ -480,12 +517,179 @@ function AdminPage() {
           <Card>
             <CardHeader>
               <CardTitle>Content Management</CardTitle>
-              <CardDescription>Manage testimonials and site content</CardDescription>
+              <CardDescription>Manage website content and submissions</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Coming soon: Content management interface for testimonials, success stories, and other site content
-              </p>
+              <Tabs defaultValue="vacancies" className="w-full">
+                <TabsList className="grid grid-cols-3 mb-6">
+                  <TabsTrigger value="vacancies">
+                    <FileText className="mr-2 h-4 w-4" />
+                    Vacancy Submissions
+                  </TabsTrigger>
+                  <TabsTrigger value="testimonials">
+                    <Users className="mr-2 h-4 w-4" />
+                    Testimonials
+                  </TabsTrigger>
+                  <TabsTrigger value="other">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Other Content
+                  </TabsTrigger>
+                </TabsList>
+                
+                {/* Vacancies Tab */}
+                <TabsContent value="vacancies" className="space-y-4">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold mb-2">Posted Vacancies</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Review and manage vacancy submissions from the contact form
+                    </p>
+                    
+                    {vacanciesLoading ? (
+                      <div className="flex justify-center py-8">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                      </div>
+                    ) : (
+                      <ScrollArea className="h-[400px]">
+                        <Table>
+                          <TableCaption>List of vacancy submissions</TableCaption>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>ID</TableHead>
+                              <TableHead>Company</TableHead>
+                              <TableHead>Position</TableHead>
+                              <TableHead>Contact</TableHead>
+                              <TableHead>Submitted</TableHead>
+                              <TableHead>Status</TableHead>
+                              <TableHead>Actions</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {vacancies?.length === 0 ? (
+                              <TableRow>
+                                <TableCell colSpan={7} className="text-center py-6">
+                                  No vacancy submissions found
+                                </TableCell>
+                              </TableRow>
+                            ) : (
+                              vacancies?.map((vacancy: Vacancy) => (
+                                <TableRow key={vacancy.id}>
+                                  <TableCell>{vacancy.id}</TableCell>
+                                  <TableCell>{vacancy.companyName}</TableCell>
+                                  <TableCell>{vacancy.jobTitle}</TableCell>
+                                  <TableCell>
+                                    <div className="flex flex-col">
+                                      <span className="text-xs">{vacancy.contactName}</span>
+                                      <span className="text-xs text-muted-foreground">{vacancy.contactEmail}</span>
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>
+                                    {vacancy.submittedAt ? format(new Date(vacancy.submittedAt), "MMM d, yyyy") : "N/A"}
+                                  </TableCell>
+                                  <TableCell>
+                                    <span className={`px-2 py-1 rounded-full text-xs ${
+                                      vacancy.status === "approved" 
+                                        ? "bg-green-100 text-green-800" 
+                                        : vacancy.status === "rejected"
+                                        ? "bg-red-100 text-red-800"
+                                        : "bg-yellow-100 text-yellow-800"
+                                    }`}>
+                                      {vacancy.status === "pending" ? "Pending" : 
+                                       vacancy.status === "approved" ? "Approved" : 
+                                       vacancy.status === "rejected" ? "Rejected" : 
+                                       vacancy.status}
+                                    </span>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex space-x-2">
+                                      <Button 
+                                        variant="outline" 
+                                        size="sm"
+                                        onClick={() => {
+                                          const detailString = `
+Company: ${vacancy.companyName}
+Industry: ${vacancy.industry}
+Location: ${vacancy.location}
+Position: ${vacancy.jobTitle}
+Description: ${vacancy.jobDescription}
+Requirements: ${vacancy.requirements || "Not specified"}
+Skills: ${vacancy.skillsRequired || "Not specified"}
+Experience: ${vacancy.experienceRequired || "Not specified"}
+Contact: ${vacancy.contactName} (${vacancy.contactEmail})
+Phone: ${vacancy.contactPhone}
+Additional Info: ${vacancy.additionalInformation || "None provided"}
+                                          `;
+                                          
+                                          toast({
+                                            title: "Vacancy Details",
+                                            description: (
+                                              <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4 overflow-x-auto">
+                                                <code className="text-white whitespace-pre-wrap">{detailString}</code>
+                                              </pre>
+                                            ),
+                                          });
+                                        }}
+                                      >
+                                        Details
+                                      </Button>
+                                      {vacancy.status === "pending" && (
+                                        <>
+                                          <Button 
+                                            variant="default" 
+                                            size="sm"
+                                            className="bg-green-600 hover:bg-green-700"
+                                            onClick={() => updateVacancyStatusMutation.mutate({ 
+                                              id: vacancy.id, 
+                                              status: "approved" 
+                                            })}
+                                            disabled={updateVacancyStatusMutation.isPending}
+                                          >
+                                            Approve
+                                          </Button>
+                                          <Button 
+                                            variant="destructive" 
+                                            size="sm"
+                                            onClick={() => updateVacancyStatusMutation.mutate({ 
+                                              id: vacancy.id, 
+                                              status: "rejected" 
+                                            })}
+                                            disabled={updateVacancyStatusMutation.isPending}
+                                          >
+                                            Reject
+                                          </Button>
+                                        </>
+                                      )}
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              ))
+                            )}
+                          </TableBody>
+                        </Table>
+                      </ScrollArea>
+                    )}
+                  </div>
+                </TabsContent>
+                
+                {/* Testimonials Tab */}
+                <TabsContent value="testimonials" className="space-y-4">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold mb-2">Testimonials Management</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Coming soon: Create, edit, and manage testimonials shown on the website
+                    </p>
+                  </div>
+                </TabsContent>
+                
+                {/* Other Content Tab */}
+                <TabsContent value="other" className="space-y-4">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold mb-2">Other Content Management</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Coming soon: Manage other site content including success stories and static pages
+                    </p>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </TabsContent>
