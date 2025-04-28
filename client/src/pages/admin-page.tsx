@@ -112,9 +112,23 @@ function AdminPage() {
   const { data: staffingInquiries, isLoading: staffingInquiriesLoading } = useQuery({
     queryKey: ["/api/staffing-inquiries"],
     queryFn: async () => {
-      const res = await fetch("/api/staffing-inquiries");
-      if (!res.ok) throw new Error("Failed to fetch staffing inquiries data");
-      return await res.json();
+      try {
+        console.log("Fetching staffing inquiries...");
+        const res = await fetch("/api/staffing-inquiries");
+        console.log("Response status:", res.status);
+        
+        if (!res.ok) {
+          console.error("Failed response:", res.status, res.statusText);
+          throw new Error("Failed to fetch staffing inquiries data");
+        }
+        
+        const data = await res.json();
+        console.log("Received staffing inquiries:", data);
+        return data || [];
+      } catch (error) {
+        console.error("Error fetching staffing inquiries:", error);
+        return []; // Return empty array as fallback
+      }
     },
     enabled: !!user && user.userType === "admin"
   });

@@ -1628,16 +1628,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all staffing inquiries (admin only)
   app.get("/api/staffing-inquiries", async (req, res) => {
     try {
+      console.log("Received request for staffing inquiries");
+      
       const user = req.user as Express.User;
       if (!user || user.userType !== "admin") {
+        console.log("User not authorized:", req.user ? req.user.userType : 'not authenticated');
         return res.status(403).json({ message: "Unauthorized" });
       }
       
+      console.log("Fetching staffing inquiries from storage...");
       const inquiries = await storage.getStaffingInquiries();
-      res.json(inquiries);
+      console.log("Retrieved inquiries:", inquiries ? inquiries.length : 0);
+      
+      // Always return an array, even if empty
+      res.json(inquiries || []);
     } catch (error) {
       console.error("Error getting staffing inquiries:", error);
-      res.status(500).json({ message: "Failed to get staffing inquiries" });
+      res.status(500).json({ 
+        message: "Failed to get staffing inquiries", 
+        error: error instanceof Error ? error.message : String(error) 
+      });
     }
   });
 
