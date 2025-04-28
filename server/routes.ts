@@ -1682,10 +1682,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Skip validation for testing - just use direct SQL
       try {
-        // Direct database insert using SQL
+        // Direct database insert using SQL - Using the correct column name (inquirytype without underscore)
         const result = await db.execute(`
           INSERT INTO staffing_inquiries 
-            (name, email, phone, company, inquiry_type, message, marketing) 
+            (name, email, phone, company, inquirytype, message, marketing) 
           VALUES 
             ($1, $2, $3, $4, $5, $6, $7)
           RETURNING *
