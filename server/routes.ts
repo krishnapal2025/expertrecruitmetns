@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
-import { ZodError } from "zod";
+import * as z from "zod";
 import { fromZodError } from "zod-validation-error";
 import {
   insertJobSchema,
@@ -11,9 +11,11 @@ import {
   insertInvitationCodeSchema,
   insertTestimonialSchema,
   insertVacancySchema,
+  insertStaffingInquirySchema,
   User,
   Admin,
-  Vacancy
+  Vacancy,
+  StaffingInquiry
 } from "@shared/schema";
 import { hashPassword } from "./auth";
 import { generateResetToken, sendPasswordResetEmail } from "./email-service";
@@ -1618,6 +1620,93 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating vacancy status:", error);
       res.status(500).json({ message: "Failed to update vacancy status" });
+    }
+  });
+
+  // Staffing Inquiry routes
+  // Get all staffing inquiries (admin only)
+  app.get("/api/staffing-inquiries", async (req, res) => {
+    try {
+      const user = req.user as Express.User;
+      if (!user || user.userType !== "admin") {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const inquiries = await storage.getStaffingInquiries();
+      res.json(inquiries);
+    } catch (error) {
+      console.error("Error getting staffing inquiries:", error);
+      res.status(500).json({ message: "Failed to get staffing inquiries" });
+    }
+  });
+
+  // Get single staffing inquiry
+  app.get("/api/staffing-inquiries/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = req.user as Express.User;
+      
+      if (!user || user.userType !== "admin") {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const inquiry = await storage.getStaffingInquiry(parseInt(id));
+      
+      if (!inquiry) {
+        return res.status(404).json({ message: "Staffing inquiry not found" });
+      }
+      
+      res.json(inquiry);
+    } catch (error) {
+      console.error("Error getting staffing inquiry:", error);
+      res.status(500).json({ message: "Failed to get staffing inquiry" });
+    }
+  });
+
+  // Create staffing inquiry (public)
+  app.post("/api/staffing-inquiries", async (req, res) => {
+    try {
+      const inquiryData = insertStaffingInquirySchema.parse(req.body);
+      const inquiry = await storage.createStaffingInquiry(inquiryData);
+      res.status(201).json(inquiry);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid inquiry data", 
+          errors: error.errors 
+        });
+      }
+      console.error("Error creating staffing inquiry:", error);
+      res.status(500).json({ message: "Failed to create staffing inquiry" });
+    }
+  });
+
+  // Update staffing inquiry status (admin only)
+  app.patch("/api/staffing-inquiries/:id/status", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      const user = req.user as Express.User;
+      
+      if (!user || user.userType !== "admin") {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      if (!status || !["new", "contacted", "in_progress", "completed", "cancelled"].includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+      }
+      
+      const inquiry = await storage.getStaffingInquiry(parseInt(id));
+      
+      if (!inquiry) {
+        return res.status(404).json({ message: "Staffing inquiry not found" });
+      }
+      
+      const updatedInquiry = await storage.updateStaffingInquiryStatus(parseInt(id), status);
+      res.json(updatedInquiry);
+    } catch (error) {
+      console.error("Error updating staffing inquiry status:", error);
+      res.status(500).json({ message: "Failed to update staffing inquiry status" });
     }
   });
 

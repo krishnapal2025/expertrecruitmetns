@@ -14,7 +14,7 @@ import session from "express-session";
 import createMemoryStore from "memorystore";
 import connectPg from "connect-pg-simple";
 import { db, type DatabaseInstance } from "./db";
-import { eq, like, gte, lte, or, and, sql } from "drizzle-orm";
+import { eq, like, gte, lte, or, and, sql, desc } from "drizzle-orm";
 import pkg from 'pg';
 const { Pool } = pkg;
 import type { Pool as PgPool } from 'pg';
@@ -659,6 +659,40 @@ export class DatabaseStorage implements IStorage {
       .where(eq(vacancies.id, id))
       .returning();
     return vacancy;
+  }
+
+  // Staffing Inquiry methods
+  async getStaffingInquiry(id: number): Promise<StaffingInquiry | undefined> {
+    const [inquiry] = await db.select().from(staffingInquiries).where(eq(staffingInquiries.id, id));
+    return inquiry;
+  }
+
+  async getStaffingInquiries(): Promise<StaffingInquiry[]> {
+    return await db.select().from(staffingInquiries).orderBy(desc(staffingInquiries.submittedAt));
+  }
+
+  async createStaffingInquiry(insertInquiry: InsertStaffingInquiry): Promise<StaffingInquiry> {
+    const now = new Date();
+    
+    // Add default values
+    const inquiryData = {
+      ...insertInquiry,
+      status: "new",
+      submittedAt: now
+    };
+    
+    const [inquiry] = await db.insert(staffingInquiries).values(inquiryData).returning();
+    return inquiry;
+  }
+
+  async updateStaffingInquiryStatus(id: number, status: string): Promise<StaffingInquiry | undefined> {
+    const [inquiry] = await db
+      .update(staffingInquiries)
+      .set({ status })
+      .where(eq(staffingInquiries.id, id))
+      .returning();
+    
+    return inquiry;
   }
 }
 
