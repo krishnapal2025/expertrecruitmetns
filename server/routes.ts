@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import * as z from "zod";
 import { fromZodError } from "zod-validation-error";
+import { db } from "./db"; // Import the database instance for direct SQL
 import {
   insertJobSchema,
   insertApplicationSchema,
