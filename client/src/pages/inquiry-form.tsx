@@ -67,6 +67,16 @@ export default function InquiryForm() {
 
   async function onSubmit(data: FormValues) {
     try {
+      // Do form validation check first
+      if (!data.inquiryType) {
+        toast({
+          title: "Form Error",
+          description: "Please select an inquiry type",
+          variant: "destructive"
+        });
+        return;
+      }
+      
       // Prepare data to match staffing inquiry schema
       // The schema omits id, status, and submittedAt, so we should not include them
       const inquiryData = {
@@ -82,11 +92,18 @@ export default function InquiryForm() {
       console.log("Form submitted:", inquiryData);
       
       // Submit to API
-      const response = await apiRequest("POST", "/api/staffing-inquiries", inquiryData);
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to submit inquiry");
+      try {
+        const response = await apiRequest("POST", "/api/staffing-inquiries", inquiryData);
+        console.log("Response status:", response.status);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("API Error:", errorData);
+          throw new Error(errorData.message || "Failed to submit inquiry");
+        }
+      } catch (apiError) {
+        console.error("API request error:", apiError);
+        throw apiError;
       }
       
       toast({

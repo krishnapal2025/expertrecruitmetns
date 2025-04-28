@@ -1666,11 +1666,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create staffing inquiry (public)
   app.post("/api/staffing-inquiries", async (req, res) => {
     try {
+      console.log("Received staffing inquiry request:", req.body);
+      
       const inquiryData = insertStaffingInquirySchema.parse(req.body);
+      console.log("Validated inquiry data:", inquiryData);
+      
       const inquiry = await storage.createStaffingInquiry(inquiryData);
+      console.log("Created staffing inquiry:", inquiry);
+      
       res.status(201).json(inquiry);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.error("Validation error:", error.errors);
         return res.status(400).json({ 
           message: "Invalid inquiry data", 
           errors: error.errors 
