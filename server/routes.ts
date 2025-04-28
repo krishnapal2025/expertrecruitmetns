@@ -1682,22 +1682,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Skip validation for testing - just use direct SQL
       try {
-        // Direct database insert using SQL - Using the correct column name (inquirytype without underscore)
+        // Direct database insert using SQL - Using literal values instead of parameters
         const result = await db.execute(`
           INSERT INTO staffing_inquiries 
-            (name, email, phone, company, inquirytype, message, marketing) 
+            (name, email, phone, company, inquirytype, message, marketing, status, submittedat) 
           VALUES 
-            ($1, $2, $3, $4, $5, $6, $7)
+            ('${req.body.name}', 
+             '${req.body.email}', 
+             ${req.body.phone ? `'${req.body.phone}'` : 'NULL'}, 
+             ${req.body.company ? `'${req.body.company}'` : 'NULL'}, 
+             '${req.body.inquiryType}', 
+             '${req.body.message}', 
+             ${req.body.marketing ? 'TRUE' : 'FALSE'},
+             'new',
+             NOW())
           RETURNING *
-        `, [
-          req.body.name, 
-          req.body.email, 
-          req.body.phone || null, 
-          req.body.company || null, 
-          req.body.inquiryType, 
-          req.body.message, 
-          req.body.marketing || false
-        ]);
+        `);
         
         console.log("Direct SQL insert result:", result);
         res.status(201).json({ success: true, message: "Inquiry submitted successfully" });
