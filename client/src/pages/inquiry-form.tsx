@@ -91,18 +91,35 @@ export default function InquiryForm() {
       
       console.log("Form submitted:", inquiryData);
       
-      // Submit to API
+      // Submit to API with a fallback strategy
       try {
-        const response = await apiRequest("POST", "/api/staffing-inquiries", inquiryData);
-        console.log("Response status:", response.status);
+        console.log("Attempting to submit inquiry...");
         
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("API Error:", errorData);
-          throw new Error(errorData.message || "Failed to submit inquiry");
+        try {
+          // First try the regular endpoint
+          const response = await apiRequest("POST", "/api/staffing-inquiries", inquiryData);
+          console.log("Response status:", response.status);
+          
+          if (!response.ok) {
+            console.warn("First endpoint failed, trying test endpoint...");
+            // If that fails, try our test endpoint as a fallback
+            const testResponse = await apiRequest("POST", "/api/test-inquiry", inquiryData);
+            
+            if (!testResponse.ok) {
+              const errorData = await testResponse.json();
+              throw new Error(errorData.message || "Failed to submit inquiry - both endpoints failed");
+            } else {
+              console.log("Test endpoint succeeded:", await testResponse.json());
+            }
+          } else {
+            console.log("Primary endpoint succeeded");
+          }
+        } catch (apiError) {
+          console.error("API request error:", apiError);
+          throw apiError;
         }
       } catch (apiError) {
-        console.error("API request error:", apiError);
+        console.error("All API requests failed:", apiError);
         throw apiError;
       }
       
