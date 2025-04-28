@@ -127,6 +127,20 @@ export const vacancies = pgTable("vacancies", {
   submittedAt: timestamp("submitted_at").defaultNow(),
 });
 
+// Temporary Staffing Inquiries table
+export const staffingInquiries = pgTable("staffing_inquiries", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(), 
+  phone: text("phone"),
+  company: text("company"),
+  inquiryType: text("inquiry_type").notNull(),
+  message: text("message").notNull(),
+  marketing: boolean("marketing").default(false),
+  status: text("status").default("new"), // 'new', 'reviewed', 'contacted', 'closed'
+  submittedAt: timestamp("submitted_at").defaultNow(),
+});
+
 // Create insert schemas using Zod
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -188,6 +202,12 @@ export const insertVacancySchema = createInsertSchema(vacancies).omit({
   applicationDeadline: z.string()
     .min(1, "Application deadline is required")
     .transform((val) => new Date(val))
+});
+
+export const insertStaffingInquirySchema = createInsertSchema(staffingInquiries).omit({
+  id: true,
+  status: true,
+  submittedAt: true,
 });
 
 // Registration schemas
@@ -253,6 +273,7 @@ export type Testimonial = typeof testimonials.$inferSelect;
 export type Admin = typeof admins.$inferSelect;
 export type InvitationCode = typeof invitationCodes.$inferSelect;
 export type Vacancy = typeof vacancies.$inferSelect;
+export type StaffingInquiry = typeof staffingInquiries.$inferSelect;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertJobSeeker = z.infer<typeof insertJobSeekerSchema>;
@@ -263,6 +284,7 @@ export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
 export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 export type InsertInvitationCode = z.infer<typeof insertInvitationCodeSchema>;
 export type InsertVacancy = z.infer<typeof insertVacancySchema>;
+export type InsertStaffingInquiry = z.infer<typeof insertStaffingInquirySchema>;
 
 export type JobSeekerRegister = z.infer<typeof jobSeekerRegisterSchema>;
 export type EmployerRegister = z.infer<typeof employerRegisterSchema>;
