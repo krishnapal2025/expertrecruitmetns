@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Admin, InvitationCode, User, Job, JobSeeker, Employer, Vacancy } from "@shared/schema";
+import { Admin, InvitationCode, User, Job, JobSeeker, Employer, Vacancy, StaffingInquiry } from "@shared/schema";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -108,6 +108,17 @@ function AdminPage() {
     enabled: !!user && user.userType === "admin"
   });
   
+  // Fetch staffing inquiries
+  const { data: staffingInquiries, isLoading: staffingInquiriesLoading } = useQuery({
+    queryKey: ["/api/staffing-inquiries"],
+    queryFn: async () => {
+      const res = await fetch("/api/staffing-inquiries");
+      if (!res.ok) throw new Error("Failed to fetch staffing inquiries data");
+      return await res.json();
+    },
+    enabled: !!user && user.userType === "admin"
+  });
+  
   // Removed invitation code mutation
   
   // Update vacancy status mutation
@@ -130,6 +141,32 @@ function AdminPage() {
     onError: (error: Error) => {
       toast({
         title: "Failed to update vacancy status",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // Update staffing inquiry status mutation
+  const updateInquiryStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: number, status: string }) => {
+      const res = await apiRequest("PATCH", `/api/staffing-inquiries/${id}/status`, { status });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to update inquiry status");
+      }
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Inquiry status updated",
+        description: "The inquiry status has been updated successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/staffing-inquiries"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to update inquiry status",
         description: error.message,
         variant: "destructive",
       });
@@ -191,7 +228,7 @@ function AdminPage() {
         
         {/* Dashboard Tab */}
         <TabsContent value="dashboard" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle>Total Users</CardTitle>
@@ -263,6 +300,46 @@ function AdminPage() {
               <CardFooter>
                 <Button variant="outline" size="sm" className="w-full" onClick={() => setActiveTab("content")}>
                   Manage Vacancies
+                </Button>
+              </CardFooter>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Staffing Inquiries</CardTitle>
+                <CardDescription>Temporary staffing requests</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">
+                  {staffingInquiriesLoading ? (
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  ) : (
+                    staffingInquiries?.length || 0
+                  )}
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {!staffingInquiriesLoading && staffingInquiries?.length > 0 && (
+                    <>
+                      New: {staffingInquiries?.filter((i: any) => i.status === "new").length || 0} | 
+                      In Progress: {staffingInquiries?.filter((i: any) => i.status === "in-progress").length || 0} | 
+                      Completed: {staffingInquiries?.filter((i: any) => i.status === "completed").length || 0}
+                    </>
+                  )}
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full" 
+                  onClick={() => {
+                    setActiveTab("content");
+                    setTimeout(() => {
+                      document.querySelector('button[value="staffing-inquiries"]')?.click();
+                    }, 100);
+                  }}
+                >
+                  View Inquiries
                 </Button>
               </CardFooter>
             </Card>
@@ -413,10 +490,14 @@ function AdminPage() {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="vacancies" className="w-full">
-                <TabsList className="grid grid-cols-3 mb-6">
+                <TabsList className="grid grid-cols-4 mb-6">
                   <TabsTrigger value="vacancies">
                     <FileText className="mr-2 h-4 w-4" />
                     Vacancy Submissions
+                  </TabsTrigger>
+                  <TabsTrigger value="staffing-inquiries">
+                    <Mail className="mr-2 h-4 w-4" />
+                    Staffing Inquiries
                   </TabsTrigger>
                   <TabsTrigger value="testimonials">
                     <Users className="mr-2 h-4 w-4" />
@@ -545,6 +626,148 @@ Additional Info: ${vacancy.additionalInformation || "None provided"}
                                               status: "rejected" 
                                             })}
                                             disabled={updateVacancyStatusMutation.isPending}
+                                          >
+                                            Reject
+                                          </Button>
+                                        </>
+                                      )}
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              ))
+                            )}
+                          </TableBody>
+                        </Table>
+                      </ScrollArea>
+                    )}
+                  </div>
+                </TabsContent>
+                
+                {/* Staffing Inquiries Tab */}
+                <TabsContent value="staffing-inquiries" className="space-y-4">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold mb-2">Staffing Inquiries</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Manage inquiries submitted through the staffing inquiry form
+                    </p>
+                    
+                    {staffingInquiriesLoading ? (
+                      <div className="flex justify-center py-8">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                      </div>
+                    ) : (
+                      <ScrollArea className="h-[400px]">
+                        <Table>
+                          <TableCaption>List of staffing inquiries</TableCaption>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>ID</TableHead>
+                              <TableHead>Name</TableHead>
+                              <TableHead>Email</TableHead>
+                              <TableHead>Inquiry Type</TableHead>
+                              <TableHead>Submitted</TableHead>
+                              <TableHead>Status</TableHead>
+                              <TableHead>Actions</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {staffingInquiries?.length === 0 ? (
+                              <TableRow>
+                                <TableCell colSpan={7} className="text-center py-6">
+                                  No staffing inquiries found
+                                </TableCell>
+                              </TableRow>
+                            ) : (
+                              staffingInquiries?.map((inquiry: StaffingInquiry) => (
+                                <TableRow key={inquiry.id}>
+                                  <TableCell>{inquiry.id}</TableCell>
+                                  <TableCell>{inquiry.name}</TableCell>
+                                  <TableCell>{inquiry.email}</TableCell>
+                                  <TableCell>{inquiry.inquiryType}</TableCell>
+                                  <TableCell>
+                                    {inquiry.submittedAt ? format(new Date(inquiry.submittedAt), "MMM d, yyyy") : "N/A"}
+                                  </TableCell>
+                                  <TableCell>
+                                    <span className={`px-2 py-1 rounded-full text-xs ${
+                                      inquiry.status === "completed" 
+                                        ? "bg-green-100 text-green-800" 
+                                        : inquiry.status === "rejected"
+                                        ? "bg-red-100 text-red-800"
+                                        : inquiry.status === "in-progress"
+                                        ? "bg-blue-100 text-blue-800"
+                                        : "bg-yellow-100 text-yellow-800"
+                                    }`}>
+                                      {inquiry.status === "new" ? "New" : 
+                                       inquiry.status === "in-progress" ? "In Progress" : 
+                                       inquiry.status === "completed" ? "Completed" : 
+                                       inquiry.status === "rejected" ? "Rejected" : 
+                                       inquiry.status}
+                                    </span>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex space-x-2">
+                                      <Button 
+                                        variant="outline" 
+                                        size="sm"
+                                        onClick={() => {
+                                          const detailString = `
+Name: ${inquiry.name}
+Email: ${inquiry.email}
+Phone: ${inquiry.phone || "Not provided"}
+Company: ${inquiry.company || "Not provided"}
+Inquiry Type: ${inquiry.inquiryType}
+Message: ${inquiry.message}
+Marketing: ${inquiry.marketing ? "Yes" : "No"}
+                                          `;
+                                          
+                                          toast({
+                                            title: "Inquiry Details",
+                                            description: (
+                                              <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4 overflow-x-auto">
+                                                <code className="text-white whitespace-pre-wrap">{detailString}</code>
+                                              </pre>
+                                            ),
+                                          });
+                                        }}
+                                      >
+                                        Details
+                                      </Button>
+                                      {(inquiry.status === "new" || inquiry.status === "in-progress") && (
+                                        <>
+                                          {inquiry.status === "new" && (
+                                            <Button 
+                                              variant="default" 
+                                              size="sm"
+                                              className="bg-blue-600 hover:bg-blue-700"
+                                              onClick={() => updateInquiryStatusMutation.mutate({ 
+                                                id: inquiry.id, 
+                                                status: "in-progress" 
+                                              })}
+                                              disabled={updateInquiryStatusMutation.isPending}
+                                            >
+                                              Start
+                                            </Button>
+                                          )}
+                                          <Button 
+                                            variant="default" 
+                                            size="sm"
+                                            className="bg-green-600 hover:bg-green-700"
+                                            onClick={() => updateInquiryStatusMutation.mutate({ 
+                                              id: inquiry.id, 
+                                              status: "completed" 
+                                            })}
+                                            disabled={updateInquiryStatusMutation.isPending}
+                                          >
+                                            Complete
+                                          </Button>
+                                          <Button 
+                                            variant="destructive" 
+                                            size="sm"
+                                            onClick={() => updateInquiryStatusMutation.mutate({ 
+                                              id: inquiry.id, 
+                                              status: "rejected" 
+                                            })}
+                                            disabled={updateInquiryStatusMutation.isPending}
                                           >
                                             Reject
                                           </Button>
