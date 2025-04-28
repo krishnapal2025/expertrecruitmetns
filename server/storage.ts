@@ -704,11 +704,16 @@ export class DatabaseStorage implements IStorage {
     
     console.log("Staffing inquiries SQL result:", JSON.stringify(result, null, 2));
     
-    if (result && result.rows) {
-      console.log("Found inquiries:", result.rows.length);
-      return result.rows;
+    // In newer drizzle-orm versions, the result is the rows array directly
+    if (Array.isArray(result)) {
+      console.log("Found inquiries:", result.length);
+      return result;
+    } else if (result && 'rows' in result) {
+      // For backwards compatibility with older drizzle-orm versions
+      console.log("Found inquiries (in rows property):", (result as any).rows.length);
+      return (result as any).rows;
     } else {
-      console.log("No rows property or empty result");
+      console.log("No valid result format");
       return [];
     }
   }
