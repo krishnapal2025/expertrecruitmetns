@@ -681,7 +681,15 @@ export class DatabaseStorage implements IStorage {
       LIMIT 1
     `);
     
-    return result.rows.length > 0 ? result.rows[0] : undefined;
+    console.log("Single inquiry result:", JSON.stringify(result, null, 2));
+    
+    // Handle both possible API return formats
+    if (Array.isArray(result)) {
+      return result.length > 0 ? result[0] : undefined;
+    } else if (result && typeof result === 'object' && 'rows' in result) {
+      return (result as any).rows.length > 0 ? (result as any).rows[0] : undefined;
+    }
+    return undefined;
   }
 
   async getStaffingInquiries(): Promise<StaffingInquiry[]> {
@@ -741,7 +749,15 @@ export class DatabaseStorage implements IStorage {
       RETURNING id, name, email, phone, company, inquirytype as "inquiryType", message, marketing, status, submittedat as "submittedAt"
     `);
     
-    return result.rows.length > 0 ? result.rows[0] : undefined;
+    console.log("Update inquiry status result:", JSON.stringify(result, null, 2));
+    
+    // Handle both possible API return formats
+    if (Array.isArray(result)) {
+      return result.length > 0 ? result[0] : undefined;
+    } else if (result && typeof result === 'object' && 'rows' in result) {
+      return (result as any).rows.length > 0 ? (result as any).rows[0] : undefined;
+    }
+    return undefined;
   }
 }
 
