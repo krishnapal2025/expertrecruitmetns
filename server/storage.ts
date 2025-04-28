@@ -663,12 +663,46 @@ export class DatabaseStorage implements IStorage {
 
   // Staffing Inquiry methods
   async getStaffingInquiry(id: number): Promise<StaffingInquiry | undefined> {
-    const [inquiry] = await db.select().from(staffingInquiries).where(eq(staffingInquiries.id, id));
-    return inquiry;
+    // Use direct SQL to avoid column name issues
+    const result = await db.execute(`
+      SELECT 
+        id, 
+        name, 
+        email, 
+        phone, 
+        company, 
+        inquirytype as "inquiryType", 
+        message, 
+        marketing, 
+        status, 
+        submittedat as "submittedAt"
+      FROM staffing_inquiries 
+      WHERE id = ${id}
+      LIMIT 1
+    `);
+    
+    return result.rows.length > 0 ? result.rows[0] : undefined;
   }
 
   async getStaffingInquiries(): Promise<StaffingInquiry[]> {
-    return await db.select().from(staffingInquiries).orderBy(desc(staffingInquiries.submittedAt));
+    // Use direct SQL to avoid column name issues
+    const result = await db.execute(`
+      SELECT 
+        id, 
+        name, 
+        email, 
+        phone, 
+        company, 
+        inquirytype as "inquiryType", 
+        message, 
+        marketing, 
+        status, 
+        submittedat as "submittedAt"
+      FROM staffing_inquiries 
+      ORDER BY submittedat DESC
+    `);
+    
+    return result.rows;
   }
 
   async createStaffingInquiry(insertInquiry: InsertStaffingInquiry): Promise<StaffingInquiry> {
@@ -686,13 +720,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateStaffingInquiryStatus(id: number, status: string): Promise<StaffingInquiry | undefined> {
-    const [inquiry] = await db
-      .update(staffingInquiries)
-      .set({ status })
-      .where(eq(staffingInquiries.id, id))
-      .returning();
+    // Use direct SQL to avoid column name issues
+    const result = await db.execute(`
+      UPDATE staffing_inquiries 
+      SET status = '${status}' 
+      WHERE id = ${id}
+      RETURNING id, name, email, phone, company, inquirytype as "inquiryType", message, marketing, status, submittedat as "submittedAt"
+    `);
     
-    return inquiry;
+    return result.rows.length > 0 ? result.rows[0] : undefined;
   }
 }
 
