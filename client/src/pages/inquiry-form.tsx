@@ -30,6 +30,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
 import { Check, Send } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
@@ -66,11 +67,28 @@ export default function InquiryForm() {
 
   async function onSubmit(data: FormValues) {
     try {
-      // In a real app, you would send this data to your API
-      console.log("Form submitted:", data);
+      // Prepare data to match staffing inquiry schema
+      const inquiryData = {
+        name: data.name,
+        email: data.email,
+        message: data.message,
+        inquiryType: data.inquiryType,
+        status: "new",
+        submittedAt: new Date(),
+        company: data.company || null,
+        phone: data.phone || null,
+        marketing: data.marketing
+      };
       
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("Form submitted:", inquiryData);
+      
+      // Submit to API
+      const response = await apiRequest("POST", "/api/staffing-inquiries", inquiryData);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to submit inquiry");
+      }
       
       toast({
         title: "Inquiry Submitted",
@@ -80,9 +98,10 @@ export default function InquiryForm() {
       
       setIsSubmitted(true);
     } catch (error) {
+      console.error("Submission error:", error);
       toast({
         title: "Error",
-        description: "There was a problem submitting your inquiry. Please try again.",
+        description: error instanceof Error ? error.message : "There was a problem submitting your inquiry. Please try again.",
         variant: "destructive",
       });
     }
