@@ -702,7 +702,15 @@ export class DatabaseStorage implements IStorage {
       ORDER BY submittedat DESC
     `);
     
-    return result.rows;
+    console.log("Staffing inquiries SQL result:", JSON.stringify(result, null, 2));
+    
+    if (result && result.rows) {
+      console.log("Found inquiries:", result.rows.length);
+      return result.rows;
+    } else {
+      console.log("No rows property or empty result");
+      return [];
+    }
   }
 
   async createStaffingInquiry(insertInquiry: InsertStaffingInquiry): Promise<StaffingInquiry> {
