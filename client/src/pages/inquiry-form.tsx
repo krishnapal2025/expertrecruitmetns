@@ -68,15 +68,14 @@ export default function InquiryForm() {
   async function onSubmit(data: FormValues) {
     try {
       // Prepare data to match staffing inquiry schema
+      // The schema omits id, status, and submittedAt, so we should not include them
       const inquiryData = {
         name: data.name,
         email: data.email,
         message: data.message,
         inquiryType: data.inquiryType,
-        status: "new",
-        submittedAt: new Date(),
-        company: data.company || null,
-        phone: data.phone || null,
+        company: data.company || undefined, // Pass undefined instead of null so it's not included if empty
+        phone: data.phone || undefined, // Pass undefined instead of null so it's not included if empty
         marketing: data.marketing
       };
       
