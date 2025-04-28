@@ -7,7 +7,8 @@ import {
   testimonials, Testimonial, InsertTestimonial,
   admins, Admin, InsertAdmin,
   invitationCodes, InvitationCode, InsertInvitationCode,
-  vacancies, Vacancy, InsertVacancy
+  vacancies, Vacancy, InsertVacancy,
+  staffingInquiries, StaffingInquiry, InsertStaffingInquiry
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -108,6 +109,12 @@ export interface IStorage {
   getVacancies(): Promise<Vacancy[]>;
   createVacancy(vacancy: InsertVacancy): Promise<Vacancy>;
   updateVacancyStatus(id: number, status: string): Promise<Vacancy | undefined>;
+  
+  // Staffing Inquiry methods
+  getStaffingInquiry(id: number): Promise<StaffingInquiry | undefined>;
+  getStaffingInquiries(): Promise<StaffingInquiry[]>;
+  createStaffingInquiry(inquiry: InsertStaffingInquiry): Promise<StaffingInquiry>;
+  updateStaffingInquiryStatus(id: number, status: string): Promise<StaffingInquiry | undefined>;
 
   // Session store
   sessionStore: session.Store;
@@ -665,6 +672,7 @@ export class MemStorage implements IStorage {
   private admins: Map<number, Admin>;
   private invitationCodes: Map<string, InvitationCode>;
   private vacancies: Map<number, Vacancy>;
+  private staffingInquiries: Map<number, StaffingInquiry>;
 
   sessionStore: session.Store;
 
@@ -677,6 +685,7 @@ export class MemStorage implements IStorage {
   private testimonialIdCounter: number;
   private adminIdCounter: number;
   private vacancyIdCounter: number;
+  private staffingInquiryIdCounter: number;
 
   constructor() {
     this.users = new Map();
@@ -688,6 +697,7 @@ export class MemStorage implements IStorage {
     this.admins = new Map();
     this.invitationCodes = new Map();
     this.vacancies = new Map();
+    this.staffingInquiries = new Map();
 
     this.userIdCounter = 1;
     this.jobSeekerIdCounter = 1;
@@ -697,6 +707,7 @@ export class MemStorage implements IStorage {
     this.testimonialIdCounter = 1;
     this.adminIdCounter = 1;
     this.vacancyIdCounter = 1;
+    this.staffingInquiryIdCounter = 1;
 
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // prune expired entries every 24h
@@ -1324,6 +1335,45 @@ export class MemStorage implements IStorage {
 
     this.vacancies.set(id, updatedVacancy);
     return updatedVacancy;
+  }
+  
+  // Staffing Inquiry methods
+  async getStaffingInquiry(id: number): Promise<StaffingInquiry | undefined> {
+    return this.staffingInquiries.get(id);
+  }
+
+  async getStaffingInquiries(): Promise<StaffingInquiry[]> {
+    return Array.from(this.staffingInquiries.values());
+  }
+
+  async createStaffingInquiry(insertInquiry: InsertStaffingInquiry): Promise<StaffingInquiry> {
+    const id = this.staffingInquiryIdCounter++;
+    const now = new Date();
+    
+    const inquiry: StaffingInquiry = {
+      ...insertInquiry,
+      id,
+      status: "new",
+      submittedAt: now
+    };
+    
+    this.staffingInquiries.set(id, inquiry);
+    return inquiry;
+  }
+
+  async updateStaffingInquiryStatus(id: number, status: string): Promise<StaffingInquiry | undefined> {
+    const inquiry = this.staffingInquiries.get(id);
+    if (!inquiry) {
+      return undefined;
+    }
+
+    const updatedInquiry: StaffingInquiry = {
+      ...inquiry,
+      status
+    };
+
+    this.staffingInquiries.set(id, updatedInquiry);
+    return updatedInquiry;
   }
 }
 
