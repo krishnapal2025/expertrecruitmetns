@@ -192,7 +192,7 @@ export default function JobBoardPage() {
         <div className="flex flex-col md:flex-row gap-8">
           {/* Fixed Filters sidebar with position sticky */}
           <div className="w-full md:w-1/4">
-            <div className="sticky top-24 z-10 max-h-screen overflow-auto pb-24">
+            <div className="sticky top-24 z-10">
               <JobFilter onFilterChange={applyFilters} />
             </div>
           </div>
