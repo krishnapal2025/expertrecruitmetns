@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
-import { ArrowRight, BriefcaseIcon, Clock, DollarSign, FileCheck, FileText, Search, ShieldCheck, Users, Building2, UserPlus, Award } from "lucide-react";
+import { ArrowRight, BriefcaseIcon, ChevronDown, Clock, DollarSign, FileCheck, FileText, Search, ShieldCheck, Users, Building2, UserPlus, Award } from "lucide-react";
 import { motion } from "framer-motion";
 import hireTalentHeroImage from "../assets/hire-talent-hero.jpg";
 
@@ -15,8 +15,8 @@ export default function HireTalentPage() {
         <meta name="description" content="Find the right talent for your business. Preview candidates, hire contract talent, or permanent staff with our specialist recruitment services." />
       </Helmet>
 
-      {/* Hero Section with Team Collaboration Image */}
-      <div className="relative py-28 md:py-36 overflow-hidden" id="hire-talent-hero-section">
+      {/* Hero Section with Team Collaboration Image (Fullscreen) */}
+      <div className="relative h-screen flex items-center overflow-hidden" id="hire-talent-hero-section">
         {/* Background Image */}
         <div className="absolute inset-0 bg-black/75 z-10"></div>
         <div 
@@ -108,6 +108,22 @@ export default function HireTalentPage() {
                 <UserPlus className="h-5 w-5 text-white/80" />
                 <span>Bespoke Talent Services</span>
               </div>
+            </motion.div>
+            
+            {/* Scroll Down Indicator */}
+            <motion.div
+              className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/80"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+            >
+              <span className="text-sm mb-2">Scroll Down</span>
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
+              >
+                <ChevronDown className="h-6 w-6" />
+              </motion.div>
             </motion.div>
           </div>
         </div>
