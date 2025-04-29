@@ -149,7 +149,7 @@ export default function JobBoardPage() {
               <span className="font-medium text-primary tracking-wider uppercase text-sm">Find Your Career</span>
             </div>
             
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-gray-800 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-gray-800 tracking-tight">
               Find Your Perfect Job
             </h1>
             

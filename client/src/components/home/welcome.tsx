@@ -119,7 +119,7 @@ function CustomSlider() {
                 <span className="bg-primary/90 text-white px-4 py-1.5 rounded-full text-sm font-medium inline-block mb-4">
                   {slide.title}
                 </span>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white drop-shadow-lg whitespace-nowrap">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-white drop-shadow-lg whitespace-nowrap">
                   {slide.subtitle}
                 </h2>
                 <p className="text-lg md:text-xl mb-8 text-white/90 max-w-2xl">
@@ -371,7 +371,7 @@ export default function Welcome() {
               <div className="h-2 bg-violet-500"></div>
               <CardContent className="pt-6">
                 <div className="flex items-start">
-                  <div className="h-12 w-12 rounded-full bg-violet-100 flex items-center justify-center mr-4">
+                  <div className="h-12 w-12 rounded-full bg-violet/100 flex items-center justify-center mr-4">
                     <Award className="h-6 w-6 text-violet-500" />
                   </div>
                   <div>

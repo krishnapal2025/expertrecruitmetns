@@ -216,10 +216,10 @@ export default function HiringTrends() {
             </span>
           </div>
           
-          <h2 className="mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+          <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold tracking-tight">
             <span className="relative inline-block">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600">
-                Hiring Trends
+                Industry Insights
               </span>
               <motion.span 
                 className="absolute -bottom-3 left-0 right-0 h-1 bg-gradient-to-r from-primary to-purple-600 rounded-full" 
@@ -228,156 +228,15 @@ export default function HiringTrends() {
                 transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
               />
             </span>
-            <span className="text-gray-700 dark:text-gray-200"> & Insights</span>
+            <span className="text-gray-700 dark:text-gray-200"> & Blogs</span>
           </h2>
           
           <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300 text-lg md:text-xl mb-8">
-            Stay ahead with the latest job market data, emerging career paths, and industry forecasts
+            Stay ahead with the curated industry trends, expert perspectives, and the latest professional insights 
             to navigate your professional journey.
           </p>
           
-          <Link href="/seo-insights">
-            <motion.button 
-              className="px-6 py-3 bg-gradient-to-r from-primary to-purple-600 text-white rounded-full shadow-lg shadow-primary/20 overflow-hidden relative group"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></span>
-              <span className="absolute inset-0 w-0 bg-white/20 skew-x-12 group-hover:w-full transform transition-all duration-500 z-10"></span>
-              <span className="relative z-20 flex items-center">
-                <TrendingUp className="mr-2 h-5 w-5" /> 
-                Explore SEO Insights
-                <ArrowUpRight className="ml-2 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-              </span>
-            </motion.button>
-          </Link>
         </motion.div>
-
-        {/* Statistics section with visual elements */}
-        <div className="mb-24">
-          <motion.div 
-            ref={statsRef}
-            initial={{ opacity: 0, y: 40 }}
-            animate={containerInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative"
-          >
-            {/* Background decorative elements */}
-            <div className="absolute inset-0 -z-10">
-              <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="statsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.05" />
-                    <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.03" />
-                  </linearGradient>
-                </defs>
-                <path d="M0,30 C30,10 70,30 100,15 L100,100 L0,100 Z" fill="url(#statsGradient)" />
-              </svg>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-10">
-              {/* Google & Microsoft Remote Growth */}
-              <motion.div 
-                className="relative group"
-                whileHover={{ y: -8 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl blur-lg opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex flex-col items-center p-8 rounded-2xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 h-full">
-                  <div className="flex items-center justify-center p-3 mb-5 relative">
-                    <div className="absolute inset-0 bg-primary/10 rounded-full animate-pulse"></div>
-                    <TrendingUp className="h-8 w-8 text-primary relative z-10" />
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <span className="stat-counter text-4xl font-extrabold text-gray-800 dark:text-white" data-target="73">0</span>
-                    <span className="ml-1 text-2xl font-bold text-primary">%</span>
-                  </div>
-                  
-                  <div className="mt-3 text-center">
-                    <span className="px-3 py-1 bg-primary/10 rounded-full text-primary text-xs font-semibold">Google & Microsoft</span>
-                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Growth in remote work positions across all departments</p>
-                  </div>
-                </div>
-              </motion.div>
-              
-              {/* Amazon & IBM AI Jobs */}
-              <motion.div 
-                className="relative group"
-                whileHover={{ y: -8 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-indigo-500/5 rounded-2xl blur-lg opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex flex-col items-center p-8 rounded-2xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 h-full">
-                  <div className="flex items-center justify-center p-3 mb-5 relative">
-                    <div className="absolute inset-0 bg-indigo-500/10 rounded-full animate-pulse"></div>
-                    <Code className="h-8 w-8 text-indigo-500 relative z-10" />
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <span className="stat-counter text-4xl font-extrabold text-gray-800 dark:text-white" data-target="122">0</span>
-                    <span className="ml-1 text-2xl font-bold text-indigo-500">K</span>
-                  </div>
-                  
-                  <div className="mt-3 text-center">
-                    <span className="px-3 py-1 bg-indigo-500/10 rounded-full text-indigo-500 text-xs font-semibold">Amazon & IBM</span>
-                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">New AI developer positions opened annually</p>
-                  </div>
-                </div>
-              </motion.div>
-              
-              {/* Mayo Clinic & Cleveland Clinic Nurse Demand */}
-              <motion.div 
-                className="relative group"
-                whileHover={{ y: -8 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-pink-500/5 rounded-2xl blur-lg opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex flex-col items-center p-8 rounded-2xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 h-full">
-                  <div className="flex items-center justify-center p-3 mb-5 relative">
-                    <div className="absolute inset-0 bg-pink-500/10 rounded-full animate-pulse"></div>
-                    <Users className="h-8 w-8 text-pink-500 relative z-10" />
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <span className="stat-counter text-4xl font-extrabold text-gray-800 dark:text-white" data-target="42">0</span>
-                    <span className="ml-1 text-2xl font-bold text-pink-500">%</span>
-                  </div>
-                  
-                  <div className="mt-3 text-center">
-                    <span className="px-3 py-1 bg-pink-500/10 rounded-full text-pink-500 text-xs font-semibold">Mayo & Cleveland Clinic</span>
-                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Increase in healthcare professional demand</p>
-                  </div>
-                </div>
-              </motion.div>
-              
-              {/* LinkedIn & Indeed Monthly Active Seekers */}
-              <motion.div 
-                className="relative group"
-                whileHover={{ y: -8 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-amber-500/5 rounded-2xl blur-lg opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex flex-col items-center p-8 rounded-2xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 h-full">
-                  <div className="flex items-center justify-center p-3 mb-5 relative">
-                    <div className="absolute inset-0 bg-amber-500/10 rounded-full animate-pulse"></div>
-                    <Briefcase className="h-8 w-8 text-amber-500 relative z-10" />
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <span className="stat-counter text-4xl font-extrabold text-gray-800 dark:text-white" data-target="89">0</span>
-                    <span className="ml-1 text-2xl font-bold text-amber-500">K</span>
-                  </div>
-                  
-                  <div className="mt-3 text-center">
-                    <span className="px-3 py-1 bg-amber-500/10 rounded-full text-amber-500 text-xs font-semibold">LinkedIn & Indeed</span>
-                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Monthly active job seekers using platforms</p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
 
         {/* Industry insights cards with visual enhancements */}
         <div className="py-4">

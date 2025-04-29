@@ -98,7 +98,7 @@ export default function AboutUsPage() {
             </motion.div>
             
             <motion.h1 
-              className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-gray-800 tracking-tight"
+              className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-gray-800 tracking-tight"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.7 }}
