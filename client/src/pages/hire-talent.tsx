@@ -18,13 +18,13 @@ export default function HireTalentPage() {
       {/* Hero Section with Team Collaboration Image */}
       <div className="relative py-32 md:py-40 overflow-hidden" id="hire-talent-hero-section">
         {/* Background Image */}
-        <div className="absolute inset-0 bg-black/60 z-10"></div>
+        <div className="absolute inset-0 bg-black/75 z-10"></div>
         <div 
           className="absolute inset-0 bg-center bg-cover" 
           style={{ 
             backgroundImage: `url(${hireTalentHeroImage})`,
             backgroundPosition: 'center',
-            filter: 'brightness(0.9)'
+            filter: 'brightness(0.85)'
           }}
         ></div>
         
