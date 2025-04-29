@@ -428,7 +428,7 @@ export default function AboutUsPage() {
             <div className="mt-8 grid grid-cols-3 gap-6">
               <div className="bg-amber-50 rounded-lg p-4 text-center">
                 <div className="text-2xl font-bold text-amber-600 mb-1">2015</div>
-                <p className="text-sm text-gray-600">Founded as Expert Labor Supply Services</p>
+                <p className="text-sm text-gray-600">Founded as Expert Labor Supply Services in Dubai, UAE.</p>
               </div>
               
               
@@ -439,7 +439,7 @@ export default function AboutUsPage() {
 
               <div className="bg-amber-50 rounded-lg p-4 text-center">
                 <div className="text-2xl font-bold text-amber-600 mb-1">2025</div>
-                <p className="text-sm text-gray-600">UAE And USA offices registered in 2025 as Expert Recruitments LLC</p>
+                <p className="text-sm text-gray-600">UAE and USA offices registered in 2025 as Expert Recruitments LLC</p>
               </div>
               
             </div>
