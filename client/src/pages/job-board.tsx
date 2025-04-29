@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Search, Briefcase, Loader2 } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const JOBS_PER_PAGE = 10;
 
@@ -189,9 +190,11 @@ export default function JobBoardPage() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row gap-8">
-          {/* Filters sidebar */}
+          {/* Fixed Filters sidebar with position sticky */}
           <div className="w-full md:w-1/4">
-            <JobFilter onFilterChange={applyFilters} />
+            <div className="sticky top-24 z-10">
+              <JobFilter onFilterChange={applyFilters} />
+            </div>
           </div>
           
           {/* Job listings */}
@@ -202,62 +205,67 @@ export default function JobBoardPage() {
               </div>
             ) : filteredJobs.length > 0 ? (
               <>
-                <div className="mb-6 flex justify-between items-center">
-                  <h2 className="text-xl font-semibold flex items-center">
-                    <Briefcase className="mr-2" />
-                    <span>{filteredJobs.length} Jobs Found</span>
-                  </h2>
-                  <div className="text-sm text-gray-600">
-                    Showing {Math.min((currentPage - 1) * JOBS_PER_PAGE + 1, filteredJobs.length)} to {Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)} of {filteredJobs.length}
+                <div className="sticky top-24 z-10 bg-white pt-2 pb-4 border-b border-gray-200 mb-6">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-semibold flex items-center">
+                      <Briefcase className="mr-2" />
+                      <span>{filteredJobs.length} Jobs Found</span>
+                    </h2>
+                    <div className="text-sm text-gray-600">
+                      Showing {Math.min((currentPage - 1) * JOBS_PER_PAGE + 1, filteredJobs.length)} to {Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)} of {filteredJobs.length}
+                    </div>
                   </div>
                 </div>
                 
-                <div className="space-y-6">
-                  {paginatedJobs.map((job) => (
-                    <JobCard key={job.id} job={job} />
-                  ))}
-                </div>
-                
-                {totalPages > 1 && (
-                  <Pagination className="mt-8">
-                    <PaginationContent>
-                      <PaginationItem>
-                        <Button 
-                          variant="outline"
-                          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                          disabled={currentPage === 1}
-                          className="h-8 w-8 p-0 flex items-center justify-center"
-                        >
-                          &lt;
-                        </Button>
-                      </PaginationItem>
-                      
-                      {/* Page numbers */}
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
-                        <PaginationItem key={pageNum}>
-                          <Button
-                            variant={pageNum === currentPage ? "default" : "outline"}
-                            className="h-8 w-8"
-                            onClick={() => setCurrentPage(pageNum)}
+                {/* Scrollable jobs section */}
+                <ScrollArea className="h-[calc(100vh-260px)] pr-4">
+                  <div className="space-y-6">
+                    {paginatedJobs.map((job) => (
+                      <JobCard key={job.id} job={job} />
+                    ))}
+                  </div>
+                  
+                  {totalPages > 1 && (
+                    <Pagination className="my-8 sticky bottom-0 bg-white pt-4 pb-2">
+                      <PaginationContent>
+                        <PaginationItem>
+                          <Button 
+                            variant="outline"
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="h-8 w-8 p-0 flex items-center justify-center"
                           >
-                            {pageNum}
+                            &lt;
                           </Button>
                         </PaginationItem>
-                      ))}
-                      
-                      <PaginationItem>
-                        <Button 
-                          variant="outline"
-                          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                          disabled={currentPage === totalPages}
-                          className="h-8 w-8 p-0 flex items-center justify-center"
-                        >
-                          &gt;
-                        </Button>
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                )}
+                        
+                        {/* Page numbers */}
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                          <PaginationItem key={pageNum}>
+                            <Button
+                              variant={pageNum === currentPage ? "default" : "outline"}
+                              className="h-8 w-8"
+                              onClick={() => setCurrentPage(pageNum)}
+                            >
+                              {pageNum}
+                            </Button>
+                          </PaginationItem>
+                        ))}
+                        
+                        <PaginationItem>
+                          <Button 
+                            variant="outline"
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            className="h-8 w-8 p-0 flex items-center justify-center"
+                          >
+                            &gt;
+                          </Button>
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  )}
+                </ScrollArea>
               </>
             ) : (
               <div className="text-center py-16 bg-gray-50 rounded-lg">

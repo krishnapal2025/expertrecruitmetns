@@ -140,7 +140,7 @@ const locations = [
   "Surat, India",
   "Visakhapatnam, India",
   "Vadodara, India",
- 
+  
   // Other International
   "London, UK",
   "Toronto, Canada",
@@ -148,7 +148,6 @@ const locations = [
   "Paris, France",
   "Munich, Germany",
   "Dublin, Ireland",
-  // Remote
   "Remote",
   "All Locations"
 ];
