@@ -218,36 +218,36 @@ export default function AboutUsPage() {
           
           {/* Three value propositions */}
           <motion.div 
-            className="grid md:grid-cols-3 gap-8 relative z-20 max-w-5xl mx-auto"
+            className="grid md:grid-cols-3 gap-4 relative z-20 max-w-4xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
           >
-            <div className="relative bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col items-center h-full group">
-              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center border border-white/50 shadow-md group-hover:scale-110 transition-transform duration-300">
-                <Users className="h-6 w-6 text-white" />
+            <div className="relative bg-white/95 backdrop-blur-sm rounded-lg shadow-md p-4 border border-gray-100 hover:shadow-lg transition-all duration-300 flex flex-col items-center h-full group">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center border border-white/50 shadow-sm group-hover:scale-110 transition-transform duration-300">
+                <Users className="h-4 w-4 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mt-6 mb-2 text-center group-hover:text-primary transition-colors duration-300">Comprehensive</h3>
-              <p className="text-gray-600 text-center">Talent Acquisition</p>
-              <div className="absolute -bottom-1 left-0 right-0 h-1.5 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 rounded-b-lg"></div>
+              <h3 className="text-base font-bold text-gray-800 mt-4 mb-1 text-center group-hover:text-primary transition-colors duration-300">Comprehensive</h3>
+              <p className="text-sm text-gray-600 text-center">Talent Acquisition</p>
+              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 rounded-b-lg"></div>
             </div>
             
-            <div className="relative bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col items-center h-full group">
-              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center border border-white/50 shadow-md group-hover:scale-110 transition-transform duration-300">
-                <Briefcase className="h-6 w-6 text-white" />
+            <div className="relative bg-white/95 backdrop-blur-sm rounded-lg shadow-md p-4 border border-gray-100 hover:shadow-lg transition-all duration-300 flex flex-col items-center h-full group">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center border border-white/50 shadow-sm group-hover:scale-110 transition-transform duration-300">
+                <Briefcase className="h-4 w-4 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mt-6 mb-2 text-center group-hover:text-primary transition-colors duration-300">Meticulous</h3>
-              <p className="text-gray-600 text-center">Search Process</p>
-              <div className="absolute -bottom-1 left-0 right-0 h-1.5 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 rounded-b-lg"></div>
+              <h3 className="text-base font-bold text-gray-800 mt-4 mb-1 text-center group-hover:text-primary transition-colors duration-300">Meticulous</h3>
+              <p className="text-sm text-gray-600 text-center">Search Process</p>
+              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 rounded-b-lg"></div>
             </div>
             
-            <div className="relative bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col items-center h-full group">
-              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center border border-white/50 shadow-md group-hover:scale-110 transition-transform duration-300">
-                <Target className="h-6 w-6 text-white" />
+            <div className="relative bg-white/95 backdrop-blur-sm rounded-lg shadow-md p-4 border border-gray-100 hover:shadow-lg transition-all duration-300 flex flex-col items-center h-full group">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center border border-white/50 shadow-sm group-hover:scale-110 transition-transform duration-300">
+                <Target className="h-4 w-4 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mt-6 mb-2 text-center group-hover:text-primary transition-colors duration-300">Results</h3>
-              <p className="text-gray-600 text-center">Guaranteed</p>
-              <div className="absolute -bottom-1 left-0 right-0 h-1.5 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 rounded-b-lg"></div>
+              <h3 className="text-base font-bold text-gray-800 mt-4 mb-1 text-center group-hover:text-primary transition-colors duration-300">Results</h3>
+              <p className="text-sm text-gray-600 text-center">Guaranteed</p>
+              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 rounded-b-lg"></div>
             </div>
           </motion.div>
           
