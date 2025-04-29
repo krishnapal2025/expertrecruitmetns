@@ -16,7 +16,7 @@ export default function HireTalentPage() {
       </Helmet>
 
       {/* Hero Section with Team Collaboration Image */}
-      <div className="relative py-36 md:py-48 overflow-hidden" id="hire-talent-hero-section">
+      <div className="relative py-28 md:py-36 overflow-hidden" id="hire-talent-hero-section">
         {/* Background Image */}
         <div className="absolute inset-0 bg-black/75 z-10"></div>
         <div 
