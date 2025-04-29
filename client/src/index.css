@@ -15,6 +15,27 @@
   }
 }
 
+/* Fullscreen mode */
+.fullscreen-active {
+  overflow: visible !important;
+}
+
+/* Animation for fullscreen transition */
+.fixed.z-50 {
+  animation: fullscreen-entry 0.3s ease-in-out;
+}
+
+@keyframes fullscreen-entry {
+  from { 
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* Custom styles for full-width slider */
 .full-width-slider {
   width: 100vw;

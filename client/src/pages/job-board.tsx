@@ -7,7 +7,7 @@ import JobFilter from "@/components/job/job-filter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { Search, Briefcase, Loader2 } from "lucide-react";
+import { Search, Briefcase, Loader2, Maximize2, Minimize2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const JOBS_PER_PAGE = 4;
@@ -16,6 +16,8 @@ export default function JobBoardPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isFilterFullScreen, setIsFilterFullScreen] = useState(false);
+  const [isJobsFullScreen, setIsJobsFullScreen] = useState(false);
   const [filters, setFilters] = useState({
     category: "",
     location: "",
@@ -189,29 +191,60 @@ export default function JobBoardPage() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row gap-8 h-[calc(100vh-180px)] overflow-hidden">
+        <div className={`flex flex-col md:flex-row gap-8 h-[calc(100vh-180px)] overflow-hidden ${isFilterFullScreen || isJobsFullScreen ? 'fullscreen-active' : ''}`}>
           {/* Fixed Filters sidebar with internal scrolling */}
-          <div className="w-full md:w-1/4 h-full overflow-hidden">
-            <div className="h-full">
+          <div className={`${isFilterFullScreen ? 'fixed inset-0 z-50 p-6 bg-white' : isJobsFullScreen ? 'hidden' : 'w-full md:w-1/4'} h-full overflow-hidden transition-all duration-300 ease-in-out`}>
+            <div className="h-full relative">
+              {/* Fullscreen button for filter */}
+              <div className="absolute top-2 right-2 z-10">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setIsFilterFullScreen(!isFilterFullScreen);
+                    if (isJobsFullScreen) setIsJobsFullScreen(false);
+                  }}
+                  className="h-8 w-8 p-0 flex items-center justify-center text-gray-500 hover:text-primary"
+                  title={isFilterFullScreen ? "Exit Fullscreen" : "Fullscreen"}
+                >
+                  {isFilterFullScreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                </Button>
+              </div>
               <JobFilter onFilterChange={applyFilters} />
             </div>
           </div>
           
           {/* Job listings */}
-          <div className="w-full md:w-3/4 h-full overflow-hidden">
+          <div className={`${isJobsFullScreen ? 'fixed inset-0 z-50 p-6 bg-white' : isFilterFullScreen ? 'hidden' : 'w-full md:w-3/4'} h-full overflow-hidden transition-all duration-300 ease-in-out`}>
             {isLoading ? (
               <div className="flex justify-center items-center py-16">
                 <Loader2 className="h-10 w-10 animate-spin text-primary" />
               </div>
             ) : filteredJobs.length > 0 ? (
-              <div className="flex flex-col h-full overflow-hidden">
+              <div className="flex flex-col h-full overflow-hidden relative">
+                {/* Fullscreen button for jobs */}
+                <div className="absolute top-2 right-2 z-10">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setIsJobsFullScreen(!isJobsFullScreen);
+                      if (isFilterFullScreen) setIsFilterFullScreen(false);
+                    }}
+                    className="h-8 w-8 p-0 flex items-center justify-center text-gray-500 hover:text-primary"
+                    title={isJobsFullScreen ? "Exit Fullscreen" : "Fullscreen"}
+                  >
+                    {isJobsFullScreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                  </Button>
+                </div>
+                
                 <div className="sticky top-0 z-10 bg-white pt-2 pb-4 border-b border-gray-200">
                   <div className="flex justify-between items-center">
                     <h2 className="text-xl font-semibold flex items-center">
                       <Briefcase className="mr-2" />
                       <span>{filteredJobs.length} Jobs Found</span>
                     </h2>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-gray-600 mr-10">
                       Showing {Math.min((currentPage - 1) * JOBS_PER_PAGE + 1, filteredJobs.length)} to {Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)} of {filteredJobs.length}
                     </div>
                   </div>
