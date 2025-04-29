@@ -36,6 +36,24 @@
   }
 }
 
+/* Pulsing animation for fullscreen button */
+.fullscreen-btn {
+  animation: pulse-border 2s infinite;
+  position: relative;
+}
+
+@keyframes pulse-border {
+  0% {
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(79, 70, 229, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+  }
+}
+
 /* Custom styles for full-width slider */
 .full-width-slider {
   width: 100vw;

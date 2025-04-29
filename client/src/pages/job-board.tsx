@@ -186,14 +186,15 @@ export default function JobBoardPage() {
 
       <div className="container mx-auto px-4 py-8">
         <div className={`relative rounded-xl shadow-md border border-gray-100 bg-white h-[calc(100vh-180px)] overflow-hidden ${isFullScreen ? 'fixed inset-0 z-50 m-0 rounded-none' : ''}`}>
-          <div className="absolute top-4 right-4 z-10">
+          <div className="absolute top-6 right-6 z-10">
             <Button
-              variant="ghost"
+              variant="default"
               size="sm"
               onClick={() => setIsFullScreen(!isFullScreen)}
-              className="h-8 w-8 p-0 flex items-center justify-center text-gray-500 hover:text-primary"
+              className={`px-3 py-2 flex items-center gap-2 ${isFullScreen ? '' : 'fullscreen-btn'} shadow-md`}
               title={isFullScreen ? "Exit Fullscreen" : "Fullscreen"}
             >
+              <span className="font-medium text-xs">{isFullScreen ? "Exit Fullscreen" : "Fullscreen Mode"}</span>
               {isFullScreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </Button>
           </div>
