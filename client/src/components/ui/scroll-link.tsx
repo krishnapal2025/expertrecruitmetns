@@ -15,20 +15,24 @@ interface ScrollLinkProps {
 export function ScrollLink({ href, children, className, onClick }: ScrollLinkProps) {
   const scrollToTop = useScrollToTop();
   
-  const handleClick = (e: React.MouseEvent) => {
-    // Only apply scroll behavior if it's not an anchor link on the same page
+  // Very simple implementation - just combine scrolling and onClick
+  const handleNavigation = () => {
+    // Scroll to top for regular links (not anchor links)
     if (!href.startsWith('#')) {
       scrollToTop();
     }
     
-    if (onClick) onClick();
+    // Call custom onClick if provided
+    if (onClick) {
+      onClick();
+    }
   };
 
   return (
     <Link href={href}>
-      <span className={className} onClick={handleClick}>
+      <a className={className} onClick={handleNavigation}>
         {children}
-      </span>
+      </a>
     </Link>
   );
 }

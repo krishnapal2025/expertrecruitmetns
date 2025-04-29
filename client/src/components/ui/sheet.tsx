@@ -61,6 +61,24 @@ const SheetContent = React.forwardRef<
       ref={ref}
       className={cn(sheetVariants({ side }), className)}
       {...props}
+      onEscapeKeyDown={(event) => {
+        // Safely handle event objects that might be null or undefined
+        if (props.onEscapeKeyDown && event) {
+          props.onEscapeKeyDown(event);
+        }
+      }}
+      onPointerDownOutside={(event) => {
+        // Safely handle event objects that might be null or undefined
+        if (props.onPointerDownOutside && event) {
+          props.onPointerDownOutside(event);
+        }
+      }}
+      onInteractOutside={(event) => {
+        // Safely handle event objects that might be null or undefined
+        if (props.onInteractOutside && event) {
+          props.onInteractOutside(event);
+        }
+      }}
     >
       {children}
       <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">

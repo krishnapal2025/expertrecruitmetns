@@ -38,6 +38,12 @@ const AlertDialogContent = React.forwardRef<
         className
       )}
       {...props}
+      onEscapeKeyDown={(event) => {
+        // Safely handle event objects that might be null or undefined
+        if (props.onEscapeKeyDown && event) {
+          props.onEscapeKeyDown(event);
+        }
+      }}
     />
   </AlertDialogPortal>
 ))
