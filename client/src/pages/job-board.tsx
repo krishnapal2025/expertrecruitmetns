@@ -163,7 +163,7 @@ export default function JobBoardPage() {
       </Helmet>
 
       {/* Hero Section with Professional Background Image (Fullscreen) */}
-      <div className="relative h-screen flex items-center overflow-hidden" id="job-board-hero-section">
+      <div className="relative h-screen flex items-center justify-center overflow-hidden" id="job-board-hero-section">
         {/* Background Image */}
         <div className="absolute inset-0 bg-black/70 z-10"></div>
         <div 
@@ -178,9 +178,9 @@ export default function JobBoardPage() {
         {/* Accent lines */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>
         
-        <div className="container mx-auto px-4 relative">
+        <div className="container mx-auto px-4 relative py-20">
           {/* Main content */}
-          <div className="flex flex-col items-center text-center max-w-5xl mx-auto relative z-20">
+          <div className="flex flex-col items-center justify-center text-center max-w-5xl mx-auto relative z-20">
             <motion.div 
               className="inline-block mb-6 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-sm rounded-md backdrop-blur-sm"
               initial={{ opacity: 0, y: -20 }}
