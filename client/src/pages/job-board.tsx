@@ -7,8 +7,10 @@ import JobFilter from "@/components/job/job-filter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { Search, Briefcase, Loader2, Maximize2, Minimize2 } from "lucide-react";
+import { Search, Briefcase, Loader2, Maximize2, Minimize2, Building2, MapPin, UserPlus, ArrowRight } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { motion } from "framer-motion";
+import jobBoardHeroImage from "../assets/job-board-hero.jpg";
 
 const JOBS_PER_PAGE = 4;
 
@@ -160,37 +162,63 @@ export default function JobBoardPage() {
         <meta name="description" content="Browse through our extensive collection of job listings across various sectors and locations. Find your perfect career opportunity today." />
       </Helmet>
 
-      <div className="relative py-12 bg-gray-50 overflow-hidden">
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
+      {/* Hero Section with Professional Background Image */}
+      <div className="relative py-32 md:py-40 overflow-hidden" id="job-board-hero-section">
+        {/* Background Image */}
+        <div className="absolute inset-0 bg-black/60 z-10"></div>
+        <div 
+          className="absolute inset-0 bg-center bg-cover" 
+          style={{ 
+            backgroundImage: `url(${jobBoardHeroImage})`,
+            backgroundPosition: 'center',
+            filter: 'brightness(0.9)'
+          }}
+        ></div>
         
-        <div className="absolute top-0 right-0 w-1/3 h-full overflow-hidden">
-          <div className="absolute -right-20 top-1/4 w-80 h-80 bg-primary/5 rounded-full"></div>
-          <div className="absolute -right-10 bottom-1/4 w-40 h-40 bg-primary/5 rounded-full"></div>
-        </div>
-        
-        <div className="absolute left-0 bottom-0 w-1/4 h-80 overflow-hidden">
-          <div className="absolute -left-20 bottom-0 w-64 h-64 bg-gray-100 rounded-full"></div>
-        </div>
+        {/* Accent lines */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>
         
         <div className="container mx-auto px-4 relative">
-          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-8">
-            <div className="inline-block mb-4 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md">
-              <span className="font-medium text-primary tracking-wider uppercase text-sm">Find Your Career</span>
-            </div>
+          {/* Main content */}
+          <div className="flex flex-col items-center text-center max-w-5xl mx-auto relative z-20">
+            <motion.div 
+              className="inline-block mb-6 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-sm rounded-md backdrop-blur-sm"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <span className="font-medium text-primary tracking-wider uppercase text-sm">Find Your Next Opportunity</span>
+            </motion.div>
             
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-gray-800 tracking-tight">
-              Find Your Perfect Job
-            </h1>
+            <motion.h1 
+              className="text-2xl sm:text-3xl md:text-5xl font-bold mb-6 text-white tracking-tight drop-shadow-md"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.7 }}
+            >
+              Discover Your Dream Career
+            </motion.h1>
             
-            <p className="text-xl text-gray-600 leading-relaxed mb-6 max-w-3xl">
-              Browse through thousands of opportunities from top employers worldwide
-            </p>
+            <motion.p 
+              className="text-xl text-white/90 leading-relaxed mb-8 max-w-3xl drop-shadow"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+            >
+              Browse through our curated selection of premium job opportunities from leading employers across Dubai and the UAE
+            </motion.p>
             
-            <div className="relative w-full max-w-2xl mb-2">
+            {/* Search Box */}
+            <motion.div 
+              className="relative w-full max-w-2xl mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+            >
               <Input
                 type="text"
                 placeholder="Search for jobs, keywords, or companies..."
-                className="pl-10 py-6 text-gray-900 border border-gray-200 rounded-lg shadow-sm"
+                className="pl-10 py-6 text-gray-900 border border-gray-200 rounded-lg shadow-lg bg-white/95 backdrop-blur-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={(e) => {
@@ -211,7 +239,43 @@ export default function JobBoardPage() {
                   });
                 }}
               />
-            </div>
+              <Button 
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 gap-1"
+                onClick={() => {
+                  setFilters({
+                    ...filters,
+                    keyword: searchTerm.trim() || undefined
+                  });
+                }}
+              >
+                Search <ArrowRight size={16} />
+              </Button>
+            </motion.div>
+            
+            {/* Job Stats */}
+            <motion.div 
+              className="flex flex-wrap justify-center gap-8 mt-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+            >
+              <div className="flex items-center gap-2 text-white">
+                <Building2 className="h-5 w-5 text-white/80" />
+                <span>Premium Employers</span>
+              </div>
+              <div className="flex items-center gap-2 text-white">
+                <Briefcase className="h-5 w-5 text-white/80" />
+                <span>Executive Positions</span>
+              </div>
+              <div className="flex items-center gap-2 text-white">
+                <MapPin className="h-5 w-5 text-white/80" />
+                <span>UAE & Global Opportunities</span>
+              </div>
+              <div className="flex items-center gap-2 text-white">
+                <UserPlus className="h-5 w-5 text-white/80" />
+                <span>Exclusive Listings</span>
+              </div>
+            </motion.div>
           </div>
         </div>
       </div>
