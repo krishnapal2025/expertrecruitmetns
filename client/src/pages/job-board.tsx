@@ -346,14 +346,14 @@ export default function JobBoardPage() {
             </div>
           </div>
           
-          <div className="flex h-[calc(100%-4rem)] overflow-hidden">
-            <div className="w-1/4 h-full border-r border-gray-100 overflow-hidden">
-              <ScrollArea className="h-full pb-6 scrollbar-hide p-4">
+          <div className="flex flex-col md:flex-row h-[calc(100%-4rem)] overflow-hidden">
+            <div className="w-full md:w-1/3 lg:w-1/4 h-auto md:h-full border-b md:border-b-0 md:border-r border-gray-100 overflow-hidden">
+              <ScrollArea className="h-full max-h-[300px] md:max-h-full pb-6 scrollbar-hide p-4">
                 <JobFilter onFilterChange={applyFilters} />
               </ScrollArea>
             </div>
             
-            <div className="w-3/4 h-full overflow-hidden">
+            <div className="w-full md:w-2/3 lg:w-3/4 h-full overflow-hidden">
               {isLoading ? (
                 <div className="flex justify-center items-center h-full">
                   <Loader2 className="h-10 w-10 animate-spin text-primary" />

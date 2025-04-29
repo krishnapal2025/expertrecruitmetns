@@ -296,16 +296,16 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
   
   return (
     <>      
-      {/* Mobile filter toggle */}
+      {/* Mobile filter toggle - only shown inside job board */}
       <div className="md:hidden mb-4">
         <Button 
           variant="outline" 
-          className="w-full flex items-center justify-between"
+          className="w-full flex items-center justify-between bg-white"
           onClick={() => setShowFilters(!showFilters)}
         >
           <span className="flex items-center">
             <Filter className="mr-2 h-4 w-4" />
-            Filter Jobs
+            {showFilters ? "Hide Filters" : "Show Filters"}
           </span>
           <span>
             {showFilters ? (
@@ -315,6 +315,47 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
             )}
           </span>
         </Button>
+        
+        {/* Active filters summary - mobile */}
+        {(selectedCategory !== "All Categories" || 
+          selectedLocation !== "All Locations" || 
+          selectedJobType !== "All Types" || 
+          selectedSpecialization !== "All Specializations" || 
+          salaryRange[0] > 0 || 
+          salaryRange[1] < 200000) && (
+            <div className="md:hidden mt-2 bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
+              <div className="flex justify-between items-center mb-1">
+                <h3 className="font-medium text-gray-700">Active Filters</h3>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-6 text-xs text-gray-500 hover:text-primary p-0"
+                  onClick={resetFilters}
+                >
+                  Clear All
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {selectedCategory !== "All Categories" && (
+                  <Badge variant="outline" className="bg-white text-xs px-2 py-0.5">
+                    {selectedCategory}
+                  </Badge>
+                )}
+                
+                {selectedLocation !== "All Locations" && (
+                  <Badge variant="outline" className="bg-white text-xs px-2 py-0.5">
+                    {selectedLocation}
+                  </Badge>
+                )}
+                
+                {selectedJobType !== "All Types" && (
+                  <Badge variant="outline" className="bg-white text-xs px-2 py-0.5">
+                    {selectedJobType}
+                  </Badge>
+                )}
+              </div>
+            </div>
+        )}
       </div>
       
       {/* Active filters (desktop) */}
