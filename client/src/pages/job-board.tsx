@@ -218,7 +218,7 @@ export default function JobBoardPage() {
                 </div>
                 
                 {/* Scrollable jobs section - matched to filter height with calc */}
-                <ScrollArea className="flex-1 pb-6 overflow-y-auto">
+                <ScrollArea className="flex-1 pb-6 overflow-y-auto scrollbar-hide">
                   <div className="space-y-6 mt-6 pr-4">
                     {paginatedJobs.map((job) => (
                       <JobCard key={job.id} job={job} />

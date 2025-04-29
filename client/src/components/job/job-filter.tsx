@@ -398,7 +398,7 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
       )}
     
       <Card className={`${showFilters ? 'block' : 'hidden'} md:block transition-all duration-300 ease-in-out shadow-md border border-gray-200 rounded-xl overflow-hidden h-full`}>
-        <CardContent className="space-y-6 pt-6 px-5 overflow-auto max-h-[calc(100vh-220px)]">
+        <CardContent className="space-y-6 pt-6 px-5 overflow-auto max-h-[calc(100vh-220px)] scrollbar-hide">
           {/* Job Categories */}
           <div className="border border-gray-200 rounded-lg p-3">
             <h3 className="font-semibold mb-3 text-gray-800">
