@@ -362,13 +362,16 @@ export default function Navbar() {
                         </div>
                         <div className="ml-4 flex flex-col space-y-2 mt-2">
                           {link.dropdownItems?.map((item) => (
-                            <SheetClose asChild key={item.name}>
-                              <ScrollLink href={item.href} className="block">
-                                <div className={`px-4 py-2 rounded-md cursor-pointer ${location === item.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}>
-                                  {item.name}
-                                </div>
-                              </ScrollLink>
-                            </SheetClose>
+                            <div key={item.name} 
+                              className={`px-4 py-2 rounded-md cursor-pointer ${location === item.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = item.href, 100);
+                              }}
+                            >
+                              {item.name}
+                            </div>
                           ))}
                         </div>
                       </div>

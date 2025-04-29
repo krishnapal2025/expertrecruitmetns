@@ -10,40 +10,63 @@ interface ScrollLinkProps {
 }
 
 /**
- * A custom Link component that scrolls to the top when clicked
- * This implementation avoids using wouter's Link to prevent nesting issues
+ * A simple wrapper around normal navigation that scrolls to top as well
  */
 export function ScrollLink({ href, children, className, onClick }: ScrollLinkProps) {
   const scrollToTop = useScrollToTop();
-  const [, navigate] = useLocation();
+  const [, setLocation] = useLocation();
   
-  const handleClick = (e: React.MouseEvent) => {
-    // Prevent default browser navigation
-    e.preventDefault();
-    
-    // Scroll to top for regular links (not anchor links)
-    if (!href.startsWith('#')) {
-      scrollToTop();
+  // Create a safe navigation function that doesn't rely on event objects
+  const safeNavigate = () => {
+    try {
+      // Regular navigation
+      if (!href.startsWith('#')) {
+        // Scroll first
+        window.scrollTo(0, 0);
+        
+        // Then navigate
+        setTimeout(() => {
+          setLocation(href);
+        }, 0);
+      } else {
+        // Handle anchor links normally
+        const element = document.querySelector(href);
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } catch (error) {
+      console.error("Navigation error:", error);
     }
-    
-    // Call custom onClick if provided
-    if (onClick) {
-      onClick();
+  };
+  
+  // Create a safe click handler that doesn't rely on event objects
+  const handleSafeClick = () => {
+    try {
+      // Try to call the onclick handler if provided
+      if (typeof onClick === 'function') {
+        // Call it in a way that catches errors
+        try {
+          onClick();
+        } catch (e) {
+          console.error("onClick handler error:", e);
+        }
+      }
+      
+      // Then navigate safely
+      safeNavigate();
+    } catch (error) {
+      console.error("Click handler error:", error);
     }
-    
-    // Navigate programmatically using wouter
-    navigate(href);
   };
 
   return (
     <div 
+      className={`${className || ''} cursor-pointer`}
+      onClick={handleSafeClick}
       role="button"
       tabIndex={0}
-      className={`${className} cursor-pointer`} 
-      onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          handleClick(e as unknown as React.MouseEvent);
+          handleSafeClick();
         }
       }}
     >
