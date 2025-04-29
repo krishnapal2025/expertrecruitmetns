@@ -16,7 +16,7 @@ export default function HireTalentPage() {
       </Helmet>
 
       {/* Hero Section with Team Collaboration Image */}
-      <div className="relative py-32 md:py-40 overflow-hidden" id="hire-talent-hero-section">
+      <div className="relative py-36 md:py-48 overflow-hidden" id="hire-talent-hero-section">
         {/* Background Image */}
         <div className="absolute inset-0 bg-black/75 z-10"></div>
         <div 
@@ -114,7 +114,7 @@ export default function HireTalentPage() {
       </div>
 
       {/* Services Tabs */}
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Our Talent Solutions</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">Choose the talent solution that best fits your business needs</p>
