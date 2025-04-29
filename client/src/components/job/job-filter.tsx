@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
-import { Filter, X, Search, Briefcase, MapPin, Clock, DollarSign } from "lucide-react";
+import { Filter, X, Search, Briefcase, MapPin, Clock, DollarSign, ChevronDown } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -100,6 +100,11 @@ const locations = [
   // UAE
   "Dubai, UAE",
   "Abu Dhabi, UAE",
+  "Sharjah, UAE", 
+  "Ajman, UAE", 
+  "Umm al-Quwain, UAE",
+  "Ras al-Khaimah, UAE",
+  "Fujairah, UAE",
   // India
   "Mumbai, India",
   "Delhi, India",
@@ -270,7 +275,7 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
             {showFilters ? (
               <X className="h-4 w-4" />
             ) : (
-              <ChevronIcon className="h-4 w-4" />
+              <ChevronDown className="h-4 w-4" />
             )}
           </span>
         </Button>
@@ -356,19 +361,22 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           </div>
       )}
     
-      <Card className={`${showFilters ? 'block' : 'hidden'} md:block transition-all duration-300 ease-in-out shadow-md border border-gray-200`}>
+      <Card className={`${showFilters ? 'block' : 'hidden'} md:block transition-all duration-300 ease-in-out shadow-lg border border-gray-200 rounded-xl overflow-hidden`}>
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 h-2"></div>
         <CardContent className="space-y-6 pt-6 px-5">
           {/* Job Categories */}
-          <div>
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-100/50">
             <h3 className="font-semibold mb-3 flex items-center text-gray-800">
-              <Briefcase className="mr-2 h-5 w-5 text-primary" />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center mr-2">
+                <Briefcase className="h-4 w-4 text-white" />
+              </div>
               Job Category
             </h3>
             <Select
               value={selectedCategory}
               onValueChange={setSelectedCategory}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full bg-white shadow-sm border-blue-100">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
@@ -486,49 +494,123 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
             </Select>
           </div>
           
-          {/* Salary Range with interactive display */}
-          <div>
+          {/* Salary Range with improved interactive display */}
+          <div className="p-2 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100/50">
             <h3 className="font-semibold mb-3 flex items-center text-gray-800">
               <DollarSign className="mr-2 h-5 w-5 text-primary" />
-              Salary Range
+              Salary Range (Monthly)
             </h3>
-            <div className="pt-4">
-              <div className="text-center mb-2 font-medium text-primary">
+            <div className="p-4 bg-white rounded-lg shadow-sm border border-blue-100/50">
+              <div className="text-center mb-4 font-medium bg-gradient-to-r from-purple-600 to-indigo-600 text-transparent bg-clip-text text-lg">
                 {displaySalary}
               </div>
-              <Slider 
-                defaultValue={[0, 200000]}
-                value={salaryRange}
-                max={200000} 
-                step={10000}
-                minStepsBetweenThumbs={1}
-                onValueChange={handleSalaryChange}
-                className="mb-6"
-              />
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>{getCurrencySymbol()}0</span>
-                <span>{getCurrencySymbol()}{selectedLocation.includes("UAE") ? "50,000" : "50k"}</span>
-                <span>{getCurrencySymbol()}{selectedLocation.includes("UAE") ? "100,000" : "100k"}</span>
-                <span>{getCurrencySymbol()}{selectedLocation.includes("UAE") ? "150,000" : "150k"}</span>
-                <span>{getCurrencySymbol()}{selectedLocation.includes("UAE") ? "200,000+" : "200k+"}</span>
+              
+              {/* Custom markers for slider thumbs */}
+              <div className="relative">
+                <Slider 
+                  defaultValue={[0, 200000]}
+                  value={salaryRange}
+                  max={200000} 
+                  step={10000}
+                  minStepsBetweenThumbs={1}
+                  onValueChange={handleSalaryChange}
+                  className="mb-6"
+                />
+                
+                {/* Visual indicators for current values */}
+                <div className="absolute -top-2 left-0 right-0 flex justify-between items-center">
+                  <div 
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 p-1 rounded-full w-5 h-5 flex items-center justify-center shadow-md" 
+                    style={{ 
+                      position: 'absolute',
+                      left: `${(salaryRange[0] / 200000) * 100}%`,
+                      transform: 'translateX(-50%)',
+                      zIndex: 20,
+                      display: salaryRange[0] > 0 ? 'flex' : 'none'
+                    }}
+                  >
+                    <div className="bg-white w-2 h-2 rounded-full"></div>
+                  </div>
+                  
+                  <div 
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 p-1 rounded-full w-5 h-5 flex items-center justify-center shadow-md" 
+                    style={{ 
+                      position: 'absolute',
+                      left: `${(salaryRange[1] / 200000) * 100}%`,
+                      transform: 'translateX(-50%)',
+                      zIndex: 20
+                    }}
+                  >
+                    <div className="bg-white w-2 h-2 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Salary scale */}
+              <div className="grid grid-cols-5 text-xs text-gray-500">
+                <div className="text-left">{getCurrencySymbol()}0</div>
+                <div className="text-center">{getCurrencySymbol()}{selectedLocation.includes("UAE") ? "50,000" : "50k"}</div>
+                <div className="text-center">{getCurrencySymbol()}{selectedLocation.includes("UAE") ? "100,000" : "100k"}</div>
+                <div className="text-center">{getCurrencySymbol()}{selectedLocation.includes("UAE") ? "150,000" : "150k"}</div>
+                <div className="text-right">{getCurrencySymbol()}{selectedLocation.includes("UAE") ? "200,000+" : "200k+"}</div>
+              </div>
+              
+              {/* Salary input fields (optional for direct input) */}
+              <div className="mt-4 flex items-center space-x-4">
+                <div className="w-1/2">
+                  <Label htmlFor="min-salary" className="text-xs text-gray-500 mb-1 block">Min Salary</Label>
+                  <Input
+                    id="min-salary"
+                    type="number"
+                    className="text-sm h-9"
+                    value={salaryRange[0]}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      if (value >= 0 && value < salaryRange[1]) {
+                        handleSalaryChange([value, salaryRange[1]]);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="w-1/2">
+                  <Label htmlFor="max-salary" className="text-xs text-gray-500 mb-1 block">Max Salary</Label>
+                  <Input
+                    id="max-salary"
+                    type="number"
+                    className="text-sm h-9"
+                    value={salaryRange[1]}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      if (value > salaryRange[0] && value <= 200000) {
+                        handleSalaryChange([salaryRange[0], value]);
+                      }
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
           
-          <div className="flex flex-col space-y-3 pt-5">
-            <Button 
-              onClick={applyFilters} 
-              className="bg-[#4060e0] hover:bg-[#3050d0] text-white font-medium py-5"
-            >
-              Apply Filters
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={resetFilters}
-              className="border-gray-300 hover:bg-gray-50 text-gray-700 font-medium"
-            >
-              Reset All Filters
-            </Button>
+          <div className="pt-5">
+            <div className="p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100/50">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button 
+                  onClick={applyFilters} 
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-5 flex-1 shadow-lg shadow-indigo-200 transition-all duration-300"
+                >
+                  <Filter className="mr-2 h-4 w-4" />
+                  Apply Filters
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={resetFilters}
+                  className="border-indigo-200 bg-white hover:bg-gray-50 text-indigo-700 font-medium flex-1 transition-all duration-300"
+                >
+                  <X className="mr-2 h-4 w-4" />
+                  Reset All Filters
+                </Button>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -536,22 +618,4 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
   );
 }
 
-// Chevron icon component
-function ChevronIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <polyline points="9 18 15 12 9 6" />
-    </svg>
-  );
-}
+
