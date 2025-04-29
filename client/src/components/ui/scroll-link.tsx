@@ -30,9 +30,9 @@ export function ScrollLink({ href, children, className, onClick }: ScrollLinkPro
 
   return (
     <Link href={href}>
-      <a className={className} onClick={handleNavigation}>
+      <div className={className} onClick={handleNavigation}>
         {children}
-      </a>
+      </div>
     </Link>
   );
 }
