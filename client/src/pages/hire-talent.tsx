@@ -15,8 +15,8 @@ export default function HireTalentPage() {
         <meta name="description" content="Find the right talent for your business. Preview candidates, hire contract talent, or permanent staff with our specialist recruitment services." />
       </Helmet>
 
-      {/* Hero Section with Team Collaboration Image (Fullscreen) */}
-      <div className="relative h-screen flex items-center overflow-hidden" id="hire-talent-hero-section">
+      {/* Hero Section with Team Collaboration Image */}
+      <div className="relative py-32 md:py-40 overflow-hidden" id="hire-talent-hero-section">
         {/* Background Image */}
         <div className="absolute inset-0 bg-black/75 z-10"></div>
         <div 
@@ -33,7 +33,7 @@ export default function HireTalentPage() {
         
         <div className="container mx-auto px-4 relative">
           {/* Main content */}
-          <div className="flex flex-col items-center text-center max-w-5xl mx-auto relative z-20">
+          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16 relative z-20">
             <motion.div 
               className="inline-block mb-6 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-sm rounded-md backdrop-blur-sm"
               initial={{ opacity: 0, y: -20 }}
