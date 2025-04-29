@@ -279,7 +279,7 @@ export default function JobBoardPage() {
             
             {/* Scroll Down Indicator */}
             <motion.div
-              className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/80"
+              className="flex flex-col items-center text-white/80 mt-10"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.9, duration: 0.5 }}
