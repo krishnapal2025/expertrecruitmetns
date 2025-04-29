@@ -192,7 +192,7 @@ export default function JobBoardPage() {
         <div className="flex flex-col md:flex-row gap-8">
           {/* Fixed Filters sidebar with position sticky */}
           <div className="w-full md:w-1/4">
-            <div className="sticky top-24 z-10">
+            <div className="sticky top-24 z-10 max-h-screen overflow-auto pb-24">
               <JobFilter onFilterChange={applyFilters} />
             </div>
           </div>
@@ -204,8 +204,8 @@ export default function JobBoardPage() {
                 <Loader2 className="h-10 w-10 animate-spin text-primary" />
               </div>
             ) : filteredJobs.length > 0 ? (
-              <>
-                <div className="sticky top-24 z-10 bg-white pt-2 pb-4 border-b border-gray-200 mb-6">
+              <div className="flex flex-col h-full max-h-screen">
+                <div className="sticky top-24 z-10 bg-white pt-2 pb-4 border-b border-gray-200">
                   <div className="flex justify-between items-center">
                     <h2 className="text-xl font-semibold flex items-center">
                       <Briefcase className="mr-2" />
@@ -217,9 +217,9 @@ export default function JobBoardPage() {
                   </div>
                 </div>
                 
-                {/* Scrollable jobs section */}
-                <ScrollArea className="h-[calc(100vh-260px)] pr-4">
-                  <div className="space-y-6">
+                {/* Scrollable jobs section - matched to filter height with calc */}
+                <ScrollArea className="flex-1 h-[calc(100vh-220px)] pr-4 pb-6 overflow-y-auto">
+                  <div className="space-y-6 mt-6">
                     {paginatedJobs.map((job) => (
                       <JobCard key={job.id} job={job} />
                     ))}
@@ -266,7 +266,7 @@ export default function JobBoardPage() {
                     </Pagination>
                   )}
                 </ScrollArea>
-              </>
+              </div>
             ) : (
               <div className="text-center py-16 bg-gray-50 rounded-lg">
                 <Briefcase className="h-12 w-12 mx-auto text-gray-400 mb-4" />
