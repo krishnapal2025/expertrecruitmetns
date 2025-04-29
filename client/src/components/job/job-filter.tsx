@@ -361,22 +361,18 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           </div>
       )}
     
-      <Card className={`${showFilters ? 'block' : 'hidden'} md:block transition-all duration-300 ease-in-out shadow-lg border border-gray-200 rounded-xl overflow-hidden`}>
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 h-2"></div>
+      <Card className={`${showFilters ? 'block' : 'hidden'} md:block transition-all duration-300 ease-in-out shadow-md border border-gray-200 rounded-xl overflow-hidden`}>
         <CardContent className="space-y-6 pt-6 px-5">
           {/* Job Categories */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-100/50">
-            <h3 className="font-semibold mb-3 flex items-center text-gray-800">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center mr-2">
-                <Briefcase className="h-4 w-4 text-white" />
-              </div>
+          <div className="border border-gray-200 rounded-lg p-3">
+            <h3 className="font-semibold mb-3 text-gray-800">
               Job Category
             </h3>
             <Select
               value={selectedCategory}
               onValueChange={setSelectedCategory}
             >
-              <SelectTrigger className="w-full bg-white shadow-sm border-blue-100">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
@@ -390,9 +386,8 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           </div>
           
           {/* Job Location */}
-          <div>
-            <h3 className="font-semibold mb-3 flex items-center text-gray-800">
-              <MapPin className="mr-2 h-5 w-5 text-primary" />
+          <div className="border border-gray-200 rounded-lg p-3">
+            <h3 className="font-semibold mb-3 text-gray-800">
               Location
             </h3>
             <Select
@@ -415,9 +410,8 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           </div>
           
           {/* Job Type */}
-          <div>
-            <h3 className="font-semibold mb-3 flex items-center text-gray-800">
-              <Clock className="mr-2 h-5 w-5 text-primary" />
+          <div className="border border-gray-200 rounded-lg p-3">
+            <h3 className="font-semibold mb-3 text-gray-800">
               Job Type
             </h3>
             <div className="space-y-2">
@@ -438,13 +432,8 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           </div>
 
           {/* Specialization */}
-          <div>
-            <h3 className="font-semibold mb-3 flex items-center text-gray-800">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-5 w-5 text-primary">
-                <path d="M6 2v6a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2"></path>
-                <path d="M6 18H4a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2"></path>
-                <path d="M10 22a2 2 0 1 1 4 0"></path>
-              </svg>
+          <div className="border border-gray-200 rounded-lg p-3">
+            <h3 className="font-semibold mb-3 text-gray-800">
               Specialization
             </h3>
             <Select
@@ -467,14 +456,8 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           </div>
           
           {/* Experience Level */}
-          <div>
-            <h3 className="font-semibold mb-3 flex items-center text-gray-800">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-5 w-5 text-primary">
-                <circle cx="12" cy="8" r="5"></circle>
-                <path d="M20 21a8 8 0 1 0-16 0"></path>
-                <line x1="12" y1="8" x2="12" y2="13"></line>
-                <line x1="12" y1="16" x2="12" y2="16"></line>
-              </svg>
+          <div className="border border-gray-200 rounded-lg p-3">
+            <h3 className="font-semibold mb-3 text-gray-800">
               Experience Level
             </h3>
             <Select
@@ -495,13 +478,12 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           </div>
           
           {/* Salary Range with improved interactive display */}
-          <div className="p-2 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100/50">
-            <h3 className="font-semibold mb-3 flex items-center text-gray-800">
-              <DollarSign className="mr-2 h-5 w-5 text-primary" />
+          <div className="border border-gray-200 rounded-lg p-3">
+            <h3 className="font-semibold mb-3 text-gray-800">
               Salary Range (Monthly)
             </h3>
-            <div className="p-4 bg-white rounded-lg shadow-sm border border-blue-100/50">
-              <div className="text-center mb-4 font-medium bg-gradient-to-r from-purple-600 to-indigo-600 text-transparent bg-clip-text text-lg">
+            <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+              <div className="text-center mb-4 font-medium text-blue-600 text-lg">
                 {displaySalary}
               </div>
               
@@ -517,10 +499,10 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
                   className="mb-6"
                 />
                 
-                {/* Visual indicators for current values */}
+                {/* Visual indicators for current values - consistent on both ends */}
                 <div className="absolute -top-2 left-0 right-0 flex justify-between items-center">
                   <div 
-                    className="bg-gradient-to-r from-purple-600 to-indigo-600 p-1 rounded-full w-5 h-5 flex items-center justify-center shadow-md" 
+                    className="bg-blue-600 p-1 rounded-full w-5 h-5 flex items-center justify-center shadow-md" 
                     style={{ 
                       position: 'absolute',
                       left: `${(salaryRange[0] / 200000) * 100}%`,
@@ -533,7 +515,7 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
                   </div>
                   
                   <div 
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 p-1 rounded-full w-5 h-5 flex items-center justify-center shadow-md" 
+                    className="bg-blue-600 p-1 rounded-full w-5 h-5 flex items-center justify-center shadow-md" 
                     style={{ 
                       position: 'absolute',
                       left: `${(salaryRange[1] / 200000) * 100}%`,
@@ -592,21 +574,19 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           </div>
           
           <div className="pt-5">
-            <div className="p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100/50">
+            <div className="p-3 border border-gray-200 rounded-lg">
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
                   onClick={applyFilters} 
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-5 flex-1 shadow-lg shadow-indigo-200 transition-all duration-300"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-5 flex-1 transition-all duration-300"
                 >
-                  <Filter className="mr-2 h-4 w-4" />
                   Apply Filters
                 </Button>
                 <Button 
                   variant="outline" 
                   onClick={resetFilters}
-                  className="border-indigo-200 bg-white hover:bg-gray-50 text-indigo-700 font-medium flex-1 transition-all duration-300"
+                  className="border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium flex-1 transition-all duration-300"
                 >
-                  <X className="mr-2 h-4 w-4" />
                   Reset All Filters
                 </Button>
               </div>
