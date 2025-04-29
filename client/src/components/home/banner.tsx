@@ -244,14 +244,16 @@ export default function Banner() {
                 animation: 'slowZoom 15s infinite alternate ease-in-out'
               }}
             ></div>
-            <div className={`absolute inset-0 ${slides[currentSlide].color} opacity-30 mix-blend-multiply`}></div>
+            {/* Black tint overlay for better text visibility */}
+            <div className="absolute inset-0 bg-black opacity-50 z-10"></div>
+            <div className={`absolute inset-0 ${slides[currentSlide].color} opacity-30 mix-blend-multiply z-20`}></div>
             
             {/* Floating card with call-to-action - Hidden on smallest screens */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
-              className="hidden sm:block absolute bottom-8 right-4 left-4 md:left-auto md:right-8 md:bottom-8 md:w-64 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-lg p-3 md:p-4 shadow-lg"
+              className="hidden sm:block absolute bottom-8 right-4 left-4 md:left-auto md:right-8 md:bottom-8 md:w-64 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-lg p-3 md:p-4 shadow-lg z-30"
             >
               <div className="flex items-start">
                 <div className={`${slides[currentSlide].color} rounded-full p-2 mr-3 text-white`}>
