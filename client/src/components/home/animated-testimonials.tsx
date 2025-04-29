@@ -133,7 +133,7 @@ export default function AnimatedTestimonials() {
               Success Stories
             </span>
           </div>
-          <h2 className="mb-4 text-3xl font-bold md:text-5xl">
+          <h2 className="mb-4 text-2xl font-bold md:text-4xl">
             <span className="relative inline-block">
               What Our Users Say
               <motion.div 

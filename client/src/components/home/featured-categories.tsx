@@ -206,7 +206,7 @@ export default function FeaturedCategories() {
               Discover Opportunities
             </span>
           </div>
-          <h2 className="mb-5 text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">
+          <h2 className="mb-5 text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
             <span className="block mb-1">Explore</span>
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-600">
               Job Categories

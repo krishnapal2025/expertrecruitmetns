@@ -96,7 +96,7 @@ export default function HomePage() {
                 </span>
               </motion.div>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+            <h2 className="text-4xl md:text-4xl font-bold mb-4 tracking-tight">
               Your Path to <span className="text-primary">Career Success</span>
             </h2>
             <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300 text-lg">

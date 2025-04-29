@@ -45,14 +45,19 @@ import Footer from "@/components/layout/footer";
 import { useEffect, useState } from "react";
 import { initializeAnalytics, trackPageView } from "@/lib/analytics";
 import { ArrowUp } from "lucide-react";
+import { useScrollTop, useScrollToTop } from "@/hooks/use-scroll-top";
 
-// Track page views
+// Track page views and scroll to top on route changes
 function PageViewTracker() {
   const [location] = useLocation();
   
+  // Track page views for analytics
   useEffect(() => {
     trackPageView(location);
   }, [location]);
+  
+  // Scroll to top on route changes
+  useScrollTop();
   
   return null;
 }
@@ -131,13 +136,8 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Scroll to top function
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
+  // Use our custom hook for scrolling to top
+  const scrollToTop = useScrollToTop();
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -275,7 +275,7 @@ export default function AboutUsPage() {
             >
               Our Approach
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">A Comprehensive & Meticulous Approach</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">A Comprehensive & Meticulous Approach</h2>
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
               At Expert Recruitments, we work tirelessly to ensure our clients receive a comprehensive and meticulous approach to executive search in Dubai and across the UAE.
             </p>
@@ -378,7 +378,7 @@ export default function AboutUsPage() {
             >
               What Sets Us Apart
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Delivering Growth Through Talent</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">Delivering Growth Through Talent</h2>
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
               What sets us apart from other recruitment agencies in Dubai is our unwavering dedication to delivering growth. When talent acquisition works properly, it takes the organization to the next level of its development.
             </p>
@@ -420,7 +420,7 @@ export default function AboutUsPage() {
             >
               Our History
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">A Legacy of Excellence</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">A Legacy of Excellence</h2>
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
               Expert Recruitments LLC is a global executive search firm, established in Dubai in 2015 (initially as Expert Labor Supply Services) and now also operating as Expert Recruitments LLC in the UAE, India (Expert Recruitments since 2018), and the USA (New Jersey). This international journey has equipped us with decades of collective expertise in executive search, talent acquisition, and headhunting across diverse regions.  Our extensive candidate pool and experienced team are well-positioned to efficiently meet your talent needs.
             </p>
@@ -518,7 +518,7 @@ export default function AboutUsPage() {
             </motion.div>
             
             <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-8"
+              className="text-2xl md:text-3xl font-bold mb-8"
               variants={fadeIn}
             >
               Redefining Executive Search
@@ -587,7 +587,7 @@ export default function AboutUsPage() {
             >
               Our Values
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Guiding Principles</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">Guiding Principles</h2>
             <p className="text-lg text-gray-700 max-w-3xl mx-auto">
               We're quickly becoming one of the most respected recruitment agencies in the UAE because everything we do is based on our guiding principles.
             </p>
@@ -726,7 +726,7 @@ export default function AboutUsPage() {
                   >
                     Our Promise
                   </motion.div>
-                  <h2 className="text-3xl md:text-4xl font-bold mb-6">A Personalized Approach to Executive Search</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-6">A Personalized Approach to Executive Search</h2>
                   
                   <div className="space-y-4 text-gray-700 dark:text-gray-300">
                     <p className="leading-relaxed">
@@ -808,7 +808,7 @@ export default function AboutUsPage() {
             >
               Our Commitments
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">How We Ensure Your Success</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">How We Ensure Your Success</h2>
             <p className="text-lg text-gray-700 max-w-3xl mx-auto">
               Our commitments to every client and candidate drive our exceptional results.
             </p>
@@ -902,7 +902,7 @@ export default function AboutUsPage() {
             >
               Our Reputation
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Premium Executive Search in Dubai</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">Premium Executive Search in Dubai</h2>
             <p className="text-lg text-gray-700 max-w-3xl mx-auto mb-10">
               While we're not the oldest recruitment agency in the UAE, we're definitely one of the most respected. We look beyond the immediate talent requirements of the businesses we serve to ensure every appointment makes a real difference.
             </p>
@@ -1165,7 +1165,7 @@ export default function AboutUsPage() {
               </motion.div>
               
               <motion.h2 
-                className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 tracking-tight"
+                className="text-2xl md:text-3xl font-bold mb-6 text-gray-800 tracking-tight"
                 whileInView={{ opacity: 1, y: 0 }}
                 initial={{ opacity: 0, y: 20 }}
                 viewport={{ once: true }}
