@@ -185,20 +185,35 @@ export default function JobBoardPage() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className={`relative rounded-xl shadow-md border border-gray-100 bg-white h-[calc(100vh-180px)] overflow-hidden ${isFullScreen ? 'fixed inset-0 z-50 m-0 rounded-none' : ''}`}>
-          <div className="absolute top-4 right-4 z-10">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsFullScreen(!isFullScreen)}
-              className="h-8 w-8 p-0 flex items-center justify-center text-gray-500 hover:text-primary"
-              title={isFullScreen ? "Exit Fullscreen" : "Fullscreen"}
-            >
-              {isFullScreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-            </Button>
-          </div>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-gray-700">Job Explorer</h2>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsFullScreen(!isFullScreen)}
+            className="flex items-center gap-2 text-primary hover:bg-primary/10"
+          >
+            {isFullScreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            <span>{isFullScreen ? "Exit Fullscreen" : "Fullscreen View"}</span>
+          </Button>
+        </div>
+        <div className={`relative rounded-xl shadow-md border border-gray-100 bg-white h-[calc(100vh-220px)] overflow-hidden ${isFullScreen ? 'fixed inset-0 z-50 m-0 rounded-none job-explorer-fullscreen' : ''}`}>
+          {isFullScreen && (
+            <div className="absolute top-4 right-4 z-10">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsFullScreen(false)}
+                className="flex items-center gap-2 text-primary hover:bg-primary/10"
+                title="Exit Fullscreen"
+              >
+                <Minimize2 className="h-4 w-4" />
+                <span>Exit Fullscreen</span>
+              </Button>
+            </div>
+          )}
           
-          <div className="sticky top-0 z-10 bg-white px-6 py-4 border-b border-gray-200">
+          <div className={`sticky top-0 z-10 bg-white px-6 py-4 border-b border-gray-200 ${isFullScreen ? 'job-explorer-header' : ''}`}>
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold flex items-center">
                 <Briefcase className="mr-2" />

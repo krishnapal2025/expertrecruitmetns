@@ -23,6 +23,21 @@
 /* Animation for fullscreen transition */
 .fixed.z-50 {
   animation: fullscreen-entry 0.3s ease-in-out;
+  padding: 1rem !important;
+}
+
+/* Special styling for fullscreen job explorer */
+.job-explorer-fullscreen {
+  animation: fullscreen-entry 0.3s ease-in-out;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.job-explorer-fullscreen .job-explorer-header {
+  padding: 1rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 @keyframes fullscreen-entry {
