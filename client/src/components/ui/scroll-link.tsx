@@ -26,9 +26,9 @@ export function ScrollLink({ href, children, className, onClick }: ScrollLinkPro
 
   return (
     <Link href={href}>
-      <a className={className} onClick={handleClick}>
+      <span className={className} onClick={handleClick}>
         {children}
-      </a>
+      </span>
     </Link>
   );
 }

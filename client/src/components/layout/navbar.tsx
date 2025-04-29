@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useScrollToTop } from "@/hooks/use-scroll-top";
+import { ScrollLink } from "@/components/ui/scroll-link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +31,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [location] = useLocation();
   const { currentUser, logoutMutation } = useAuth();
+  const scrollToTop = useScrollToTop();
   
   // Detect scroll to change navbar appearance
   useEffect(() => {
@@ -153,7 +156,7 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/">
-              <div className="flex items-center cursor-pointer">
+              <div className="flex items-center cursor-pointer" onClick={scrollToTop}>
                 <div className="flex items-center justify-center h-[50px] md:h-[70px] w-[50px] md:w-[70px] rounded-full bg-white p-2 border-2 border-white shadow-md">
                   <img 
                     src={expertLogo} 
@@ -183,21 +186,17 @@ export default function Navbar() {
                   <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                     <div className="py-2 rounded-lg bg-white dark:bg-gray-800 border-2 border-[#5372f1]/20 dark:border-gray-700">
                       {link.dropdownItems?.map((item) => (
-                        <Link key={item.name} href={item.href}>
-                          <div className={`block px-5 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-[#5372f1]/10 hover:text-[#5372f1] transition-colors duration-200 ${location === item.href ? "text-[#5372f1] bg-[#5372f1]/10 font-medium border-l-2 border-[#5372f1]" : ""}`}>
-                            {item.name}
-                          </div>
-                        </Link>
+                        <ScrollLink key={item.name} href={item.href} className={`block px-5 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-[#5372f1]/10 hover:text-[#5372f1] transition-colors duration-200 ${location === item.href ? "text-[#5372f1] bg-[#5372f1]/10 font-medium border-l-2 border-[#5372f1]" : ""}`}>
+                          {item.name}
+                        </ScrollLink>
                       ))}
                     </div>
                   </div>
                 </div>
               ) : (
-                <Link key={link.name} href={link.href}>
-                  <div className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}>
-                    {link.name}
-                  </div>
-                </Link>
+                <ScrollLink key={link.name} href={link.href} className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}>
+                  {link.name}
+                </ScrollLink>
               )
             ))}
           </nav>
@@ -375,11 +374,9 @@ export default function Navbar() {
                       </div>
                     ) : (
                       <SheetClose asChild key={link.name}>
-                        <Link href={link.href}>
-                          <div className={`px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}>
-                            {link.name}
-                          </div>
-                        </Link>
+                        <ScrollLink href={link.href} className={`px-4 py-2 rounded-md cursor-pointer block ${location === link.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}>
+                          {link.name}
+                        </ScrollLink>
                       </SheetClose>
                     )
                   )}
