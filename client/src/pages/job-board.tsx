@@ -189,23 +189,23 @@ export default function JobBoardPage() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Fixed Filters sidebar with position sticky */}
-          <div className="w-full md:w-1/4">
-            <div className="sticky top-24 z-10 h-[calc(100vh-180px)]">
+        <div className="flex flex-col md:flex-row gap-8 h-[calc(100vh-180px)] overflow-hidden">
+          {/* Fixed Filters sidebar with internal scrolling */}
+          <div className="w-full md:w-1/4 h-full overflow-hidden">
+            <div className="h-full">
               <JobFilter onFilterChange={applyFilters} />
             </div>
           </div>
           
           {/* Job listings */}
-          <div className="w-full md:w-3/4">
+          <div className="w-full md:w-3/4 h-full overflow-hidden">
             {isLoading ? (
               <div className="flex justify-center items-center py-16">
                 <Loader2 className="h-10 w-10 animate-spin text-primary" />
               </div>
             ) : filteredJobs.length > 0 ? (
-              <div className="flex flex-col h-[calc(100vh-180px)]">
-                <div className="sticky top-24 z-10 bg-white pt-2 pb-4 border-b border-gray-200">
+              <div className="flex flex-col h-full overflow-hidden">
+                <div className="sticky top-0 z-10 bg-white pt-2 pb-4 border-b border-gray-200">
                   <div className="flex justify-between items-center">
                     <h2 className="text-xl font-semibold flex items-center">
                       <Briefcase className="mr-2" />
@@ -217,8 +217,8 @@ export default function JobBoardPage() {
                   </div>
                 </div>
                 
-                {/* Scrollable jobs section - matched to filter height with calc */}
-                <ScrollArea className="flex-1 pb-6 overflow-y-auto scrollbar-hide">
+                {/* Scrollable jobs section with contained scrolling */}
+                <ScrollArea className="h-[calc(100%-3.5rem)] pb-6 overflow-hidden scrollbar-hide">
                   <div className="space-y-6 mt-6 pr-4">
                     {paginatedJobs.map((job) => (
                       <JobCard key={job.id} job={job} />
