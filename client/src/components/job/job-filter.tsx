@@ -430,7 +430,8 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
                   />
                   <Button 
                     size="sm" 
-                    className="h-9"
+                    variant="outline"
+                    className="h-9 bg-white hover:bg-gray-50"
                     onClick={() => {
                       const customLocation = (document.getElementById('custom-location') as HTMLInputElement).value;
                       if (customLocation.trim() && !locations.includes(customLocation)) {
