@@ -219,35 +219,35 @@ export default function Navbar() {
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <Link href="/profile">
+                    <ScrollLink href="/profile" className="w-full">
                       <DropdownMenuItem>
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                       </DropdownMenuItem>
-                    </Link>
+                    </ScrollLink>
                     {currentUser.user.userType === "jobseeker" && (
-                      <Link href="/applied-jobs">
+                      <ScrollLink href="/applied-jobs" className="w-full">
                         <DropdownMenuItem>
                           <Briefcase className="mr-2 h-4 w-4" />
                           <span>Applied Jobs</span>
                         </DropdownMenuItem>
-                      </Link>
+                      </ScrollLink>
                     )}
                     {currentUser.user.userType === "employer" && (
                       <>
-                        <Link href="/my-jobs">
+                        <ScrollLink href="/my-jobs" className="w-full">
                           <DropdownMenuItem>
                             <Briefcase className="mr-2 h-4 w-4" />
                             <span>Post Manager</span>
                           </DropdownMenuItem>
-                        </Link>
-                        <Link href="/applications-manager">
+                        </ScrollLink>
+                        <ScrollLink href="/applications-manager" className="w-full">
                           <DropdownMenuItem>
                             <User className="mr-2 h-4 w-4" />
                             <span>Applications Manager</span>
                           </DropdownMenuItem>
-                        </Link>
-                        <Link href="/post-job">
+                        </ScrollLink>
+                        <ScrollLink href="/post-job" className="w-full">
                           <DropdownMenuItem>
                             <svg
                               className="mr-2 h-4 w-4"
@@ -265,16 +265,16 @@ export default function Navbar() {
                             </svg>
                             <span>Post New Job</span>
                           </DropdownMenuItem>
-                        </Link>
+                        </ScrollLink>
                       </>
                     )}
                     {currentUser.user.userType === "admin" && (
-                      <Link href="/admin">
+                      <ScrollLink href="/admin" className="w-full">
                         <DropdownMenuItem>
                           <ShieldCheck className="mr-2 h-4 w-4" />
                           <span>Admin Dashboard</span>
                         </DropdownMenuItem>
-                      </Link>
+                      </ScrollLink>
                     )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout}>
@@ -286,7 +286,7 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link href="/auth">
+                <ScrollLink href="/auth" className="w-full">
                   <Button 
                     variant="default" 
                     size="lg" 
@@ -294,7 +294,7 @@ export default function Navbar() {
                   >
                     Sign In
                   </Button>
-                </Link>
+                </ScrollLink>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
@@ -309,18 +309,18 @@ export default function Navbar() {
                   <DropdownMenuContent align="end" className="w-56 p-2 border-2 border-[#5372f1] bg-white shadow-lg rounded-md">
                     <DropdownMenuLabel className="text-lg font-bold text-center text-[#5372f1]">Register as:</DropdownMenuLabel>
                     <DropdownMenuSeparator className="my-1" />
-                    <Link href="/employer-register" className="w-full">
+                    <ScrollLink href="/employer-register" className="w-full">
                       <DropdownMenuItem className="flex items-center py-3 px-4 rounded-md hover:bg-[#5372f1] hover:text-white cursor-pointer">
                         <Briefcase className="mr-2 h-5 w-5" />
                         <span className="text-base font-medium">Employer</span>
                       </DropdownMenuItem>
-                    </Link>
-                    <Link href="/job-seeker-register" className="w-full">
+                    </ScrollLink>
+                    <ScrollLink href="/job-seeker-register" className="w-full">
                       <DropdownMenuItem className="flex items-center py-3 px-4 rounded-md hover:bg-[#5372f1] hover:text-white cursor-pointer">
                         <User className="mr-2 h-5 w-5" />
                         <span className="text-base font-medium">Job Seeker</span>
                       </DropdownMenuItem>
-                    </Link>
+                    </ScrollLink>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </>
@@ -397,29 +397,29 @@ export default function Navbar() {
                           </div>
                         </div>
                         <SheetClose asChild>
-                          <Link href="/profile">
+                          <ScrollLink href="/profile" className="block">
                             <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
                               <User className="mr-2 h-4 w-4" />
                               Profile
                             </div>
-                          </Link>
+                          </ScrollLink>
                         </SheetClose>
                         
                         {currentUser.user.userType === "jobseeker" && (
                           <SheetClose asChild>
-                            <Link href="/applied-jobs">
+                            <ScrollLink href="/applied-jobs" className="block">
                               <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
                                 <Briefcase className="mr-2 h-4 w-4" />
                                 Applied Jobs
                               </div>
-                            </Link>
+                            </ScrollLink>
                           </SheetClose>
                         )}
                         
                         {currentUser.user.userType === "employer" && (
                           <>
                             <SheetClose asChild>
-                              <Link href="/post-job">
+                              <ScrollLink href="/post-job" className="block">
                                 <div className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer">
                                   <svg
                                     className="mr-2 h-4 w-4"
@@ -437,35 +437,35 @@ export default function Navbar() {
                                   </svg>
                                   Post New Job
                                 </div>
-                              </Link>
+                              </ScrollLink>
                             </SheetClose>
                             <SheetClose asChild>
-                              <Link href="/my-jobs">
+                              <ScrollLink href="/my-jobs" className="block">
                                 <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
                                   <Briefcase className="mr-2 h-4 w-4" />
                                   Post Manager
                                 </div>
-                              </Link>
+                              </ScrollLink>
                             </SheetClose>
                             <SheetClose asChild>
-                              <Link href="/applications-manager">
+                              <ScrollLink href="/applications-manager" className="block">
                                 <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
                                   <User className="mr-2 h-4 w-4" />
                                   Applications Manager
                                 </div>
-                              </Link>
+                              </ScrollLink>
                             </SheetClose>
                           </>
                         )}
                         
                         {currentUser.user.userType === "admin" && (
                           <SheetClose asChild>
-                            <Link href="/admin">
+                            <ScrollLink href="/admin" className="block">
                               <div className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer">
                                 <ShieldCheck className="mr-2 h-4 w-4" />
                                 Admin Dashboard
                               </div>
-                            </Link>
+                            </ScrollLink>
                           </SheetClose>
                         )}
                         
