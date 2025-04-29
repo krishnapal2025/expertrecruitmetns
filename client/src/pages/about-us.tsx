@@ -16,6 +16,7 @@ import {
   MapPin
 } from "lucide-react";
 import ourApproachImage from "../assets/our-approach-image.webp";
+import aboutHeroImage from "../assets/about-hero-image.jpg";
 
 export default function AboutUsPage() {
   // Animation variants
