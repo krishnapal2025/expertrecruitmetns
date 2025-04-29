@@ -376,11 +376,16 @@ export default function Navbar() {
                         </div>
                       </div>
                     ) : (
-                      <SheetClose asChild key={link.name}>
-                        <ScrollLink href={link.href} className={`px-4 py-2 rounded-md cursor-pointer block ${location === link.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}>
-                          {link.name}
-                        </ScrollLink>
-                      </SheetClose>
+                      <div key={link.name}
+                        className={`px-4 py-2 rounded-md cursor-pointer block ${location === link.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          window.scrollTo(0, 0);
+                          setTimeout(() => window.location.href = link.href, 100);
+                        }}
+                      >
+                        {link.name}
+                      </div>
                     )
                   )}
                   
@@ -399,77 +404,95 @@ export default function Navbar() {
                             {currentUser.user.email}
                           </div>
                         </div>
-                        <SheetClose asChild>
-                          <ScrollLink href="/profile" className="block">
-                            <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
-                              <User className="mr-2 h-4 w-4" />
-                              Profile
-                            </div>
-                          </ScrollLink>
-                        </SheetClose>
+                        <div 
+                          className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            window.scrollTo(0, 0);
+                            setTimeout(() => window.location.href = "/profile", 100);
+                          }}
+                        >
+                          <User className="mr-2 h-4 w-4" />
+                          Profile
+                        </div>
                         
                         {currentUser.user.userType === "jobseeker" && (
-                          <SheetClose asChild>
-                            <ScrollLink href="/applied-jobs" className="block">
-                              <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
-                                <Briefcase className="mr-2 h-4 w-4" />
-                                Applied Jobs
-                              </div>
-                            </ScrollLink>
-                          </SheetClose>
+                          <div 
+                            className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
+                            onClick={() => {
+                              setIsMobileMenuOpen(false);
+                              window.scrollTo(0, 0);
+                              setTimeout(() => window.location.href = "/applied-jobs", 100);
+                            }}
+                          >
+                            <Briefcase className="mr-2 h-4 w-4" />
+                            Applied Jobs
+                          </div>
                         )}
                         
                         {currentUser.user.userType === "employer" && (
                           <>
-                            <SheetClose asChild>
-                              <ScrollLink href="/post-job" className="block">
-                                <div className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer">
-                                  <svg
-                                    className="mr-2 h-4 w-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M12 4v16m8-8H4"
-                                    />
-                                  </svg>
-                                  Post New Job
-                                </div>
-                              </ScrollLink>
-                            </SheetClose>
-                            <SheetClose asChild>
-                              <ScrollLink href="/my-jobs" className="block">
-                                <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
-                                  <Briefcase className="mr-2 h-4 w-4" />
-                                  Post Manager
-                                </div>
-                              </ScrollLink>
-                            </SheetClose>
-                            <SheetClose asChild>
-                              <ScrollLink href="/applications-manager" className="block">
-                                <div className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer">
-                                  <User className="mr-2 h-4 w-4" />
-                                  Applications Manager
-                                </div>
-                              </ScrollLink>
-                            </SheetClose>
+                            <div 
+                              className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/post-job", 100);
+                              }}
+                            >
+                              <svg
+                                className="mr-2 h-4 w-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 4v16m8-8H4"
+                                />
+                              </svg>
+                              Post New Job
+                            </div>
+                            <div 
+                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/my-jobs", 100);
+                              }}
+                            >
+                              <Briefcase className="mr-2 h-4 w-4" />
+                              Post Manager
+                            </div>
+                            <div 
+                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/applications-manager", 100);
+                              }}
+                            >
+                              <User className="mr-2 h-4 w-4" />
+                              Applications Manager
+                            </div>
                           </>
                         )}
                         
                         {currentUser.user.userType === "admin" && (
-                          <SheetClose asChild>
-                            <ScrollLink href="/admin" className="block">
-                              <div className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer">
-                                <ShieldCheck className="mr-2 h-4 w-4" />
-                                Admin Dashboard
-                              </div>
-                            </ScrollLink>
-                          </SheetClose>
+                          <div 
+                            className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer"
+                            onClick={() => {
+                              setIsMobileMenuOpen(false);
+                              window.scrollTo(0, 0);
+                              setTimeout(() => window.location.href = "/admin", 100);
+                            }}
+                          >
+                            <ShieldCheck className="mr-2 h-4 w-4" />
+                            Admin Dashboard
+                          </div>
                         )}
                         
                         <button
@@ -482,41 +505,44 @@ export default function Navbar() {
                       </>
                     ) : (
                       <>
-                        <SheetClose asChild>
-                          <ScrollLink href="/auth" className="block">
-                            <Button 
-                              variant="default" 
-                              className="w-full mb-2 text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold text-white focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                            >
-                              Sign In
-                            </Button>
-                          </ScrollLink>
-                        </SheetClose>
+                        <Button 
+                          variant="default" 
+                          className="w-full mb-2 text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold text-white focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            window.scrollTo(0, 0);
+                            setTimeout(() => window.location.href = "/auth", 100);
+                          }}
+                        >
+                          Sign In
+                        </Button>
                         <div className="mb-2">
                           <div className="font-medium text-sm mb-2">Sign Up as:</div>
                           <div className="space-y-2">
-                            <SheetClose asChild>
-                              <ScrollLink href="/employer-register" className="block">
-                                <Button 
-                                  variant="default" 
-                                  className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                                >
-                                  <Briefcase className="mr-2 h-5 w-5" />
-                                  Employer
-                                </Button>
-                              </ScrollLink>
-                            </SheetClose>
-                            <SheetClose asChild>
-                              <ScrollLink href="/job-seeker-register" className="block">
-                                <Button 
-                                  variant="default" 
-                                  className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                                >
-                                  <User className="mr-2 h-5 w-5" />
-                                  Job Seeker
-                                </Button>
-                              </ScrollLink>
-                            </SheetClose>
+                            <Button 
+                              variant="default" 
+                              className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/employer-register", 100);
+                              }}
+                            >
+                              <Briefcase className="mr-2 h-5 w-5" />
+                              Employer
+                            </Button>
+                            <Button 
+                              variant="default" 
+                              className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/job-seeker-register", 100);
+                              }}
+                            >
+                              <User className="mr-2 h-5 w-5" />
+                              Job Seeker
+                            </Button>
                           </div>
                         </div>
                       </>
