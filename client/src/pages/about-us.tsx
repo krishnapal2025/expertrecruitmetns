@@ -218,36 +218,36 @@ export default function AboutUsPage() {
           
           {/* Three value propositions */}
           <motion.div 
-            className="grid md:grid-cols-3 gap-8 relative z-10 max-w-5xl mx-auto"
+            className="grid md:grid-cols-3 gap-8 relative z-20 max-w-5xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
           >
-            <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center h-full">
-              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-100 shadow-sm">
-                <Users className="h-5 w-5 text-primary" />
+            <div className="relative bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col items-center h-full group">
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center border border-white/50 shadow-md group-hover:scale-110 transition-transform duration-300">
+                <Users className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2 text-center">Comprehensive</h3>
+              <h3 className="text-xl font-bold text-gray-800 mt-6 mb-2 text-center group-hover:text-primary transition-colors duration-300">Comprehensive</h3>
               <p className="text-gray-600 text-center">Talent Acquisition</p>
-              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-primary/20 rounded-b-lg"></div>
+              <div className="absolute -bottom-1 left-0 right-0 h-1.5 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 rounded-b-lg"></div>
             </div>
             
-            <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center h-full">
-              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-100 shadow-sm">
-                <Briefcase className="h-5 w-5 text-primary" />
+            <div className="relative bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col items-center h-full group">
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center border border-white/50 shadow-md group-hover:scale-110 transition-transform duration-300">
+                <Briefcase className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2 text-center">Meticulous</h3>
+              <h3 className="text-xl font-bold text-gray-800 mt-6 mb-2 text-center group-hover:text-primary transition-colors duration-300">Meticulous</h3>
               <p className="text-gray-600 text-center">Search Process</p>
-              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-primary/20 rounded-b-lg"></div>
+              <div className="absolute -bottom-1 left-0 right-0 h-1.5 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 rounded-b-lg"></div>
             </div>
             
-            <div className="relative bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center h-full">
-              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-100 shadow-sm">
-                <Target className="h-5 w-5 text-primary" />
+            <div className="relative bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col items-center h-full group">
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center border border-white/50 shadow-md group-hover:scale-110 transition-transform duration-300">
+                <Target className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2 text-center">Results</h3>
+              <h3 className="text-xl font-bold text-gray-800 mt-6 mb-2 text-center group-hover:text-primary transition-colors duration-300">Results</h3>
               <p className="text-gray-600 text-center">Guaranteed</p>
-              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-primary/20 rounded-b-lg"></div>
+              <div className="absolute -bottom-1 left-0 right-0 h-1.5 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 rounded-b-lg"></div>
             </div>
           </motion.div>
           
