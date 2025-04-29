@@ -16,8 +16,7 @@ export default function JobBoardPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isFilterFullScreen, setIsFilterFullScreen] = useState(false);
-  const [isJobsFullScreen, setIsJobsFullScreen] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [filters, setFilters] = useState({
     category: "",
     location: "",
@@ -43,14 +42,13 @@ export default function JobBoardPage() {
       if (filters.maxSalary) queryParams.append("maxSalary", filters.maxSalary.toString());
       if (filters.keyword) queryParams.append("keyword", filters.keyword);
       
-      const response = await fetch(`/api/jobs?${queryParams.toString()}`);
+      const response = await fetch('/api/jobs?' + queryParams.toString());
       if (!response.ok) {
         throw new Error("Failed to fetch jobs");
       }
       return response.json();
     },
-    // Refetch job data frequently to show new jobs immediately
-    refetchInterval: 2000, // Refetch every 2 seconds
+    refetchInterval: 2000,
     refetchOnMount: true, 
     refetchOnWindowFocus: true
   });
@@ -61,7 +59,6 @@ export default function JobBoardPage() {
 
     let result = [...jobs];
     
-    // Apply search term filter (only for client-side filtering)
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter(job => 
@@ -72,7 +69,7 @@ export default function JobBoardPage() {
     }
     
     setFilteredJobs(result);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
   }, [
     jobs, 
     searchTerm, 
@@ -132,10 +129,8 @@ export default function JobBoardPage() {
       </Helmet>
 
       <div className="relative py-12 bg-gray-50 overflow-hidden">
-        {/* Accent lines */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
         
-        {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-1/3 h-full overflow-hidden">
           <div className="absolute -right-20 top-1/4 w-80 h-80 bg-primary/5 rounded-full"></div>
           <div className="absolute -right-10 bottom-1/4 w-40 h-40 bg-primary/5 rounded-full"></div>
@@ -146,7 +141,6 @@ export default function JobBoardPage() {
         </div>
         
         <div className="container mx-auto px-4 relative">
-          {/* Main content */}
           <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-8">
             <div className="inline-block mb-4 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md">
               <span className="font-medium text-primary tracking-wider uppercase text-sm">Find Your Career</span>
@@ -191,139 +185,124 @@ export default function JobBoardPage() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className={`flex flex-col md:flex-row gap-8 h-[calc(100vh-180px)] overflow-hidden ${isFilterFullScreen || isJobsFullScreen ? 'fullscreen-active' : ''}`}>
-          {/* Fixed Filters sidebar with internal scrolling */}
-          <div className={`${isFilterFullScreen ? 'fixed inset-0 z-50 p-6 bg-white' : isJobsFullScreen ? 'hidden' : 'w-full md:w-1/4'} h-full overflow-hidden transition-all duration-300 ease-in-out`}>
-            <div className="h-full relative">
-              {/* Fullscreen button for filter */}
-              <div className="absolute top-2 right-2 z-10">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setIsFilterFullScreen(!isFilterFullScreen);
-                    if (isJobsFullScreen) setIsJobsFullScreen(false);
-                  }}
-                  className="h-8 w-8 p-0 flex items-center justify-center text-gray-500 hover:text-primary"
-                  title={isFilterFullScreen ? "Exit Fullscreen" : "Fullscreen"}
-                >
-                  {isFilterFullScreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-                </Button>
+        <div className={`relative rounded-xl shadow-md border border-gray-100 bg-white h-[calc(100vh-180px)] overflow-hidden ${isFullScreen ? 'fixed inset-0 z-50 m-0 rounded-none' : ''}`}>
+          <div className="absolute top-4 right-4 z-10">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsFullScreen(!isFullScreen)}
+              className="h-8 w-8 p-0 flex items-center justify-center text-gray-500 hover:text-primary"
+              title={isFullScreen ? "Exit Fullscreen" : "Fullscreen"}
+            >
+              {isFullScreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            </Button>
+          </div>
+          
+          <div className="sticky top-0 z-10 bg-white px-6 py-4 border-b border-gray-200">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold flex items-center">
+                <Briefcase className="mr-2" />
+                <span>{filteredJobs?.length || 0} Jobs Found</span>
+              </h2>
+              <div className="text-sm text-gray-600">
+                {filteredJobs?.length > 0 ? (
+                  <>Showing {Math.min((currentPage - 1) * JOBS_PER_PAGE + 1, filteredJobs.length)} to {Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)} of {filteredJobs.length}</>
+                ) : isLoading ? (
+                  <>Loading jobs...</>
+                ) : (
+                  <>No jobs found</>
+                )}
               </div>
-              <JobFilter onFilterChange={applyFilters} />
             </div>
           </div>
           
-          {/* Job listings */}
-          <div className={`${isJobsFullScreen ? 'fixed inset-0 z-50 p-6 bg-white' : isFilterFullScreen ? 'hidden' : 'w-full md:w-3/4'} h-full overflow-hidden transition-all duration-300 ease-in-out`}>
-            {isLoading ? (
-              <div className="flex justify-center items-center py-16">
-                <Loader2 className="h-10 w-10 animate-spin text-primary" />
-              </div>
-            ) : filteredJobs.length > 0 ? (
-              <div className="flex flex-col h-full overflow-hidden relative">
-                {/* Fullscreen button for jobs */}
-                <div className="absolute top-2 right-2 z-10">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setIsJobsFullScreen(!isJobsFullScreen);
-                      if (isFilterFullScreen) setIsFilterFullScreen(false);
-                    }}
-                    className="h-8 w-8 p-0 flex items-center justify-center text-gray-500 hover:text-primary"
-                    title={isJobsFullScreen ? "Exit Fullscreen" : "Fullscreen"}
-                  >
-                    {isJobsFullScreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-                  </Button>
+          <div className="flex h-[calc(100%-4rem)] overflow-hidden">
+            <div className="w-1/4 h-full border-r border-gray-100 overflow-hidden">
+              <ScrollArea className="h-full pb-6 scrollbar-hide p-4">
+                <JobFilter onFilterChange={applyFilters} />
+              </ScrollArea>
+            </div>
+            
+            <div className="w-3/4 h-full overflow-hidden">
+              {isLoading ? (
+                <div className="flex justify-center items-center h-full">
+                  <Loader2 className="h-10 w-10 animate-spin text-primary" />
                 </div>
-                
-                <div className="sticky top-0 z-10 bg-white pt-2 pb-4 border-b border-gray-200">
-                  <div className="flex justify-between items-center">
-                    <h2 className="text-xl font-semibold flex items-center">
-                      <Briefcase className="mr-2" />
-                      <span>{filteredJobs.length} Jobs Found</span>
-                    </h2>
-                    <div className="text-sm text-gray-600 mr-10">
-                      Showing {Math.min((currentPage - 1) * JOBS_PER_PAGE + 1, filteredJobs.length)} to {Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)} of {filteredJobs.length}
+              ) : filteredJobs.length > 0 ? (
+                <div className="flex flex-col h-full overflow-hidden relative px-6">
+                  <ScrollArea className="h-full pb-6 overflow-hidden scrollbar-hide">
+                    <div className="space-y-6 mt-6 pr-4">
+                      {paginatedJobs.map((job) => (
+                        <JobCard key={job.id} job={job} />
+                      ))}
                     </div>
-                  </div>
-                </div>
-                
-                {/* Scrollable jobs section with contained scrolling */}
-                <ScrollArea className="h-[calc(100%-3.5rem)] pb-6 overflow-hidden scrollbar-hide">
-                  <div className="space-y-6 mt-6 pr-4">
-                    {paginatedJobs.map((job) => (
-                      <JobCard key={job.id} job={job} />
-                    ))}
-                  </div>
-                  
-                  {totalPages > 1 && (
-                    <Pagination className="my-8 sticky bottom-0 bg-white pt-4 pb-2">
-                      <PaginationContent>
-                        <PaginationItem>
-                          <Button 
-                            variant="outline"
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                            disabled={currentPage === 1}
-                            className="h-8 w-8 p-0 flex items-center justify-center"
-                          >
-                            &lt;
-                          </Button>
-                        </PaginationItem>
-                        
-                        {/* Page numbers */}
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
-                          <PaginationItem key={pageNum}>
-                            <Button
-                              variant={pageNum === currentPage ? "default" : "outline"}
-                              className="h-8 w-8"
-                              onClick={() => setCurrentPage(pageNum)}
+                    
+                    {totalPages > 1 && (
+                      <Pagination className="my-8 sticky bottom-0 bg-white pt-4 pb-2">
+                        <PaginationContent>
+                          <PaginationItem>
+                            <Button 
+                              variant="outline"
+                              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                              disabled={currentPage === 1}
+                              className="h-8 w-8 p-0 flex items-center justify-center"
                             >
-                              {pageNum}
+                              &lt;
                             </Button>
                           </PaginationItem>
-                        ))}
-                        
-                        <PaginationItem>
-                          <Button 
-                            variant="outline"
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                            disabled={currentPage === totalPages}
-                            className="h-8 w-8 p-0 flex items-center justify-center"
-                          >
-                            &gt;
-                          </Button>
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
-                  )}
-                </ScrollArea>
-              </div>
-            ) : (
-              <div className="text-center py-16 bg-gray-50 rounded-lg">
-                <Briefcase className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-xl font-semibold mb-2">No jobs found</h3>
-                <p className="text-gray-600 mb-6">
-                  We couldn't find any jobs matching your search criteria.
-                </p>
-                <Button onClick={() => {
-                  setSearchTerm("");
-                  setFilters({ 
-                    category: "", 
-                    location: "", 
-                    jobType: "", 
-                    specialization: "",
-                    experience: "",
-                    minSalary: undefined,
-                    maxSalary: undefined,
-                    keyword: undefined
-                  });
-                }}>
-                  Clear Filters
-                </Button>
-              </div>
-            )}
+                          
+                          {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                            <PaginationItem key={pageNum}>
+                              <Button
+                                variant={pageNum === currentPage ? "default" : "outline"}
+                                className="h-8 w-8"
+                                onClick={() => setCurrentPage(pageNum)}
+                              >
+                                {pageNum}
+                              </Button>
+                            </PaginationItem>
+                          ))}
+                          
+                          <PaginationItem>
+                            <Button 
+                              variant="outline"
+                              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                              disabled={currentPage === totalPages}
+                              className="h-8 w-8 p-0 flex items-center justify-center"
+                            >
+                              &gt;
+                            </Button>
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
+                    )}
+                  </ScrollArea>
+                </div>
+              ) : (
+                <div className="text-center py-16 bg-gray-50 rounded-lg">
+                  <Briefcase className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No jobs found</h3>
+                  <p className="text-gray-600 mb-6">
+                    We couldn't find any jobs matching your search criteria.
+                  </p>
+                  <Button onClick={() => {
+                    setSearchTerm("");
+                    setFilters({ 
+                      category: "", 
+                      location: "", 
+                      jobType: "", 
+                      specialization: "",
+                      experience: "",
+                      minSalary: undefined,
+                      maxSalary: undefined,
+                      keyword: undefined
+                    });
+                  }}>
+                    Clear Filters
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
