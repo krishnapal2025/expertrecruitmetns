@@ -7,7 +7,7 @@ import JobFilter from "@/components/job/job-filter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { Search, Briefcase, Loader2, Maximize2, Minimize2, Building2, MapPin, UserPlus, ArrowRight } from "lucide-react";
+import { Search, Briefcase, ChevronDown, Loader2, Maximize2, Minimize2, Building2, MapPin, UserPlus, ArrowRight } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import jobBoardHeroImage from "../assets/job-board-hero.jpg";
@@ -162,16 +162,16 @@ export default function JobBoardPage() {
         <meta name="description" content="Browse through our extensive collection of job listings across various sectors and locations. Find your perfect career opportunity today." />
       </Helmet>
 
-      {/* Hero Section with Professional Background Image */}
-      <div className="relative py-32 md:py-40 overflow-hidden" id="job-board-hero-section">
+      {/* Hero Section with Professional Background Image (Fullscreen) */}
+      <div className="relative h-screen flex items-center overflow-hidden" id="job-board-hero-section">
         {/* Background Image */}
-        <div className="absolute inset-0 bg-black/60 z-10"></div>
+        <div className="absolute inset-0 bg-black/70 z-10"></div>
         <div 
           className="absolute inset-0 bg-center bg-cover" 
           style={{ 
             backgroundImage: `url(${jobBoardHeroImage})`,
             backgroundPosition: 'center',
-            filter: 'brightness(0.9)'
+            filter: 'brightness(0.85)'
           }}
         ></div>
         
@@ -276,11 +276,27 @@ export default function JobBoardPage() {
                 <span>Exclusive Listings</span>
               </div>
             </motion.div>
+            
+            {/* Scroll Down Indicator */}
+            <motion.div
+              className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/80"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+            >
+              <span className="text-sm mb-2">Scroll Down</span>
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
+              >
+                <ChevronDown className="h-6 w-6" />
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-10">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-gray-700">Job Explorer</h2>
           <Button
