@@ -71,13 +71,13 @@ export default function AboutUsPage() {
       {/* Hero Section with Premium Executive Design */}
       <div className="relative py-32 md:py-40 overflow-hidden">
         {/* Background Image */}
-        <div className="absolute inset-0 bg-black/30 z-10"></div>
+        <div className="absolute inset-0 bg-black/60 z-10"></div>
         <div 
           className="absolute inset-0 bg-center bg-cover" 
           style={{ 
             backgroundImage: `url(${aboutHeroImage})`,
             backgroundPosition: 'center',
-            filter: 'brightness(0.85)'
+            filter: 'brightness(0.8)'
           }}
         ></div>
         
