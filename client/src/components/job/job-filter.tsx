@@ -483,12 +483,12 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
               Salary Range (Monthly)
             </h3>
             <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-              <div className="text-center mb-4 font-medium text-blue-600 text-lg">
+              <div className="text-center mb-4 font-semibold text-gray-700 text-base bg-gray-50 py-2 rounded-md border border-gray-100">
                 {displaySalary}
               </div>
               
-              {/* Custom markers for slider thumbs */}
-              <div className="relative">
+              {/* Simple slider without custom markers */}
+              <div className="py-4">
                 <Slider 
                   defaultValue={[0, 200000]}
                   value={salaryRange}
@@ -496,36 +496,8 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
                   step={10000}
                   minStepsBetweenThumbs={1}
                   onValueChange={handleSalaryChange}
-                  className="mb-6"
+                  className="mb-4"
                 />
-                
-                {/* Visual indicators for current values - consistent on both ends */}
-                <div className="absolute -top-2 left-0 right-0 flex justify-between items-center">
-                  <div 
-                    className="bg-blue-600 p-1 rounded-full w-5 h-5 flex items-center justify-center shadow-md" 
-                    style={{ 
-                      position: 'absolute',
-                      left: `${(salaryRange[0] / 200000) * 100}%`,
-                      transform: 'translateX(-50%)',
-                      zIndex: 20,
-                      display: salaryRange[0] > 0 ? 'flex' : 'none'
-                    }}
-                  >
-                    <div className="bg-white w-2 h-2 rounded-full"></div>
-                  </div>
-                  
-                  <div 
-                    className="bg-blue-600 p-1 rounded-full w-5 h-5 flex items-center justify-center shadow-md" 
-                    style={{ 
-                      position: 'absolute',
-                      left: `${(salaryRange[1] / 200000) * 100}%`,
-                      transform: 'translateX(-50%)',
-                      zIndex: 20
-                    }}
-                  >
-                    <div className="bg-white w-2 h-2 rounded-full"></div>
-                  </div>
-                </div>
               </div>
               
               {/* Salary scale */}
