@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Search, Briefcase, Loader2 } from "lucide-react";
 
-const JOBS_PER_PAGE = 3;
+const JOBS_PER_PAGE = 10;
 
 export default function JobBoardPage() {
   const [searchTerm, setSearchTerm] = useState("");
