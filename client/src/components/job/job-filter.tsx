@@ -155,9 +155,16 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
   const [salaryRange, setSalaryRange] = useState<[number, number]>([0, 200000]);
   const [keyword, setKeyword] = useState("");
   const [displaySalary, setDisplaySalary] = useState<string>("$0 - $200,000+");
+  const [customCurrency, setCustomCurrency] = useState<string>("");
   
-  // Get currency symbol based on selected location
+  // Get currency symbol based on custom entry or selected location
   const getCurrencySymbol = (): string => {
+    // Return custom currency if set
+    if (customCurrency.trim()) {
+      return `${customCurrency} `;
+    }
+    
+    // Otherwise determine by location
     if (selectedLocation.includes("India")) {
       return "₹"; // Indian Rupee
     } else if (selectedLocation.includes("UAE")) {
@@ -236,6 +243,7 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
     setSalaryRange([0, 200000]);
     setDisplaySalary("$0 - $200,000+");
     setKeyword("");
+    setCustomCurrency("");
     
     onFilterChange({
       category: "",
@@ -252,11 +260,11 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
     // applyFilters();
   }, [selectedCategory, selectedLocation, selectedJobType, selectedSpecialization, selectedExperience, salaryRange]);
   
-  // Update salary display when location changes
+  // Update salary display when location or custom currency changes
   useEffect(() => {
-    // Update the display format with the new currency when location changes
+    // Update the display format with the new currency when location or custom currency changes
     handleSalaryChange(salaryRange);
-  }, [selectedLocation]);
+  }, [selectedLocation, customCurrency]);
   
   return (
     <>      
@@ -385,28 +393,60 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
             </Select>
           </div>
           
-          {/* Job Location */}
+          {/* Job Location with custom input option */}
           <div className="border border-gray-200 rounded-lg p-3">
             <h3 className="font-semibold mb-3 text-gray-800">
               Location
             </h3>
-            <Select
-              value={selectedLocation}
-              onValueChange={setSelectedLocation}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a location" />
-              </SelectTrigger>
-              <SelectContent>
-                <ScrollArea className="h-72">
-                  {locations.map((location) => (
-                    <SelectItem key={location} value={location}>
-                      {location}
-                    </SelectItem>
-                  ))}
-                </ScrollArea>
-              </SelectContent>
-            </Select>
+            <div className="space-y-3">
+              <Select
+                value={selectedLocation}
+                onValueChange={setSelectedLocation}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a location" />
+                </SelectTrigger>
+                <SelectContent>
+                  <ScrollArea className="h-72">
+                    {locations.map((location) => (
+                      <SelectItem key={location} value={location}>
+                        {location}
+                      </SelectItem>
+                    ))}
+                  </ScrollArea>
+                </SelectContent>
+              </Select>
+              
+              {/* Add Custom Location */}
+              <div className="border-t border-gray-200 pt-3">
+                <label htmlFor="custom-location" className="text-xs text-gray-500 mb-1 block">
+                  Add Custom Location
+                </label>
+                <div className="flex space-x-2">
+                  <Input
+                    id="custom-location"
+                    placeholder="Enter custom location"
+                    className="text-sm h-9 flex-1"
+                  />
+                  <Button 
+                    size="sm" 
+                    className="h-9"
+                    onClick={() => {
+                      const customLocation = (document.getElementById('custom-location') as HTMLInputElement).value;
+                      if (customLocation.trim() && !locations.includes(customLocation)) {
+                        // In a real app we'd update the locations array
+                        // For now we can just set the selected location
+                        setSelectedLocation(customLocation);
+                        // Clear the input
+                        (document.getElementById('custom-location') as HTMLInputElement).value = '';
+                      }
+                    }}
+                  >
+                    Add
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
           
           {/* Job Type */}
@@ -485,6 +525,41 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
             <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
               <div className="text-center mb-4 font-semibold text-gray-700 text-base bg-gray-50 py-2 rounded-md border border-gray-100">
                 {displaySalary}
+              </div>
+              
+              {/* Custom Currency Input */}
+              <div className="mb-4 border-b border-gray-200 pb-4">
+                <label htmlFor="custom-currency" className="text-xs text-gray-500 mb-1 block">
+                  Use Custom Currency Symbol
+                </label>
+                <div className="flex space-x-2">
+                  <Input
+                    id="custom-currency"
+                    placeholder="Example: EUR, GBP, JPY"
+                    className="text-sm h-9 flex-1"
+                    value={customCurrency}
+                    onChange={(e) => {
+                      setCustomCurrency(e.target.value);
+                      // Update the salary display with new currency
+                      handleSalaryChange(salaryRange);
+                    }}
+                  />
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    className="h-9 text-xs"
+                    onClick={() => {
+                      setCustomCurrency("");
+                      // Update display with default currency
+                      handleSalaryChange(salaryRange);
+                    }}
+                  >
+                    Reset
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Using: {getCurrencySymbol()} (based on {customCurrency ? "custom entry" : "location"})
+                </p>
               </div>
               
               {/* Simple slider without custom markers */}
