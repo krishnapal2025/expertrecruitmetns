@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 import { Job } from "@shared/schema";
@@ -17,6 +17,7 @@ export default function JobBoardPage() {
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const jobExplorerRef = useRef<HTMLDivElement>(null);
   const [filters, setFilters] = useState({
     category: "",
     location: "",
@@ -106,6 +107,37 @@ export default function JobBoardPage() {
       ...newFilters
     });
   };
+  
+  // Handle browser fullscreen API
+  const toggleFullScreen = () => {
+    if (!isFullScreen) {
+      if (jobExplorerRef.current?.requestFullscreen) {
+        jobExplorerRef.current.requestFullscreen().catch(err => {
+          console.error(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(err => {
+          console.error(`Error attempting to exit fullscreen: ${err.message}`);
+        });
+      }
+    }
+    setIsFullScreen(!isFullScreen);
+  }
+  
+  // Handle fullscreen change events
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullScreen(!!document.fullscreenElement);
+    };
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
 
   if (error) {
     return (
@@ -190,20 +222,23 @@ export default function JobBoardPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setIsFullScreen(!isFullScreen)}
+            onClick={toggleFullScreen}
             className="flex items-center gap-2 text-primary hover:bg-primary/10"
           >
             {isFullScreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             <span>{isFullScreen ? "Exit Fullscreen" : "Fullscreen View"}</span>
           </Button>
         </div>
-        <div className={`relative rounded-xl shadow-md border border-gray-100 bg-white h-[calc(100vh-220px)] overflow-hidden ${isFullScreen ? 'fixed inset-0 z-50 m-0 rounded-none job-explorer-fullscreen' : ''}`}>
+        <div 
+          ref={jobExplorerRef}
+          className={`relative rounded-xl shadow-md border border-gray-100 bg-white h-[calc(100vh-220px)] overflow-hidden ${isFullScreen ? 'fixed inset-0 z-50 m-0 rounded-none job-explorer-fullscreen' : ''}`}
+        >
           {isFullScreen && (
             <div className="absolute top-4 right-4 z-10">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setIsFullScreen(false)}
+                onClick={toggleFullScreen}
                 className="flex items-center gap-2 text-primary hover:bg-primary/10"
                 title="Exit Fullscreen"
               >
