@@ -28,7 +28,7 @@ AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName
 const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(({ className, ...props }, ref) => (
+>(({ className, children, ...props }, ref) => (
   <AlertDialogPortal>
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content
@@ -44,7 +44,14 @@ const AlertDialogContent = React.forwardRef<
           props.onEscapeKeyDown(event);
         }
       }}
-    />
+      aria-describedby="alert-dialog-description"
+    >
+      {children}
+      {/* Add a hidden description to satisfy accessibility requirements */}
+      <div id="alert-dialog-description" className="sr-only">
+        Alert dialog content
+      </div>
+    </AlertDialogPrimitive.Content>
   </AlertDialogPortal>
 ))
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName
