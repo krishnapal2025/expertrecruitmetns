@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ScrollLink } from "@/components/ui/scroll-link";
 
 // Add the keyframes for the zoom effect in CSS
 const slowZoomKeyframes = `
@@ -200,7 +201,7 @@ export default function Banner() {
                 </Link>
                 
                 {currentSlide === 1 && (
-                  <Link href="/hire-talent">
+                  <ScrollLink href="/vacancy-form" className="block">
                     <Button 
                       size="default" 
                       variant="outline"
@@ -208,7 +209,7 @@ export default function Banner() {
                     >
                       Hire Talent
                     </Button>
-                  </Link>
+                  </ScrollLink>
                 )}
                 
                 {currentSlide === 0 && !currentUser && (

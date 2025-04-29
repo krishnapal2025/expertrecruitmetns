@@ -8,6 +8,7 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { BriefcaseIcon, BuildingIcon, GraduationCapIcon } from "@/assets/icons";
 import { MessageSquareShare, ArrowRight } from "lucide-react";
+import { ScrollLink } from "@/components/ui/scroll-link";
 import RealtimeJobs from "@/components/job/real-time-jobs";
 import RealtimeApplications from "@/components/job/real-time-applications";
 import { motion } from "framer-motion";
@@ -167,14 +168,14 @@ export default function HomePage() {
                     </ul>
                   </div>
                   
-                  <Link href="/hire-talent">
+                  <ScrollLink href="/vacancy-form" className="w-full">
                     <Button variant="default" className="group w-full justify-between bg-purple-600 hover:bg-purple-700 text-white">
                       <span className="mr-2">Hire Talent</span>
                       <span className="relative inline-block transition-transform duration-300 group-hover:translate-x-1">
                         <ArrowRight className="h-4 w-4" />
                       </span>
                     </Button>
-                  </Link>
+                  </ScrollLink>
                 </div>
               </div>
             </motion.div>
