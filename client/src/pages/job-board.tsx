@@ -188,24 +188,17 @@ export default function JobBoardPage() {
         </div>
       </div>
 
-      <div className="px-4 py-8">
-        <div className="flex flex-col md:flex-row">
-          {/* Completely fixed Filters sidebar */}
-          <div className="w-full md:w-1/4 hidden md:block">
-            <div className="fixed md:w-[280px] lg:w-[320px] xl:w-[350px] z-10 max-h-[calc(100vh-130px)] overflow-auto pb-8 pr-4 bg-white">
-              <div className="shadow-sm rounded-lg">
-                <JobFilter onFilterChange={applyFilters} />
-              </div>
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Fixed Filters sidebar with position sticky */}
+          <div className="w-full md:w-1/4">
+            <div className="sticky top-24 z-10 max-h-screen overflow-auto pb-24">
+              <JobFilter onFilterChange={applyFilters} />
             </div>
           </div>
           
-          {/* Mobile filter only shown on small screens */}
-          <div className="block md:hidden mb-6 w-full">
-            <JobFilter onFilterChange={applyFilters} />
-          </div>
-          
-          {/* Job listings - offset to account for fixed filter */}
-          <div className="w-full md:w-3/4 md:ml-[280px] lg:ml-[320px] xl:ml-[350px] md:pl-8">
+          {/* Job listings */}
+          <div className="w-full md:w-3/4">
             {isLoading ? (
               <div className="flex justify-center items-center py-16">
                 <Loader2 className="h-10 w-10 animate-spin text-primary" />
@@ -225,8 +218,8 @@ export default function JobBoardPage() {
                 </div>
                 
                 {/* Scrollable jobs section - matched to filter height with calc */}
-                <ScrollArea className="flex-1 h-[calc(100vh-220px)] pr-6 pb-6 overflow-y-auto">
-                  <div className="space-y-6 mt-6 w-full max-w-[900px]">
+                <ScrollArea className="flex-1 h-[calc(100vh-220px)] pr-4 pb-6 overflow-y-auto">
+                  <div className="space-y-6 mt-6">
                     {paginatedJobs.map((job) => (
                       <JobCard key={job.id} job={job} />
                     ))}
