@@ -117,7 +117,7 @@ export default function HireTalentPage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.9, duration: 0.5 }}
             >
-              <span className="text-sm mb-2"></span>
+              <span className="text-sm mb-2">Scroll Down</span>
               <motion.div
                 animate={{ y: [0, 8, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
