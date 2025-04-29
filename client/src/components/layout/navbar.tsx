@@ -363,11 +363,11 @@ export default function Navbar() {
                         <div className="ml-4 flex flex-col space-y-2 mt-2">
                           {link.dropdownItems?.map((item) => (
                             <SheetClose asChild key={item.name}>
-                              <Link href={item.href}>
+                              <ScrollLink href={item.href} className="block">
                                 <div className={`px-4 py-2 rounded-md cursor-pointer ${location === item.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}>
                                   {item.name}
                                 </div>
-                              </Link>
+                              </ScrollLink>
                             </SheetClose>
                           ))}
                         </div>
@@ -480,20 +480,20 @@ export default function Navbar() {
                     ) : (
                       <>
                         <SheetClose asChild>
-                          <Link href="/auth">
+                          <ScrollLink href="/auth" className="block">
                             <Button 
                               variant="default" 
                               className="w-full mb-2 text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold text-white focus:ring-0 focus:ring-offset-0 focus:outline-none"
                             >
                               Sign In
                             </Button>
-                          </Link>
+                          </ScrollLink>
                         </SheetClose>
                         <div className="mb-2">
                           <div className="font-medium text-sm mb-2">Sign Up as:</div>
                           <div className="space-y-2">
                             <SheetClose asChild>
-                              <Link href="/employer-register">
+                              <ScrollLink href="/employer-register" className="block">
                                 <Button 
                                   variant="default" 
                                   className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
@@ -501,10 +501,10 @@ export default function Navbar() {
                                   <Briefcase className="mr-2 h-5 w-5" />
                                   Employer
                                 </Button>
-                              </Link>
+                              </ScrollLink>
                             </SheetClose>
                             <SheetClose asChild>
-                              <Link href="/job-seeker-register">
+                              <ScrollLink href="/job-seeker-register" className="block">
                                 <Button 
                                   variant="default" 
                                   className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
@@ -512,7 +512,7 @@ export default function Navbar() {
                                   <User className="mr-2 h-5 w-5" />
                                   Job Seeker
                                 </Button>
-                              </Link>
+                              </ScrollLink>
                             </SheetClose>
                           </div>
                         </div>
