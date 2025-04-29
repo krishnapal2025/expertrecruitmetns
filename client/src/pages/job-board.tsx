@@ -192,7 +192,7 @@ export default function JobBoardPage() {
         <div className="flex flex-col md:flex-row gap-8">
           {/* Fixed Filters sidebar with position sticky */}
           <div className="w-full md:w-1/4">
-            <div className="sticky top-24 z-10">
+            <div className="sticky top-24 z-10 h-[calc(100vh-180px)]">
               <JobFilter onFilterChange={applyFilters} />
             </div>
           </div>
@@ -204,7 +204,7 @@ export default function JobBoardPage() {
                 <Loader2 className="h-10 w-10 animate-spin text-primary" />
               </div>
             ) : filteredJobs.length > 0 ? (
-              <div className="flex flex-col h-full max-h-screen">
+              <div className="flex flex-col h-[calc(100vh-180px)]">
                 <div className="sticky top-24 z-10 bg-white pt-2 pb-4 border-b border-gray-200">
                   <div className="flex justify-between items-center">
                     <h2 className="text-xl font-semibold flex items-center">
@@ -218,8 +218,8 @@ export default function JobBoardPage() {
                 </div>
                 
                 {/* Scrollable jobs section - matched to filter height with calc */}
-                <ScrollArea className="flex-1 h-[calc(100vh-220px)] pr-4 pb-6 overflow-y-auto">
-                  <div className="space-y-6 mt-6">
+                <ScrollArea className="flex-1 pb-6 overflow-y-auto">
+                  <div className="space-y-6 mt-6 pr-4">
                     {paginatedJobs.map((job) => (
                       <JobCard key={job.id} job={job} />
                     ))}
