@@ -136,7 +136,7 @@ function CustomSlider() {
 
 export default function Welcome() {
   return (
-    <section className="pt-0 pb-16 relative overflow-hidden">
+    <section className="pt-0 pb-12 relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"></div>
       <div className="absolute inset-0 -z-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMxLjIgMCAyLjMuNSAzLjIgMS4zLjkuOS0uNiAyLjEtLjYgMy4yIDAgMS4yIDEuNSAyLjQuNiAzLjItLjkuOS0yIDEuMy0zLjIgMS4zLTEuMiAwLTIuMy0uNS0zLjItMS4zLS45LS45LjYtMi4xLjYtMy4yIDAtMS4yLTEuNS0yLjQtLjYtMy4yLjktLjggMi0xLjMgMy4yLTEuM3oiIHN0cm9rZT0icmdiYSgxNDcsIDUxLCAyMzQsIDAuMSkiIHN0cm9rZS13aWR0aD0iMiIvPjwvZz48L3N2Zz4=')] opacity-5"></div>
@@ -343,17 +343,18 @@ export default function Welcome() {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.6 }}
+            className="h-full"
           >
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+            <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
               <div className="h-2 bg-primary"></div>
-              <CardContent className="pt-6">
-                <div className="flex items-start">
-                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+              <CardContent className="pt-6 flex flex-col h-full">
+                <div className="flex items-start h-full">
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mr-4 flex-shrink-0">
                     <TrendingUp className="h-6 w-6 text-primary" />
                   </div>
-                  <div>
+                  <div className="flex-1 flex flex-col">
                     <h3 className="font-bold text-lg mb-2">Industry-Leading Success</h3>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 flex-1">
                       With a track record of connecting talent with opportunity, we've helped thousands of professionals advance their careers and hundreds of companies build strong teams.
                     </p>
                   </div>
@@ -366,17 +367,18 @@ export default function Welcome() {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.7 }}
+            className="h-full"
           >
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+            <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
               <div className="h-2 bg-violet-500"></div>
-              <CardContent className="pt-6">
-                <div className="flex items-start">
-                  <div className="h-12 w-12 rounded-full bg-violet/100 flex items-center justify-center mr-4">
+              <CardContent className="pt-6 flex flex-col h-full">
+                <div className="flex items-start h-full">
+                  <div className="h-12 w-12 rounded-full bg-violet-100 flex items-center justify-center mr-4 flex-shrink-0">
                     <Award className="h-6 w-6 text-violet-500" />
                   </div>
-                  <div>
+                  <div className="flex-1 flex flex-col">
                     <h3 className="font-bold text-lg mb-2">Quality Matches</h3>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 flex-1">
                       We focus on making meaningful connections between candidates and employers, ensuring the right fit for both parties to foster long-term success.
                     </p>
                   </div>
@@ -389,17 +391,18 @@ export default function Welcome() {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.8 }}
+            className="h-full"
           >
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+            <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
               <div className="h-2 bg-emerald-500"></div>
-              <CardContent className="pt-6">
-                <div className="flex items-start">
-                  <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center mr-4">
+              <CardContent className="pt-6 flex flex-col h-full">
+                <div className="flex items-start h-full">
+                  <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center mr-4 flex-shrink-0">
                     <Users className="h-6 w-6 text-emerald-500" />
                   </div>
-                  <div>
+                  <div className="flex-1 flex flex-col">
                     <h3 className="font-bold text-lg mb-2">Expert Support</h3>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 flex-1">
                       Our team of recruitment professionals is dedicated to providing personalized guidance and support throughout your job search or hiring process.
                     </p>
                   </div>
