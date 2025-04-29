@@ -328,13 +328,13 @@ export default function JobBoardPage() {
             </div>
           )}
           
-          <div className={`sticky top-0 z-10 bg-white px-6 py-4 border-b border-gray-200 ${isFullScreen ? 'job-explorer-header' : ''}`}>
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold flex items-center">
-                <Briefcase className="mr-2" />
+          <div className={`sticky top-0 z-10 bg-white px-4 md:px-6 py-4 border-b border-gray-200 ${isFullScreen ? 'job-explorer-header' : ''}`}>
+            <div className="flex flex-col md:flex-row justify-between md:items-center gap-2">
+              <h2 className="text-lg md:text-xl font-semibold flex items-center">
+                <Briefcase className="mr-2 h-5 w-5" />
                 <span>{filteredJobs?.length || 0} Jobs Found</span>
               </h2>
-              <div className="text-sm text-gray-600">
+              <div className="text-xs md:text-sm text-gray-600">
                 {filteredJobs?.length > 0 ? (
                   <>Showing {Math.min((currentPage - 1) * JOBS_PER_PAGE + 1, filteredJobs.length)} to {Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)} of {filteredJobs.length}</>
                 ) : isLoading ? (
@@ -348,7 +348,7 @@ export default function JobBoardPage() {
           
           <div className="flex flex-col md:flex-row h-[calc(100%-4rem)] overflow-hidden">
             <div className="w-full md:w-1/3 lg:w-1/4 h-auto md:h-full border-b md:border-b-0 md:border-r border-gray-100 overflow-hidden">
-              <ScrollArea className="h-full max-h-[300px] md:max-h-full pb-6 scrollbar-hide p-4">
+              <ScrollArea className="h-full max-h-[400px] md:max-h-full pb-16 md:pb-6 scrollbar-hide p-4">
                 <JobFilter onFilterChange={applyFilters} />
               </ScrollArea>
             </div>
@@ -369,7 +369,7 @@ export default function JobBoardPage() {
                     
                     {totalPages > 1 && (
                       <Pagination className="my-8 sticky bottom-0 bg-white pt-4 pb-2">
-                        <PaginationContent>
+                        <PaginationContent className="flex flex-wrap justify-center">
                           <PaginationItem>
                             <Button 
                               variant="outline"
@@ -381,17 +381,29 @@ export default function JobBoardPage() {
                             </Button>
                           </PaginationItem>
                           
-                          {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
-                            <PaginationItem key={pageNum}>
-                              <Button
-                                variant={pageNum === currentPage ? "default" : "outline"}
-                                className="h-8 w-8"
-                                onClick={() => setCurrentPage(pageNum)}
-                              >
-                                {pageNum}
-                              </Button>
+                          {/* Desktop pagination showing all pages */}
+                          <div className="hidden md:flex">
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                              <PaginationItem key={pageNum}>
+                                <Button
+                                  variant={pageNum === currentPage ? "default" : "outline"}
+                                  className="h-8 w-8"
+                                  onClick={() => setCurrentPage(pageNum)}
+                                >
+                                  {pageNum}
+                                </Button>
+                              </PaginationItem>
+                            ))}
+                          </div>
+                          
+                          {/* Mobile pagination showing current page and total */}
+                          <div className="flex md:hidden items-center">
+                            <PaginationItem>
+                              <div className="px-3 py-1">
+                                {currentPage} / {totalPages}
+                              </div>
                             </PaginationItem>
-                          ))}
+                          </div>
                           
                           <PaginationItem>
                             <Button 

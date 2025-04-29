@@ -694,7 +694,13 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
             <div className="p-3 border border-gray-200 rounded-lg">
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
-                  onClick={applyFilters} 
+                  onClick={() => {
+                    applyFilters();
+                    // On mobile, close the filter after applying
+                    if (window.innerWidth < 768) {
+                      setShowFilters(false);
+                    }
+                  }}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-5 flex-1 transition-all duration-300"
                 >
                   Apply Filters
@@ -711,6 +717,21 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
           </div>
         </CardContent>
       </Card>
+      
+      {/* Mobile apply button - fixed at bottom */}
+      {showFilters && (
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-30">
+          <Button
+            onClick={() => {
+              applyFilters();
+              setShowFilters(false);
+            }}
+            className="w-full bg-blue-600 hover:bg-blue-700 font-medium py-5"
+          >
+            Apply Filters & View Jobs
+          </Button>
+        </div>
+      )}
     </>
   );
 }
