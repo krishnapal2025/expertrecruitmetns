@@ -10,7 +10,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationNext, Paginati
 import { Search, Briefcase, Loader2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-const JOBS_PER_PAGE = 10;
+const JOBS_PER_PAGE = 4;
 
 export default function JobBoardPage() {
   const [searchTerm, setSearchTerm] = useState("");
