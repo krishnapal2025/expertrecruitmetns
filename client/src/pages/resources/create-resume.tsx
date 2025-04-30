@@ -165,21 +165,50 @@ export default function CreateResumePage() {
                     const safeLastName = previewData.personalInfo.lastName.replace(/[^a-zA-Z0-9]/g, '_');
                     const fileName = `Resume_${safeFirstName}_${safeLastName}.pdf`;
                     
-                    // First, save the resume data to the server session
-                    const response = await fetch('/api/generate-resume-pdf', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify(previewData),
-                    });
+                    // Create an invisible iframe for direct download
+                    // This allows the download to happen within the same page
+                    // without interrupting the user experience
                     
-                    if (!response.ok) {
-                      throw new Error('Failed to process resume data');
+                    // First create a hidden iframe
+                    let iframe = document.getElementById('download-iframe') as HTMLIFrameElement;
+                    if (!iframe) {
+                      iframe = document.createElement('iframe');
+                      iframe.id = 'download-iframe';
+                      iframe.name = 'download-frame';
+                      iframe.style.display = 'none';
+                      document.body.appendChild(iframe);
                     }
                     
-                    // Then use the browser's native download functionality with the download endpoint
-                    window.open(`/api/download-resume-pdf?filename=${encodeURIComponent(fileName)}`, '_blank');
+                    // Then create a form targeting that iframe
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/api/generate-resume-pdf';
+                    form.target = 'download-frame'; // Target the iframe
+                    form.enctype = 'application/x-www-form-urlencoded';
+                    form.style.display = 'none';
+                    
+                    // Add resume data as a hidden field
+                    const dataField = document.createElement('input');
+                    dataField.type = 'hidden';
+                    dataField.name = 'resumeData';
+                    dataField.value = JSON.stringify(previewData);
+                    form.appendChild(dataField);
+                    
+                    // Add filename as a parameter
+                    const filenameField = document.createElement('input');
+                    filenameField.type = 'hidden';
+                    filenameField.name = 'filename';
+                    filenameField.value = fileName;
+                    form.appendChild(filenameField);
+                    
+                    // Add the form to the body and submit it
+                    document.body.appendChild(form);
+                    form.submit();
+                    
+                    // Clean up the form
+                    setTimeout(() => {
+                      document.body.removeChild(form);
+                    }, 1000);
                     
                     toast({
                       title: "Resume Downloaded",

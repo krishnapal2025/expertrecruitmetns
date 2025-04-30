@@ -47,28 +47,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await seedJobs();
   
   // Resume PDF endpoints
-  // This is a simple endpoint that generates a PDF from resume data
+  // Combined endpoint that handles both forms and API JSON
   app.post("/api/generate-resume-pdf", async (req, res) => {
     try {
-      // Validate resume data
-      const resumeData = resumeDataSchema.parse(req.body);
+      let resumeData: ResumeData;
+      let filename = 'resume.pdf';
       
-      // Store resume data in session for GET requests
-      if (req.session) {
-        req.session.resumeData = resumeData;
+      // Check if this is form data or JSON API call
+      if (req.body.resumeData) {
+        // This is from the form submission
+        try {
+          resumeData = resumeDataSchema.parse(JSON.parse(req.body.resumeData));
+          if (req.body.filename) {
+            filename = req.body.filename;
+          }
+        } catch (parseError) {
+          console.error('Error parsing resume data from form:', parseError);
+          return res.status(400).json({ message: 'Invalid resume data format' });
+        }
+      } else {
+        // This is a direct API call with JSON body
+        resumeData = resumeDataSchema.parse(req.body);
+        
+        // Store in session for future use
+        if (req.session) {
+          req.session.resumeData = resumeData;
+        }
+        
+        // Use name from resume data for filename if not specified
+        const safeFirstName = resumeData.personalInfo.firstName.replace(/[^a-zA-Z0-9]/g, '_');
+        const safeLastName = resumeData.personalInfo.lastName.replace(/[^a-zA-Z0-9]/g, '_');
+        filename = `Resume_${safeFirstName}_${safeLastName}.pdf`;
       }
       
       // Generate PDF
       const pdfBuffer = await generateResumePDF(resumeData);
       
-      // Clean filenames to avoid security issues
-      const safeFirstName = resumeData.personalInfo.firstName.replace(/[^a-zA-Z0-9]/g, '_');
-      const safeLastName = resumeData.personalInfo.lastName.replace(/[^a-zA-Z0-9]/g, '_');
+      // Make sure filename is safe
+      const safeFilename = filename.replace(/[^a-zA-Z0-9_\-\.]/g, '_');
       
       // Set comprehensive security headers for PDF download
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Length', pdfBuffer.length);
-      res.setHeader('Content-Disposition', `attachment; filename="Resume_${safeFirstName}_${safeLastName}.pdf"`);
+      res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"`);
       res.setHeader('Content-Security-Policy', "default-src 'none'");
       res.setHeader('X-Content-Type-Options', 'nosniff');
       res.setHeader('X-Frame-Options', 'DENY');
@@ -79,11 +100,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       bufferToStream(pdfBuffer).pipe(res);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      res.status(500).json({ message: 'Failed to generate PDF' });
+      
+      // Different error responses based on content type expected
+      const accepts = req.headers.accept || '';
+      if (accepts.includes('application/json')) {
+        res.status(500).json({ message: 'Failed to generate PDF' });
+      } else {
+        // Return HTML error for browser
+        res.status(500).send(`
+          <html>
+            <head><title>Resume Download Error</title></head>
+            <body>
+              <h2>Error Generating PDF</h2>
+              <p>There was a problem generating your resume PDF. Please try again.</p>
+              <p>${error instanceof Error ? error.message : 'Unknown error'}</p>
+              <p><a href="/resources/create-resume">Return to Resume Builder</a></p>
+            </body>
+          </html>
+        `);
+      }
     }
   });
   
-  // GET endpoint for browser's native download functionality
+  // GET endpoint for browser's native download functionality (as fallback)
   app.get("/api/download-resume-pdf", async (req, res) => {
     try {
       const { filename } = req.query;
@@ -93,10 +132,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         String(filename).replace(/[^a-zA-Z0-9_\-\.]/g, '_') : 
         'resume.pdf';
       
-      // Check if we have resume data in the URL
-      const resumeId = req.query.resumeId;
-      
-      // Check if we have a POST request with resume data
+      // Check if we have resume data in the session
       if (!req.session || !req.session.resumeData) {
         return res.status(400).send(`
           <html>
@@ -136,7 +172,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           <body>
             <h2>Error Generating PDF</h2>
             <p>There was a problem generating your resume PDF. Please try again.</p>
-            <p>${error.message}</p>
+            <p>${error instanceof Error ? error.message : 'Unknown error'}</p>
             <p><a href="/resources/create-resume">Return to Resume Builder</a></p>
           </body>
         </html>
