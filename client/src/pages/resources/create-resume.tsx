@@ -55,43 +55,10 @@ const resumeFormSchema = z.object({
   additionalInfo: z.string().optional()
 });
 
-// Template options
-const resumeTemplates = [
-  {
-    id: "professional",
-    name: "Professional",
-    description: "A clean, modern design for corporate roles",
-    image: "https://via.placeholder.com/150x200?text=Professional",
-  },
-  {
-    id: "creative",
-    name: "Creative",
-    description: "A unique layout perfect for design and creative roles",
-    image: "https://via.placeholder.com/150x200?text=Creative",
-  },
-  {
-    id: "executive",
-    name: "Executive",
-    description: "A sophisticated layout for senior management positions",
-    image: "https://via.placeholder.com/150x200?text=Executive",
-  },
-  {
-    id: "simple",
-    name: "Simple",
-    description: "A minimalist design for any role",
-    image: "https://via.placeholder.com/150x200?text=Simple",
-  },
-  {
-    id: "technical",
-    name: "Technical",
-    description: "Focused on technical skills and certifications for IT professionals",
-    image: "https://via.placeholder.com/150x200?text=Technical",
-  },
-];
+// We've removed the template options since we're using a single professional template
 
 export default function CreateResumePage() {
   const { toast } = useToast();
-  const [selectedTemplate, setSelectedTemplate] = useState("professional");
   const [activeTab, setActiveTab] = useState("details");
   const [isGenerating, setIsGenerating] = useState(false);
   const [resumeGenerated, setResumeGenerated] = useState(true); // Set to true to enable the Preview tab
@@ -486,37 +453,6 @@ export default function CreateResumePage() {
               Stand out from the crowd with a professionally designed resume that highlights your skills and experience. 
               Our resume builder makes it easy to create, edit, and download your resume in minutes.
             </p>
-          </div>
-
-          <div className="mb-10">
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
-              <h2 className="text-xl font-semibold mb-4">Choose a Resume Template</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                {resumeTemplates.map((template) => (
-                  <div
-                    key={template.id}
-                    className={`cursor-pointer border rounded-md overflow-hidden transition-all ${
-                      selectedTemplate === template.id
-                        ? "ring-2 ring-[#5372f1] border-[#5372f1]"
-                        : "hover:border-gray-400"
-                    }`}
-                    onClick={() => setSelectedTemplate(template.id)}
-                  >
-                    <div className="aspect-[3/4] bg-gray-100 flex items-center justify-center">
-                      <img
-                        src={template.image}
-                        alt={template.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="p-3">
-                      <h3 className="font-semibold text-sm mb-1">{template.name}</h3>
-                      <p className="text-xs text-gray-500 line-clamp-2">{template.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
 
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
@@ -1018,7 +954,7 @@ export default function CreateResumePage() {
                 <div className="border rounded-md p-8 max-w-4xl mx-auto bg-white shadow-sm">
                   <ScrollArea className="h-[600px] pr-4">
                     {/* This would be replaced with a proper resume preview template */}
-                    <div className={`resume-template resume-${selectedTemplate}`}>
+                    <div className="resume-template resume-professional">
                       <div className="text-center mb-6">
                         <h1 className="text-3xl font-bold text-[#5372f1] mb-1">{form.getValues().firstName} {form.getValues().lastName}</h1>
                         <p className="text-gray-600">{form.getValues().address}, {form.getValues().city}, {form.getValues().country}</p>
@@ -1133,7 +1069,7 @@ export default function CreateResumePage() {
                 </div>
                 
                 <div className="border rounded-md p-8 max-w-4xl mx-auto bg-white shadow-sm mb-8" ref={resumeRef}>
-                  <div className={`resume-template`}>
+                  <div className="resume-template resume-professional">
                     <div className="text-center mb-6">
                       <h1 className="text-3xl font-bold text-[#5372f1] mb-1">{form.getValues().firstName} {form.getValues().lastName}</h1>
                       <p className="text-gray-600">{form.getValues().address}, {form.getValues().city}, {form.getValues().country}</p>
