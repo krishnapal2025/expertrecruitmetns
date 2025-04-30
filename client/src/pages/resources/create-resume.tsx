@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,8 +12,22 @@ import * as z from "zod";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FileText, Upload, Download, Copy, Printer, Check } from "lucide-react";
+import { 
+  FileText, Upload, Download, Copy, Printer, Edit, Trash2, 
+  File, FileType, Loader2, ChevronLeft, ChevronRight, Save
+} from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { 
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, 
+  DialogTitle, DialogTrigger 
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Define form schema using Zod
 const resumeFormSchema = z.object({
@@ -77,6 +91,12 @@ export default function CreateResumePage() {
   const [activeTab, setActiveTab] = useState("details");
   const [isGenerating, setIsGenerating] = useState(false);
   const [resumeGenerated, setResumeGenerated] = useState(false);
+  const [finalResumeGenerated, setFinalResumeGenerated] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadFormat, setDownloadFormat] = useState<string | null>(null);
+  const resumeRef = useRef<HTMLDivElement>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // Initialize the form with defaults from user profile if available
   const form = useForm<z.infer<typeof resumeFormSchema>>({
@@ -85,9 +105,9 @@ export default function CreateResumePage() {
       firstName: currentUser?.profile?.firstName || "",
       lastName: currentUser?.profile?.lastName || "",
       email: currentUser?.user?.email || "",
-      phone: currentUser?.profile?.phone || "",
-      address: currentUser?.profile?.address || "",
-      city: currentUser?.profile?.city || "",
+      phone: currentUser?.profile?.phoneNumber || "",
+      address: "",
+      city: "",
       country: currentUser?.profile?.country || "",
       professionalSummary: "",
       workExperience: "",
@@ -99,32 +119,100 @@ export default function CreateResumePage() {
 
   // Handle form submission
   const onSubmit = (values: z.infer<typeof resumeFormSchema>) => {
-    setIsGenerating(true);
-    // Simulate resume generation process
-    setTimeout(() => {
-      setIsGenerating(false);
-      setResumeGenerated(true);
-      setActiveTab("preview");
-      toast({
-        title: "Resume Generated",
-        description: "Your resume has been created successfully!",
-        variant: "success",
-      });
-    }, 2000);
-  };
-
-  // Handle template selection
-  const handleTemplateSelection = (templateId: string) => {
-    setSelectedTemplate(templateId);
+    // Go directly to preview
+    setActiveTab("preview");
+    setResumeGenerated(true);
+    
     toast({
-      title: "Template Selected",
-      description: `You've selected the ${templates.find(t => t.id === templateId)?.name} template.`,
+      title: "Form Submitted",
+      description: "Your resume details have been submitted. You can now preview your resume.",
       variant: "default",
     });
   };
 
+  // Handle generating the final resume
+  const handleGenerateResume = () => {
+    setIsGenerating(true);
+    
+    // Simulate resume generation process
+    setTimeout(() => {
+      setIsGenerating(false);
+      setFinalResumeGenerated(true);
+      setActiveTab("final");
+      
+      toast({
+        title: "Resume Generated Successfully",
+        description: "Your professional resume has been created and is ready to download!",
+        variant: "default",
+      });
+    }, 1500);
+  };
+  
+  // Handle delete resume
+  const handleDeleteResume = () => {
+    setShowDeleteDialog(true);
+  };
+  
+  // Confirm delete resume
+  const confirmDeleteResume = () => {
+    setShowDeleteDialog(false);
+    setFinalResumeGenerated(false);
+    setResumeGenerated(false);
+    setActiveTab("details");
+    
+    toast({
+      title: "Resume Deleted",
+      description: "Your resume has been deleted. You can create a new one.",
+      variant: "default",
+    });
+  };
+  
+  // Handle download resume
+  const handleDownloadResume = (format: string) => {
+    setIsDownloading(true);
+    setDownloadFormat(format);
+    
+    // Simulate download process
+    setTimeout(() => {
+      setIsDownloading(false);
+      setDownloadFormat(null);
+      
+      toast({
+        title: `Resume Downloaded as ${format.toUpperCase()}`,
+        description: `Your resume has been downloaded in ${format.toUpperCase()} format.`,
+        variant: "default",
+      });
+    }, 1500);
+  };
+  
+  // Handle edit resume
+  const handleEditResume = () => {
+    setIsEditMode(true);
+    setActiveTab("details");
+  };
+
   // Define tab change handler
   const handleTabChange = (value: string) => {
+    // If trying to go to preview without valid data, prevent it
+    if (value === "preview" && !resumeGenerated) {
+      toast({
+        title: "Submit Form First",
+        description: "Please complete and submit the form before previewing.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // If trying to go to final without generating, prevent it
+    if (value === "final" && !finalResumeGenerated) {
+      toast({
+        title: "Generate Resume First",
+        description: "Please generate your resume from the preview page first.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setActiveTab(value);
   };
 
@@ -160,57 +248,10 @@ export default function CreateResumePage() {
 
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="template">Choose Template</TabsTrigger>
-              <TabsTrigger value="details">Enter Details</TabsTrigger>
-              <TabsTrigger value="preview" disabled={!resumeGenerated}>Preview Resume</TabsTrigger>
+              <TabsTrigger value="details">Create Resume</TabsTrigger>
+              <TabsTrigger value="preview" disabled={!resumeGenerated}>Preview</TabsTrigger>
+              <TabsTrigger value="final" disabled={!finalResumeGenerated}>Final Resume</TabsTrigger>
             </TabsList>
-            
-            <TabsContent value="template" className="space-y-6">
-              <h2 className="text-2xl font-semibold mb-4">Select a Resume Template</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {templates.map((template) => (
-                  <Card 
-                    key={template.id} 
-                    className={`cursor-pointer transition-all duration-200 hover:shadow-md ${selectedTemplate === template.id ? 'ring-2 ring-primary' : ''}`}
-                    onClick={() => handleTemplateSelection(template.id)}
-                  >
-                    <CardHeader className="p-4 pb-2">
-                      <CardTitle className="text-lg">{template.name}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-2">
-                      <div className="aspect-[3/4] bg-gray-100 rounded-md mb-3 overflow-hidden">
-                        <img 
-                          src={template.image} 
-                          alt={template.name} 
-                          className="w-full h-full object-cover" 
-                        />
-                      </div>
-                      <CardDescription className="text-sm">{template.description}</CardDescription>
-                    </CardContent>
-                    <CardFooter className="p-4 pt-0">
-                      <Button 
-                        variant={selectedTemplate === template.id ? "default" : "outline"}
-                        className="w-full"
-                        onClick={() => handleTemplateSelection(template.id)}
-                      >
-                        {selectedTemplate === template.id ? (
-                          <>
-                            <Check className="mr-2 h-4 w-4" />
-                            Selected
-                          </>
-                        ) : 'Select'}
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-              
-              <div className="flex justify-end mt-6">
-                <Button onClick={() => setActiveTab("details")}>
-                  Continue to Details
-                </Button>
-              </div>
-            </TabsContent>
             
             <TabsContent value="details">
               <Form {...form}>
@@ -429,20 +470,12 @@ export default function CreateResumePage() {
                     />
                   </div>
                   
-                  <div className="flex justify-between">
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      onClick={() => setActiveTab("template")}
-                    >
-                      Back to Templates
-                    </Button>
+                  <div className="flex justify-end">
                     <Button 
                       type="submit" 
-                      disabled={isGenerating}
-                      className="min-w-[120px]"
+                      className="min-w-[120px] bg-[#5372f1] hover:bg-[#4060e0] text-lg py-6 px-8"
                     >
-                      {isGenerating ? "Generating..." : "Generate Resume"}
+                      Submit
                     </Button>
                   </div>
                 </form>
@@ -517,7 +550,25 @@ export default function CreateResumePage() {
                       variant="outline" 
                       onClick={() => setActiveTab("details")}
                     >
+                      <ChevronLeft className="mr-2 h-4 w-4" />
                       Edit Resume
+                    </Button>
+                    <Button 
+                      onClick={handleGenerateResume}
+                      disabled={isGenerating}
+                      className="bg-[#5372f1] hover:bg-[#4060e0]"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          Generate Resume
+                          <ChevronRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -526,10 +577,165 @@ export default function CreateResumePage() {
                   <FileText className="h-16 w-16 text-gray-300 mb-4" />
                   <h3 className="text-xl font-semibold mb-2">No Resume Generated Yet</h3>
                   <p className="text-gray-500 mb-4">Please complete the previous steps to generate your resume.</p>
-                  <Button onClick={() => setActiveTab("template")}>Start Creating</Button>
+                  <Button onClick={() => setActiveTab("details")}>Start Creating</Button>
                 </div>
               )}
             </TabsContent>
+            
+            <TabsContent value="final">
+              {finalResumeGenerated ? (
+                <div className="bg-white p-6 rounded-lg shadow-md border">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-semibold text-[#5372f1]">Your Completed Resume</h2>
+                    <div className="flex space-x-3">
+                      <Button 
+                        onClick={handleEditResume}
+                        variant="outline" 
+                        className="flex items-center space-x-2"
+                      >
+                        <Edit className="h-4 w-4" />
+                        <span>Edit</span>
+                      </Button>
+                      <Button 
+                        onClick={handleDeleteResume}
+                        variant="outline" 
+                        className="flex items-center space-x-2 border-red-200 hover:bg-red-50 hover:text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span>Delete</span>
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="border rounded-md p-8 max-w-4xl mx-auto bg-white shadow-sm mb-8" ref={resumeRef}>
+                    <div className={`resume-template`}>
+                      <div className="text-center mb-6">
+                        <h1 className="text-3xl font-bold text-[#5372f1] mb-1">{form.getValues().firstName} {form.getValues().lastName}</h1>
+                        <p className="text-gray-600">{form.getValues().address}, {form.getValues().city}, {form.getValues().country}</p>
+                        <p className="text-gray-600">{form.getValues().email} | {form.getValues().phone}</p>
+                      </div>
+                      
+                      <Separator className="my-6" />
+                      
+                      <div className="mb-6">
+                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Professional Summary</h2>
+                        <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().professionalSummary}</p>
+                      </div>
+                      
+                      <div className="mb-6">
+                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Work Experience</h2>
+                        <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().workExperience}</p>
+                      </div>
+                      
+                      <div className="mb-6">
+                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Education</h2>
+                        <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().education}</p>
+                      </div>
+                      
+                      <div className="mb-6">
+                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Skills</h2>
+                        <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().skills}</p>
+                      </div>
+                      
+                      {form.getValues().additionalInfo && (
+                        <div className="mb-6">
+                          <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Additional Information</h2>
+                          <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().additionalInfo}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 border rounded-lg p-6 mb-6">
+                    <h3 className="text-lg font-semibold mb-4">Download Your Resume</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Button 
+                        onClick={() => handleDownloadResume('pdf')}
+                        disabled={isDownloading && downloadFormat === 'pdf'}
+                        className="flex items-center justify-center py-6 bg-[#5372f1] hover:bg-[#4060e0]"
+                      >
+                        {isDownloading && downloadFormat === 'pdf' ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Downloading...
+                          </>
+                        ) : (
+                          <>
+                            <FilePdf className="mr-2 h-5 w-5" />
+                            Download as PDF
+                          </>
+                        )}
+                      </Button>
+                      
+                      <Button 
+                        onClick={() => handleDownloadResume('docx')}
+                        disabled={isDownloading && downloadFormat === 'docx'}
+                        variant="outline"
+                        className="flex items-center justify-center py-6 border-[#5372f1] text-[#5372f1] hover:bg-[#5372f1]/5"
+                      >
+                        {isDownloading && downloadFormat === 'docx' ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Downloading...
+                          </>
+                        ) : (
+                          <>
+                            <FileWordIcon className="mr-2 h-5 w-5" />
+                            Download as Word
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center">
+                    <p className="text-gray-500 text-sm mb-4">
+                      Your resume is saved in our system. You can access, edit or download it anytime from your profile.
+                    </p>
+                    <Button 
+                      onClick={() => window.location.href = "/profile"}
+                      variant="outline"
+                      className="text-[#5372f1]"
+                    >
+                      Go to Profile
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center p-12 text-center">
+                  <FileText className="h-16 w-16 text-gray-300 mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No Final Resume Generated Yet</h3>
+                  <p className="text-gray-500 mb-4">Please preview your resume first and click the Generate Resume button.</p>
+                  <Button onClick={() => setActiveTab("preview")}>Go to Preview</Button>
+                </div>
+              )}
+            </TabsContent>
+            
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Delete Resume</DialogTitle>
+                  <DialogDescription>
+                    Are you sure you want to delete this resume? This action cannot be undone.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="flex space-x-2 justify-end">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setShowDeleteDialog(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    onClick={confirmDeleteResume}
+                  >
+                    Delete Resume
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </Tabs>
         </div>
       </div>
