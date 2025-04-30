@@ -45,7 +45,7 @@ const workExperienceSchema = z.object({
 const educationSchema = z.object({
   id: z.string(),
   institution: z.string().min(1, "Institution name is required"),
-  degree: z.string().min(1, "Degree is required"),
+  degree: z.string().min(1, "Degree is required"), 
   fieldOfStudy: z.string().min(1, "Field of study is required"),
   graduationDate: z.string().min(1, "Graduation date is required"),
   description: z.string().optional(),
@@ -57,13 +57,13 @@ const resumeFormSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email address"),
-  phone: z.string().min(1, "Phone number is required"),
-  address: z.string().min(1, "Address is required"),
-  city: z.string().min(1, "City is required"),
-  country: z.string().min(1, "Country is required"),
+  phone: z.string().min(1, "Phone number is required"), // Any phone format is accepted
+  address: z.string().optional().or(z.string()), // Make address optional or any string
+  city: z.string().optional().or(z.string()), // Make city optional or any string
+  country: z.string().optional().or(z.string()), // Make country optional or any string
   
   // Professional Summary
-  professionalSummary: z.string().min(50, "Professional summary should be at least 50 characters"),
+  professionalSummary: z.string().min(10, "Professional summary should be at least 10 characters"),
   
   // Work Experience
   workExperiences: z.array(workExperienceSchema).min(1, "At least one work experience is required"),
@@ -411,7 +411,7 @@ export default function CreateResumePage() {
                           <FormItem>
                             <FormLabel>Phone</FormLabel>
                             <FormControl>
-                              <Input placeholder="+1 123 456 7890" {...field} />
+                              <Input placeholder="Enter phone number (any format)" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -424,7 +424,7 @@ export default function CreateResumePage() {
                           <FormItem>
                             <FormLabel>Address</FormLabel>
                             <FormControl>
-                              <Input placeholder="123 Main St" {...field} />
+                              <Input placeholder="Enter address (any format)" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -437,7 +437,7 @@ export default function CreateResumePage() {
                           <FormItem>
                             <FormLabel>City</FormLabel>
                             <FormControl>
-                              <Input placeholder="New York" {...field} />
+                              <Input placeholder="Enter city name" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -450,7 +450,7 @@ export default function CreateResumePage() {
                           <FormItem>
                             <FormLabel>Country</FormLabel>
                             <FormControl>
-                              <Input placeholder="United States" {...field} />
+                              <Input placeholder="Enter country (any format)" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
