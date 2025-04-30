@@ -21,6 +21,7 @@ import {
 import { hashPassword } from "./auth";
 import { generateResetToken, sendPasswordResetEmail } from "./email-service";
 import { seedJobs } from "./seed-jobs";
+import { generateResumePDF, resumeDataSchema, bufferToStream } from "./pdf-service";
 
 // In-memory store for real-time updates
 const realtimeStore = {
@@ -36,6 +37,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Seed jobs data
   await seedJobs();
+  
+  // Resume PDF generation endpoint
+  app.post("/api/generate-resume-pdf", async (req, res) => {
+    try {
+      // Validate resume data
+      const resumeData = resumeDataSchema.parse(req.body);
+      
+      // Generate PDF
+      const pdfBuffer = await generateResumePDF(resumeData);
+      
+      // Set headers for PDF download
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 
+        `attachment; filename="Resume_${resumeData.personalInfo.firstName}_${resumeData.personalInfo.lastName}.pdf"`);
+      res.setHeader('Content-Security-Policy', "default-src 'none'");
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      
+      // Send the PDF buffer
+      bufferToStream(pdfBuffer).pipe(res);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      res.status(500).json({ message: 'Failed to generate PDF' });
+    }
+  });
 
   // API routes
 
