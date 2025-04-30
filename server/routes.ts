@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import * as z from "zod";
+import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { db } from "./db"; // Import the database instance for direct SQL
 import {
@@ -21,7 +22,14 @@ import {
 import { hashPassword } from "./auth";
 import { generateResetToken, sendPasswordResetEmail } from "./email-service";
 import { seedJobs } from "./seed-jobs";
-import { generateResumePDF, resumeDataSchema, bufferToStream } from "./pdf-service";
+import { generateResumePDF, resumeDataSchema, bufferToStream, ResumeData } from "./pdf-service";
+
+// Add ResumeData type to session
+declare module "express-session" {
+  interface SessionData {
+    resumeData?: ResumeData;
+  }
+}
 
 // In-memory store for real-time updates
 const realtimeStore = {
@@ -38,11 +46,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Seed jobs data
   await seedJobs();
   
-  // Resume PDF generation endpoint
+  // Resume PDF endpoints
+  // This is a simple endpoint that generates a PDF from resume data
   app.post("/api/generate-resume-pdf", async (req, res) => {
     try {
       // Validate resume data
       const resumeData = resumeDataSchema.parse(req.body);
+      
+      // Store resume data in session for GET requests
+      if (req.session) {
+        req.session.resumeData = resumeData;
+      }
       
       // Generate PDF
       const pdfBuffer = await generateResumePDF(resumeData);
@@ -66,6 +80,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error generating PDF:', error);
       res.status(500).json({ message: 'Failed to generate PDF' });
+    }
+  });
+  
+  // GET endpoint for browser's native download functionality
+  app.get("/api/download-resume-pdf", async (req, res) => {
+    try {
+      const { filename } = req.query;
+      
+      // Use the filename parameter if provided, otherwise use default
+      const safeFilename = filename ? 
+        String(filename).replace(/[^a-zA-Z0-9_\-\.]/g, '_') : 
+        'resume.pdf';
+      
+      // Check if we have resume data in the URL
+      const resumeId = req.query.resumeId;
+      
+      // Check if we have a POST request with resume data
+      if (!req.session || !req.session.resumeData) {
+        return res.status(400).send(`
+          <html>
+            <head><title>Resume Download Error</title></head>
+            <body>
+              <h2>Resume Data Not Found</h2>
+              <p>Please return to the resume builder and try again.</p>
+              <p><a href="/resources/create-resume">Return to Resume Builder</a></p>
+            </body>
+          </html>
+        `);
+      }
+      
+      // Get resume data from session
+      const resumeData = req.session.resumeData;
+      
+      // Generate PDF
+      const pdfBuffer = await generateResumePDF(resumeData);
+      
+      // Set comprehensive security headers for PDF download
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Length', pdfBuffer.length);
+      res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"`);
+      res.setHeader('Content-Security-Policy', "default-src 'none'");
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('X-Frame-Options', 'DENY');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      res.setHeader('Pragma', 'no-cache');
+      
+      // Send the PDF buffer as stream to avoid memory issues
+      bufferToStream(pdfBuffer).pipe(res);
+    } catch (error) {
+      console.error('Error generating PDF for download:', error);
+      res.status(500).send(`
+        <html>
+          <head><title>Resume Download Error</title></head>
+          <body>
+            <h2>Error Generating PDF</h2>
+            <p>There was a problem generating your resume PDF. Please try again.</p>
+            <p>${error.message}</p>
+            <p><a href="/resources/create-resume">Return to Resume Builder</a></p>
+          </body>
+        </html>
+      `);
     }
   });
 

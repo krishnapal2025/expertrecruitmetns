@@ -160,7 +160,12 @@ export default function CreateResumePage() {
               <Button 
                 onClick={async () => {
                   try {
-                    // Use server-side PDF generation to avoid antivirus flags
+                    // Clean filenames for security
+                    const safeFirstName = previewData.personalInfo.firstName.replace(/[^a-zA-Z0-9]/g, '_');
+                    const safeLastName = previewData.personalInfo.lastName.replace(/[^a-zA-Z0-9]/g, '_');
+                    const fileName = `Resume_${safeFirstName}_${safeLastName}.pdf`;
+                    
+                    // First, save the resume data to the server session
                     const response = await fetch('/api/generate-resume-pdf', {
                       method: 'POST',
                       headers: {
@@ -170,29 +175,15 @@ export default function CreateResumePage() {
                     });
                     
                     if (!response.ok) {
-                      throw new Error('Failed to generate PDF');
+                      throw new Error('Failed to process resume data');
                     }
                     
-                    // Create a blob from the PDF response
-                    const blob = await response.blob();
-                    
-                    // Create a URL for the blob
-                    const url = window.URL.createObjectURL(blob);
-                    
-                    // Create a temporary anchor element and trigger download
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${previewData.personalInfo.firstName}_${previewData.personalInfo.lastName}_Resume.pdf`;
-                    document.body.appendChild(a);
-                    a.click();
-                    
-                    // Clean up
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
+                    // Then use the browser's native download functionality with the download endpoint
+                    window.open(`/api/download-resume-pdf?filename=${encodeURIComponent(fileName)}`, '_blank');
                     
                     toast({
                       title: "Resume Downloaded",
-                      description: "Your resume has been securely generated and downloaded successfully!",
+                      description: "Your resume has been securely generated and downloaded through your browser.",
                     });
                   } catch (error) {
                     console.error('Error downloading PDF:', error);
