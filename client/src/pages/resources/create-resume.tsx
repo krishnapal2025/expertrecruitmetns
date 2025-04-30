@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 // Server-side PDF generation used instead of client-side
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertCircle, FileText, Plus, Trash2 } from "lucide-react";
+import { AlertCircle, Download, FileText, Plus, Trash2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -139,9 +139,19 @@ export default function CreateResumePage() {
   // We've moved PDF generation to the server side to avoid antivirus flags
   // This comment is kept for reference
 
+  // Create a reference to the hidden iframe
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
   if (previewData) {
     return (
       <div className="container mx-auto py-10 px-4 md:px-6">
+        {/* Hidden iframe for direct download */}
+        <iframe 
+          ref={iframeRef} 
+          style={{ display: 'none' }}
+          title="Download Frame"
+        />
+        
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <div>
@@ -165,50 +175,23 @@ export default function CreateResumePage() {
                     const safeLastName = previewData.personalInfo.lastName.replace(/[^a-zA-Z0-9]/g, '_');
                     const fileName = `Resume_${safeFirstName}_${safeLastName}.pdf`;
                     
-                    // Create an invisible iframe for direct download
-                    // This allows the download to happen within the same page
-                    // without interrupting the user experience
+                    // Create initial data on server - just store in session
+                    await fetch('/api/generate-resume-pdf', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(previewData),
+                    });
                     
-                    // First create a hidden iframe
-                    let iframe = document.getElementById('download-iframe') as HTMLIFrameElement;
-                    if (!iframe) {
-                      iframe = document.createElement('iframe');
-                      iframe.id = 'download-iframe';
-                      iframe.name = 'download-frame';
-                      iframe.style.display = 'none';
-                      document.body.appendChild(iframe);
+                    // Now we'll use the iframe for direct download
+                    if (iframeRef.current) {
+                      // Add a timestamp to prevent caching
+                      iframeRef.current.src = `/api/download-resume-pdf?filename=${encodeURIComponent(fileName)}&t=${Date.now()}`;
+                    } else {
+                      // Fallback to window.open if iframe not available
+                      window.open(`/api/download-resume-pdf?filename=${encodeURIComponent(fileName)}&t=${Date.now()}`);
                     }
-                    
-                    // Then create a form targeting that iframe
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '/api/generate-resume-pdf';
-                    form.target = 'download-frame'; // Target the iframe
-                    form.enctype = 'application/x-www-form-urlencoded';
-                    form.style.display = 'none';
-                    
-                    // Add resume data as a hidden field
-                    const dataField = document.createElement('input');
-                    dataField.type = 'hidden';
-                    dataField.name = 'resumeData';
-                    dataField.value = JSON.stringify(previewData);
-                    form.appendChild(dataField);
-                    
-                    // Add filename as a parameter
-                    const filenameField = document.createElement('input');
-                    filenameField.type = 'hidden';
-                    filenameField.name = 'filename';
-                    filenameField.value = fileName;
-                    form.appendChild(filenameField);
-                    
-                    // Add the form to the body and submit it
-                    document.body.appendChild(form);
-                    form.submit();
-                    
-                    // Clean up the form
-                    setTimeout(() => {
-                      document.body.removeChild(form);
-                    }, 1000);
                     
                     toast({
                       title: "Resume Downloaded",
@@ -225,6 +208,7 @@ export default function CreateResumePage() {
                 }}
                 className="bg-primary"
               >
+                <Download className="w-4 h-4 mr-2" />
                 Download PDF
               </Button>
             </div>
