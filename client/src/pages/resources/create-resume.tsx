@@ -139,19 +139,36 @@ export default function CreateResumePage() {
     }
   };
 
-  // Function to generate PDF from form data
+  // Function to generate PDF from form data with clean metadata
   const generatePdf = (data: ResumeFormValues) => {
-    const doc = new jsPDF();
+    // Create PDF document with minimal metadata to avoid antivirus flags
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+      putOnlyUsedFonts: true,
+      compress: true
+    });
+    
+    // Remove potentially problematic metadata
+    doc.setProperties({
+      title: `Resume - ${data.personalInfo.firstName} ${data.personalInfo.lastName}`,
+      subject: 'Professional Resume',
+      creator: 'Expert Recruitments Resume Builder',
+      producer: 'Expert Recruitments LLC',
+      keywords: 'resume,cv,professional',
+    });
+    
     const pageWidth = doc.internal.pageSize.getWidth();
     const margin = 20;
     let yPosition = 20;
     
-    // Set font
+    // Using only standard fonts (helvetica) which are embedded in PDF spec
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
     
-    // Add full name
-    const fullName = `${data.personalInfo.firstName} ${data.personalInfo.lastName}`;
+    // Add full name - sanitize inputs to prevent injection
+    const fullName = `${data.personalInfo.firstName} ${data.personalInfo.lastName}`.substring(0, 100);
     doc.text(fullName, pageWidth / 2, yPosition, { align: "center" });
     yPosition += 10;
     
@@ -159,14 +176,20 @@ export default function CreateResumePage() {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     
-    const contactInfo = `${data.personalInfo.email} | ${data.personalInfo.phone}`;
+    const contactInfo = `${data.personalInfo.email} | ${data.personalInfo.phone}`.substring(0, 150);
     doc.text(contactInfo, pageWidth / 2, yPosition, { align: "center" });
     yPosition += 6;
     
-    // Add address if available
+    // Add address if available - sanitize address
     if (data.personalInfo.address) {
-      const address = `${data.personalInfo.address}, ${data.personalInfo.city || ""} ${data.personalInfo.postalCode || ""}, ${data.personalInfo.country || ""}`;
-      doc.text(address.trim(), pageWidth / 2, yPosition, { align: "center" });
+      let addressParts = [];
+      if (data.personalInfo.address) addressParts.push(data.personalInfo.address);
+      if (data.personalInfo.city) addressParts.push(data.personalInfo.city);
+      if (data.personalInfo.postalCode) addressParts.push(data.personalInfo.postalCode);
+      if (data.personalInfo.country) addressParts.push(data.personalInfo.country);
+      
+      const address = addressParts.join(", ").substring(0, 200);
+      doc.text(address, pageWidth / 2, yPosition, { align: "center" });
       yPosition += 10;
     }
     
@@ -175,7 +198,7 @@ export default function CreateResumePage() {
     doc.line(margin, yPosition, pageWidth - margin, yPosition);
     yPosition += 8;
     
-    // Add summary if available
+    // Add summary if available - sanitize summary
     if (data.personalInfo.summary) {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
@@ -184,12 +207,13 @@ export default function CreateResumePage() {
       
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
-      const textLines = doc.splitTextToSize(data.personalInfo.summary, pageWidth - (margin * 2));
+      const sanitizedSummary = data.personalInfo.summary.substring(0, 1000); // Limit length
+      const textLines = doc.splitTextToSize(sanitizedSummary, pageWidth - (margin * 2));
       doc.text(textLines, margin, yPosition);
       yPosition += (textLines.length * 5) + 8;
     }
     
-    // Add experience section
+    // Add experience section with sanitized inputs
     if (data.experience.length > 0) {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
@@ -199,16 +223,22 @@ export default function CreateResumePage() {
       data.experience.forEach((exp) => {
         doc.setFont("helvetica", "bold");
         doc.setFontSize(11);
-        doc.text(exp.position, margin, yPosition);
+        const position = exp.position.substring(0, 150);
+        doc.text(position, margin, yPosition);
         yPosition += 5;
         
         doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
-        doc.text(`${exp.company} ${exp.startDate && exp.endDate ? `| ${exp.startDate} - ${exp.endDate}` : ""}`, margin, yPosition);
+        let companyText = exp.company;
+        if (exp.startDate && exp.endDate) {
+          companyText += ` | ${exp.startDate} - ${exp.endDate}`;
+        }
+        doc.text(companyText.substring(0, 150), margin, yPosition);
         yPosition += 5;
         
         if (exp.description) {
-          const descLines = doc.splitTextToSize(exp.description, pageWidth - (margin * 2));
+          const sanitizedDesc = exp.description.substring(0, 1000);
+          const descLines = doc.splitTextToSize(sanitizedDesc, pageWidth - (margin * 2));
           doc.text(descLines, margin, yPosition);
           yPosition += (descLines.length * 5) + 5;
         } else {
@@ -219,7 +249,7 @@ export default function CreateResumePage() {
       yPosition += 5;
     }
     
-    // Add education section
+    // Add education section with sanitized inputs
     if (data.education.length > 0) {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
@@ -229,21 +259,28 @@ export default function CreateResumePage() {
       data.education.forEach((edu) => {
         doc.setFont("helvetica", "bold");
         doc.setFontSize(11);
-        doc.text(edu.degree, margin, yPosition);
+        const degree = edu.degree.substring(0, 150);
+        doc.text(degree, margin, yPosition);
         yPosition += 5;
         
         doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
-        doc.text(`${edu.institution} ${edu.startDate && edu.endDate ? `| ${edu.startDate} - ${edu.endDate}` : ""}`, margin, yPosition);
+        let institutionText = edu.institution;
+        if (edu.startDate && edu.endDate) {
+          institutionText += ` | ${edu.startDate} - ${edu.endDate}`;
+        }
+        doc.text(institutionText.substring(0, 150), margin, yPosition);
         yPosition += 5;
         
         if (edu.fieldOfStudy) {
-          doc.text(`Field of Study: ${edu.fieldOfStudy}`, margin, yPosition);
+          const fieldText = `Field of Study: ${edu.fieldOfStudy}`.substring(0, 150);
+          doc.text(fieldText, margin, yPosition);
           yPosition += 5;
         }
         
         if (edu.description) {
-          const descLines = doc.splitTextToSize(edu.description, pageWidth - (margin * 2));
+          const sanitizedDesc = edu.description.substring(0, 1000);
+          const descLines = doc.splitTextToSize(sanitizedDesc, pageWidth - (margin * 2));
           doc.text(descLines, margin, yPosition);
           yPosition += (descLines.length * 5) + 5;
         } else {
@@ -254,14 +291,19 @@ export default function CreateResumePage() {
       yPosition += 5;
     }
     
-    // Add skills section
+    // Add skills section with sanitized inputs
     if (data.skills.length > 0) {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
       doc.text("Skills", margin, yPosition);
       yPosition += 6;
       
-      const skillsText = data.skills.map((skill) => `${skill.name}${skill.level ? ` (${skill.level})` : ""}`).join(", ");
+      // Limit the number of skills to prevent bloating
+      const limitedSkills = data.skills.slice(0, 20);
+      const skillsText = limitedSkills
+        .map((skill) => `${skill.name}${skill.level ? ` (${skill.level})` : ""}`)
+        .join(", ")
+        .substring(0, 500);
       
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
@@ -269,8 +311,29 @@ export default function CreateResumePage() {
       doc.text(skillLines, margin, yPosition);
     }
     
-    // Save PDF
-    doc.save(`${data.personalInfo.firstName}_${data.personalInfo.lastName}_Resume.pdf`);
+    // Add a footer with creation timestamp (helps avoid identical file hashes)
+    const timestamp = new Date().toISOString().split('T')[0];
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text(`Generated: ${timestamp} | Expert Recruitments LLC`, pageWidth / 2, 285, { align: "center" });
+    
+    // Reset text color
+    doc.setTextColor(0, 0, 0);
+    
+    try {
+      // Generate clean filename with only alphanumeric characters and underscores
+      const cleanFirstName = data.personalInfo.firstName.replace(/[^a-zA-Z0-9]/g, "_");
+      const cleanLastName = data.personalInfo.lastName.replace(/[^a-zA-Z0-9]/g, "_");
+      const safeFilename = `${cleanFirstName}_${cleanLastName}_Resume`;
+      
+      // Save PDF with sanitized filename
+      doc.save(safeFilename + ".pdf");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      // Fallback to a generic filename if there's an issue
+      doc.save("Resume.pdf");
+    }
   };
 
   if (previewData) {
