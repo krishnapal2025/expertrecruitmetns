@@ -6,10 +6,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
@@ -29,6 +30,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Define work experience schema
+const workExperienceSchema = z.object({
+  id: z.string(),
+  company: z.string().min(1, "Company name is required"),
+  position: z.string().min(1, "Position is required"),
+  startDate: z.string().min(1, "Start date is required"),
+  endDate: z.string().optional(),
+  currentlyWorking: z.boolean().default(false),
+  description: z.string().min(1, "Job description is required"),
+});
+
+// Define education schema
+const educationSchema = z.object({
+  id: z.string(),
+  institution: z.string().min(1, "Institution name is required"),
+  degree: z.string().min(1, "Degree is required"),
+  fieldOfStudy: z.string().min(1, "Field of study is required"),
+  graduationDate: z.string().min(1, "Graduation date is required"),
+  description: z.string().optional(),
+});
+
 // Define form schema using Zod
 const resumeFormSchema = z.object({
   // Personal Information
@@ -43,11 +65,11 @@ const resumeFormSchema = z.object({
   // Professional Summary
   professionalSummary: z.string().min(50, "Professional summary should be at least 50 characters"),
   
-  // Work Experience (simplified for this example)
-  workExperience: z.string().min(1, "Work experience is required"),
+  // Work Experience
+  workExperiences: z.array(workExperienceSchema).min(1, "At least one work experience is required"),
   
   // Education
-  education: z.string().min(1, "Education details are required"),
+  educations: z.array(educationSchema).min(1, "At least one education entry is required"),
   
   // Skills
   skills: z.string().min(1, "Skills are required"),
@@ -98,7 +120,53 @@ export default function CreateResumePage() {
   const resumeRef = useRef<HTMLDivElement>(null);
   const [isEditMode, setIsEditMode] = useState(false);
 
-  // Initialize the form with defaults from user profile if available
+  // Create a random ID helper
+  const generateId = () => Math.random().toString(36).substring(2, 9);
+  
+  // Sample professional summaries for different careers 
+  const sampleSummaries = {
+    "default": "Detail-oriented professional with over 5 years of experience in delivering high-quality results in fast-paced environments. Skilled in problem-solving, team collaboration, and adapting to new challenges quickly.",
+    "software": "Innovative software developer with 5+ years of experience building scalable applications. Proficient in multiple programming languages and frameworks with a passion for clean, maintainable code and excellent problem-solving skills.",
+    "marketing": "Results-driven marketing professional with proven success in developing and executing comprehensive marketing strategies. Skilled in digital marketing, content creation, and analytics with a track record of driving engagement and conversion.",
+    "finance": "Strategic finance professional with expertise in financial analysis, reporting, and forecasting. Experienced in optimizing financial operations and providing actionable insights to support business growth and profitability.",
+    "sales": "Dynamic sales professional with a consistent history of exceeding targets and building strong client relationships. Skilled in consultative selling, negotiation, and developing tailored solutions to meet client needs."
+  };
+
+  // Sample job descriptions
+  const sampleJobs = [
+    {
+      id: generateId(),
+      company: "Tech Innovations Inc.",
+      position: "Senior Developer",
+      startDate: "2020-01",
+      endDate: "",
+      currentlyWorking: true,
+      description: "Lead development team in creating scalable web applications. Implemented microservices architecture that improved system reliability by 40%. Mentored junior developers and introduced modern CI/CD practices."
+    },
+    {
+      id: generateId(),
+      company: "Digital Solutions LLC",
+      position: "Web Developer",
+      startDate: "2017-03",
+      endDate: "2019-12",
+      currentlyWorking: false,
+      description: "Developed responsive web applications for clients across various industries. Collaborated with design team to implement user-friendly interfaces. Optimized database queries resulting in 30% faster page loads."
+    }
+  ];
+  
+  // Sample education entries
+  const sampleEducation = [
+    {
+      id: generateId(),
+      institution: "University of Technology",
+      degree: "Bachelor of Science",
+      fieldOfStudy: "Computer Science",
+      graduationDate: "2017",
+      description: "Graduated with honors. Specialized in software engineering and data structures. Participated in coding competitions and hackathons."
+    }
+  ];
+
+  // Initialize the form with defaults
   const form = useForm<z.infer<typeof resumeFormSchema>>({
     resolver: zodResolver(resumeFormSchema),
     defaultValues: {
@@ -109,13 +177,51 @@ export default function CreateResumePage() {
       address: "",
       city: "",
       country: "",
-      professionalSummary: "",
-      workExperience: "",
-      education: "",
-      skills: "",
+      professionalSummary: sampleSummaries.default,
+      workExperiences: sampleJobs,
+      educations: sampleEducation,
+      skills: "JavaScript, React, TypeScript, Node.js, SQL, Git, Agile Development, Team Leadership, Problem Solving, UI/UX Design",
       additionalInfo: "",
     },
   });
+  
+  // Setup field arrays for work experiences and education
+  const { fields: workFields, append: appendWork, remove: removeWork } = 
+    useFieldArray({
+      control: form.control,
+      name: "workExperiences"
+    });
+    
+  const { fields: educationFields, append: appendEducation, remove: removeEducation } = 
+    useFieldArray({
+      control: form.control,
+      name: "educations"
+    });
+    
+  // Function to add a new work experience
+  const addWorkExperience = () => {
+    appendWork({
+      id: generateId(),
+      company: "",
+      position: "",
+      startDate: "",
+      endDate: "",
+      currentlyWorking: false,
+      description: ""
+    });
+  };
+  
+  // Function to add a new education entry
+  const addEducation = () => {
+    appendEducation({
+      id: generateId(),
+      institution: "",
+      degree: "",
+      fieldOfStudy: "",
+      graduationDate: "",
+      description: ""
+    });
+  };
 
   // Handle form submission
   const onSubmit = (values: z.infer<typeof resumeFormSchema>) => {
@@ -378,51 +484,277 @@ export default function CreateResumePage() {
                   </div>
                   
                   <div className="bg-white p-6 rounded-lg shadow-sm border">
-                    <h3 className="text-xl font-semibold mb-4">Work Experience</h3>
-                    <FormField
-                      control={form.control}
-                      name="workExperience"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Experience Details</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              placeholder="List your work experience with company names, positions, dates, and key responsibilities..." 
-                              className="min-h-[150px]"
-                              {...field} 
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-xl font-semibold">Work Experience</h3>
+                      <Button
+                        type="button"
+                        onClick={addWorkExperience}
+                        variant="outline"
+                        size="sm"
+                        className="text-[#5372f1]"
+                      >
+                        Add More
+                      </Button>
+                    </div>
+                    
+                    {workFields.map((field, index) => (
+                      <div 
+                        key={field.id} 
+                        className="mb-8 p-4 border border-gray-200 rounded-md bg-gray-50 relative"
+                      >
+                        <div className="absolute right-2 top-2">
+                          {index > 0 && (
+                            <Button
+                              type="button"
+                              onClick={() => removeWork(index)}
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0 text-gray-500 hover:text-red-500"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              <span className="sr-only">Remove</span>
+                            </Button>
+                          )}
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <FormField
+                            control={form.control}
+                            name={`workExperiences.${index}.company`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Company</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Company name" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={form.control}
+                            name={`workExperiences.${index}.position`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Position</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Job title" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <FormField
+                            control={form.control}
+                            name={`workExperiences.${index}.startDate`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Start Date</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    type="month" 
+                                    placeholder="YYYY-MM" 
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          {!form.watch(`workExperiences.${index}.currentlyWorking`) && (
+                            <FormField
+                              control={form.control}
+                              name={`workExperiences.${index}.endDate`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>End Date</FormLabel>
+                                  <FormControl>
+                                    <Input 
+                                      type="month" 
+                                      placeholder="YYYY-MM" 
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
                             />
-                          </FormControl>
-                          <FormDescription>
-                            Format: Company Name | Position | Dates | Responsibilities
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                          )}
+                        </div>
+                        
+                        <div className="mb-4">
+                          <FormField
+                            control={form.control}
+                            name={`workExperiences.${index}.currentlyWorking`}
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                  />
+                                </FormControl>
+                                <div className="space-y-1 leading-none">
+                                  <FormLabel>
+                                    I currently work here
+                                  </FormLabel>
+                                </div>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        
+                        <FormField
+                          control={form.control}
+                          name={`workExperiences.${index}.description`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Job Description</FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  placeholder="Describe your responsibilities, accomplishments, and skills..."
+                                  className="min-h-[100px]"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    ))}
+                    
+                    {workFields.length === 0 && (
+                      <div className="p-8 text-center text-gray-500 border border-dashed rounded-md">
+                        No work experience added. Click "Add More" to add your work history.
+                      </div>
+                    )}
                   </div>
                   
                   <div className="bg-white p-6 rounded-lg shadow-sm border">
-                    <h3 className="text-xl font-semibold mb-4">Education</h3>
-                    <FormField
-                      control={form.control}
-                      name="education"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Education Details</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              placeholder="List your educational qualifications with institution names, degrees, and dates..." 
-                              className="min-h-[120px]"
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Format: Institution | Degree | Graduation Date | GPA (optional)
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-xl font-semibold">Education</h3>
+                      <Button
+                        type="button"
+                        onClick={addEducation}
+                        variant="outline"
+                        size="sm"
+                        className="text-[#5372f1]"
+                      >
+                        Add More
+                      </Button>
+                    </div>
+                    
+                    {educationFields.map((field, index) => (
+                      <div 
+                        key={field.id} 
+                        className="mb-8 p-4 border border-gray-200 rounded-md bg-gray-50 relative"
+                      >
+                        <div className="absolute right-2 top-2">
+                          {index > 0 && (
+                            <Button
+                              type="button"
+                              onClick={() => removeEducation(index)}
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0 text-gray-500 hover:text-red-500"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              <span className="sr-only">Remove</span>
+                            </Button>
+                          )}
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <FormField
+                            control={form.control}
+                            name={`educations.${index}.institution`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Institution</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="University or school name" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={form.control}
+                            name={`educations.${index}.degree`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Degree</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Bachelor's, Master's, etc." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <FormField
+                            control={form.control}
+                            name={`educations.${index}.fieldOfStudy`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Field of Study</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Computer Science, Business, etc." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={form.control}
+                            name={`educations.${index}.graduationDate`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Graduation Date</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="2020" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        
+                        <FormField
+                          control={form.control}
+                          name={`educations.${index}.description`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Description (Optional)</FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  placeholder="Courses, honors, achievements, etc."
+                                  className="min-h-[80px]"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    ))}
+                    
+                    {educationFields.length === 0 && (
+                      <div className="p-8 text-center text-gray-500 border border-dashed rounded-md">
+                        No education added. Click "Add More" to add your education history.
+                      </div>
+                    )}
                   </div>
                   
                   <div className="bg-white p-6 rounded-lg shadow-sm border">
@@ -522,12 +854,34 @@ export default function CreateResumePage() {
                         
                         <div className="mb-6">
                           <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Work Experience</h2>
-                          <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().workExperience}</p>
+                          {form.getValues().workExperiences.map((exp, index) => (
+                            <div key={exp.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
+                              <div className="flex justify-between mb-1">
+                                <h3 className="font-semibold text-lg">{exp.position}</h3>
+                                <span className="text-gray-600 text-sm">
+                                  {exp.startDate} - {exp.currentlyWorking ? 'Present' : exp.endDate}
+                                </span>
+                              </div>
+                              <div className="text-gray-700 mb-2">{exp.company}</div>
+                              <p className="text-gray-600 whitespace-pre-wrap">{exp.description}</p>
+                            </div>
+                          ))}
                         </div>
                         
                         <div className="mb-6">
                           <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Education</h2>
-                          <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().education}</p>
+                          {form.getValues().educations.map((edu, index) => (
+                            <div key={edu.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
+                              <div className="flex justify-between mb-1">
+                                <h3 className="font-semibold text-lg">{edu.degree} in {edu.fieldOfStudy}</h3>
+                                <span className="text-gray-600 text-sm">{edu.graduationDate}</span>
+                              </div>
+                              <div className="text-gray-700 mb-2">{edu.institution}</div>
+                              {edu.description && (
+                                <p className="text-gray-600 whitespace-pre-wrap">{edu.description}</p>
+                              )}
+                            </div>
+                          ))}
                         </div>
                         
                         <div className="mb-6">
