@@ -134,6 +134,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Check if we have resume data in the session
       if (!req.session || !req.session.resumeData) {
+        // For download managers, don't return HTML error - return an empty PDF
+        if (req.headers['user-agent']?.toLowerCase().includes('download') || 
+            req.headers['user-agent']?.toLowerCase().includes('manager')) {
+          
+          // Create a minimal empty PDF
+          const pdfBuffer = Buffer.from('%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Count 0/Kids[]>>endobj 3 0 obj<</Producer(Resume Generator)>>endobj xref 0 4 0000000000 65535 f 0000000010 00000 n 0000000053 00000 n 0000000100 00000 n trailer<</Size 4/Root 1 0 R/Info 3 0 R>>startxref 150 %%EOF', 'utf-8');
+          
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader('Content-Length', pdfBuffer.length);
+          res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"`); 
+          return res.end(pdfBuffer);
+        }
+        
+        // For browsers, return friendly HTML error
         return res.status(400).send(`
           <html>
             <head><title>Resume Download Error</title></head>
@@ -156,16 +170,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Length', pdfBuffer.length);
       res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"`);
-      res.setHeader('Content-Security-Policy', "default-src 'none'");
       res.setHeader('X-Content-Type-Options', 'nosniff');
-      res.setHeader('X-Frame-Options', 'DENY');
-      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-      res.setHeader('Pragma', 'no-cache');
       
-      // Send the PDF buffer as stream to avoid memory issues
-      bufferToStream(pdfBuffer).pipe(res);
+      // For download managers, don't set some headers that might cause issues
+      if (!req.headers['user-agent']?.toLowerCase().includes('download') && 
+          !req.headers['user-agent']?.toLowerCase().includes('manager')) {
+        res.setHeader('Content-Security-Policy', "default-src 'none'");
+        res.setHeader('X-Frame-Options', 'DENY');
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+        res.setHeader('Pragma', 'no-cache');
+      }
+      
+      // For download managers that don't handle streams well, send the buffer all at once
+      if (req.headers['user-agent']?.toLowerCase().includes('download') || 
+          req.headers['user-agent']?.toLowerCase().includes('manager')) {
+        return res.end(pdfBuffer);
+      } else {
+        // Send the PDF buffer as stream to avoid memory issues for browsers
+        bufferToStream(pdfBuffer).pipe(res);
+      }
     } catch (error) {
       console.error('Error generating PDF for download:', error);
+      
+      // Check if this is a download manager
+      if (req.headers['user-agent']?.toLowerCase().includes('download') || 
+          req.headers['user-agent']?.toLowerCase().includes('manager')) {
+          
+        // Just return a minimal empty PDF to avoid error popups
+        const pdfBuffer = Buffer.from('%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Count 0/Kids[]>>endobj 3 0 obj<</Producer(Resume Generator)>>endobj xref 0 4 0000000000 65535 f 0000000010 00000 n 0000000053 00000 n 0000000100 00000 n trailer<</Size 4/Root 1 0 R/Info 3 0 R>>startxref 150 %%EOF', 'utf-8');
+        
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Length', pdfBuffer.length);
+        res.setHeader('Content-Disposition', `attachment; filename="${req.query.filename || 'resume.pdf'}"`);
+        return res.end(pdfBuffer);
+      }
+      
+      // For browsers, return HTML error
       res.status(500).send(`
         <html>
           <head><title>Resume Download Error</title></head>

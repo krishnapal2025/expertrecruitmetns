@@ -169,14 +169,14 @@ export default function CreateResumePage() {
               </Button>
               <Button 
                 onClick={async () => {
+                  // Clean filenames for security
+                  const safeFirstName = previewData.personalInfo.firstName.replace(/[^a-zA-Z0-9]/g, '_');
+                  const safeLastName = previewData.personalInfo.lastName.replace(/[^a-zA-Z0-9]/g, '_');
+                  const fileName = `Resume_${safeFirstName}_${safeLastName}.pdf`;
+                  
                   try {
-                    // Clean filenames for security
-                    const safeFirstName = previewData.personalInfo.firstName.replace(/[^a-zA-Z0-9]/g, '_');
-                    const safeLastName = previewData.personalInfo.lastName.replace(/[^a-zA-Z0-9]/g, '_');
-                    const fileName = `Resume_${safeFirstName}_${safeLastName}.pdf`;
-                    
-                    // Create initial data on server - just store in session
-                    await fetch('/api/generate-resume-pdf', {
+                    // First, store the resume data on the server
+                    const response = await fetch('/api/generate-resume-pdf', {
                       method: 'POST',
                       headers: {
                         'Content-Type': 'application/json',
@@ -184,24 +184,31 @@ export default function CreateResumePage() {
                       body: JSON.stringify(previewData),
                     });
                     
-                    // Now we'll use the iframe for direct download
-                    if (iframeRef.current) {
-                      // Add a timestamp to prevent caching
-                      iframeRef.current.src = `/api/download-resume-pdf?filename=${encodeURIComponent(fileName)}&t=${Date.now()}`;
-                    } else {
-                      // Fallback to window.open if iframe not available
-                      window.open(`/api/download-resume-pdf?filename=${encodeURIComponent(fileName)}&t=${Date.now()}`);
+                    if (!response.ok) {
+                      throw new Error('Failed to save resume data');
                     }
                     
+                    // Show success message
                     toast({
-                      title: "Resume Downloaded",
-                      description: "Your resume has been securely generated and downloaded through your browser.",
+                      title: "Resume Ready",
+                      description: "Your resume is ready to download",
                     });
+                    
+                    // Create a direct link to download without any catch block
+                    // This prevents error popups when external downloaders are used
+                    const downloadUrl = `/api/download-resume-pdf?filename=${encodeURIComponent(fileName)}&t=${Date.now()}`;
+                    
+                    // Method 1: Using window.location for the most direct approach
+                    // This avoids browser security restrictions and is compatible with download managers
+                    window.location.href = downloadUrl;
+                    
+                    // We won't use try/catch for the download part to avoid error popups
+                    // when using external downloaders, which might cancel the connection
                   } catch (error) {
-                    console.error('Error downloading PDF:', error);
+                    console.error('Error preparing PDF:', error);
                     toast({
-                      title: "Download Failed",
-                      description: "There was an error generating your resume. Please try again.",
+                      title: "Preparation Failed",
+                      description: "There was an error preparing your resume. Please try again.",
                       variant: "destructive",
                     });
                   }
