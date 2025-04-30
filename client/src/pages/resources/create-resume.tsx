@@ -91,7 +91,6 @@ const resumeTemplates = [
 
 export default function CreateResumePage() {
   const { toast } = useToast();
-  const { currentUser } = useAuth();
   const [selectedTemplate, setSelectedTemplate] = useState("professional");
   const [activeTab, setActiveTab] = useState("details");
   const [isGenerating, setIsGenerating] = useState(false);
