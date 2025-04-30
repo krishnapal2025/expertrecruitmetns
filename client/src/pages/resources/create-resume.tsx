@@ -456,7 +456,7 @@ export default function CreateResumePage() {
             </TabsList>
             
             <TabsContent value="details">
-              <form onSubmit={form.handleSubmit(handleCreatePreview)} className="space-y-8">
+              <Form {...form}>
                 <div className="space-y-8">
                   <div className="bg-white p-6 rounded-lg shadow-sm border">
                     <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
@@ -913,14 +913,15 @@ export default function CreateResumePage() {
                       )}
                     </Button>
                     <Button 
-                      type="submit"
+                      type="button"
+                      onClick={form.handleSubmit(handleCreatePreview)}
                       className="bg-[#5372f1] hover:bg-[#4060e0]"
                     >
                       Create Resume Preview
                     </Button>
                   </div>
                 </div>
-              </form>
+              </Form>
             </TabsContent>
             
             <TabsContent value="preview">
