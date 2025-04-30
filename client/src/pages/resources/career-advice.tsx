@@ -241,7 +241,8 @@ export default function CareerAdvicePage() {
   };
   
   // Get unique categories for filter
-  const categories = ["all", ...new Set(careerArticles.map(article => article.category))];
+  const uniqueCategories = Array.from(new Set(careerArticles.map(article => article.category)));
+  const categories = ["all", ...uniqueCategories];
   
   return (
     <>
