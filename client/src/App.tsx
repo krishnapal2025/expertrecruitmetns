@@ -37,10 +37,6 @@ import EditJobPage from "@/pages/edit-job";
 import ApplicationsManagerPage from "@/pages/applications-manager";
 import VacancyFormPage from "@/pages/vacancy-form";
 import InquiryFormPage from "@/pages/inquiry-form";
-import CreateResumePage from "@/pages/resources/create-resume";
-import InterviewPrepPage from "@/pages/resources/interview-prep";
-import CareerAdvicePage from "@/pages/resources/career-advice";
-import SalaryGuidesPage from "@/pages/resources/salary-guides";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import Navbar from "@/components/layout/navbar";
@@ -96,10 +92,6 @@ function Router() {
       <Route path="/hire-talent" component={HireTalentPage} />
       <Route path="/vacancy-form" component={VacancyFormPage} />
       <Route path="/inquiry-form" component={InquiryFormPage} />
-      <Route path="/resources/create-resume" component={() => <ProtectedRoute path="/resources/create-resume" component={CreateResumePage} />} />
-      <Route path="/resources/interview-prep" component={() => <ProtectedRoute path="/resources/interview-prep" component={InterviewPrepPage} />} />
-      <Route path="/resources/career-advice" component={() => <ProtectedRoute path="/resources/career-advice" component={CareerAdvicePage} />} />
-      <Route path="/resources/salary-guides" component={() => <ProtectedRoute path="/resources/salary-guides" component={SalaryGuidesPage} />} />
       <Route path="/admin" component={AdminPage} />
       <Route path="/admin-register" component={AdminRegisterPage} />
       <Route path="/admin-login" component={AdminLoginPage} />
