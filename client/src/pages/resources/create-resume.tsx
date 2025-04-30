@@ -361,7 +361,10 @@ export default function CreateResumePage() {
             
             <TabsContent value="details">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  form.handleSubmit(onSubmit)(e);
+                }} className="space-y-8">
                   <div className="bg-white p-6 rounded-lg shadow-sm border">
                     <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -805,9 +808,13 @@ export default function CreateResumePage() {
                   <div className="flex justify-end">
                     <Button 
                       type="submit" 
-                      className="min-w-[120px] bg-[#5372f1] hover:bg-[#4060e0] text-lg py-6 px-8"
+                      className="min-w-[200px] bg-[#5372f1] hover:bg-[#4060e0] text-lg py-6 px-8"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        form.handleSubmit(onSubmit)();
+                      }}
                     >
-                      Submit
+                      Create Resume Preview
                     </Button>
                   </div>
                 </form>
