@@ -22,7 +22,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, User, LogOut, ChevronDown, Briefcase, ShieldCheck } from "lucide-react";
+import { Menu, User, LogOut, ChevronDown, Briefcase, ShieldCheck, FileText, BookOpen, Bookmark, DollarSign } from "lucide-react";
 import expertLogo from "../../assets/er-logo-icon.png";
 import NotificationsPopover from "@/components/common/notifications";
 
@@ -93,14 +93,23 @@ export default function Navbar() {
       return defaultLinks;
     }
     
-    // Job seeker specific links - show Home, About Us, Find Jobs, Applied Jobs, Job Services, Blogs, and Contact Us
+    // Job seeker specific links - show Home, About Us, Find Jobs, Resources dropdown, Blogs, and Contact Us
     if (currentUser.user.userType === "jobseeker") {
       return [
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
         { name: "Find Jobs", href: "/job-board" },
-        { name: "Applied Jobs", href: "/applied-jobs" },
-        { name: "Job Services", href: "/job-services" },
+        { 
+          name: "Resources", 
+          href: "#",
+          isDropdown: true,
+          dropdownItems: [
+            { name: "Create Resume", href: "/resources/create-resume" },
+            { name: "Interview Prep", href: "/resources/interview-prep" },
+            { name: "Career Advice", href: "/resources/career-advice" },
+            { name: "Salary Guides", href: "/resources/salary-guides" },
+          ]
+        },
         { name: "Blogs", href: "/blogs" },
         { name: "Contact Us", href: "/contact-us" },
       ];
@@ -222,12 +231,22 @@ export default function Navbar() {
                       </DropdownMenuItem>
                     </ScrollLink>
                     {currentUser.user.userType === "jobseeker" && (
-                      <ScrollLink href="/applied-jobs" className="w-full">
-                        <DropdownMenuItem>
-                          <Briefcase className="mr-2 h-4 w-4" />
-                          <span>Applied Jobs</span>
-                        </DropdownMenuItem>
-                      </ScrollLink>
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel className="text-xs text-gray-500">Resources</DropdownMenuLabel>
+                        <ScrollLink href="/resources/create-resume" className="w-full">
+                          <DropdownMenuItem>
+                            <FileText className="mr-2 h-4 w-4" />
+                            <span>Create Resume</span>
+                          </DropdownMenuItem>
+                        </ScrollLink>
+                        <ScrollLink href="/resources/interview-prep" className="w-full">
+                          <DropdownMenuItem>
+                            <BookOpen className="mr-2 h-4 w-4" />
+                            <span>Interview Prep</span>
+                          </DropdownMenuItem>
+                        </ScrollLink>
+                      </>
                     )}
                     {currentUser.user.userType === "employer" && (
                       <>
@@ -413,17 +432,55 @@ export default function Navbar() {
                         </div>
                         
                         {currentUser.user.userType === "jobseeker" && (
-                          <div 
-                            className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                            onClick={() => {
-                              setIsMobileMenuOpen(false);
-                              window.scrollTo(0, 0);
-                              setTimeout(() => window.location.href = "/applied-jobs", 100);
-                            }}
-                          >
-                            <Briefcase className="mr-2 h-4 w-4" />
-                            Applied Jobs
-                          </div>
+                          <>
+                            <div className="px-4 py-2 mt-4 font-medium text-gray-500 text-sm">
+                              Resources
+                            </div>
+                            <div 
+                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/resources/create-resume", 100);
+                              }}
+                            >
+                              <FileText className="mr-2 h-4 w-4" />
+                              Create Resume
+                            </div>
+                            <div 
+                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/resources/interview-prep", 100);
+                              }}
+                            >
+                              <BookOpen className="mr-2 h-4 w-4" />
+                              Interview Prep
+                            </div>
+                            <div 
+                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/resources/career-advice", 100);
+                              }}
+                            >
+                              <Bookmark className="mr-2 h-4 w-4" />
+                              Career Advice
+                            </div>
+                            <div 
+                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/resources/salary-guides", 100);
+                              }}
+                            >
+                              <DollarSign className="mr-2 h-4 w-4" />
+                              Salary Guides
+                            </div>
+                          </>
                         )}
                         
                         {currentUser.user.userType === "employer" && (

@@ -33,8 +33,7 @@ import ProfilePage from "@/pages/profile-page";
 import PostJobPage from "@/pages/post-job";
 import PostManagerPage from "@/pages/post-manager";
 import EditJobPage from "@/pages/edit-job";
-import JobServicesPage from "@/pages/job-services";
-import AppliedJobsPage from "@/pages/applied-jobs";
+
 import ApplicationsManagerPage from "@/pages/applications-manager";
 import VacancyFormPage from "@/pages/vacancy-form";
 import InquiryFormPage from "@/pages/inquiry-form";
@@ -101,8 +100,7 @@ function Router() {
       <ProtectedRoute path="/profile" component={ProfilePage} />
       <ProtectedRoute path="/post-job" component={PostJobPage} />
       <ProtectedRoute path="/my-jobs" component={PostManagerPage} />
-      <ProtectedRoute path="/job-services" component={JobServicesPage} />
-      <ProtectedRoute path="/applied-jobs" component={AppliedJobsPage} />
+
       <ProtectedRoute path="/applications-manager" component={ApplicationsManagerPage} />
       <Route path="/edit-job/:id">
         {params => <ProtectedRoute path={`/edit-job/${params.id}`} component={() => <EditJobPage />} />}
