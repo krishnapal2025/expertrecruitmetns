@@ -456,11 +456,12 @@ export default function CreateResumePage() {
             </TabsList>
             
             <TabsContent value="details">
-              <Form {...form}>
-                <div className="space-y-8">
-                  <div className="bg-white p-6 rounded-lg shadow-sm border">
-                    <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-8">
+                <Form {...form} onSubmit={form.handleSubmit(handleCreatePreview)}>
+                  <div className="space-y-8">
+                    <div className="bg-white p-6 rounded-lg shadow-sm border">
+                      <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <FormField
                         control={form.control}
                         name="firstName"
