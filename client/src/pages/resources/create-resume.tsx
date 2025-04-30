@@ -224,22 +224,43 @@ export default function CreateResumePage() {
   };
 
   // Handle form submission
-  const onSubmit = (values: z.infer<typeof resumeFormSchema>) => {
-    console.log("Form submitted successfully!", values);
-    
-    // Set state to indicate resume is generated and switch to preview tab
-    setResumeGenerated(true);
-    
-    // Use setTimeout to ensure state changes before tab change
-    setTimeout(() => {
-      setActiveTab("preview");
+  const handleCreatePreview = async () => {
+    try {
+      // Manual validation
+      const isValid = await form.trigger();
+      
+      if (isValid) {
+        console.log("Form is valid! Proceeding to preview...");
+        
+        // Set state to indicate resume is generated
+        setResumeGenerated(true);
+        
+        // Change tab to preview
+        setActiveTab("preview");
+        
+        toast({
+          title: "Resume Created",
+          description: "Your resume details have been saved. You can now preview your resume.",
+          variant: "default",
+        });
+      } else {
+        console.error("Form validation failed");
+        
+        toast({
+          title: "Form has errors",
+          description: "Please fix all highlighted errors before continuing.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error during form validation:", error);
       
       toast({
-        title: "Resume Created",
-        description: "Your resume details have been submitted. You can now preview your resume.",
-        variant: "default",
+        title: "Something went wrong",
+        description: "There was an error processing your form. Please try again.",
+        variant: "destructive",
       });
-    }, 100);
+    }
   };
 
   // Handle generating the final resume
@@ -812,19 +833,7 @@ export default function CreateResumePage() {
                     <Button 
                       type="button" 
                       className="min-w-[200px] bg-[#5372f1] hover:bg-[#4060e0] text-lg py-6 px-8"
-                      onClick={async () => {
-                        const isValid = await form.trigger();
-                        if (isValid) {
-                          const values = form.getValues();
-                          onSubmit(values);
-                        } else {
-                          toast({
-                            title: "Form has errors",
-                            description: "Please fix the errors before continuing.",
-                            variant: "destructive",
-                          });
-                        }
-                      }}
+                      onClick={handleCreatePreview}
                     >
                       Create Resume Preview
                     </Button>
