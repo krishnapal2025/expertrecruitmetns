@@ -47,14 +47,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate PDF
       const pdfBuffer = await generateResumePDF(resumeData);
       
-      // Set headers for PDF download
+      // Clean filenames to avoid security issues
+      const safeFirstName = resumeData.personalInfo.firstName.replace(/[^a-zA-Z0-9]/g, '_');
+      const safeLastName = resumeData.personalInfo.lastName.replace(/[^a-zA-Z0-9]/g, '_');
+      
+      // Set comprehensive security headers for PDF download
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 
-        `attachment; filename="Resume_${resumeData.personalInfo.firstName}_${resumeData.personalInfo.lastName}.pdf"`);
+      res.setHeader('Content-Length', pdfBuffer.length);
+      res.setHeader('Content-Disposition', `attachment; filename="Resume_${safeFirstName}_${safeLastName}.pdf"`);
       res.setHeader('Content-Security-Policy', "default-src 'none'");
       res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('X-Frame-Options', 'DENY');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      res.setHeader('Pragma', 'no-cache');
       
-      // Send the PDF buffer
+      // Send the PDF buffer as stream to avoid memory issues
       bufferToStream(pdfBuffer).pipe(res);
     } catch (error) {
       console.error('Error generating PDF:', error);
