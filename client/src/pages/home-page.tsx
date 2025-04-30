@@ -1,7 +1,6 @@
 import { Helmet } from "react-helmet";
 import Welcome from "@/components/home/welcome";
 import HiringTrends from "@/components/home/hiring-trends";
-import FeaturedCategories from "@/components/home/featured-categories";
 import AnimatedTestimonials from "@/components/home/animated-testimonials";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -401,7 +400,6 @@ export default function HomePage() {
         </div>
       </section>
       
-      <FeaturedCategories />
       
       <AnimatedTestimonials />
       
