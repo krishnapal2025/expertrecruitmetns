@@ -333,7 +333,7 @@ export default function HomePage() {
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.1 }}
+              transition={{ duration: 0.7 }}
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-teal-500 to-green-500 rounded-3xl blur-xl opacity-25 group-hover:opacity-40 transition duration-500"></div>
               <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500">
