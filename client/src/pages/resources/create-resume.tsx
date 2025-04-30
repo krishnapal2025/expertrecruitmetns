@@ -225,41 +225,28 @@ export default function CreateResumePage() {
   }, [form]);
 
   // Handle form submission for preview
-  const handleCreatePreview = async () => {
+  const handleCreatePreview = async (data: any) => {
     try {
-      // Manual validation
-      const isValid = await form.trigger();
+      console.log("Form is valid! Proceeding to preview...");
       
-      if (isValid) {
-        console.log("Form is valid! Proceeding to preview...");
-        
-        // Save the form data to local storage to prevent data loss
-        localStorage.setItem('resumeFormData', JSON.stringify(form.getValues()));
-        
-        // Set state to indicate resume is generated
-        setResumeGenerated(true);
-        
-        // Change tab to preview - use the timeout to ensure state update completes
-        setTimeout(() => {
-          setActiveTab("preview");
-        }, 100);
-        
-        toast({
-          title: "Resume Preview Created",
-          description: "Your resume details have been saved. You can now preview your resume.",
-          variant: "default",
-        });
-      } else {
-        console.error("Form validation failed");
-        
-        toast({
-          title: "Form has errors",
-          description: "Please fix all highlighted errors before continuing.",
-          variant: "destructive",
-        });
-      }
+      // Save the form data to local storage to prevent data loss
+      localStorage.setItem('resumeFormData', JSON.stringify(data));
+      
+      // Set state to indicate resume is generated
+      setResumeGenerated(true);
+      
+      // This is important: we need to wait for the next render cycle before changing tabs
+      setTimeout(() => {
+        setActiveTab("preview");
+      }, 200);
+      
+      toast({
+        title: "Resume Preview Created",
+        description: "Your resume details have been saved. You can now preview your resume.",
+        variant: "default",
+      });
     } catch (error) {
-      console.error("Error during form validation:", error);
+      console.error("Error during form submission:", error);
       
       toast({
         title: "Something went wrong",
@@ -469,7 +456,7 @@ export default function CreateResumePage() {
             </TabsList>
             
             <TabsContent value="details">
-              <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleCreatePreview)} className="space-y-8">
                 <div className="space-y-8">
                   <div className="bg-white p-6 rounded-lg shadow-sm border">
                     <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
@@ -926,15 +913,14 @@ export default function CreateResumePage() {
                       )}
                     </Button>
                     <Button 
-                      type="button"
-                      onClick={handleCreatePreview}
+                      type="submit"
                       className="bg-[#5372f1] hover:bg-[#4060e0]"
                     >
                       Create Resume Preview
                     </Button>
                   </div>
                 </div>
-              </Form>
+              </form>
             </TabsContent>
             
             <TabsContent value="preview">
