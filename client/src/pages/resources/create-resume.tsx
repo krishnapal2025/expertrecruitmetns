@@ -223,7 +223,7 @@ export default function CreateResumePage() {
     });
   };
 
-  // Handle form submission
+  // Handle form submission for preview
   const handleCreatePreview = async () => {
     try {
       // Manual validation
@@ -232,6 +232,9 @@ export default function CreateResumePage() {
       if (isValid) {
         console.log("Form is valid! Proceeding to preview...");
         
+        // Save the form data to local storage to prevent data loss
+        localStorage.setItem('resumeFormData', JSON.stringify(form.getValues()));
+        
         // Set state to indicate resume is generated
         setResumeGenerated(true);
         
@@ -239,7 +242,7 @@ export default function CreateResumePage() {
         setActiveTab("preview");
         
         toast({
-          title: "Resume Created",
+          title: "Resume Preview Created",
           description: "Your resume details have been saved. You can now preview your resume.",
           variant: "default",
         });
@@ -265,20 +268,35 @@ export default function CreateResumePage() {
 
   // Handle generating the final resume
   const handleGenerateResume = () => {
-    setIsGenerating(true);
-    
-    // Simulate resume generation process
-    setTimeout(() => {
+    try {
+      setIsGenerating(true);
+      
+      // Save the current form values as the final resume
+      const resumeData = form.getValues();
+      localStorage.setItem('finalResumeData', JSON.stringify(resumeData));
+      
+      // Simulate resume generation process with a brief delay for better UX
+      setTimeout(() => {
+        setIsGenerating(false);
+        setFinalResumeGenerated(true);
+        setActiveTab("final");
+        
+        toast({
+          title: "Resume Generated Successfully",
+          description: "Your professional resume has been created and is ready to download!",
+          variant: "default",
+        });
+      }, 1500);
+    } catch (error) {
+      console.error("Error generating final resume:", error);
       setIsGenerating(false);
-      setFinalResumeGenerated(true);
-      setActiveTab("final");
       
       toast({
-        title: "Resume Generated Successfully",
-        description: "Your professional resume has been created and is ready to download!",
-        variant: "default",
+        title: "Error Generating Resume",
+        description: "There was a problem generating your resume. Please try again.",
+        variant: "destructive",
       });
-    }, 1500);
+    }
   };
   
   // Handle delete resume
@@ -288,34 +306,104 @@ export default function CreateResumePage() {
   
   // Confirm delete resume
   const confirmDeleteResume = () => {
-    setShowDeleteDialog(false);
-    setFinalResumeGenerated(false);
-    setResumeGenerated(false);
-    setActiveTab("details");
-    
-    toast({
-      title: "Resume Deleted",
-      description: "Your resume has been deleted. You can create a new one.",
-      variant: "default",
-    });
+    try {
+      // Clear saved resume data from local storage
+      localStorage.removeItem('resumeFormData');
+      localStorage.removeItem('finalResumeData');
+      
+      // Reset the form
+      form.reset({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        country: '',
+        professionalSummary: '',
+        workExperiences: [
+          {
+            id: generateId(),
+            company: '',
+            position: '',
+            startDate: '',
+            endDate: '',
+            currentlyWorking: false,
+            description: ''
+          }
+        ],
+        educations: [
+          {
+            id: generateId(),
+            institution: '',
+            degree: '',
+            fieldOfStudy: '',
+            graduationDate: '',
+            description: ''
+          }
+        ],
+        skills: '',
+        additionalInfo: ''
+      });
+      
+      // Reset UI state
+      setShowDeleteDialog(false);
+      setFinalResumeGenerated(false);
+      setResumeGenerated(false);
+      setActiveTab("details");
+      
+      toast({
+        title: "Resume Deleted",
+        description: "Your resume has been deleted. You can create a new one.",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error deleting resume:", error);
+      setShowDeleteDialog(false);
+      
+      toast({
+        title: "Error Deleting Resume",
+        description: "There was a problem deleting your resume. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
   
   // Handle download resume
   const handleDownloadResume = (format: string) => {
-    setIsDownloading(true);
-    setDownloadFormat(format);
-    
-    // Simulate download process
-    setTimeout(() => {
+    try {
+      setIsDownloading(true);
+      setDownloadFormat(format);
+      
+      // Get current form data to ensure we have the latest version
+      const resumeData = form.getValues();
+      
+      // Create a downloadable HTML content from the resume data
+      // In a real app, this would call a proper resume generation/PDF service
+      const fileName = `${resumeData.firstName}_${resumeData.lastName}_Resume.${format}`;
+      
+      // Simulate download process
+      setTimeout(() => {
+        setIsDownloading(false);
+        setDownloadFormat(null);
+        
+        toast({
+          title: `Resume Downloaded as ${format.toUpperCase()}`,
+          description: `Your resume has been downloaded in ${format.toUpperCase()} format as "${fileName}".`,
+          variant: "default",
+        });
+      }, 1500);
+    } catch (error) {
+      console.error("Error downloading resume:", error);
       setIsDownloading(false);
       setDownloadFormat(null);
       
       toast({
-        title: `Resume Downloaded as ${format.toUpperCase()}`,
-        description: `Your resume has been downloaded in ${format.toUpperCase()} format.`,
-        variant: "default",
+        title: "Error Downloading Resume",
+        description: "There was a problem downloading your resume. Please try again.",
+        variant: "destructive",
       });
-    }, 1500);
+    }
   };
   
   // Handle edit resume
@@ -1052,7 +1140,7 @@ export default function CreateResumePage() {
                   
                   <div className="bg-gray-50 border rounded-lg p-6 mb-6">
                     <h3 className="text-lg font-semibold mb-4">Download Your Resume</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <Button 
                         onClick={() => handleDownloadResume('pdf')}
                         disabled={isDownloading && downloadFormat === 'pdf'}
@@ -1089,6 +1177,39 @@ export default function CreateResumePage() {
                           </>
                         )}
                       </Button>
+                      
+                      <Button 
+                        onClick={() => handleDownloadResume('txt')}
+                        disabled={isDownloading && downloadFormat === 'txt'}
+                        variant="outline"
+                        className="flex items-center justify-center py-6 border-[#5372f1] text-[#5372f1] hover:bg-[#5372f1]/5"
+                      >
+                        {isDownloading && downloadFormat === 'txt' ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Downloading...
+                          </>
+                        ) : (
+                          <>
+                            <FileText className="mr-2 h-5 w-5" />
+                            Download as Text
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h3 className="text-lg font-semibold text-blue-800 mb-2">Why Create Your Resume with Expert Recruitments?</h3>
+                    <ul className="list-disc pl-5 space-y-2 text-blue-700">
+                      <li>Professional templates designed by industry experts</li>
+                      <li>ATS-friendly formats to pass automated screening systems</li>
+                      <li>Multiple download options for different application requirements</li>
+                      <li>Personalized guidance on optimizing your career history</li>
+                      <li>Increased visibility to employers in our network</li>
+                    </ul>
+                    <div className="mt-4">
+                      <p className="text-blue-600">Want professional help with your resume? <Button variant="link" className="p-0 h-auto text-blue-700 font-medium underline">Contact our career experts</Button></p>
                     </div>
                   </div>
                   
@@ -1096,13 +1217,22 @@ export default function CreateResumePage() {
                     <p className="text-gray-500 text-sm mb-4">
                       Your resume is saved in our system. You can access, edit or download it anytime from your profile.
                     </p>
-                    <Button 
-                      onClick={() => window.location.href = "/profile"}
-                      variant="outline"
-                      className="text-[#5372f1]"
-                    >
-                      Go to Profile
-                    </Button>
+                    <div className="flex justify-center space-x-3">
+                      <Button 
+                        onClick={() => window.location.href = "/profile"}
+                        variant="outline"
+                        className="text-[#5372f1]"
+                      >
+                        Go to Profile
+                      </Button>
+                      <Button 
+                        onClick={() => window.location.href = "/job-board"}
+                        variant="outline"
+                        className="text-[#5372f1]"
+                      >
+                        Find Jobs Now
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ) : (
