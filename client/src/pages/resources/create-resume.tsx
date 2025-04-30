@@ -1,102 +1,85 @@
-import { useState, useRef } from "react";
-import { Helmet } from "react-helmet";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Separator } from "@/components/ui/separator";
+import { Helmet } from "react-helmet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { 
-  FileText, Upload, Download, Copy, Printer, Edit, Trash2, 
-  File, Loader2, ChevronLeft, ChevronRight, Save
-} from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
-import { 
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, 
-  DialogTitle, DialogTrigger 
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useState, useRef } from "react";
+import { ChevronLeft, ChevronRight, Copy, Download, Edit, File, FileText, Loader2, Printer, Trash2 } from "lucide-react";
 
-// Define work experience schema
-const workExperienceSchema = z.object({
-  id: z.string(),
-  company: z.string().min(1, "Company name is required"),
-  position: z.string().min(1, "Position is required"),
-  startDate: z.string().min(1, "Start date is required"),
-  endDate: z.string().optional(),
-  currentlyWorking: z.boolean().default(false),
-  description: z.string().min(1, "Job description is required"),
-});
-
-// Define education schema
-const educationSchema = z.object({
-  id: z.string(),
-  institution: z.string().min(1, "Institution name is required"),
-  degree: z.string().min(1, "Degree is required"), 
-  fieldOfStudy: z.string().min(1, "Field of study is required"),
-  graduationDate: z.string().min(1, "Graduation date is required"),
-  description: z.string().optional(),
-});
-
-// Define form schema using Zod
+// Resume form schema
 const resumeFormSchema = z.object({
-  // Personal Information
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(1, "Phone number is required"), // Any phone format is accepted
-  address: z.string().optional().or(z.string()), // Make address optional or any string
-  city: z.string().optional().or(z.string()), // Make city optional or any string
-  country: z.string().optional().or(z.string()), // Make country optional or any string
-  
-  // Professional Summary
-  professionalSummary: z.string().min(10, "Professional summary should be at least 10 characters"),
-  
-  // Work Experience
-  workExperiences: z.array(workExperienceSchema).min(1, "At least one work experience is required"),
-  
-  // Education
-  educations: z.array(educationSchema).min(1, "At least one education entry is required"),
-  
-  // Skills
-  skills: z.string().min(1, "Skills are required"),
-  
-  // Additional Information (optional)
-  additionalInfo: z.string().optional(),
+  firstName: z.string().min(1, { message: "First name is required" }),
+  lastName: z.string().min(1, { message: "Last name is required" }),
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  phone: z.string().min(1, { message: "Phone number is required" }),
+  address: z.string(),
+  city: z.string(),
+  country: z.string(),
+  professionalSummary: z.string().min(50, { 
+    message: "Please provide a professional summary of at least 50 characters" 
+  }),
+  workExperiences: z.array(
+    z.object({
+      id: z.string(),
+      company: z.string().min(1, { message: "Company name is required" }),
+      position: z.string().min(1, { message: "Position is required" }),
+      startDate: z.string().min(1, { message: "Start date is required" }),
+      endDate: z.string().optional(),
+      currentlyWorking: z.boolean().default(false),
+      description: z.string().min(20, { 
+        message: "Please provide a description of at least 20 characters" 
+      })
+    })
+  ),
+  educations: z.array(
+    z.object({
+      id: z.string(),
+      institution: z.string().min(1, { message: "Institution name is required" }),
+      degree: z.string().min(1, { message: "Degree is required" }),
+      fieldOfStudy: z.string().min(1, { message: "Field of study is required" }),
+      graduationDate: z.string().min(1, { message: "Graduation date is required" }),
+      description: z.string().optional()
+    })
+  ),
+  skills: z.string().min(5, { message: "Please list your skills" }),
+  additionalInfo: z.string().optional()
 });
 
-// Template styles for resume
-const templates = [
+// Template options
+const resumeTemplates = [
   {
     id: "professional",
     name: "Professional",
-    description: "Clean and professional design suitable for corporate environments",
+    description: "A clean, modern design for corporate roles",
     image: "https://via.placeholder.com/150x200?text=Professional",
   },
   {
     id: "creative",
     name: "Creative",
-    description: "Modern design with creative elements for design and marketing roles",
+    description: "A unique layout perfect for design and creative roles",
     image: "https://via.placeholder.com/150x200?text=Creative",
   },
   {
-    id: "academic",
-    name: "Academic",
-    description: "Formal layout ideal for academic and research positions",
-    image: "https://via.placeholder.com/150x200?text=Academic",
+    id: "executive",
+    name: "Executive",
+    description: "A sophisticated layout for senior management positions",
+    image: "https://via.placeholder.com/150x200?text=Executive",
+  },
+  {
+    id: "simple",
+    name: "Simple",
+    description: "A minimalist design for any role",
+    image: "https://via.placeholder.com/150x200?text=Simple",
   },
   {
     id: "technical",
@@ -446,24 +429,42 @@ export default function CreateResumePage() {
 
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row items-start gap-6 mb-8">
-            <div className="md:flex-1">
-              <h1 className="text-4xl font-bold mb-2 text-[#5372f1]">Create Your Resume</h1>
-              <p className="text-lg text-gray-600 mb-4">Build a professional resume with our easy-to-use template builder to help you stand out to recruiters.</p>
-            </div>
-            <div className="w-full md:w-auto flex space-x-2">
-              {resumeGenerated && (
-                <>
-                  <Button variant="outline" className="flex items-center space-x-2">
-                    <Download className="h-4 w-4" />
-                    <span>Download</span>
-                  </Button>
-                  <Button variant="outline" className="flex items-center space-x-2">
-                    <Printer className="h-4 w-4" />
-                    <span>Print</span>
-                  </Button>
-                </>
-              )}
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl font-bold mb-2">Create Your Professional Resume</h1>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Stand out from the crowd with a professionally designed resume that highlights your skills and experience. 
+              Our resume builder makes it easy to create, edit, and download your resume in minutes.
+            </p>
+          </div>
+
+          <div className="mb-10">
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <h2 className="text-xl font-semibold mb-4">Choose a Resume Template</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                {resumeTemplates.map((template) => (
+                  <div
+                    key={template.id}
+                    className={`cursor-pointer border rounded-md overflow-hidden transition-all ${
+                      selectedTemplate === template.id
+                        ? "ring-2 ring-[#5372f1] border-[#5372f1]"
+                        : "hover:border-gray-400"
+                    }`}
+                    onClick={() => setSelectedTemplate(template.id)}
+                  >
+                    <div className="aspect-[3/4] bg-gray-100 flex items-center justify-center">
+                      <img
+                        src={template.image}
+                        alt={template.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="p-3">
+                      <h3 className="font-semibold text-sm mb-1">{template.name}</h3>
+                      <p className="text-xs text-gray-500 line-clamp-2">{template.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -731,24 +732,21 @@ export default function CreateResumePage() {
                             <FormItem>
                               <FormLabel>Job Description</FormLabel>
                               <FormControl>
-                                <Textarea
-                                  placeholder="Describe your responsibilities, accomplishments, and skills..."
+                                <Textarea 
+                                  placeholder="Describe your responsibilities and achievements..."
                                   className="min-h-[100px]"
                                   {...field}
                                 />
                               </FormControl>
+                              <FormDescription>
+                                Use bullet points and numbers to highlight achievements. Focus on results, not just tasks.
+                              </FormDescription>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
                       </div>
                     ))}
-                    
-                    {workFields.length === 0 && (
-                      <div className="p-8 text-center text-gray-500 border border-dashed rounded-md">
-                        No work experience added. Click "Add More" to add your work history.
-                      </div>
-                    )}
                   </div>
                   
                   <div className="bg-white p-6 rounded-lg shadow-sm border">
@@ -807,7 +805,7 @@ export default function CreateResumePage() {
                               <FormItem>
                                 <FormLabel>Degree</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Bachelor's, Master's, etc." {...field} />
+                                  <Input placeholder="e.g. Bachelor of Science" {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -823,7 +821,7 @@ export default function CreateResumePage() {
                               <FormItem>
                                 <FormLabel>Field of Study</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Computer Science, Business, etc." {...field} />
+                                  <Input placeholder="e.g. Computer Science" {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -835,9 +833,9 @@ export default function CreateResumePage() {
                             name={`educations.${index}.graduationDate`}
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Graduation Date</FormLabel>
+                                <FormLabel>Graduation Year</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="2020" {...field} />
+                                  <Input placeholder="e.g. 2020" {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -850,11 +848,11 @@ export default function CreateResumePage() {
                           name={`educations.${index}.description`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Description (Optional)</FormLabel>
+                              <FormLabel>Additional Details (Optional)</FormLabel>
                               <FormControl>
-                                <Textarea
-                                  placeholder="Courses, honors, achievements, etc."
-                                  className="min-h-[80px]"
+                                <Textarea 
+                                  placeholder="Honors, relevant coursework, thesis, etc."
+                                  className="min-h-[100px]"
                                   {...field}
                                 />
                               </FormControl>
@@ -864,31 +862,49 @@ export default function CreateResumePage() {
                         />
                       </div>
                     ))}
-                    
-                    {educationFields.length === 0 && (
-                      <div className="p-8 text-center text-gray-500 border border-dashed rounded-md">
-                        No education added. Click "Add More" to add your education history.
-                      </div>
-                    )}
                   </div>
                   
                   <div className="bg-white p-6 rounded-lg shadow-sm border">
-                    <h3 className="text-xl font-semibold mb-4">Skills</h3>
+                    <h3 className="text-xl font-semibold mb-4">Skills & Additional Information</h3>
+                    
+                    <div className="mb-6">
+                      <FormField
+                        control={form.control}
+                        name="skills"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Skills</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="List your technical and soft skills, separated by commas..."
+                                className="min-h-[100px]"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              Include both technical skills and soft skills relevant to your target role.
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
                     <FormField
                       control={form.control}
-                      name="skills"
+                      name="additionalInfo"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Skills</FormLabel>
+                          <FormLabel>Additional Information (Optional)</FormLabel>
                           <FormControl>
                             <Textarea 
-                              placeholder="List your technical and soft skills..." 
+                              placeholder="Certifications, awards, languages, volunteer work, etc."
                               className="min-h-[100px]"
-                              {...field} 
+                              {...field}
                             />
                           </FormControl>
                           <FormDescription>
-                            Separate skills with commas (e.g., Project Management, Microsoft Office, Team Leadership)
+                            Use this section to include any other information that might be relevant to your application.
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
@@ -896,32 +912,11 @@ export default function CreateResumePage() {
                     />
                   </div>
                   
-                  <div className="bg-white p-6 rounded-lg shadow-sm border">
-                    <h3 className="text-xl font-semibold mb-4">Additional Information (Optional)</h3>
-                    <FormField
-                      control={form.control}
-                      name="additionalInfo"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Additional Details</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              placeholder="Include any additional information such as certifications, languages, volunteer work, etc..." 
-                              className="min-h-[100px]"
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  
-                  <div className="flex justify-end mt-8">
+                  <div className="flex justify-end">
                     <Button 
-                      type="button" 
-                      className="min-w-[200px] bg-[#5372f1] hover:bg-[#4060e0] text-lg py-6 px-8"
+                      type="button"
                       onClick={handleCreatePreview}
+                      className="bg-[#5372f1] hover:bg-[#4060e0]"
                     >
                       Create Resume Preview
                     </Button>
@@ -1047,184 +1042,184 @@ export default function CreateResumePage() {
               <div className="bg-white p-6 rounded-lg shadow-md border">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-semibold text-[#5372f1]">Your Completed Resume</h2>
-                    <div className="flex space-x-3">
-                      <Button 
-                        onClick={handleEditResume}
-                        variant="outline" 
-                        className="flex items-center space-x-2"
-                      >
-                        <Edit className="h-4 w-4" />
-                        <span>Edit</span>
-                      </Button>
-                      <Button 
-                        onClick={handleDeleteResume}
-                        variant="outline" 
-                        className="flex items-center space-x-2 border-red-200 hover:bg-red-50 hover:text-red-600"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        <span>Delete</span>
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div className="border rounded-md p-8 max-w-4xl mx-auto bg-white shadow-sm mb-8" ref={resumeRef}>
-                    <div className={`resume-template`}>
-                      <div className="text-center mb-6">
-                        <h1 className="text-3xl font-bold text-[#5372f1] mb-1">{form.getValues().firstName} {form.getValues().lastName}</h1>
-                        <p className="text-gray-600">{form.getValues().address}, {form.getValues().city}, {form.getValues().country}</p>
-                        <p className="text-gray-600">{form.getValues().email} | {form.getValues().phone}</p>
-                      </div>
-                      
-                      <Separator className="my-6" />
-                      
-                      <div className="mb-6">
-                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Professional Summary</h2>
-                        <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().professionalSummary}</p>
-                      </div>
-                      
-                      <div className="mb-6">
-                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Work Experience</h2>
-                        {form.getValues().workExperiences.map((exp, index) => (
-                          <div key={exp.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
-                            <div className="flex justify-between mb-1">
-                              <h3 className="font-semibold text-lg">{exp.position}</h3>
-                              <span className="text-gray-600 text-sm">
-                                {exp.startDate} - {exp.currentlyWorking ? 'Present' : exp.endDate}
-                              </span>
-                            </div>
-                            <div className="text-gray-700 mb-2">{exp.company}</div>
-                            <p className="text-gray-600 whitespace-pre-wrap">{exp.description}</p>
-                          </div>
-                        ))}
-                      </div>
-                      
-                      <div className="mb-6">
-                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Education</h2>
-                        {form.getValues().educations.map((edu, index) => (
-                          <div key={edu.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
-                            <div className="flex justify-between mb-1">
-                              <h3 className="font-semibold text-lg">{edu.degree} in {edu.fieldOfStudy}</h3>
-                              <span className="text-gray-600 text-sm">{edu.graduationDate}</span>
-                            </div>
-                            <div className="text-gray-700 mb-2">{edu.institution}</div>
-                            {edu.description && (
-                              <p className="text-gray-600 whitespace-pre-wrap">{edu.description}</p>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      
-                      <div className="mb-6">
-                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Skills</h2>
-                        <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().skills}</p>
-                      </div>
-                      
-                      {form.getValues().additionalInfo && (
-                        <div className="mb-6">
-                          <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Additional Information</h2>
-                          <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().additionalInfo}</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-50 border rounded-lg p-6 mb-6">
-                    <h3 className="text-lg font-semibold mb-4">Download Your Resume</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <Button 
-                        onClick={() => handleDownloadResume('pdf')}
-                        disabled={isDownloading && downloadFormat === 'pdf'}
-                        className="flex items-center justify-center py-6 bg-[#5372f1] hover:bg-[#4060e0]"
-                      >
-                        {isDownloading && downloadFormat === 'pdf' ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Downloading...
-                          </>
-                        ) : (
-                          <>
-                            <File className="mr-2 h-5 w-5" />
-                            Download as PDF
-                          </>
-                        )}
-                      </Button>
-                      
-                      <Button 
-                        onClick={() => handleDownloadResume('docx')}
-                        disabled={isDownloading && downloadFormat === 'docx'}
-                        variant="outline"
-                        className="flex items-center justify-center py-6 border-[#5372f1] text-[#5372f1] hover:bg-[#5372f1]/5"
-                      >
-                        {isDownloading && downloadFormat === 'docx' ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Downloading...
-                          </>
-                        ) : (
-                          <>
-                            <FileText className="mr-2 h-5 w-5" />
-                            Download as Word
-                          </>
-                        )}
-                      </Button>
-                      
-                      <Button 
-                        onClick={() => handleDownloadResume('txt')}
-                        disabled={isDownloading && downloadFormat === 'txt'}
-                        variant="outline"
-                        className="flex items-center justify-center py-6 border-[#5372f1] text-[#5372f1] hover:bg-[#5372f1]/5"
-                      >
-                        {isDownloading && downloadFormat === 'txt' ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Downloading...
-                          </>
-                        ) : (
-                          <>
-                            <FileText className="mr-2 h-5 w-5" />
-                            Download as Text
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-lg">
-                    <h3 className="text-lg font-semibold text-blue-800 mb-2">Why Create Your Resume with Expert Recruitments?</h3>
-                    <ul className="list-disc pl-5 space-y-2 text-blue-700">
-                      <li>Professional templates designed by industry experts</li>
-                      <li>ATS-friendly formats to pass automated screening systems</li>
-                      <li>Multiple download options for different application requirements</li>
-                      <li>Personalized guidance on optimizing your career history</li>
-                      <li>Increased visibility to employers in our network</li>
-                    </ul>
-                    <div className="mt-4">
-                      <p className="text-blue-600">Want professional help with your resume? <Button variant="link" className="p-0 h-auto text-blue-700 font-medium underline">Contact our career experts</Button></p>
-                    </div>
-                  </div>
-                  
-                  <div className="text-center">
-                    <p className="text-gray-500 text-sm mb-4">
-                      Your resume is saved in our system. You can access, edit or download it anytime from your profile.
-                    </p>
-                    <div className="flex justify-center space-x-3">
-                      <Button 
-                        onClick={() => window.location.href = "/profile"}
-                        variant="outline"
-                        className="text-[#5372f1]"
-                      >
-                        Go to Profile
-                      </Button>
-                      <Button 
-                        onClick={() => window.location.href = "/job-board"}
-                        variant="outline"
-                        className="text-[#5372f1]"
-                      >
-                        Find Jobs Now
-                      </Button>
-                    </div>
+                  <div className="flex space-x-3">
+                    <Button 
+                      onClick={handleEditResume}
+                      variant="outline" 
+                      className="flex items-center space-x-2"
+                    >
+                      <Edit className="h-4 w-4" />
+                      <span>Edit</span>
+                    </Button>
+                    <Button 
+                      onClick={handleDeleteResume}
+                      variant="outline" 
+                      className="flex items-center space-x-2 border-red-200 hover:bg-red-50 hover:text-red-600"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span>Delete</span>
+                    </Button>
                   </div>
                 </div>
+                
+                <div className="border rounded-md p-8 max-w-4xl mx-auto bg-white shadow-sm mb-8" ref={resumeRef}>
+                  <div className={`resume-template`}>
+                    <div className="text-center mb-6">
+                      <h1 className="text-3xl font-bold text-[#5372f1] mb-1">{form.getValues().firstName} {form.getValues().lastName}</h1>
+                      <p className="text-gray-600">{form.getValues().address}, {form.getValues().city}, {form.getValues().country}</p>
+                      <p className="text-gray-600">{form.getValues().email} | {form.getValues().phone}</p>
+                    </div>
+                    
+                    <Separator className="my-6" />
+                    
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Professional Summary</h2>
+                      <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().professionalSummary}</p>
+                    </div>
+                    
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Work Experience</h2>
+                      {form.getValues().workExperiences.map((exp, index) => (
+                        <div key={exp.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
+                          <div className="flex justify-between mb-1">
+                            <h3 className="font-semibold text-lg">{exp.position}</h3>
+                            <span className="text-gray-600 text-sm">
+                              {exp.startDate} - {exp.currentlyWorking ? 'Present' : exp.endDate}
+                            </span>
+                          </div>
+                          <div className="text-gray-700 mb-2">{exp.company}</div>
+                          <p className="text-gray-600 whitespace-pre-wrap">{exp.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Education</h2>
+                      {form.getValues().educations.map((edu, index) => (
+                        <div key={edu.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
+                          <div className="flex justify-between mb-1">
+                            <h3 className="font-semibold text-lg">{edu.degree} in {edu.fieldOfStudy}</h3>
+                            <span className="text-gray-600 text-sm">{edu.graduationDate}</span>
+                          </div>
+                          <div className="text-gray-700 mb-2">{edu.institution}</div>
+                          {edu.description && (
+                            <p className="text-gray-600 whitespace-pre-wrap">{edu.description}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Skills</h2>
+                      <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().skills}</p>
+                    </div>
+                    
+                    {form.getValues().additionalInfo && (
+                      <div className="mb-6">
+                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Additional Information</h2>
+                        <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().additionalInfo}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 border rounded-lg p-6 mb-6">
+                  <h3 className="text-lg font-semibold mb-4">Download Your Resume</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Button 
+                      onClick={() => handleDownloadResume('pdf')}
+                      disabled={isDownloading && downloadFormat === 'pdf'}
+                      className="flex items-center justify-center py-6 bg-[#5372f1] hover:bg-[#4060e0]"
+                    >
+                      {isDownloading && downloadFormat === 'pdf' ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Downloading...
+                        </>
+                      ) : (
+                        <>
+                          <File className="mr-2 h-5 w-5" />
+                          Download as PDF
+                        </>
+                      )}
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => handleDownloadResume('docx')}
+                      disabled={isDownloading && downloadFormat === 'docx'}
+                      variant="outline"
+                      className="flex items-center justify-center py-6 border-[#5372f1] text-[#5372f1] hover:bg-[#5372f1]/5"
+                    >
+                      {isDownloading && downloadFormat === 'docx' ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Downloading...
+                        </>
+                      ) : (
+                        <>
+                          <FileText className="mr-2 h-5 w-5" />
+                          Download as Word
+                        </>
+                      )}
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => handleDownloadResume('txt')}
+                      disabled={isDownloading && downloadFormat === 'txt'}
+                      variant="outline"
+                      className="flex items-center justify-center py-6 border-[#5372f1] text-[#5372f1] hover:bg-[#5372f1]/5"
+                    >
+                      {isDownloading && downloadFormat === 'txt' ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Downloading...
+                        </>
+                      ) : (
+                        <>
+                          <FileText className="mr-2 h-5 w-5" />
+                          Download as Text
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h3 className="text-lg font-semibold text-blue-800 mb-2">Why Create Your Resume with Expert Recruitments?</h3>
+                  <ul className="list-disc pl-5 space-y-2 text-blue-700">
+                    <li>Professional templates designed by industry experts</li>
+                    <li>ATS-friendly formats to pass automated screening systems</li>
+                    <li>Multiple download options for different application requirements</li>
+                    <li>Personalized guidance on optimizing your career history</li>
+                    <li>Increased visibility to employers in our network</li>
+                  </ul>
+                  <div className="mt-4">
+                    <p className="text-blue-600">Want professional help with your resume? <Button variant="link" className="p-0 h-auto text-blue-700 font-medium underline">Contact our career experts</Button></p>
+                  </div>
+                </div>
+                
+                <div className="text-center">
+                  <p className="text-gray-500 text-sm mb-4">
+                    Your resume is saved in our system. You can access, edit or download it anytime from your profile.
+                  </p>
+                  <div className="flex justify-center space-x-3">
+                    <Button 
+                      onClick={() => window.location.href = "/profile"}
+                      variant="outline"
+                      className="text-[#5372f1]"
+                    >
+                      Go to Profile
+                    </Button>
+                    <Button 
+                      onClick={() => window.location.href = "/job-board"}
+                      variant="outline"
+                      className="text-[#5372f1]"
+                    >
+                      Find Jobs Now
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </TabsContent>
             
             {/* Delete Confirmation Dialog */}
