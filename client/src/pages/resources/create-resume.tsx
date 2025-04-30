@@ -225,15 +225,21 @@ export default function CreateResumePage() {
 
   // Handle form submission
   const onSubmit = (values: z.infer<typeof resumeFormSchema>) => {
-    // Go directly to preview
-    setActiveTab("preview");
+    console.log("Form submitted successfully!", values);
+    
+    // Set state to indicate resume is generated and switch to preview tab
     setResumeGenerated(true);
     
-    toast({
-      title: "Form Submitted",
-      description: "Your resume details have been submitted. You can now preview your resume.",
-      variant: "default",
-    });
+    // Use setTimeout to ensure state changes before tab change
+    setTimeout(() => {
+      setActiveTab("preview");
+      
+      toast({
+        title: "Resume Created",
+        description: "Your resume details have been submitted. You can now preview your resume.",
+        variant: "default",
+      });
+    }, 100);
   };
 
   // Handle generating the final resume
@@ -361,10 +367,7 @@ export default function CreateResumePage() {
             
             <TabsContent value="details">
               <Form {...form}>
-                <form onSubmit={(e) => {
-                  e.preventDefault();
-                  form.handleSubmit(onSubmit)(e);
-                }} className="space-y-8">
+                <div className="space-y-8">
                   <div className="bg-white p-6 rounded-lg shadow-sm border">
                     <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -805,19 +808,28 @@ export default function CreateResumePage() {
                     />
                   </div>
                   
-                  <div className="flex justify-end">
+                  <div className="flex justify-end mt-8">
                     <Button 
-                      type="submit" 
+                      type="button" 
                       className="min-w-[200px] bg-[#5372f1] hover:bg-[#4060e0] text-lg py-6 px-8"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        form.handleSubmit(onSubmit)();
+                      onClick={async () => {
+                        const isValid = await form.trigger();
+                        if (isValid) {
+                          const values = form.getValues();
+                          onSubmit(values);
+                        } else {
+                          toast({
+                            title: "Form has errors",
+                            description: "Please fix the errors before continuing.",
+                            variant: "destructive",
+                          });
+                        }
                       }}
                     >
                       Create Resume Preview
                     </Button>
                   </div>
-                </form>
+                </div>
               </Form>
             </TabsContent>
             
