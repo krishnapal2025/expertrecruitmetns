@@ -239,8 +239,10 @@ export default function CreateResumePage() {
         // Set state to indicate resume is generated
         setResumeGenerated(true);
         
-        // Change tab to preview
-        setActiveTab("preview");
+        // Change tab to preview - use the timeout to ensure state update completes
+        setTimeout(() => {
+          setActiveTab("preview");
+        }, 100);
         
         toast({
           title: "Resume Preview Created",
@@ -280,7 +282,11 @@ export default function CreateResumePage() {
       setTimeout(() => {
         setIsGenerating(false);
         setFinalResumeGenerated(true);
-        setActiveTab("final");
+        
+        // Use another setTimeout to ensure state updates properly before tab change
+        setTimeout(() => {
+          setActiveTab("final");
+        }, 100);
         
         toast({
           title: "Resume Generated Successfully",
