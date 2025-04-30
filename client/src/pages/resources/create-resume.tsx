@@ -978,12 +978,34 @@ export default function CreateResumePage() {
                       
                       <div className="mb-6">
                         <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Work Experience</h2>
-                        <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().workExperience}</p>
+                        {form.getValues().workExperiences.map((exp, index) => (
+                          <div key={exp.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
+                            <div className="flex justify-between mb-1">
+                              <h3 className="font-semibold text-lg">{exp.position}</h3>
+                              <span className="text-gray-600 text-sm">
+                                {exp.startDate} - {exp.currentlyWorking ? 'Present' : exp.endDate}
+                              </span>
+                            </div>
+                            <div className="text-gray-700 mb-2">{exp.company}</div>
+                            <p className="text-gray-600 whitespace-pre-wrap">{exp.description}</p>
+                          </div>
+                        ))}
                       </div>
                       
                       <div className="mb-6">
                         <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Education</h2>
-                        <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().education}</p>
+                        {form.getValues().educations.map((edu, index) => (
+                          <div key={edu.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
+                            <div className="flex justify-between mb-1">
+                              <h3 className="font-semibold text-lg">{edu.degree} in {edu.fieldOfStudy}</h3>
+                              <span className="text-gray-600 text-sm">{edu.graduationDate}</span>
+                            </div>
+                            <div className="text-gray-700 mb-2">{edu.institution}</div>
+                            {edu.description && (
+                              <p className="text-gray-600 whitespace-pre-wrap">{edu.description}</p>
+                            )}
+                          </div>
+                        ))}
                       </div>
                       
                       <div className="mb-6">
