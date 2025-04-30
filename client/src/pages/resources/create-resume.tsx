@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -11,9 +11,7 @@ import { z } from "zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
-import { jsPDF } from "jspdf";
-// @ts-ignore
-import 'jspdf-autotable';
+// Server-side PDF generation used instead of client-side
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle, FileText, Plus, Trash2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -63,7 +61,6 @@ type ResumeFormValues = z.infer<typeof resumeFormSchema>;
 
 export default function CreateResumePage() {
   const [activeTab, setActiveTab] = useState("personal");
-  const pdfRef = useRef<HTMLDivElement>(null);
   const [previewData, setPreviewData] = useState<ResumeFormValues | null>(null);
 
   // Default values for the form
@@ -139,202 +136,8 @@ export default function CreateResumePage() {
     }
   };
 
-  // Function to generate PDF from form data with clean metadata
-  const generatePdf = (data: ResumeFormValues) => {
-    // Create PDF document with minimal metadata to avoid antivirus flags
-    const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-      putOnlyUsedFonts: true,
-      compress: true
-    });
-    
-    // Remove potentially problematic metadata
-    doc.setProperties({
-      title: `Resume - ${data.personalInfo.firstName} ${data.personalInfo.lastName}`,
-      subject: 'Professional Resume',
-      creator: 'Expert Recruitments Resume Builder',
-      producer: 'Expert Recruitments LLC',
-      keywords: 'resume,cv,professional',
-    });
-    
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 20;
-    let yPosition = 20;
-    
-    // Using only standard fonts (helvetica) which are embedded in PDF spec
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(18);
-    
-    // Add full name - sanitize inputs to prevent injection
-    const fullName = `${data.personalInfo.firstName} ${data.personalInfo.lastName}`.substring(0, 100);
-    doc.text(fullName, pageWidth / 2, yPosition, { align: "center" });
-    yPosition += 10;
-    
-    // Add contact info
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    
-    const contactInfo = `${data.personalInfo.email} | ${data.personalInfo.phone}`.substring(0, 150);
-    doc.text(contactInfo, pageWidth / 2, yPosition, { align: "center" });
-    yPosition += 6;
-    
-    // Add address if available - sanitize address
-    if (data.personalInfo.address) {
-      let addressParts = [];
-      if (data.personalInfo.address) addressParts.push(data.personalInfo.address);
-      if (data.personalInfo.city) addressParts.push(data.personalInfo.city);
-      if (data.personalInfo.postalCode) addressParts.push(data.personalInfo.postalCode);
-      if (data.personalInfo.country) addressParts.push(data.personalInfo.country);
-      
-      const address = addressParts.join(", ").substring(0, 200);
-      doc.text(address, pageWidth / 2, yPosition, { align: "center" });
-      yPosition += 10;
-    }
-    
-    // Add separator
-    doc.setDrawColor(100, 100, 100);
-    doc.line(margin, yPosition, pageWidth - margin, yPosition);
-    yPosition += 8;
-    
-    // Add summary if available - sanitize summary
-    if (data.personalInfo.summary) {
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(12);
-      doc.text("Professional Summary", margin, yPosition);
-      yPosition += 6;
-      
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-      const sanitizedSummary = data.personalInfo.summary.substring(0, 1000); // Limit length
-      const textLines = doc.splitTextToSize(sanitizedSummary, pageWidth - (margin * 2));
-      doc.text(textLines, margin, yPosition);
-      yPosition += (textLines.length * 5) + 8;
-    }
-    
-    // Add experience section with sanitized inputs
-    if (data.experience.length > 0) {
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(12);
-      doc.text("Work Experience", margin, yPosition);
-      yPosition += 6;
-      
-      data.experience.forEach((exp) => {
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(11);
-        const position = exp.position.substring(0, 150);
-        doc.text(position, margin, yPosition);
-        yPosition += 5;
-        
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        let companyText = exp.company;
-        if (exp.startDate && exp.endDate) {
-          companyText += ` | ${exp.startDate} - ${exp.endDate}`;
-        }
-        doc.text(companyText.substring(0, 150), margin, yPosition);
-        yPosition += 5;
-        
-        if (exp.description) {
-          const sanitizedDesc = exp.description.substring(0, 1000);
-          const descLines = doc.splitTextToSize(sanitizedDesc, pageWidth - (margin * 2));
-          doc.text(descLines, margin, yPosition);
-          yPosition += (descLines.length * 5) + 5;
-        } else {
-          yPosition += 5;
-        }
-      });
-      
-      yPosition += 5;
-    }
-    
-    // Add education section with sanitized inputs
-    if (data.education.length > 0) {
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(12);
-      doc.text("Education", margin, yPosition);
-      yPosition += 6;
-      
-      data.education.forEach((edu) => {
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(11);
-        const degree = edu.degree.substring(0, 150);
-        doc.text(degree, margin, yPosition);
-        yPosition += 5;
-        
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        let institutionText = edu.institution;
-        if (edu.startDate && edu.endDate) {
-          institutionText += ` | ${edu.startDate} - ${edu.endDate}`;
-        }
-        doc.text(institutionText.substring(0, 150), margin, yPosition);
-        yPosition += 5;
-        
-        if (edu.fieldOfStudy) {
-          const fieldText = `Field of Study: ${edu.fieldOfStudy}`.substring(0, 150);
-          doc.text(fieldText, margin, yPosition);
-          yPosition += 5;
-        }
-        
-        if (edu.description) {
-          const sanitizedDesc = edu.description.substring(0, 1000);
-          const descLines = doc.splitTextToSize(sanitizedDesc, pageWidth - (margin * 2));
-          doc.text(descLines, margin, yPosition);
-          yPosition += (descLines.length * 5) + 5;
-        } else {
-          yPosition += 5;
-        }
-      });
-      
-      yPosition += 5;
-    }
-    
-    // Add skills section with sanitized inputs
-    if (data.skills.length > 0) {
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(12);
-      doc.text("Skills", margin, yPosition);
-      yPosition += 6;
-      
-      // Limit the number of skills to prevent bloating
-      const limitedSkills = data.skills.slice(0, 20);
-      const skillsText = limitedSkills
-        .map((skill) => `${skill.name}${skill.level ? ` (${skill.level})` : ""}`)
-        .join(", ")
-        .substring(0, 500);
-      
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-      const skillLines = doc.splitTextToSize(skillsText, pageWidth - (margin * 2));
-      doc.text(skillLines, margin, yPosition);
-    }
-    
-    // Add a footer with creation timestamp (helps avoid identical file hashes)
-    const timestamp = new Date().toISOString().split('T')[0];
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(150, 150, 150);
-    doc.text(`Generated: ${timestamp} | Expert Recruitments LLC`, pageWidth / 2, 285, { align: "center" });
-    
-    // Reset text color
-    doc.setTextColor(0, 0, 0);
-    
-    try {
-      // Generate clean filename with only alphanumeric characters and underscores
-      const cleanFirstName = data.personalInfo.firstName.replace(/[^a-zA-Z0-9]/g, "_");
-      const cleanLastName = data.personalInfo.lastName.replace(/[^a-zA-Z0-9]/g, "_");
-      const safeFilename = `${cleanFirstName}_${cleanLastName}_Resume`;
-      
-      // Save PDF with sanitized filename
-      doc.save(safeFilename + ".pdf");
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-      // Fallback to a generic filename if there's an issue
-      doc.save("Resume.pdf");
-    }
-  };
+  // We've moved PDF generation to the server side to avoid antivirus flags
+  // This comment is kept for reference
 
   if (previewData) {
     return (
@@ -355,12 +158,50 @@ export default function CreateResumePage() {
                 Edit Resume
               </Button>
               <Button 
-                onClick={() => {
-                  generatePdf(previewData);
-                  toast({
-                    title: "Resume Downloaded",
-                    description: "Your resume has been generated and downloaded successfully!",
-                  });
+                onClick={async () => {
+                  try {
+                    // Use server-side PDF generation to avoid antivirus flags
+                    const response = await fetch('/api/generate-resume-pdf', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(previewData),
+                    });
+                    
+                    if (!response.ok) {
+                      throw new Error('Failed to generate PDF');
+                    }
+                    
+                    // Create a blob from the PDF response
+                    const blob = await response.blob();
+                    
+                    // Create a URL for the blob
+                    const url = window.URL.createObjectURL(blob);
+                    
+                    // Create a temporary anchor element and trigger download
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${previewData.personalInfo.firstName}_${previewData.personalInfo.lastName}_Resume.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    // Clean up
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    toast({
+                      title: "Resume Downloaded",
+                      description: "Your resume has been securely generated and downloaded successfully!",
+                    });
+                  } catch (error) {
+                    console.error('Error downloading PDF:', error);
+                    toast({
+                      title: "Download Failed",
+                      description: "There was an error generating your resume. Please try again.",
+                      variant: "destructive",
+                    });
+                  }
                 }}
                 className="bg-primary"
               >
