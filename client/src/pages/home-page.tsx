@@ -15,11 +15,42 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
 import hireTalentImage from "../assets/hire-talent-image.webp";
 
+// Custom CSS for feature cards
+const featureCardStyles = `
+  .feature-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+  
+  @media (min-width: 768px) {
+    .feature-cards-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  .feature-card {
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .feature-card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+`;
+
 export default function HomePage() {
   const { currentUser } = useAuth();
   
   return (
     <>
+      <style>{featureCardStyles}</style>
       <Helmet>
         <title>Expert Recruitments LLC | Find Your Next Career Opportunity</title>
         <meta name="description" content="Connect with the best job opportunities and top talent through our professional job portal. Specializing in executive search across UAE & GCC markets." />
@@ -106,7 +137,14 @@ export default function HomePage() {
           </motion.div>
           
           {/* Interactive Feature Blocks - Distinctly different from categories */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(1, 1fr)',
+            gap: '2rem',
+            marginBottom: '4rem'
+          }}
+          className="feature-cards-grid"
+          >
            
             
             {/* Hire Talent Feature */}
