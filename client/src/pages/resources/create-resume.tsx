@@ -12,9 +12,9 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/use-auth";
-import { useState, useRef } from "react";
-import { ChevronLeft, ChevronRight, Copy, Download, Edit, File, FileText, Loader2, Printer, Trash2 } from "lucide-react";
+//import { useAuth } from "@/hooks/use-auth";
+import { useState, useRef, useEffect } from "react";
+import { ChevronLeft, ChevronRight, Copy, Download, Edit, File, FileText, Loader2, Printer, Save, Trash2 } from "lucide-react";
 
 // Resume form schema
 const resumeFormSchema = z.object({
@@ -102,6 +102,40 @@ export default function CreateResumePage() {
   const [downloadFormat, setDownloadFormat] = useState<string | null>(null);
   const resumeRef = useRef<HTMLDivElement>(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [formKey, setFormKey] = useState(Date.now()); // Key to force form re-render
+
+  // We'll move this effect after the form is initialized
+
+  // Function to save form data to localStorage
+  const saveFormData = () => {
+    try {
+      setIsSaving(true);
+      // Get current form values
+      const formData = form.getValues();
+      // Save to localStorage
+      localStorage.setItem('resumeFormData', JSON.stringify(formData));
+      
+      toast({
+        title: "Form Data Saved",
+        description: "Your resume information has been saved locally.",
+        variant: "default",
+      });
+      
+      setTimeout(() => {
+        setIsSaving(false);
+      }, 1000);
+    } catch (error) {
+      console.error("Error saving form data:", error);
+      setIsSaving(false);
+      
+      toast({
+        title: "Error Saving Data",
+        description: "There was a problem saving your data. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Create a random ID helper
   const generateId = () => Math.random().toString(36).substring(2, 9);
@@ -155,7 +189,7 @@ export default function CreateResumePage() {
     defaultValues: {
       firstName: "",
       lastName: "",
-      email: currentUser?.email || "",
+      email: "",
       phone: "",
       address: "",
       city: "",
@@ -205,6 +239,24 @@ export default function CreateResumePage() {
       description: ""
     });
   };
+  
+  // Effect to load saved form data from localStorage when component mounts
+  useEffect(() => {
+    try {
+      const savedFormData = localStorage.getItem('resumeFormData');
+      if (savedFormData) {
+        const parsedData = JSON.parse(savedFormData);
+        console.log("Loading saved form data from localStorage");
+        // Use form.reset instead of form.setValue to reset the entire form
+        form.reset(parsedData);
+        
+        // Force a re-render of the form
+        setFormKey(Date.now());
+      }
+    } catch (error) {
+      console.error("Error loading form data from localStorage:", error);
+    }
+  }, [form]);
 
   // Handle form submission for preview
   const handleCreatePreview = async () => {
@@ -912,7 +964,26 @@ export default function CreateResumePage() {
                     />
                   </div>
                   
-                  <div className="flex justify-end">
+                  <div className="flex justify-between">
+                    <Button 
+                      type="button"
+                      onClick={saveFormData}
+                      variant="outline"
+                      className="flex items-center space-x-2 text-[#5372f1]"
+                      disabled={isSaving}
+                    >
+                      {isSaving ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="mr-2 h-4 w-4" />
+                          Save Progress
+                        </>
+                      )}
+                    </Button>
                     <Button 
                       type="button"
                       onClick={handleCreatePreview}
