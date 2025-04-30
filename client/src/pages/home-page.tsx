@@ -386,7 +386,7 @@ export default function HomePage() {
                     </ul>
                   </div>
                   
-                  <Link href="/blogs">
+                  <Link href="/job-seeker-register">
                     <Button variant="default" className="group w-full justify-between bg-teal-600 hover:bg-teal-700 text-white">
                       <span className="mr-2">View Resources</span>
                       <span className="relative inline-block transition-transform duration-300 group-hover:translate-x-1">
