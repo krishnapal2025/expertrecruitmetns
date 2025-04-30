@@ -93,7 +93,7 @@ export default function Navbar() {
       return defaultLinks;
     }
     
-    // Job seeker specific links - show Home, About Us, Find Jobs, Resources, Blogs, and Contact Us
+    // Job seeker specific links - show Home, About Us, Find Jobs, Resources, and Contact Us
     if (currentUser.user.userType === "jobseeker") {
       return [
         { name: "Home", href: "/" },
@@ -110,7 +110,6 @@ export default function Navbar() {
             { name: "Salary Negotiation", href: "/resources/salary-negotiation" },
           ]
         },
-        { name: "Blogs", href: "/blogs" },
         { name: "Contact Us", href: "/contact-us" },
       ];
     }
