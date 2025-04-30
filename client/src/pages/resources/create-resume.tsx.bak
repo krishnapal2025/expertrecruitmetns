@@ -64,7 +64,6 @@ type ResumeFormValues = z.infer<typeof resumeFormSchema>;
 export default function CreateResumePage() {
   const [activeTab, setActiveTab] = useState("personal");
   const pdfRef = useRef<HTMLDivElement>(null);
-  const [previewData, setPreviewData] = useState<ResumeFormValues | null>(null);
 
   // Default values for the form
   const defaultValues: ResumeFormValues = {
@@ -121,6 +120,9 @@ export default function CreateResumePage() {
   const { fields: skillFields, append: appendSkill, remove: removeSkill } = 
     useFieldArray({ control: form.control, name: "skills" });
 
+  // State to display resume preview
+  const [previewData, setPreviewData] = useState<ResumeFormValues | null>(null);
+  
   // Function to handle form submission
   const onSubmit = (data: ResumeFormValues) => {
     try {
@@ -273,9 +275,9 @@ export default function CreateResumePage() {
     doc.save(`${data.personalInfo.firstName}_${data.personalInfo.lastName}_Resume.pdf`);
   };
 
-  if (previewData) {
-    return (
-      <div className="container mx-auto py-10 px-4 md:px-6">
+  return (
+    <div className="container mx-auto py-10 px-4 md:px-6">
+      {previewData ? (
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <div>
@@ -391,20 +393,15 @@ export default function CreateResumePage() {
             </CardContent>
           </Card>
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="container mx-auto py-10 px-4 md:px-6">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-        <div className="col-span-1 md:col-span-2">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold mb-2">Create Your Resume</h1>
-            <p className="text-gray-500">
-              Fill in the form to create a professional resume. Once complete, you can preview and download it as a PDF.
-            </p>
-          </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          <div className="col-span-1 md:col-span-2">
+            <div className="mb-6">
+              <h1 className="text-3xl font-bold mb-2">Create Your Resume</h1>
+              <p className="text-gray-500">
+                Fill in the form to create a professional resume. Once complete, you can preview and download it as a PDF.
+              </p>
+            </div>
 
           <Card>
             <CardHeader>
