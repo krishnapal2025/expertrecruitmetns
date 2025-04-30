@@ -112,8 +112,8 @@ export default function CreateResumePage() {
   const [selectedTemplate, setSelectedTemplate] = useState("professional");
   const [activeTab, setActiveTab] = useState("details");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [resumeGenerated, setResumeGenerated] = useState(false);
-  const [finalResumeGenerated, setFinalResumeGenerated] = useState(false);
+  const [resumeGenerated, setResumeGenerated] = useState(true); // Set to true to enable the Preview tab
+  const [finalResumeGenerated, setFinalResumeGenerated] = useState(true); // Set to true to enable the Final Resume tab
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadFormat, setDownloadFormat] = useState<string | null>(null);
@@ -470,8 +470,8 @@ export default function CreateResumePage() {
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-8">
               <TabsTrigger value="details">Create Resume</TabsTrigger>
-              <TabsTrigger value="preview" disabled={!resumeGenerated}>Preview</TabsTrigger>
-              <TabsTrigger value="final" disabled={!finalResumeGenerated}>Final Resume</TabsTrigger>
+              <TabsTrigger value="preview">Preview</TabsTrigger>
+              <TabsTrigger value="final">Final Resume</TabsTrigger>
             </TabsList>
             
             <TabsContent value="details">
@@ -931,132 +931,122 @@ export default function CreateResumePage() {
             </TabsContent>
             
             <TabsContent value="preview">
-              {resumeGenerated ? (
-                <div className="bg-white p-6 rounded-lg shadow-md border">
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-semibold">Resume Preview</h2>
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" className="flex items-center space-x-2">
-                        <Download className="h-4 w-4" />
-                        <span>Download</span>
-                      </Button>
-                      <Button variant="outline" size="sm" className="flex items-center space-x-2">
-                        <Printer className="h-4 w-4" />
-                        <span>Print</span>
-                      </Button>
-                      <Button variant="outline" size="sm" className="flex items-center space-x-2">
-                        <Copy className="h-4 w-4" />
-                        <span>Copy</span>
-                      </Button>
-                    </div>
+              <div className="bg-white p-6 rounded-lg shadow-md border">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-semibold">Resume Preview</h2>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                      <Download className="h-4 w-4" />
+                      <span>Download</span>
+                    </Button>
+                    <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                      <Printer className="h-4 w-4" />
+                      <span>Print</span>
+                    </Button>
+                    <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                      <Copy className="h-4 w-4" />
+                      <span>Copy</span>
+                    </Button>
                   </div>
-                  
-                  <div className="border rounded-md p-8 max-w-4xl mx-auto bg-white shadow-sm">
-                    <ScrollArea className="h-[600px] pr-4">
-                      {/* This would be replaced with a proper resume preview template */}
-                      <div className={`resume-template resume-${selectedTemplate}`}>
-                        <div className="text-center mb-6">
-                          <h1 className="text-3xl font-bold text-[#5372f1] mb-1">{form.getValues().firstName} {form.getValues().lastName}</h1>
-                          <p className="text-gray-600">{form.getValues().address}, {form.getValues().city}, {form.getValues().country}</p>
-                          <p className="text-gray-600">{form.getValues().email} | {form.getValues().phone}</p>
-                        </div>
-                        
-                        <Separator className="my-6" />
-                        
-                        <div className="mb-6">
-                          <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Professional Summary</h2>
-                          <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().professionalSummary}</p>
-                        </div>
-                        
-                        <div className="mb-6">
-                          <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Work Experience</h2>
-                          {form.getValues().workExperiences.map((exp, index) => (
-                            <div key={exp.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
-                              <div className="flex justify-between mb-1">
-                                <h3 className="font-semibold text-lg">{exp.position}</h3>
-                                <span className="text-gray-600 text-sm">
-                                  {exp.startDate} - {exp.currentlyWorking ? 'Present' : exp.endDate}
-                                </span>
-                              </div>
-                              <div className="text-gray-700 mb-2">{exp.company}</div>
-                              <p className="text-gray-600 whitespace-pre-wrap">{exp.description}</p>
-                            </div>
-                          ))}
-                        </div>
-                        
-                        <div className="mb-6">
-                          <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Education</h2>
-                          {form.getValues().educations.map((edu, index) => (
-                            <div key={edu.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
-                              <div className="flex justify-between mb-1">
-                                <h3 className="font-semibold text-lg">{edu.degree} in {edu.fieldOfStudy}</h3>
-                                <span className="text-gray-600 text-sm">{edu.graduationDate}</span>
-                              </div>
-                              <div className="text-gray-700 mb-2">{edu.institution}</div>
-                              {edu.description && (
-                                <p className="text-gray-600 whitespace-pre-wrap">{edu.description}</p>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                        
-                        <div className="mb-6">
-                          <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Skills</h2>
-                          <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().skills}</p>
-                        </div>
-                        
-                        {form.getValues().additionalInfo && (
-                          <div className="mb-6">
-                            <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Additional Information</h2>
-                            <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().additionalInfo}</p>
-                          </div>
-                        )}
+                </div>
+                
+                <div className="border rounded-md p-8 max-w-4xl mx-auto bg-white shadow-sm">
+                  <ScrollArea className="h-[600px] pr-4">
+                    {/* This would be replaced with a proper resume preview template */}
+                    <div className={`resume-template resume-${selectedTemplate}`}>
+                      <div className="text-center mb-6">
+                        <h1 className="text-3xl font-bold text-[#5372f1] mb-1">{form.getValues().firstName} {form.getValues().lastName}</h1>
+                        <p className="text-gray-600">{form.getValues().address}, {form.getValues().city}, {form.getValues().country}</p>
+                        <p className="text-gray-600">{form.getValues().email} | {form.getValues().phone}</p>
                       </div>
-                    </ScrollArea>
-                  </div>
-                  
-                  <div className="flex justify-between mt-6">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setActiveTab("details")}
-                    >
-                      <ChevronLeft className="mr-2 h-4 w-4" />
-                      Edit Resume
-                    </Button>
-                    <Button 
-                      onClick={handleGenerateResume}
-                      disabled={isGenerating}
-                      className="bg-[#5372f1] hover:bg-[#4060e0]"
-                    >
-                      {isGenerating ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Generating...
-                        </>
-                      ) : (
-                        <>
-                          Generate Resume
-                          <ChevronRight className="ml-2 h-4 w-4" />
-                        </>
+                      
+                      <Separator className="my-6" />
+                      
+                      <div className="mb-6">
+                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Professional Summary</h2>
+                        <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().professionalSummary}</p>
+                      </div>
+                      
+                      <div className="mb-6">
+                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Work Experience</h2>
+                        {form.getValues().workExperiences.map((exp, index) => (
+                          <div key={exp.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
+                            <div className="flex justify-between mb-1">
+                              <h3 className="font-semibold text-lg">{exp.position}</h3>
+                              <span className="text-gray-600 text-sm">
+                                {exp.startDate} - {exp.currentlyWorking ? 'Present' : exp.endDate}
+                              </span>
+                            </div>
+                            <div className="text-gray-700 mb-2">{exp.company}</div>
+                            <p className="text-gray-600 whitespace-pre-wrap">{exp.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="mb-6">
+                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Education</h2>
+                        {form.getValues().educations.map((edu, index) => (
+                          <div key={edu.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
+                            <div className="flex justify-between mb-1">
+                              <h3 className="font-semibold text-lg">{edu.degree} in {edu.fieldOfStudy}</h3>
+                              <span className="text-gray-600 text-sm">{edu.graduationDate}</span>
+                            </div>
+                            <div className="text-gray-700 mb-2">{edu.institution}</div>
+                            {edu.description && (
+                              <p className="text-gray-600 whitespace-pre-wrap">{edu.description}</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="mb-6">
+                        <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Skills</h2>
+                        <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().skills}</p>
+                      </div>
+                      
+                      {form.getValues().additionalInfo && (
+                        <div className="mb-6">
+                          <h2 className="text-xl font-semibold text-[#5372f1] mb-3">Additional Information</h2>
+                          <p className="text-gray-700 whitespace-pre-wrap">{form.getValues().additionalInfo}</p>
+                        </div>
                       )}
-                    </Button>
-                  </div>
+                    </div>
+                  </ScrollArea>
                 </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center p-12 text-center">
-                  <FileText className="h-16 w-16 text-gray-300 mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">No Resume Generated Yet</h3>
-                  <p className="text-gray-500 mb-4">Please complete the previous steps to generate your resume.</p>
-                  <Button onClick={() => setActiveTab("details")}>Start Creating</Button>
+                
+                <div className="flex justify-between mt-6">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setActiveTab("details")}
+                  >
+                    <ChevronLeft className="mr-2 h-4 w-4" />
+                    Edit Resume
+                  </Button>
+                  <Button 
+                    onClick={handleGenerateResume}
+                    disabled={isGenerating}
+                    className="bg-[#5372f1] hover:bg-[#4060e0]"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        Generate Resume
+                        <ChevronRight className="ml-2 h-4 w-4" />
+                      </>
+                    )}
+                  </Button>
                 </div>
-              )}
+              </div>
             </TabsContent>
             
             <TabsContent value="final">
-              {finalResumeGenerated ? (
-                <div className="bg-white p-6 rounded-lg shadow-md border">
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-semibold text-[#5372f1]">Your Completed Resume</h2>
+              <div className="bg-white p-6 rounded-lg shadow-md border">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-semibold text-[#5372f1]">Your Completed Resume</h2>
                     <div className="flex space-x-3">
                       <Button 
                         onClick={handleEditResume}
@@ -1235,14 +1225,6 @@ export default function CreateResumePage() {
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center p-12 text-center">
-                  <FileText className="h-16 w-16 text-gray-300 mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">No Final Resume Generated Yet</h3>
-                  <p className="text-gray-500 mb-4">Please preview your resume first and click the Generate Resume button.</p>
-                  <Button onClick={() => setActiveTab("preview")}>Go to Preview</Button>
-                </div>
-              )}
             </TabsContent>
             
             {/* Delete Confirmation Dialog */}
