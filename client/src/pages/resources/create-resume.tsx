@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   FileText, Upload, Download, Copy, Printer, Edit, Trash2, 
-  File, FileType, Loader2, ChevronLeft, ChevronRight, Save
+  File, Loader2, ChevronLeft, ChevronRight, Save
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { 
@@ -102,13 +102,13 @@ export default function CreateResumePage() {
   const form = useForm<z.infer<typeof resumeFormSchema>>({
     resolver: zodResolver(resumeFormSchema),
     defaultValues: {
-      firstName: currentUser?.profile?.firstName || "",
-      lastName: currentUser?.profile?.lastName || "",
-      email: currentUser?.user?.email || "",
-      phone: currentUser?.profile?.phoneNumber || "",
+      firstName: "",
+      lastName: "",
+      email: currentUser?.email || "",
+      phone: "",
       address: "",
       city: "",
-      country: currentUser?.profile?.country || "",
+      country: "",
       professionalSummary: "",
       workExperience: "",
       education: "",
@@ -661,7 +661,7 @@ export default function CreateResumePage() {
                           </>
                         ) : (
                           <>
-                            <FilePdf className="mr-2 h-5 w-5" />
+                            <File className="mr-2 h-5 w-5" />
                             Download as PDF
                           </>
                         )}
@@ -680,7 +680,7 @@ export default function CreateResumePage() {
                           </>
                         ) : (
                           <>
-                            <FileWordIcon className="mr-2 h-5 w-5" />
+                            <FileText className="mr-2 h-5 w-5" />
                             Download as Word
                           </>
                         )}
