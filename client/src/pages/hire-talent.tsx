@@ -233,6 +233,7 @@ export default function HireTalentPage() {
             </div>
           </div>
           
+          {/* Executive Search Process Section - without animations */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
             <div className="lg:col-span-2">
               <h2 className="text-3xl font-bold mb-6">Our Executive Search Process</h2>
@@ -240,67 +241,65 @@ export default function HireTalentPage() {
                 Our systematic, data-driven approach to executive search ensures we identify leaders who will drive your organization's success. Through rigorous methodology and personal attention, we deliver exceptional results.
               </p>
               
-              <Card className="border-0 shadow-md bg-gradient-to-r from-primary/10 to-primary/5 mb-8">
-                <CardContent className="pt-6">
-                  <div className="space-y-6">
-                    <div className="flex items-start">
-                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">1</div>
-                      <div>
-                        <h4 className="font-semibold">Strategic Consultation</h4>
-                        <p className="text-gray-600">We begin with a deep dive into your organization's vision, challenges, and the specific leadership qualities you require.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">2</div>
-                      <div>
-                        <h4 className="font-semibold">Position Profiling</h4>
-                        <p className="text-gray-600">We develop a comprehensive position specification detailing leadership requirements, qualifications, and success metrics.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">3</div>
-                      <div>
-                        <h4 className="font-semibold">Targeted Search Strategy</h4>
-                        <p className="text-gray-600">Our headhunters deploy sophisticated research methods to identify potential candidates, including those not actively seeking new opportunities.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">4</div>
-                      <div>
-                        <h4 className="font-semibold">Candidate Assessment</h4>
-                        <p className="text-gray-600">Rigorous interviews, leadership evaluations, and comprehensive reference checks validate candidate capabilities.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">5</div>
-                      <div>
-                        <h4 className="font-semibold">Candidate Presentation</h4>
-                        <p className="text-gray-600">We present a shortlist of exceptional candidates with detailed assessments highlighting their leadership strengths and potential contributions.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">6</div>
-                      <div>
-                        <h4 className="font-semibold">Interview Facilitation</h4>
-                        <p className="text-gray-600">We coordinate and manage the interview process, providing structured evaluation frameworks for consistent candidate assessment.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">7</div>
-                      <div>
-                        <h4 className="font-semibold">Offer Negotiation & Onboarding</h4>
-                        <p className="text-gray-600">We provide expert guidance throughout negotiations and facilitate a smooth transition for your new executive.</p>
-                      </div>
+              <div className="border-0 shadow-md bg-gradient-to-r from-primary/10 to-primary/5 mb-8 p-6 rounded-lg">
+                <div className="space-y-6">
+                  <div className="flex items-start">
+                    <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">1</div>
+                    <div>
+                      <h4 className="font-semibold">Strategic Consultation</h4>
+                      <p className="text-gray-600">We begin with a deep dive into your organization's vision, challenges, and the specific leadership qualities you require.</p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">2</div>
+                    <div>
+                      <h4 className="font-semibold">Position Profiling</h4>
+                      <p className="text-gray-600">We develop a comprehensive position specification detailing leadership requirements, qualifications, and success metrics.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">3</div>
+                    <div>
+                      <h4 className="font-semibold">Targeted Search Strategy</h4>
+                      <p className="text-gray-600">Our headhunters deploy sophisticated research methods to identify potential candidates, including those not actively seeking new opportunities.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">4</div>
+                    <div>
+                      <h4 className="font-semibold">Candidate Assessment</h4>
+                      <p className="text-gray-600">Rigorous interviews, leadership evaluations, and comprehensive reference checks validate candidate capabilities.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">5</div>
+                    <div>
+                      <h4 className="font-semibold">Candidate Presentation</h4>
+                      <p className="text-gray-600">We present a shortlist of exceptional candidates with detailed assessments highlighting their leadership strengths and potential contributions.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">6</div>
+                    <div>
+                      <h4 className="font-semibold">Interview Facilitation</h4>
+                      <p className="text-gray-600">We coordinate and manage the interview process, providing structured evaluation frameworks for consistent candidate assessment.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">7</div>
+                    <div>
+                      <h4 className="font-semibold">Offer Negotiation & Onboarding</h4>
+                      <p className="text-gray-600">We provide expert guidance throughout negotiations and facilitate a smooth transition for your new executive.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
               
               <Button size="lg" className="w-full md:w-auto" asChild>
                 <Link href="/submit-vacancy">Start Your Executive Search</Link>
