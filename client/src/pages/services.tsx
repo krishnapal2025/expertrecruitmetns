@@ -78,9 +78,11 @@ export default function ServicesPage() {
                 <p className="text-gray-600 mb-6 text-lg">
                   Access a diverse pool of qualified candidates through our extensive network and advanced matching technology.
                 </p>
-                <Link href="/employer-register">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">Post a Job</Button>
-                </Link>
+                <div className="mt-auto pt-4">
+                  <Link href="/employer-register">
+                    <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">Post a Job</Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
             
@@ -94,9 +96,11 @@ export default function ServicesPage() {
                 <p className="text-gray-600 mb-6 text-lg">
                   Specialized recruitment services for senior-level and executive positions tailored to your requirements.
                 </p>
-                <Link href="/contact-us">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">Contact Us</Button>
-                </Link>
+                <div className="mt-auto pt-4">
+                  <Link href="/contact-us">
+                    <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">Contact Us</Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
             
@@ -110,9 +114,11 @@ export default function ServicesPage() {
                 <p className="text-gray-600 mb-6 text-lg">
                   This service is currently available only in India and the USA. Employers interested in our Temporary Staffing services can register their interest by filling out the inquiry form below.
                 </p>
-                <Link href="/inquiry-form">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">Inquiry Form</Button>
-                </Link>
+                <div className="mt-auto pt-4">
+                  <Link href="/inquiry-form">
+                    <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">Inquiry Form</Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -147,9 +153,11 @@ export default function ServicesPage() {
                 <p className="text-gray-600 mb-6 text-lg">
                   Our intelligent matching system connects you with positions that align with your skills, experience, and career goals.
                 </p>
-                <Link href="/job-board">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">Browse Jobs</Button>
-                </Link>
+                <div className="mt-auto pt-4">
+                  <Link href="/job-board">
+                    <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">Browse Jobs</Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
             
@@ -163,9 +171,11 @@ export default function ServicesPage() {
                 <p className="text-gray-600 mb-6 text-lg">
                   Access resources and guidance to help you enhance your skills and advance your career path.
                 </p>
-                <Link href="/blogs">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">View Resources</Button>
-                </Link>
+                <div className="mt-auto pt-4">
+                  <Link href="/blogs">
+                    <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">View Resources</Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
             
@@ -179,9 +189,11 @@ export default function ServicesPage() {
                 <p className="text-gray-600 mb-6 text-lg">
                   Get expert advice on crafting a compelling resume that showcases your strengths and experience.
                 </p>
-                <Link href="/contact-us">
-                  <Button variant="outline" size="lg" className="w-full bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base py-6 rounded-full shadow-md transition-all duration-300">Learn More</Button>
-                </Link>
+                <div className="mt-auto pt-4">
+                  <Link href="/contact-us">
+                    <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">Learn More</Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           </div>
