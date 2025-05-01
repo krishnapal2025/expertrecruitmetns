@@ -102,8 +102,8 @@ export default function HomePage() {
             </p>
           </motion.div>
           
-          {/* Interactive Feature Blocks - Consistent sizing */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-7xl mx-auto">
+          {/* Interactive Feature Blocks - 2x2 Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-6xl mx-auto">
             
             {/* Hire Talent Feature */}
             <motion.div
@@ -114,9 +114,9 @@ export default function HomePage() {
               transition={{ duration: 0.7 }}
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-3xl blur-xl opacity-25 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative flex flex-col h-full bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500">
+              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500 h-full">
                 {/* Image Area */}
-                <div className="aspect-video w-full rounded-xl overflow-hidden mb-6">
+                <div className="md:w-2/5 aspect-video md:aspect-square rounded-xl overflow-hidden">
                   <div className="w-full h-full relative">
                     <img 
                       src={hireTalentImage}
@@ -131,8 +131,8 @@ export default function HomePage() {
                 </div>
                 
                 {/* Content Area */}
-                <div className="flex-1 flex flex-col">
-                  <div className="flex-1">
+                <div className="md:w-3/5 flex flex-col justify-between">
+                  <div>
                     <div className="flex items-center mb-4">
                       <div className="w-10 h-10 mr-4 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
                         <BuildingIcon className="w-5 h-5" />
@@ -164,7 +164,7 @@ export default function HomePage() {
                     </ul>
                   </div>
                   
-                  <ScrollLink href="/vacancy-form" className="w-full mt-4">
+                  <ScrollLink href="/vacancy-form" className="w-full">
                     <Button variant="default" className="group w-full justify-between bg-purple-600 hover:bg-purple-700 text-white">
                       <span className="mr-2">Hire Talent</span>
                       <span className="relative inline-block transition-transform duration-300 group-hover:translate-x-1">
@@ -185,9 +185,9 @@ export default function HomePage() {
               transition={{ duration: 0.7 }}
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-primary to-blue-600 rounded-3xl blur-xl opacity-25 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative flex flex-col h-full bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500">
+              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500 h-full">
                 {/* Image Area */}
-                <div className="aspect-video w-full rounded-xl overflow-hidden mb-6">
+                <div className="md:w-2/5 aspect-video md:aspect-square rounded-xl overflow-hidden">
                   <div className="w-full h-full relative">
                     <img 
                       src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=1500&auto=format&fit=crop"
@@ -202,8 +202,8 @@ export default function HomePage() {
                 </div>
 
                 {/* Content Area */}
-                <div className="flex-1 flex flex-col">
-                  <div className="flex-1">
+                <div className="md:w-3/5 flex flex-col justify-between">
+                  <div>
                     <div className="flex items-center mb-4">
                       <div className="w-10 h-10 mr-4 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-primary">
                         <BriefcaseIcon className="w-5 h-5" />
@@ -235,7 +235,7 @@ export default function HomePage() {
                     </ul>
                   </div>
 
-                  <Link href="/job-board" className="mt-4">
+                  <Link href="/job-board">
                     <Button variant="default" className="group w-full justify-between overflow-hidden">
                       <span className="mr-2">Browse Jobs</span>
                       <span className="relative inline-block transition-transform duration-300 group-hover:translate-x-1">
@@ -256,9 +256,9 @@ export default function HomePage() {
               transition={{ duration: 0.7, delay: 0.1 }}
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-3xl blur-xl opacity-25 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative flex flex-col h-full bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500">
+              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500 h-full">
                 {/* Image Area */}
-                <div className="aspect-video w-full rounded-xl overflow-hidden mb-6">
+                <div className="md:w-2/5 aspect-video md:aspect-square rounded-xl overflow-hidden">
                   <div className="w-full h-full relative">
                     <img 
                       src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=1500&auto=format&fit=crop"
@@ -273,8 +273,8 @@ export default function HomePage() {
                 </div>
                 
                 {/* Content Area */}
-                <div className="flex-1 flex flex-col">
-                  <div className="flex-1">
+                <div className="md:w-3/5 flex flex-col justify-between">
+                  <div>
                     <div className="flex items-center mb-4">
                       <div className="w-10 h-10 mr-4 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -311,7 +311,7 @@ export default function HomePage() {
                     </ul>
                   </div>
                   
-                  <Link href="/employer-register" className="mt-4">
+                  <Link href="/employer-register">
                     <Button variant="default" className="group w-full justify-between bg-indigo-600 hover:bg-indigo-700 text-white">
                       <span className="mr-2">Post a Job</span>
                       <span className="relative inline-block transition-transform duration-300 group-hover:translate-x-1">
@@ -332,9 +332,9 @@ export default function HomePage() {
               transition={{ duration: 0.7, delay: 0.2 }}
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-teal-500 to-green-500 rounded-3xl blur-xl opacity-25 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative flex flex-col h-full bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500">
+              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500 h-full">
                 {/* Image Area */}
-                <div className="aspect-video w-full rounded-xl overflow-hidden mb-6">
+                <div className="md:w-2/5 aspect-video md:aspect-square rounded-xl overflow-hidden">
                   <div className="w-full h-full relative">
                     <img 
                       src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1500&auto=format&fit=crop"
@@ -349,8 +349,8 @@ export default function HomePage() {
                 </div>
                 
                 {/* Content Area */}
-                <div className="flex-1 flex flex-col">
-                  <div className="flex-1">
+                <div className="md:w-3/5 flex flex-col justify-between">
+                  <div>
                     <div className="flex items-center mb-4">
                       <div className="w-10 h-10 mr-4 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600">
                         <GraduationCapIcon className="w-5 h-5" />
@@ -382,7 +382,7 @@ export default function HomePage() {
                     </ul>
                   </div>
                   
-                  <Link href="/job-seeker-register" className="mt-4">
+                  <Link href="/job-seeker-register">
                     <Button variant="default" className="group w-full justify-between bg-teal-600 hover:bg-teal-700 text-white">
                       <span className="mr-2">View Resources</span>
                       <span className="relative inline-block transition-transform duration-300 group-hover:translate-x-1">
