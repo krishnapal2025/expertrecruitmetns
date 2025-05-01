@@ -8,7 +8,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BriefcaseIcon, BuildingIcon, GraduationCapIcon } from "@/assets/icons";
 import { MessageSquareShare, ArrowRight } from "lucide-react";
 import { ScrollLink } from "@/components/ui/scroll-link";
-import RealtimeJobs from "@/components/job/real-time-jobs";
 import RealtimeApplications from "@/components/job/real-time-applications";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
@@ -29,7 +28,6 @@ export default function HomePage() {
       {/* Real-time updates section */}
       {currentUser && (
         <div className="container mx-auto px-4 py-4">
-          {currentUser.user.userType === "jobseeker" && <RealtimeJobs />}
           {currentUser.user.userType === "employer" && <RealtimeApplications />}
         </div>
       )}
@@ -329,7 +327,7 @@ export default function HomePage() {
             {/* Career Resources Feature */}
             <motion.div
               className="group relative"
-              initial={{ opacity: 0, x: 50 }}
+              initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.1 }}
