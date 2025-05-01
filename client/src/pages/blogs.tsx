@@ -2,7 +2,8 @@ import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen, Calendar, Tag } from "lucide-react";
+import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen, Calendar, Tag, ChevronDown } from "lucide-react";
+import servicesBgImage from "@/assets/modern-equipped-computer-lab.jpg";
 import { useState } from "react";
 import { useLocation, Link } from "wouter";
 import headhuntersDubaiImage from "../assets/pexels-photo-5685937.webp";
@@ -175,46 +176,59 @@ export default function BlogsPage() {
         <meta name="description" content="Browse our collection of career advice, industry insights, and job search tips to help you advance your professional journey." />
       </Helmet>
 
-      <div className="relative py-20 overflow-hidden">
-        {/* Background elements */}
-        <div className="absolute inset-0 bg-gray-50"></div>
+      <div className="relative min-h-screen overflow-hidden">
+        {/* Background Image with Black Tint */}
+        <div className="absolute inset-0 bg-black/75 z-10"></div>
+        <div 
+          className="absolute inset-0 bg-center bg-cover" 
+          style={{ 
+            backgroundImage: `url(${servicesBgImage})`,
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            height: '100%',
+            width: '100%',
+            filter: 'brightness(0.85)'
+          }}
+        ></div>
         
         {/* Accent lines */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>
         
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-1/3 h-full overflow-hidden">
-          <div className="absolute -right-20 top-1/4 w-80 h-80 bg-primary/5 rounded-full"></div>
-          <div className="absolute -right-10 bottom-1/4 w-40 h-40 bg-primary/5 rounded-full"></div>
-        </div>
-        
-        <div className="absolute left-0 bottom-0 w-1/4 h-80 overflow-hidden">
-          <div className="absolute -left-20 bottom-0 w-64 h-64 bg-gray-100 rounded-full"></div>
-        </div>
-        
-        <div className="container mx-auto px-4 relative">
+        <div className="w-full max-w-[1440px] mx-auto px-4 relative py-40 md:py-52">
           {/* Main content */}
-          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16">
-            <div className="inline-block mb-6 px-5 py-2 bg-white border-b-2 border-primary shadow-sm rounded-md">
+          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16 relative z-20">
+            <div className="inline-block mb-6 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-sm rounded-md backdrop-blur-sm">
               <span className="font-medium text-primary tracking-wider uppercase text-sm">Knowledge Center</span>
             </div>
             
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-gray-800 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-white tracking-tight drop-shadow-md">
               Career Resources & Insights
             </h1>
             
-            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed mb-4 max-w-3xl">
+            <p className="text-xl md:text-2xl text-white leading-relaxed mb-4 max-w-3xl drop-shadow-md">
               Expert advice, tips, and insights for your career journey
             </p>
             
-            <p className="text-lg text-gray-600 leading-relaxed mb-6 max-w-3xl">
+            <p className="text-lg text-white/90 leading-relaxed mb-8 max-w-3xl drop-shadow">
               Stay informed with the latest trends and strategies in professional development
             </p>
+            
+            {/* Scroll Down Button */}
+            <a 
+              href="#blogs-content" 
+              className="flex flex-col items-center mt-8 text-white/80 hover:text-white transition-colors duration-300 animate-pulse"
+            >
+              <span className="text-sm font-medium mb-2">Explore Articles</span>
+              <div className="w-10 h-10 rounded-full border-2 border-white/30 flex items-center justify-center">
+                <ChevronDown className="h-6 w-6" />
+              </div>
+            </a>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
+      <div id="blogs-content" className="container mx-auto px-4 py-12">
         {/* Search and Filter */}
         <div className="mb-12">
           <div className="flex flex-col md:flex-row gap-4">
