@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen, Calendar, Tag, ChevronDown } from "lucide-react";
-import servicesBgImage from "@/assets/modern-equipped-computer-lab.jpg";
+import blogsBgImage from "../assets/close-up-person-working-home-night_23-2149090964.avif";
 import { useState } from "react";
 import { useLocation, Link } from "wouter";
 import headhuntersDubaiImage from "../assets/pexels-photo-5685937.webp";
@@ -182,7 +182,7 @@ export default function BlogsPage() {
         <div 
           className="absolute inset-0 bg-center bg-cover" 
           style={{ 
-            backgroundImage: `url(${servicesBgImage})`,
+            backgroundImage: `url(${blogsBgImage})`,
             backgroundPosition: 'center center',
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
