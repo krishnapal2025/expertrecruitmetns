@@ -8,7 +8,8 @@ import {
   admins, Admin, InsertAdmin,
   invitationCodes, InvitationCode, InsertInvitationCode,
   vacancies, Vacancy, InsertVacancy,
-  staffingInquiries, StaffingInquiry, InsertStaffingInquiry
+  staffingInquiries, StaffingInquiry, InsertStaffingInquiry,
+  blogPosts, BlogPost, InsertBlogPost
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -115,6 +116,14 @@ export interface IStorage {
   getStaffingInquiries(): Promise<StaffingInquiry[]>;
   createStaffingInquiry(inquiry: InsertStaffingInquiry): Promise<StaffingInquiry>;
   updateStaffingInquiryStatus(id: number, status: string): Promise<StaffingInquiry | undefined>;
+  
+  // Blog post methods
+  getBlogPost(id: number): Promise<BlogPost | undefined>;
+  getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
+  getBlogPosts(filters?: { category?: string; published?: boolean }): Promise<BlogPost[]>;
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
+  deleteBlogPost(id: number): Promise<boolean>;
 
   // Session store
   sessionStore: session.Store;
@@ -759,6 +768,91 @@ export class DatabaseStorage implements IStorage {
     }
     return undefined;
   }
+
+  // Blog post methods
+  async getBlogPost(id: number): Promise<BlogPost | undefined> {
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
+    return post;
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
+    return post;
+  }
+
+  async getBlogPosts(filters?: { category?: string; published?: boolean }): Promise<BlogPost[]> {
+    let query = db.select().from(blogPosts);
+    
+    if (filters) {
+      if (filters.category) {
+        query = query.where(eq(blogPosts.category, filters.category));
+      }
+      
+      if (filters.published !== undefined) {
+        query = query.where(eq(blogPosts.published, filters.published));
+      }
+    }
+    
+    // Sort by publish date descending (newest first)
+    query = query.orderBy(desc(blogPosts.publishDate));
+    
+    return await query;
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    // Generate a slug from the title if none is provided
+    if (!post.slug) {
+      post.slug = post.title
+        .toLowerCase()
+        .replace(/[^\w\s]/gi, '')
+        .replace(/\s+/g, '-');
+        
+      // Check if slug exists and append a number if necessary
+      let suffix = 1;
+      let newSlug = post.slug;
+      let existingPost = await this.getBlogPostBySlug(newSlug);
+      
+      while (existingPost) {
+        newSlug = `${post.slug}-${suffix}`;
+        suffix++;
+        existingPost = await this.getBlogPostBySlug(newSlug);
+      }
+      
+      post.slug = newSlug;
+    }
+    
+    const [createdPost] = await db.insert(blogPosts).values(post).returning();
+    return createdPost;
+  }
+
+  async updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+    // Check if post exists
+    const existingPost = await this.getBlogPost(id);
+    if (!existingPost) {
+      return undefined;
+    }
+    
+    // If slug is being updated, check for uniqueness
+    if (post.slug && post.slug !== existingPost.slug) {
+      const slugExists = await this.getBlogPostBySlug(post.slug);
+      if (slugExists) {
+        throw new Error("Slug already exists");
+      }
+    }
+    
+    const [updatedPost] = await db
+      .update(blogPosts)
+      .set(post)
+      .where(eq(blogPosts.id, id))
+      .returning();
+      
+    return updatedPost;
+  }
+
+  async deleteBlogPost(id: number): Promise<boolean> {
+    const result = await db.delete(blogPosts).where(eq(blogPosts.id, id));
+    return result.rowCount > 0;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -772,6 +866,7 @@ export class MemStorage implements IStorage {
   private invitationCodes: Map<string, InvitationCode>;
   private vacancies: Map<number, Vacancy>;
   private staffingInquiries: Map<number, StaffingInquiry>;
+  private blogPosts: Map<number, BlogPost>;
 
   sessionStore: session.Store;
 
@@ -785,6 +880,7 @@ export class MemStorage implements IStorage {
   private adminIdCounter: number;
   private vacancyIdCounter: number;
   private staffingInquiryIdCounter: number;
+  private blogPostIdCounter: number;
 
   constructor() {
     this.users = new Map();
@@ -797,6 +893,7 @@ export class MemStorage implements IStorage {
     this.invitationCodes = new Map();
     this.vacancies = new Map();
     this.staffingInquiries = new Map();
+    this.blogPosts = new Map();
 
     this.userIdCounter = 1;
     this.jobSeekerIdCounter = 1;
@@ -807,6 +904,7 @@ export class MemStorage implements IStorage {
     this.adminIdCounter = 1;
     this.vacancyIdCounter = 1;
     this.staffingInquiryIdCounter = 1;
+    this.blogPostIdCounter = 1;
 
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // prune expired entries every 24h
