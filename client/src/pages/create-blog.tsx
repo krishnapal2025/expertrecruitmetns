@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Loader2, Image, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -114,6 +114,9 @@ const CreateBlogPage = () => {
       return await response.json();
     },
     onSuccess: () => {
+      // Invalidate the blog posts query cache so the updated list shows immediately
+      queryClient.invalidateQueries({ queryKey: ["/api/blog-posts"] });
+      
       toast({
         title: "Success",
         description: "Blog post created successfully",
