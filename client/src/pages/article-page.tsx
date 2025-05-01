@@ -1365,16 +1365,38 @@ export default function ArticlePage() {
           // Use the helper function to get the appropriate image
           const imageSource = getImageForBlog(post.id, post.bannerImage);
           
+          // Create a more detailed article content that includes subtitle and tags
+          let enhancedContent = '';
+          
+          // Add subtitle if available
+          if (post.subtitle) {
+            enhancedContent += `<h2 class="text-xl font-semibold text-gray-700 mb-6">${post.subtitle}</h2>`;
+          }
+          
+          // Add main content - split by line breaks and wrap each paragraph
+          const paragraphs = (post.content || '').split('\n').filter(p => p.trim() !== '');
+          
+          // Wrap each paragraph in proper HTML
+          paragraphs.forEach(paragraph => {
+            enhancedContent += `<p class="mb-6 text-gray-800 leading-relaxed">${paragraph}</p>`;
+          });
+          
+          // If no paragraphs were found, use the original content
+          if (paragraphs.length === 0 && post.content) {
+            enhancedContent += `<p class="mb-6 text-gray-800 leading-relaxed">${post.content}</p>`;
+          }
+          
           const fetchedArticle: Article = {
             id: post.id,
             title: post.title,
             excerpt: post.excerpt || post.subtitle || '',
-            content: post.content || '',
+            content: enhancedContent,
             category: post.category || 'Executive Recruitment',
             author: 'Admin', // This could be enhanced with author lookup
             date: formattedDate,
             readTime: post.readTime || '10 min read',
-            image: imageSource
+            image: imageSource,
+            tags: post.tags || []
           };
           
           setArticle(fetchedArticle);
