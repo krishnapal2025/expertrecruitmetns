@@ -16,7 +16,7 @@ export default function ServicesPage() {
         <meta name="description" content="Explore our comprehensive range of services for both job seekers and employers. From recruitment solutions to career coaching." />
       </Helmet>
 
-      <div className="relative py-40 md:py-56 overflow-hidden">
+      <div className="relative min-h-screen overflow-hidden">
         {/* Background Image with Black Tint */}
         <div className="absolute inset-0 bg-black/60 z-10"></div>
         <div 
@@ -35,7 +35,7 @@ export default function ServicesPage() {
         {/* Accent lines */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>
         
-        <div className="w-full max-w-[1440px] mx-auto px-4 relative">
+        <div className="w-full max-w-[1440px] mx-auto px-4 relative py-40 md:py-52">
           {/* Main content */}
           <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16 relative z-20">
             <div className="inline-block mb-6 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-sm rounded-md backdrop-blur-sm">
