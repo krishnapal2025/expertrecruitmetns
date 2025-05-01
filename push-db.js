@@ -1,4 +1,5 @@
-import { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 
 async function main() {
   if (!process.env.DATABASE_URL) {
@@ -11,30 +12,26 @@ async function main() {
   });
 
   try {
-    console.log('Creating vacancies table...');
+    console.log('Creating blog_posts table...');
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS vacancies (
+      CREATE TABLE IF NOT EXISTS blog_posts (
         id SERIAL PRIMARY KEY,
-        company_name TEXT NOT NULL,
-        contact_name TEXT NOT NULL,
-        contact_email TEXT NOT NULL,
-        contact_phone TEXT NOT NULL,
-        job_title TEXT NOT NULL,
-        job_description TEXT NOT NULL,
-        location TEXT NOT NULL,
-        industry TEXT NOT NULL,
-        employment_type TEXT NOT NULL,
-        salary_range TEXT,
-        required_skills TEXT NOT NULL,
-        experience_level TEXT NOT NULL,
-        application_deadline TIMESTAMP NOT NULL,
-        additional_information TEXT,
-        status TEXT DEFAULT 'pending',
-        submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        title TEXT NOT NULL,
+        subtitle TEXT,
+        content TEXT NOT NULL,
+        banner_image TEXT,
+        author_id INTEGER REFERENCES users(id),
+        publish_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        published BOOLEAN DEFAULT FALSE,
+        category TEXT,
+        tags TEXT[],
+        slug TEXT NOT NULL UNIQUE,
+        excerpt TEXT,
+        read_time TEXT
       )
     `);
 
-    console.log('Table created successfully!');
+    console.log('Blog posts table created successfully!');
   } catch (error) {
     console.error('Error creating table:', error);
   } finally {

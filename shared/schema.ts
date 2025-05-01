@@ -263,6 +263,28 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
+// Blog posts table
+export const blogPosts = pgTable("blog_posts", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  subtitle: text("subtitle"),
+  content: text("content").notNull(),
+  bannerImage: text("banner_image"),
+  authorId: integer("author_id").references(() => users.id),
+  publishDate: timestamp("publish_date").defaultNow(),
+  published: boolean("published").default(false),
+  category: text("category"),
+  tags: text("tags").array(),
+  slug: text("slug").notNull().unique(),
+  excerpt: text("excerpt"),
+  readTime: text("read_time")
+});
+
+// Create insert schema
+export const insertBlogPostSchema = createInsertSchema(blogPosts).extend({
+  tags: z.array(z.string()).optional(),
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type JobSeeker = typeof jobSeekers.$inferSelect;
@@ -274,6 +296,7 @@ export type Admin = typeof admins.$inferSelect;
 export type InvitationCode = typeof invitationCodes.$inferSelect;
 export type Vacancy = typeof vacancies.$inferSelect;
 export type StaffingInquiry = typeof staffingInquiries.$inferSelect;
+export type BlogPost = typeof blogPosts.$inferSelect;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertJobSeeker = z.infer<typeof insertJobSeekerSchema>;
@@ -285,6 +308,7 @@ export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 export type InsertInvitationCode = z.infer<typeof insertInvitationCodeSchema>;
 export type InsertVacancy = z.infer<typeof insertVacancySchema>;
 export type InsertStaffingInquiry = z.infer<typeof insertStaffingInquirySchema>;
+export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
 
 export type JobSeekerRegister = z.infer<typeof jobSeekerRegisterSchema>;
 export type EmployerRegister = z.infer<typeof employerRegisterSchema>;
