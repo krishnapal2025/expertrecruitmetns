@@ -174,8 +174,8 @@ export default function BlogsPage() {
     }
   });
 
-  // Combine API posts with sample posts, preferring API posts
-  const allBlogPosts = apiPosts?.length 
+  // Always use API posts, with sample posts as fallback only when none exist
+  const allBlogPosts = apiPosts && apiPosts.length > 0
     ? apiPosts.map(post => {
         // Format real blog posts to match display format
         const publishDate = post.publishDate ? new Date(post.publishDate) : new Date();
