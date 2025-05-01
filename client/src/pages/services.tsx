@@ -68,9 +68,10 @@ export default function ServicesPage() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+            {/* Card 1 */}
+            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden flex flex-col">
               <div className="h-2 bg-primary"></div>
-              <CardContent className="p-8">
+              <CardContent className="p-8 flex flex-col flex-grow">
                 <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
                   <Search className="h-8 w-8 text-primary" />
                 </div>
@@ -86,9 +87,10 @@ export default function ServicesPage() {
               </CardContent>
             </Card>
             
-            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+            {/* Card 2 */}
+            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden flex flex-col">
               <div className="h-2 bg-primary"></div>
-              <CardContent className="p-8">
+              <CardContent className="p-8 flex flex-col flex-grow">
                 <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
                   <Award className="h-8 w-8 text-primary" />
                 </div>
@@ -104,9 +106,10 @@ export default function ServicesPage() {
               </CardContent>
             </Card>
             
-            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+            {/* Card 3 */}
+            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden flex flex-col">
               <div className="h-2 bg-primary"></div>
-              <CardContent className="p-8">
+              <CardContent className="p-8 flex flex-col flex-grow">
                 <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
                   <Clock className="h-8 w-8 text-primary" />
                 </div>
@@ -143,9 +146,10 @@ export default function ServicesPage() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+            {/* Card 1 */}
+            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden flex flex-col">
               <div className="h-2 bg-primary"></div>
-              <CardContent className="p-8">
+              <CardContent className="p-8 flex flex-col flex-grow">
                 <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
                   <Search className="h-8 w-8 text-primary" />
                 </div>
@@ -161,9 +165,10 @@ export default function ServicesPage() {
               </CardContent>
             </Card>
             
-            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+            {/* Card 2 */}
+            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden flex flex-col">
               <div className="h-2 bg-primary"></div>
-              <CardContent className="p-8">
+              <CardContent className="p-8 flex flex-col flex-grow">
                 <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
                   <TrendingUp className="h-8 w-8 text-primary" />
                 </div>
@@ -179,9 +184,10 @@ export default function ServicesPage() {
               </CardContent>
             </Card>
             
-            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+            {/* Card 3 */}
+            <Card className="transition-all hover:shadow-xl border-none shadow-lg bg-gradient-to-b from-white to-gray-50 overflow-hidden flex flex-col">
               <div className="h-2 bg-primary"></div>
-              <CardContent className="p-8">
+              <CardContent className="p-8 flex flex-col flex-grow">
                 <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
                   <BookOpen className="h-8 w-8 text-primary" />
                 </div>
@@ -309,7 +315,6 @@ export default function ServicesPage() {
             Whether you're looking for your next career opportunity or searching for top talent, we're here to help you succeed.
           </p>
           <div className="flex justify-center gap-6 flex-wrap">
-            
             <Link href="/employer-register">
               <Button size="lg" className="px-10 py-7 text-lg bg-primary hover:bg-primary/90 shadow-lg rounded-full transition-all duration-300">For Employers</Button>
             </Link>
