@@ -176,6 +176,10 @@ export default function HireTalentPage() {
                   </div>
                 </div>
               </div>
+              
+              <Button size="lg" className="w-full md:w-auto" asChild>
+                <Link href="/submit-vacancy">Request Executive Search</Link>
+              </Button>
             </div>
             
             <div className="bg-primary/5 p-6 rounded-lg">
@@ -236,73 +240,71 @@ export default function HireTalentPage() {
                 Our systematic, data-driven approach to executive search ensures we identify leaders who will drive your organization's success. Through rigorous methodology and personal attention, we deliver exceptional results.
               </p>
               
-              <div className="h-full flex flex-col">
-                <Card className="border-0 shadow-md bg-gradient-to-r from-primary/10 to-primary/5 mb-8 flex-grow">
-                  <CardContent className="pt-6">
-                    <div className="space-y-4">
-                      <div className="flex items-start">
-                        <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">1</div>
-                        <div>
-                          <h4 className="font-semibold">Strategic Consultation</h4>
-                          <p className="text-gray-600 text-sm">We begin with a deep dive into your organization's vision, challenges, and the specific leadership qualities you require.</p>
-                        </div>
-                      </div>
-                    
-                      <div className="flex items-start">
-                        <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">2</div>
-                        <div>
-                          <h4 className="font-semibold">Position Profiling</h4>
-                          <p className="text-gray-600 text-sm">We develop a comprehensive position specification detailing leadership requirements, qualifications, and success metrics.</p>
-                        </div>
-                      </div>
-                    
-                      <div className="flex items-start">
-                        <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">3</div>
-                        <div>
-                          <h4 className="font-semibold">Targeted Search Strategy</h4>
-                          <p className="text-gray-600 text-sm">Our headhunters deploy sophisticated research methods to identify potential candidates, including those not actively seeking new opportunities.</p>
-                        </div>
-                      </div>
-                    
-                      <div className="flex items-start">
-                        <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">4</div>
-                        <div>
-                          <h4 className="font-semibold">Candidate Assessment</h4>
-                          <p className="text-gray-600 text-sm">Rigorous interviews, leadership evaluations, and comprehensive reference checks validate candidate capabilities.</p>
-                        </div>
-                      </div>
-                    
-                      <div className="flex items-start">
-                        <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">5</div>
-                        <div>
-                          <h4 className="font-semibold">Candidate Presentation</h4>
-                          <p className="text-gray-600 text-sm">We present a shortlist of exceptional candidates with detailed assessments highlighting their leadership strengths and potential contributions.</p>
-                        </div>
-                      </div>
-                    
-                      <div className="flex items-start">
-                        <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">6</div>
-                        <div>
-                          <h4 className="font-semibold">Interview Facilitation</h4>
-                          <p className="text-gray-600 text-sm">We coordinate and manage the interview process, providing structured evaluation frameworks for consistent candidate assessment.</p>
-                        </div>
-                      </div>
-                    
-                      <div className="flex items-start">
-                        <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">7</div>
-                        <div>
-                          <h4 className="font-semibold">Offer Negotiation & Onboarding</h4>
-                          <p className="text-gray-600 text-sm">We provide expert guidance throughout negotiations and facilitate a smooth transition for your new executive.</p>
-                        </div>
+              <Card className="border-0 shadow-md bg-gradient-to-r from-primary/10 to-primary/5 mb-8">
+                <CardContent className="pt-6">
+                  <div className="space-y-6">
+                    <div className="flex items-start">
+                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">1</div>
+                      <div>
+                        <h4 className="font-semibold">Strategic Consultation</h4>
+                        <p className="text-gray-600">We begin with a deep dive into your organization's vision, challenges, and the specific leadership qualities you require.</p>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-                
-                <Button size="lg" className="w-full md:w-auto mt-auto" asChild>
-                  <Link href="/submit-vacancy">Start Your Executive Search</Link>
-                </Button>
-              </div>
+                    
+                    <div className="flex items-start">
+                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">2</div>
+                      <div>
+                        <h4 className="font-semibold">Position Profiling</h4>
+                        <p className="text-gray-600">We develop a comprehensive position specification detailing leadership requirements, qualifications, and success metrics.</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">3</div>
+                      <div>
+                        <h4 className="font-semibold">Targeted Search Strategy</h4>
+                        <p className="text-gray-600">Our headhunters deploy sophisticated research methods to identify potential candidates, including those not actively seeking new opportunities.</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">4</div>
+                      <div>
+                        <h4 className="font-semibold">Candidate Assessment</h4>
+                        <p className="text-gray-600">Rigorous interviews, leadership evaluations, and comprehensive reference checks validate candidate capabilities.</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">5</div>
+                      <div>
+                        <h4 className="font-semibold">Candidate Presentation</h4>
+                        <p className="text-gray-600">We present a shortlist of exceptional candidates with detailed assessments highlighting their leadership strengths and potential contributions.</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">6</div>
+                      <div>
+                        <h4 className="font-semibold">Interview Facilitation</h4>
+                        <p className="text-gray-600">We coordinate and manage the interview process, providing structured evaluation frameworks for consistent candidate assessment.</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 flex-shrink-0">7</div>
+                      <div>
+                        <h4 className="font-semibold">Offer Negotiation & Onboarding</h4>
+                        <p className="text-gray-600">We provide expert guidance throughout negotiations and facilitate a smooth transition for your new executive.</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Button size="lg" className="w-full md:w-auto" asChild>
+                <Link href="/submit-vacancy">Start Your Executive Search</Link>
+              </Button>
             </div>
             
             <div>
@@ -346,13 +348,71 @@ export default function HireTalentPage() {
                 
                 <div className="bg-primary/10 p-6 rounded-lg border border-primary/20">
                   <h3 className="text-lg font-bold mb-2">Ready to elevate your leadership team?</h3>
-                  <p className="text-gray-700 mb-4">Send us a business inquiry to connect with our Executive Search specialists today.</p>
+                  <p className="text-gray-700 mb-4">Schedule a confidential consultation with our executive search specialists today.</p>
                   <Button className="w-full" asChild>
-                    <Link href="/inquiry-form">Request Executive Search</Link>
+                    <Link href="/contact-us">Book a Consultation</Link>
                   </Button>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Testimonials Section */}
+      <div className="bg-gray-50 py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold">What Our Clients Say</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto mt-4">Hear from organizations who have partnered with Expert Recruitments for their executive hiring needs</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {[
+              {
+                quote: "Expert Recruitments provided us with exceptional executive talent that perfectly matched our company culture and growth ambitions. Their headhunting approach delivered candidates we wouldn't have found elsewhere.",
+                author: "Sarah Johnson",
+                title: "CEO, Financial Services Group"
+              },
+              {
+                quote: "The quality of executive candidates presented to us was outstanding. Expert Recruitments truly understands the nuances of leadership requirements in the UAE market.",
+                author: "Mohammed Al-Farsi",
+                title: "Managing Director, Technology Solutions"
+              },
+              {
+                quote: "Their executive search methodology is thorough and precise. They identified and secured a CFO who has transformed our financial operations and contributed strategically to our growth.",
+                author: "Jessica Chen",
+                title: "Founder, Healthcare Innovations"
+              }
+            ].map((testimonial, index) => (
+              <Card key={index} className="bg-white border border-gray-100">
+                <CardHeader>
+                  <div className="flex items-center text-amber-400 mb-2">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <svg key={i} xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 italic mb-6">"{testimonial.quote}"</p>
+                  <div>
+                    <p className="font-semibold">{testimonial.author}</p>
+                    <p className="text-sm text-gray-600">{testimonial.title}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="text-center mt-10">
+            <Button variant="outline" className="bg-white" asChild>
+              <Link href="/case-studies">
+                View Success Stories
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
           </div>
         </div>
       </div>
@@ -366,10 +426,10 @@ export default function HireTalentPage() {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-md px-8" asChild>
-              <Link href="/employer-register">Register As Employer</Link>
+              <Link href="/submit-vacancy">Start Executive Search</Link>
             </Button>
             <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5 px-8" asChild>
-              <Link href="/submit-vacancy">Submit a Vacancy</Link>
+              <Link href="/contact-us">Schedule Consultation</Link>
             </Button>
           </div>
         </div>
