@@ -200,10 +200,16 @@ function AdminDashboard() {
     mutationFn: async (postId: number) => {
       const res = await apiRequest("DELETE", `/api/blog-posts/${postId}`);
       if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Failed to delete blog post");
+        // Try to parse error as JSON, but handle cases where it's not JSON
+        try {
+          const error = await res.json();
+          throw new Error(error.message || "Failed to delete blog post");
+        } catch (e) {
+          throw new Error("Failed to delete blog post");
+        }
       }
-      return await res.json();
+      // Return success even if there's no content (204 response)
+      return true;
     },
     onSuccess: () => {
       toast({
