@@ -13,6 +13,7 @@ import PrivacyPolicyPage from "@/pages/privacy-policy";
 import TermsConditionsPage from "@/pages/terms-conditions";
 import SiteMapPage from "@/pages/site-map";
 import BlogsPage from "@/pages/blogs";
+import TeamArticlesPage from "@/pages/team-articles";
 import ArticlePage from "@/pages/article-page";
 import CareersPage from "@/pages/careers";
 import AuthPage from "@/pages/auth-page";
@@ -86,6 +87,7 @@ function Router() {
       <Route path="/terms-conditions" component={TermsConditionsPage} />
       <Route path="/site-map" component={SiteMapPage} />
       <Route path="/blogs" component={BlogsPage} />
+      <Route path="/team-articles" component={TeamArticlesPage} />
       <Route path="/article/:id">
         {params => <ArticlePage />}
       </Route>

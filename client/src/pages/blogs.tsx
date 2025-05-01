@@ -316,14 +316,26 @@ export default function BlogsPage() {
         {/* Admin Created Blog Posts */}
         {apiBlogs && apiBlogs.length > 0 && apiBlogs.some((post: any) => post.published) && (
           <div className="mb-16 border-b pb-12">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <BookOpen className="mr-2 h-6 w-6 text-primary" />
-              Latest Articles from Our Team
-            </h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+              <h2 className="text-2xl font-bold flex items-center">
+                <BookOpen className="mr-2 h-6 w-6 text-primary" />
+                Latest Articles from Our Team
+              </h2>
+              <Button 
+                variant="outline" 
+                className="mt-2 sm:mt-0"
+                onClick={() => setLocation("/team-articles")}
+              >
+                View All Team Articles
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </Button>
+            </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {apiBlogs
                 .filter((post: any) => post.published)
+                .sort((a: any, b: any) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime())
+                .slice(0, 3)
                 .map((post: any) => (
                   <Card key={`api-blog-${post.id}`} className="overflow-hidden flex flex-col h-full border-t-4 border-t-primary shadow-md">
                     <div className="h-48 overflow-hidden">
