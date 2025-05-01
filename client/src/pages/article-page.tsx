@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useLocation, useRoute, Link } from "wouter";
 import { Helmet } from "react-helmet";
-import { ChevronLeft, Clock, User, Share2, BookmarkPlus, Calendar, Tag, ChevronRight } from "lucide-react";
+import { ChevronLeft, Clock, User, Share2, BookmarkPlus, Calendar, Tag, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { formatDate } from "../lib/utils";
 import headhuntersDubaiImage from "../assets/pexels-photo-5685937.webp";
 import executiveSearchImage from "../assets/pexels-photo-8730284.webp";
 import recruitmentAgenciesImage from "../assets/pexels-photo-4344860.webp";
@@ -18,23 +20,25 @@ import sustainabilityImage from "../assets/articles/sustainability.jpg";
 import educationImage from "../assets/articles/education.jpg";
 import gigEconomyImage from "../assets/articles/gig-economy.jpg";
 
-type Article = {
+// Interface for blog posts from the API
+interface BlogPost {
   id: number;
   title: string;
+  subtitle?: string;
   content: string;
+  bannerImage: string;
+  authorId: number;
+  publishDate: string;
+  published: boolean;
   category: string;
-  author: string;
-  date: string;
-  readTime: string;
-  image: string;
+  tags: string[];
+  slug: string;
   excerpt?: string;
-  authorImage?: string;
-  authorTitle?: string;
-  tags?: string[];
-};
+  readTime?: string;
+}
 
-// Sample article content - in a real application, this would come from an API
-const articlesData: Article[] = [
+// For fallback/sample data only - real data comes from API
+const articlesData = [
   {
     id: 1,
     title: "Executive Search Firms Find Top Talent",
@@ -1314,36 +1318,53 @@ const articlesData: Article[] = [
 export default function ArticlePage() {
   const [, params] = useRoute<{ id: string }>("/article/:id");
   const [, setLocation] = useLocation();
-  const [article, setArticle] = useState<Article | null>(null);
-  const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
-  
+  const [relatedArticles, setRelatedArticles] = useState<BlogPost[]>([]);
+
+  // Fetch the blog post by ID
+  const { data: blogPost, isLoading, error } = useQuery<BlogPost>({
+    queryKey: ["/api/blog-posts", params?.id],
+    queryFn: async () => {
+      if (!params?.id) return null as unknown as BlogPost;
+      const res = await fetch(`/api/blog-posts/${params.id}`);
+      if (!res.ok) throw new Error("Failed to fetch blog post");
+      return res.json();
+    },
+    enabled: !!params?.id,
+  });
+
+  // Fetch all blog posts to find related ones
+  const { data: allBlogPosts } = useQuery<BlogPost[]>({
+    queryKey: ["/api/blog-posts"],
+    queryFn: async () => {
+      const res = await fetch("/api/blog-posts");
+      if (!res.ok) throw new Error("Failed to fetch blog posts");
+      return res.json();
+    },
+    enabled: !!blogPost, // Only fetch when the main blog post is loaded
+  });
+
+  // Set related articles when blog post and all posts are loaded
   useEffect(() => {
-    // In a real app, fetch the article from an API using the ID
-    if (params?.id) {
-      const articleId = parseInt(params.id);
-      const foundArticle = articlesData.find(a => a.id === articleId);
+    if (blogPost && allBlogPosts) {
+      // Find related articles by category
+      const related = allBlogPosts
+        .filter(post => 
+          post.id !== blogPost.id && 
+          post.category === blogPost.category &&
+          post.published
+        )
+        .slice(0, 3);
       
-      if (foundArticle) {
-        setArticle(foundArticle);
-        
-        // Find related articles by category (in a real app, this would be handled by the API)
-        const related = articlesData.filter(a => 
-          a.id !== articleId && a.category === foundArticle.category
-        ).slice(0, 3);
-        
-        setRelatedArticles(related);
-      } else {
-        // If article not found, redirect to blog listing
-        setLocation("/blogs");
-      }
+      setRelatedArticles(related);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params?.id]);
-  
-  if (!article) {
+  }, [blogPost, allBlogPosts]);
+
+  // Handle loading state
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-screen">
         <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
           <h1 className="text-2xl font-bold mb-4">Loading article...</h1>
           <Button onClick={() => setLocation("/blogs")}>
             <ChevronLeft className="mr-2 h-4 w-4" />
@@ -1353,12 +1374,43 @@ export default function ArticlePage() {
       </div>
     );
   }
+
+  // Handle error state
+  if (error || !blogPost) {
+    return (
+      <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">
+            {error ? "Error loading article" : "Article not found"}
+          </h1>
+          <p className="text-gray-500 mb-6">
+            {error ? "There was a problem loading this article. Please try again later." : "The article you're looking for doesn't exist."}
+          </p>
+          <Button onClick={() => setLocation("/blogs")}>
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back to Blogs
+          </Button>
+        </div>
+      </div>
+    );
+  }
   
+  // Get user data to display author information
+  const { data: adminUser } = useQuery({
+    queryKey: ["/api/admin/user"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/user");
+      if (!res.ok) return null;
+      return res.json();
+    },
+    enabled: !!blogPost,
+  });
+
   return (
     <>
       <Helmet>
-        <title>{article.title} | Expert Recruitments LLC</title>
-        <meta name="description" content={article.excerpt || article.content.substring(0, 160)} />
+        <title>{blogPost.title} | Expert Recruitments LLC</title>
+        <meta name="description" content={blogPost.excerpt || blogPost.subtitle || blogPost.content.substring(0, 160)} />
       </Helmet>
       
       <div className="container mx-auto px-4 py-12">
@@ -1372,36 +1424,39 @@ export default function ArticlePage() {
         
         {/* Article header */}
         <div className="max-w-4xl mx-auto mb-8">
-          <div className="text-sm font-medium text-primary mb-2">{article.category}</div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-6">{article.title}</h1>
+          <div className="text-sm font-medium text-primary mb-2">{blogPost.category}</div>
+          <h1 className="text-3xl md:text-4xl font-bold mb-6">{blogPost.title}</h1>
+          {blogPost.subtitle && (
+            <p className="text-xl text-gray-600 mb-6">{blogPost.subtitle}</p>
+          )}
           
           <div className="flex items-center mb-8">
             <Avatar className="h-10 w-10 mr-4">
-              {article.authorImage ? (
-                <img src={article.authorImage} alt={article.author} />
-              ) : (
-                <AvatarFallback>{article.author.charAt(0)}</AvatarFallback>
-              )}
+              <AvatarFallback>
+                {adminUser ? adminUser.firstName.charAt(0) : "A"}
+              </AvatarFallback>
             </Avatar>
             <div>
-              <div className="font-medium">{article.author}</div>
-              {article.authorTitle && (
-                <div className="text-sm text-gray-500">{article.authorTitle}</div>
-              )}
+              <div className="font-medium">
+                {adminUser ? `${adminUser.firstName} ${adminUser.lastName}` : "Admin"}
+              </div>
+              <div className="text-sm text-gray-500">
+                Recruitment Specialist
+              </div>
             </div>
             <div className="ml-auto flex items-center text-sm text-gray-500">
               <Calendar className="mr-1 h-4 w-4" />
-              <span className="mr-4">{article.date}</span>
+              <span className="mr-4">{blogPost.publishDate ? formatDate(blogPost.publishDate) : "Recently Published"}</span>
               <Clock className="mr-1 h-4 w-4" />
-              <span>{article.readTime}</span>
+              <span>{blogPost.readTime || "5 min read"}</span>
             </div>
           </div>
           
           {/* Featured image */}
           <div className="rounded-lg overflow-hidden h-64 md:h-96 mb-8">
             <img 
-              src={article.image} 
-              alt={article.title} 
+              src={blogPost.bannerImage} 
+              alt={blogPost.title} 
               className="w-full h-full object-cover"
             />
           </div>
@@ -1409,14 +1464,14 @@ export default function ArticlePage() {
         
         {/* Article content */}
         <div className="max-w-4xl mx-auto mb-12">
-          <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: article.content }}></div>
+          <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: blogPost.content }}></div>
           
           {/* Tags */}
-          {article.tags && article.tags.length > 0 && (
+          {blogPost.tags && blogPost.tags.length > 0 && (
             <div className="mt-8 pt-6 border-t">
               <div className="flex items-center flex-wrap gap-2">
                 <Tag className="h-4 w-4 text-gray-500 mr-2" />
-                {article.tags.map((tag, index) => (
+                {blogPost.tags.map((tag, index) => (
                   <Link key={index} href={`/blogs?tag=${encodeURIComponent(tag)}`}>
                     <div className="inline-block bg-gray-100 hover:bg-primary/10 hover:text-primary text-gray-800 rounded-full px-3 py-1 text-sm cursor-pointer transition-colors">
                       {tag}
@@ -1446,16 +1501,16 @@ export default function ArticlePage() {
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                 <Avatar className="h-24 w-24">
-                  {article.authorImage ? (
-                    <img src={article.authorImage} alt={article.author} />
-                  ) : (
-                    <AvatarFallback className="text-3xl">{article.author.charAt(0)}</AvatarFallback>
-                  )}
+                  <AvatarFallback className="text-3xl">
+                    {adminUser ? adminUser.firstName.charAt(0) : "A"}
+                  </AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">About {article.author}</h3>
+                  <h3 className="text-xl font-bold mb-2">
+                    About {adminUser ? `${adminUser.firstName} ${adminUser.lastName}` : "Our Expert"}
+                  </h3>
                   <p className="text-gray-700 mb-4">
-                    {article.authorTitle || "Recruitment Specialist"} at Expert Recruitments LLC with expertise in talent acquisition and executive search. Passionate about connecting organizations with exceptional leadership talent.
+                    Recruitment Specialist at Expert Recruitments LLC with expertise in talent acquisition and executive search. Passionate about connecting organizations with exceptional leadership talent.
                   </p>
                   <Button variant="outline" size="sm">
                     View Profile
@@ -1475,7 +1530,7 @@ export default function ArticlePage() {
                 <Card key={relatedArticle.id} className="overflow-hidden h-full flex flex-col">
                   <div className="h-40 overflow-hidden">
                     <img
-                      src={relatedArticle.image}
+                      src={relatedArticle.bannerImage}
                       alt={relatedArticle.title}
                       className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
                     />
@@ -1487,9 +1542,11 @@ export default function ArticlePage() {
                   <CardContent className="flex-grow">
                     <div className="flex items-center text-sm text-gray-500">
                       <User className="mr-1 h-4 w-4" />
-                      <span className="mr-4">{relatedArticle.author}</span>
+                      <span className="mr-4">
+                        {adminUser ? `${adminUser.firstName} ${adminUser.lastName}` : "Admin"}
+                      </span>
                       <Clock className="mr-1 h-4 w-4" />
-                      <span>{relatedArticle.readTime}</span>
+                      <span>{relatedArticle.readTime || "5 min read"}</span>
                     </div>
                   </CardContent>
                   <CardFooter>
