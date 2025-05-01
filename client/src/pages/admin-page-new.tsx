@@ -1201,14 +1201,13 @@ function AdminDashboard() {
                       <PlusCircle className="mr-2 h-4 w-4" />
                       Create Blog Post
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full" 
-                      onClick={() => navigate("/manage-blogs")}
-                    >
+                    <Button variant="outline" className="w-full" disabled>
                       <FileText className="mr-2 h-4 w-4" />
                       Manage Blog Posts
                     </Button>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Blog post management coming soon
+                    </p>
                   </div>
                 </div>
               </div>

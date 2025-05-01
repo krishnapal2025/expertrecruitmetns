@@ -4,9 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen, Calendar, Tag, ChevronDown } from "lucide-react";
 import blogsBgImage from "../assets/close-up-person-working-home-night_23-2149090964.avif";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLocation, Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import headhuntersDubaiImage from "../assets/pexels-photo-5685937.webp";
 import executiveSearchImage from "../assets/pexels-photo-8730284.webp";
 import recruitmentAgenciesImage from "../assets/pexels-photo-4344860.webp";
@@ -19,33 +18,9 @@ import healthcareImage from "../assets/articles/healthcare.jpg";
 import sustainabilityImage from "../assets/articles/sustainability.jpg";
 import educationImage from "../assets/articles/education.jpg";
 import gigEconomyImage from "../assets/articles/gig-economy.jpg";
-import { Loader2 } from "lucide-react";
-import type { BlogPost } from "@shared/schema";
 
-// Helper function to map blog IDs/paths to their appropriate images
-const getImageForBlog = (id: number, bannerImage?: string): string => {
-  // For newly added blog posts
-  if (id === 9) return techGrowthImage;
-  if (id === 10) return remoteWorkImage;
-  if (id === 11) return healthcareImage;
-  if (id === 12) return sustainabilityImage;
-  if (id === 13) return educationImage;
-  if (id === 14) return gigEconomyImage;
-  
-  // For existing Executive Recruitment blog posts
-  if (bannerImage?.includes('pexels-photo-8730284.webp')) return executiveSearchImage;
-  if (bannerImage?.includes('pexels-photo-5685937.webp')) return headhuntersDubaiImage;
-  if (bannerImage?.includes('pexels-photo-4344860.webp')) return recruitmentAgenciesImage;
-  if (bannerImage?.includes('pexels-photo-3307862.webp')) return bestRecruitmentAgencyImage;
-  if (bannerImage?.includes('pexels-photo-5668858.webp')) return partnerHeadhuntersDubaiImage;
-  if (bannerImage?.includes('pexels-photo-7078666.jpeg')) return recruitmentAgenciesForMNCs;
-  
-  // Fallback to executive search image for any other scenario
-  return executiveSearchImage;
-};
-
-// Sample blog data as fallback
-const sampleBlogPosts = [
+// Sample blog data
+const blogPosts = [
   {
     id: 1,
     title: "Executive Search Firms Find Top Talent",
@@ -184,56 +159,8 @@ export default function BlogsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [, setLocation] = useLocation();
 
-  // Fetch blog posts from API
-  const { data: apiPosts, isLoading, error } = useQuery({
-    queryKey: ['/api/blog-posts'],
-    queryFn: async () => {
-      const response = await fetch('/api/blog-posts');
-      if (!response.ok) {
-        throw new Error('Failed to fetch blog posts');
-      }
-      return response.json() as Promise<BlogPost[]>;
-    }
-  });
-
-  // Always use API posts, with sample posts as fallback only when none exist
-  const allBlogPosts = apiPosts && apiPosts.length > 0
-    ? apiPosts.map(post => {
-        // Format real blog posts to match display format
-        const publishDate = post.publishDate ? new Date(post.publishDate) : new Date();
-        const formattedDate = publishDate.toLocaleDateString('en-US', {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric'
-        });
-        
-        return {
-          id: post.id,
-          title: post.title,
-          excerpt: post.excerpt || post.subtitle || (post.content?.substring(0, 150) + '...'),
-          category: post.category || 'General',
-          author: 'Admin', // Can be enhanced with author lookup
-          date: formattedDate,
-          readTime: post.readTime || '5 min read',
-          image: getImageForBlog(post.id, post.bannerImage || undefined),
-          slug: post.slug,
-          content: post.content
-        };
-      })
-    : sampleBlogPosts;
-
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="ml-2">Loading blog posts...</span>
-      </div>
-    );
-  }
-
   // Filter blogs based on search term and category
-  const filteredBlogs = allBlogPosts.filter((blog: any) => {
+  const filteredBlogs = blogPosts.filter(blog => {
     const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
     

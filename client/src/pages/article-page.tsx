@@ -18,28 +18,6 @@ import sustainabilityImage from "../assets/articles/sustainability.jpg";
 import educationImage from "../assets/articles/education.jpg";
 import gigEconomyImage from "../assets/articles/gig-economy.jpg";
 
-// Helper function to map blog IDs/paths to their appropriate images
-const getImageForBlog = (id: number, bannerImage?: string): string => {
-  // For newly added blog posts
-  if (id === 9) return techGrowthImage;
-  if (id === 10) return remoteWorkImage;
-  if (id === 11) return healthcareImage;
-  if (id === 12) return sustainabilityImage;
-  if (id === 13) return educationImage;
-  if (id === 14) return gigEconomyImage;
-  
-  // For existing Executive Recruitment blog posts
-  if (bannerImage?.includes('pexels-photo-8730284.webp')) return executiveSearchImage;
-  if (bannerImage?.includes('pexels-photo-5685937.webp')) return headhuntersDubaiImage;
-  if (bannerImage?.includes('pexels-photo-4344860.webp')) return recruitmentAgenciesImage;
-  if (bannerImage?.includes('pexels-photo-3307862.webp')) return bestRecruitmentAgencyImage;
-  if (bannerImage?.includes('pexels-photo-5668858.webp')) return partnerHeadhuntersDubaiImage;
-  if (bannerImage?.includes('pexels-photo-7078666.jpeg')) return recruitmentAgenciesForMNCs;
-  
-  // Fallback to executive search image for any other scenario
-  return executiveSearchImage;
-};
-
 type Article = {
   id: number;
   title: string;
@@ -1338,120 +1316,31 @@ export default function ArticlePage() {
   const [, setLocation] = useLocation();
   const [article, setArticle] = useState<Article | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   
   useEffect(() => {
-    // Try to fetch the article from the API first
+    // In a real app, fetch the article from an API using the ID
     if (params?.id) {
       const articleId = parseInt(params.id);
+      const foundArticle = articlesData.find(a => a.id === articleId);
       
-      // Try to fetch from API first
-      fetch(`/api/blog-posts/${articleId}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Blog post not found');
-          }
-          return response.json();
-        })
-        .then(post => {
-          const publishDate = post.publishDate ? new Date(post.publishDate) : new Date();
-          const formattedDate = publishDate.toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
-          });
-          
-          // Use the helper function to get the appropriate image
-          const imageSource = getImageForBlog(post.id, post.bannerImage);
-          
-          // Create a more detailed article content that includes subtitle and tags
-          let enhancedContent = '';
-          
-          // Add subtitle if available
-          if (post.subtitle) {
-            enhancedContent += `<h2 class="text-xl font-semibold text-gray-700 mb-6">${post.subtitle}</h2>`;
-          }
-          
-          // Add main content - split by line breaks and wrap each paragraph
-          const paragraphs = (post.content || '').split('\n').filter(p => p.trim() !== '');
-          
-          // Wrap each paragraph in proper HTML
-          paragraphs.forEach(paragraph => {
-            enhancedContent += `<p class="mb-6 text-gray-800 leading-relaxed">${paragraph}</p>`;
-          });
-          
-          // If no paragraphs were found, use the original content
-          if (paragraphs.length === 0 && post.content) {
-            enhancedContent += `<p class="mb-6 text-gray-800 leading-relaxed">${post.content}</p>`;
-          }
-          
-          const fetchedArticle: Article = {
-            id: post.id,
-            title: post.title,
-            excerpt: post.excerpt || post.subtitle || '',
-            content: enhancedContent,
-            category: post.category || 'Executive Recruitment',
-            author: 'Admin', // This could be enhanced with author lookup
-            date: formattedDate,
-            readTime: post.readTime || '10 min read',
-            image: imageSource,
-            tags: post.tags || []
-          };
-          
-          setArticle(fetchedArticle);
-          
-          // Find related sample articles by category 
-          // This would ideally be an API call in production
-          const related = articlesData.filter(a => 
-            a.id !== articleId && a.category === fetchedArticle.category
-          ).slice(0, 3);
-          
-          setRelatedArticles(related);
-          setLoading(false);
-        })
-        .catch(() => {
-          // Fallback to sample data if API fails
-          console.log("Falling back to sample data");
-          const foundArticle = articlesData.find(a => a.id === articleId);
-          
-          if (foundArticle) {
-            setArticle(foundArticle);
-            
-            // Find related articles by category
-            const related = articlesData.filter(a => 
-              a.id !== articleId && a.category === foundArticle.category
-            ).slice(0, 3);
-            
-            setRelatedArticles(related);
-          } else {
-            // If article not found in sample data either, show error
-            setError(true);
-            // And redirect after a short delay
-            setTimeout(() => setLocation("/blogs"), 2000);
-          }
-          setLoading(false);
-        });
+      if (foundArticle) {
+        setArticle(foundArticle);
+        
+        // Find related articles by category (in a real app, this would be handled by the API)
+        const related = articlesData.filter(a => 
+          a.id !== articleId && a.category === foundArticle.category
+        ).slice(0, 3);
+        
+        setRelatedArticles(related);
+      } else {
+        // If article not found, redirect to blog listing
+        setLocation("/blogs");
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params?.id]);
   
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Article not found</h1>
-          <p className="text-gray-600 mb-6">The article you're looking for could not be found. Redirecting to blogs...</p>
-          <Button onClick={() => setLocation("/blogs")}>
-            <ChevronLeft className="mr-2 h-4 w-4" />
-            Go to Blogs
-          </Button>
-        </div>
-      </div>
-    );
-  }
-  
-  if (loading || !article) {
+  if (!article) {
     return (
       <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-screen">
         <div className="text-center">
