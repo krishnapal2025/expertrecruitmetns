@@ -18,6 +18,28 @@ import sustainabilityImage from "../assets/articles/sustainability.jpg";
 import educationImage from "../assets/articles/education.jpg";
 import gigEconomyImage from "../assets/articles/gig-economy.jpg";
 
+// Helper function to map blog IDs/paths to their appropriate images
+const getImageForBlog = (id: number, bannerImage?: string): string => {
+  // For newly added blog posts
+  if (id === 9) return techGrowthImage;
+  if (id === 10) return remoteWorkImage;
+  if (id === 11) return healthcareImage;
+  if (id === 12) return sustainabilityImage;
+  if (id === 13) return educationImage;
+  if (id === 14) return gigEconomyImage;
+  
+  // For existing Executive Recruitment blog posts
+  if (bannerImage?.includes('pexels-photo-8730284.webp')) return executiveSearchImage;
+  if (bannerImage?.includes('pexels-photo-5685937.webp')) return headhuntersDubaiImage;
+  if (bannerImage?.includes('pexels-photo-4344860.webp')) return recruitmentAgenciesImage;
+  if (bannerImage?.includes('pexels-photo-3307862.webp')) return bestRecruitmentAgencyImage;
+  if (bannerImage?.includes('pexels-photo-5668858.webp')) return partnerHeadhuntersDubaiImage;
+  if (bannerImage?.includes('pexels-photo-7078666.jpeg')) return recruitmentAgenciesForMNCs;
+  
+  // Fallback to executive search image for any other scenario
+  return executiveSearchImage;
+};
+
 type Article = {
   id: number;
   title: string;
