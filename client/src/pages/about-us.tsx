@@ -86,50 +86,25 @@ export default function AboutUsPage() {
         
         <div className="container mx-auto px-4 relative">
           {/* Main content */}
-          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16 relative z-20">
-            <motion.div 
-              className="inline-block mb-6 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-sm rounded-md backdrop-blur-sm"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+          <div className="flex flex-col items-center text-center max-w-5xl mx-auto relative z-20">
+            <div className="inline-block mb-6 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-sm rounded-md backdrop-blur-sm">
               <span className="font-medium text-primary tracking-wider uppercase text-sm">Executive Search Specialists</span>
-            </motion.div>
+            </div>
             
-            <motion.h1 
-              className="text-2xl sm:text-3xl md:text-5xl font-bold mb-6 text-white tracking-tight drop-shadow-md"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.7 }}
-            >
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-white tracking-tight drop-shadow-md">
               Expert Recruitments
-            </motion.h1>
+            </h1>
             
-            <motion.p 
-              className="text-xl md:text-2xl text-white leading-relaxed mb-4 max-w-3xl drop-shadow-md"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-            >
+            <p className="text-xl md:text-2xl text-white leading-relaxed mb-4 max-w-3xl drop-shadow-md">
               The Home of High-End Executive Search in Dubai and across the UAE
-            </motion.p>
+            </p>
             
-            <motion.p 
-              className="text-lg text-white/90 leading-relaxed mb-6 max-w-3xl drop-shadow"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-            >
+            <p className="text-lg text-white/90 leading-relaxed mb-6 max-w-3xl drop-shadow">
               From executive search in the UAE to focused head hunting services, we take a detailed and meticulous approach to finding the right people for the right positions.
-            </motion.p>
+            </p>
             
             {/* Section Navigation Buttons */}
-            <motion.div 
-              className="flex flex-col items-center gap-4 mb-10 z-30"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-            >
+            <div className="flex flex-col items-center gap-4 mb-10 z-30">
               {/* First Row */}
               <div className="flex flex-wrap justify-center gap-4 w-full">
                 <a 
@@ -212,45 +187,12 @@ export default function AboutUsPage() {
                   <span>Our Reputation</span>
                 </a>
               </div>
-            </motion.div>
+            </div>
 
           </div>
           
           {/* Three value propositions */}
-          <motion.div 
-            className="grid md:grid-cols-3 gap-4 relative z-20 max-w-4xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-          >
-            <div className="relative bg-white/95 backdrop-blur-sm rounded-lg shadow-md p-4 border border-gray-100 hover:shadow-lg transition-all duration-300 flex flex-col items-center h-full group">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center border border-white/50 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                <Users className="h-4 w-4 text-white" />
-              </div>
-              <h3 className="text-base font-bold text-gray-800 mt-4 mb-1 text-center group-hover:text-primary transition-colors duration-300">Comprehensive</h3>
-              <p className="text-sm text-gray-600 text-center">Talent Acquisition</p>
-              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 rounded-b-lg"></div>
-            </div>
-            
-            <div className="relative bg-white/95 backdrop-blur-sm rounded-lg shadow-md p-4 border border-gray-100 hover:shadow-lg transition-all duration-300 flex flex-col items-center h-full group">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center border border-white/50 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                <Briefcase className="h-4 w-4 text-white" />
-              </div>
-              <h3 className="text-base font-bold text-gray-800 mt-4 mb-1 text-center group-hover:text-primary transition-colors duration-300">Meticulous</h3>
-              <p className="text-sm text-gray-600 text-center">Search Process</p>
-              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 rounded-b-lg"></div>
-            </div>
-            
-            <div className="relative bg-white/95 backdrop-blur-sm rounded-lg shadow-md p-4 border border-gray-100 hover:shadow-lg transition-all duration-300 flex flex-col items-center h-full group">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center border border-white/50 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                <Target className="h-4 w-4 text-white" />
-              </div>
-              <h3 className="text-base font-bold text-gray-800 mt-4 mb-1 text-center group-hover:text-primary transition-colors duration-300">Results</h3>
-              <p className="text-sm text-gray-600 text-center">Guaranteed</p>
-              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 rounded-b-lg"></div>
-            </div>
-          </motion.div>
-          
+         
 
         </div>
       </div>

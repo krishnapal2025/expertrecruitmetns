@@ -37,23 +37,13 @@ export default function HireTalentPage() {
               <span className="font-medium text-primary tracking-wider uppercase text-sm">Executive Search Specialists</span>
             </div>
             
-            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-6 text-white tracking-tight drop-shadow-md">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-white tracking-tight drop-shadow-md">
               Connect With Exceptional Leadership Talent
             </h1>
             
             <p className="text-xl text-white/95 leading-relaxed mb-8 max-w-3xl drop-shadow">
               Partner with Dubai's premier headhunters to find the executive talent that will drive your organization's success
             </p>
-            
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4 justify-center mt-6 mb-10">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-md" asChild>
-                <Link href="/submit-vacancy">Request Executive Search</Link>
-              </Button>
-              <Button size="lg" className="bg-white/95 text-primary hover:bg-white border border-primary/20 shadow-md backdrop-blur-sm" asChild>
-                <Link href="/contact-us">Speak to a Consultant</Link>
-              </Button>
-            </div>
             
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mt-6 mb-16 w-full max-w-4xl">
@@ -62,7 +52,7 @@ export default function HireTalentPage() {
                 <div className="text-white/90 text-sm">Executive Placements</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20">
-                <div className="text-primary font-bold text-2xl mb-1">90%</div>
+                <div className="text-primary font-bold text-2xl mb-1">92%</div>
                 <div className="text-white/90 text-sm">Retention Rate</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20">
@@ -70,8 +60,8 @@ export default function HireTalentPage() {
                 <div className="text-white/90 text-sm">Industry Sectors</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20">
-                <div className="text-primary font-bold text-2xl mb-1">12</div>
-                <div className="text-white/90 text-sm">Years in UAE</div>
+                <div className="text-primary font-bold text-2xl mb-1">10+</div>
+                <div className="text-white/90 text-sm">Years of Excellence</div>
               </div>
             </div>
             
