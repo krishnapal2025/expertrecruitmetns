@@ -447,9 +447,9 @@ const CreateBlogPage = () => {
                       <FormLabel className="text-base">
                         Publish Immediately
                       </FormLabel>
-                      <FormDescription>
+                      <p className="text-sm text-muted-foreground">
                         Toggle off to save as draft
-                      </FormDescription>
+                      </p>
                     </div>
                     <FormControl>
                       <Switch

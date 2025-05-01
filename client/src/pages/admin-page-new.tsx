@@ -1196,10 +1196,19 @@ function AdminDashboard() {
                   <p className="text-sm text-muted-foreground/70 mb-6 max-w-md">
                     Add engaging content to your website with blog posts about recruitment, career advice, and industry trends
                   </p>
-                  <Button onClick={() => navigate("/create-blog")}>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Create Blog Post
-                  </Button>
+                  <div className="space-y-4">
+                    <Button onClick={() => navigate("/create-blog")} className="w-full">
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      Create Blog Post
+                    </Button>
+                    <Button variant="outline" className="w-full" disabled>
+                      <FileText className="mr-2 h-4 w-4" />
+                      Manage Blog Posts
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Blog post management coming soon
+                    </p>
+                  </div>
                 </div>
               </div>
             </CardContent>
