@@ -16,7 +16,7 @@ export default function ServicesPage() {
         <meta name="description" content="Explore our comprehensive range of services for both job seekers and employers. From recruitment solutions to career coaching." />
       </Helmet>
 
-      <div className="relative py-32 md:py-48 overflow-hidden">
+      <div className="relative py-40 md:py-56 overflow-hidden">
         {/* Background Image with Black Tint */}
         <div className="absolute inset-0 bg-black/60 z-10"></div>
         <div 
@@ -25,6 +25,9 @@ export default function ServicesPage() {
             backgroundImage: `url(${servicesBgImage})`,
             backgroundPosition: 'center center',
             backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            height: '100%',
+            width: '100%',
             filter: 'brightness(0.85)'
           }}
         ></div>
