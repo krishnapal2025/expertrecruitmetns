@@ -69,19 +69,22 @@ export default function HireTalentPage() {
               </div>
             </div>
             
-            {/* Scroll Down Indicator */}
-            <div className="flex flex-col items-center text-white/80 mb-4">
-              <span className="text-sm mb-2">Scroll to Learn More</span>
-              <div className="animate-bounce">
+            {/* Scroll Down Button */}
+            <a 
+              href="#services-overview" 
+              className="flex flex-col items-center mt-4 text-white/80 hover:text-white transition-colors duration-300"
+            >
+              <span className="text-sm font-medium mb-2">Explore More</span>
+              <div className="w-10 h-10 rounded-full border-2 border-white/30 flex items-center justify-center">
                 <ChevronDown className="h-6 w-6" />
               </div>
-            </div>
+            </a>
           </div>
         </div>
       </div>
 
       {/* Services Overview Section */}
-      <div className="py-16 bg-gradient-to-b from-white to-gray-50">
+      <div id="services-overview" className="py-16 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">UAE's Premier Executive Search Firm</h2>

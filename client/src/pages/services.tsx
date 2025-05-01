@@ -58,7 +58,7 @@ export default function ServicesPage() {
             {/* Scroll Down Button */}
             <a 
               href="#services-content" 
-              className="flex flex-col items-center mt-8 text-white/80 hover:text-white transition-colors duration-300 animate-pulse"
+              className="flex flex-col items-center mt-4 text-white/80 hover:text-white transition-colors duration-300"
             >
               <span className="text-sm font-medium mb-2">Explore Our Services</span>
               <div className="w-10 h-10 rounded-full border-2 border-white/30 flex items-center justify-center">

@@ -277,26 +277,21 @@ export default function JobBoardPage() {
               </div>
             </motion.div>
             
-            {/* Scroll Down Indicator */}
-            <motion.div
-              className="flex flex-col items-center text-white/80 mt-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.9, duration: 0.5 }}
+            {/* Scroll Down Button */}
+            <a 
+              href="#job-explorer" 
+              className="flex flex-col items-center mt-4 text-white/80 hover:text-white transition-colors duration-300"
             >
-              <span className="text-sm mb-2">Scroll Down</span>
-              <motion.div
-                animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
-              >
+              <span className="text-sm font-medium mb-2">Explore More</span>
+              <div className="w-10 h-10 rounded-full border-2 border-white/30 flex items-center justify-center">
                 <ChevronDown className="h-6 w-6" />
-              </motion.div>
-            </motion.div>
+              </div>
+            </a>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-10">
+      <div id="job-explorer" className="container mx-auto px-4 py-10">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-gray-700">Job Explorer</h2>
           <Button
