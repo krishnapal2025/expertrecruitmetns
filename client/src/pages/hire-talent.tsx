@@ -298,7 +298,7 @@ export default function HireTalentPage() {
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
                   <Users className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle>Elite Talent Networks</CardTitle>
+                <CardTitle className="text-lg font-semibold">Elite Talent Networks</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
@@ -312,7 +312,7 @@ export default function HireTalentPage() {
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
                   <Building2 className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle>UAE Market Expertise</CardTitle>
+                <CardTitle className="text-lg font-semibold">UAE Market Expertise</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
@@ -326,7 +326,7 @@ export default function HireTalentPage() {
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
                   <Shield className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle>Quality Guarantees</CardTitle>
+                <CardTitle className="text-lg font-semibold">Quality Guarantees</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
@@ -340,7 +340,7 @@ export default function HireTalentPage() {
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
                   <DollarSign className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle>Success-Based Model</CardTitle>
+                <CardTitle className="text-lg font-semibold">Success-Based Model</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
