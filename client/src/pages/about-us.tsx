@@ -69,14 +69,15 @@ export default function AboutUsPage() {
       </Helmet>
 
       {/* Hero Section with Premium Executive Design */}
-      <div className="relative py-32 md:py-40 overflow-hidden" id="about-hero-section">
+      <div className="relative py-36 md:py-48 overflow-hidden" id="about-hero-section">
         {/* Background Image */}
         <div className="absolute inset-0 bg-black/60 z-10"></div>
         <div 
           className="absolute inset-0 bg-center bg-cover" 
           style={{ 
             backgroundImage: `url(${aboutHeroImage})`,
-            backgroundPosition: 'center top',
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
             filter: 'brightness(0.85)'
           }}
         ></div>
