@@ -64,6 +64,28 @@ function AdminDashboard() {
   const [searchJobSeekers, setSearchJobSeekers] = useState("");
   const [vacancyStatusFilter, setVacancyStatusFilter] = useState("all");
   
+  // Check authentication
+  useEffect(() => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to access the admin dashboard.",
+        variant: "default",
+      });
+      navigate("/admin-login");
+      return;
+    }
+    
+    if (user.userType !== "admin") {
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to access the admin dashboard.",
+        variant: "destructive",
+      });
+      navigate("/");
+    }
+  }, [user, navigate, toast]);
+  
   // Check if user is admin
   const { isLoading: adminLoading } = useQuery({
     queryKey: ["/api/admin/user"],
@@ -205,19 +227,7 @@ function AdminDashboard() {
     }
   };
   
-  // Redirect if not admin
-  useEffect(() => {
-    if (user && user.userType !== "admin") {
-      toast({
-        title: "Access denied",
-        description: "You don't have permission to access the admin dashboard.",
-        variant: "destructive",
-      });
-      navigate("/");
-    } else if (!user && !adminLoading) {
-      navigate("/auth");
-    }
-  }, [user, adminLoading, navigate, toast]);
+  // We now have a single authentication check in the useEffect at the top
   
   // Loading state
   if (!user || adminLoading) {
