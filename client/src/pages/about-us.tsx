@@ -96,7 +96,7 @@ export default function AboutUsPage() {
               <span className="font-medium text-primary tracking-wider uppercase text-sm">Executive Search Specialists</span>
             </div>
             
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-white tracking-tight drop-shadow-md">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-8 text-white tracking-tight drop-shadow-md">
               Expert Recruitments
             </h1>
             
@@ -200,12 +200,12 @@ export default function AboutUsPage() {
             
             {/* Scroll Down Button */}
             <a 
-              href="#our-approach"
-              className="flex flex-col items-center mt-12 text-white hover:text-primary transition-colors duration-300 cursor-pointer z-30 relative"
+              href="#our-approach" 
+              className="flex flex-col items-center mt-4 text-white/80 hover:text-white transition-colors duration-300"
             >
-              <span className="text-sm font-medium mb-2 bg-white/20 px-4 py-1 rounded-full backdrop-blur-sm">Explore More</span>
-              <div className="w-12 h-12 rounded-full border-2 border-white bg-white/20 flex items-center justify-center backdrop-blur-sm shadow-lg hover:bg-white/30">
-                <ChevronDown className="h-7 w-7" />
+              <span className="text-sm font-medium mb-2">Explore More</span>
+              <div className="w-10 h-10 rounded-full border-2 border-white/30 flex items-center justify-center">
+                <ChevronDown className="h-6 w-6" />
               </div>
             </a>
           
