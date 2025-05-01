@@ -103,7 +103,7 @@ export default function HomePage() {
           </motion.div>
           
           {/* Interactive Feature Blocks - 2x2 Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 max-w-full px-4 mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-full px-4 mx-auto">
             
             {/* Hire Talent Feature */}
             <motion.div
@@ -114,9 +114,9 @@ export default function HomePage() {
               transition={{ duration: 0.7 }}
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-3xl blur-xl opacity-25 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500 h-full">
+              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500 h-full">
                 {/* Image Area */}
-                <div className="md:w-2/5 aspect-video md:aspect-square rounded-xl overflow-hidden">
+                <div className="md:w-[40%] aspect-video md:aspect-square rounded-xl overflow-hidden">
                   <div className="w-full h-full relative">
                     <img 
                       src={hireTalentImage}
@@ -131,7 +131,7 @@ export default function HomePage() {
                 </div>
                 
                 {/* Content Area */}
-                <div className="md:w-3/5 flex flex-col justify-between">
+                <div className="md:w-[60%] flex flex-col justify-between">
                   <div>
                     <div className="flex items-center mb-4">
                       <div className="w-10 h-10 mr-4 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
@@ -185,9 +185,9 @@ export default function HomePage() {
               transition={{ duration: 0.7 }}
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-primary to-blue-600 rounded-3xl blur-xl opacity-25 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500 h-full">
+              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500 h-full">
                 {/* Image Area */}
-                <div className="md:w-2/5 aspect-video md:aspect-square rounded-xl overflow-hidden">
+                <div className="md:w-[40%] aspect-video md:aspect-square rounded-xl overflow-hidden">
                   <div className="w-full h-full relative">
                     <img 
                       src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=1500&auto=format&fit=crop"
@@ -202,7 +202,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Content Area */}
-                <div className="md:w-3/5 flex flex-col justify-between">
+                <div className="md:w-[60%] flex flex-col justify-between">
                   <div>
                     <div className="flex items-center mb-4">
                       <div className="w-10 h-10 mr-4 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-primary">
@@ -256,9 +256,9 @@ export default function HomePage() {
               transition={{ duration: 0.7, delay: 0.1 }}
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-3xl blur-xl opacity-25 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500 h-full">
+              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500 h-full">
                 {/* Image Area */}
-                <div className="md:w-2/5 aspect-video md:aspect-square rounded-xl overflow-hidden">
+                <div className="md:w-[40%] aspect-video md:aspect-square rounded-xl overflow-hidden">
                   <div className="w-full h-full relative">
                     <img 
                       src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=1500&auto=format&fit=crop"
@@ -273,7 +273,7 @@ export default function HomePage() {
                 </div>
                 
                 {/* Content Area */}
-                <div className="md:w-3/5 flex flex-col justify-between">
+                <div className="md:w-[60%] flex flex-col justify-between">
                   <div>
                     <div className="flex items-center mb-4">
                       <div className="w-10 h-10 mr-4 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600">
@@ -332,9 +332,9 @@ export default function HomePage() {
               transition={{ duration: 0.7, delay: 0.2 }}
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-teal-500 to-green-500 rounded-3xl blur-xl opacity-25 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500 h-full">
+              <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500 h-full">
                 {/* Image Area */}
-                <div className="md:w-2/5 aspect-video md:aspect-square rounded-xl overflow-hidden">
+                <div className="md:w-[40%] aspect-video md:aspect-square rounded-xl overflow-hidden">
                   <div className="w-full h-full relative">
                     <img 
                       src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1500&auto=format&fit=crop"
@@ -349,7 +349,7 @@ export default function HomePage() {
                 </div>
                 
                 {/* Content Area */}
-                <div className="md:w-3/5 flex flex-col justify-between">
+                <div className="md:w-[60%] flex flex-col justify-between">
                   <div>
                     <div className="flex items-center mb-4">
                       <div className="w-10 h-10 mr-4 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600">
