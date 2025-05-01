@@ -96,6 +96,10 @@ function Router() {
       <Route path="/vacancy-form" component={VacancyFormPage} />
       <Route path="/inquiry-form" component={InquiryFormPage} />
       <Route path="/admin" component={AdminPage} />
+      <Route path="/admin-dashboard" component={() => {
+        const AdminDashboard = require("@/pages/admin-page-new").default;
+        return <AdminDashboard />;
+      }} />
       <Route path="/admin-register" component={AdminRegisterPage} />
       <Route path="/admin-login" component={AdminLoginPage} />
       <Route path="/admin/forgot-password" component={AdminForgotPasswordPage} />
