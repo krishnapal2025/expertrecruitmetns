@@ -16,7 +16,7 @@ import {
   MapPin
 } from "lucide-react";
 import ourApproachImage from "../assets/our-approach-image.webp";
-import aboutHeroImage from "../assets/about-hero-image.jpg";
+import aerialBusinessViewImage from "../assets/aerial-view-business-team.jpg";
 
 export default function AboutUsPage() {
   // Animation variants
@@ -69,15 +69,18 @@ export default function AboutUsPage() {
       </Helmet>
 
       {/* Hero Section with Premium Executive Design */}
-      <div className="relative py-36 md:py-48 overflow-hidden" id="about-hero-section">
+      <div className="relative min-h-screen overflow-hidden" id="about-hero-section">
         {/* Background Image */}
-        <div className="absolute inset-0 bg-black/60 z-10"></div>
+        <div className="absolute inset-0 bg-black/75 z-10"></div>
         <div 
           className="absolute inset-0 bg-center bg-cover" 
           style={{ 
-            backgroundImage: `url(${aboutHeroImage})`,
+            backgroundImage: `url(${aerialBusinessViewImage})`,
             backgroundPosition: 'center center',
             backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            height: '100%',
+            width: '100%',
             filter: 'brightness(0.85)'
           }}
         ></div>
@@ -85,9 +88,9 @@ export default function AboutUsPage() {
         {/* Accent lines */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>
         
-        <div className="container mx-auto px-4 relative">
+        <div className="w-full max-w-[1440px] mx-auto px-4 relative py-40 md:py-52">
           {/* Main content */}
-          <div className="flex flex-col items-center text-center max-w-5xl mx-auto relative z-20">
+          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16 relative z-20">
             <div className="inline-block mb-6 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-sm rounded-md backdrop-blur-sm">
               <span className="font-medium text-primary tracking-wider uppercase text-sm">Executive Search Specialists</span>
             </div>
