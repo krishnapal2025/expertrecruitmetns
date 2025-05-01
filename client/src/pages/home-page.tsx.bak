@@ -103,7 +103,7 @@ export default function HomePage() {
           </motion.div>
           
           {/* Interactive Feature Blocks - Distinctly different from categories */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-12 mb-16">
             
             {/* Hire Talent Feature */}
             <motion.div
@@ -311,7 +311,7 @@ export default function HomePage() {
                     </ul>
                   </div>
                   
-                  <Link href="/employer-register">
+                  <Link href="/post-job">
                     <Button variant="default" className="group w-full justify-between bg-indigo-600 hover:bg-indigo-700 text-white">
                       <span className="mr-2">Post a Job</span>
                       <span className="relative inline-block transition-transform duration-300 group-hover:translate-x-1">
@@ -323,14 +323,8 @@ export default function HomePage() {
               </div>
             </motion.div>
             
-            {/* Career Resources Feature */}
-            <motion.div
-              className="group relative"
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-            >
+
+
               <div className="absolute -inset-1 bg-gradient-to-r from-teal-500 to-green-500 rounded-3xl blur-xl opacity-25 group-hover:opacity-40 transition duration-500"></div>
               <div className="relative flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden hover:shadow-xl transition duration-500">
                 {/* Image Area */}
@@ -396,6 +390,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      
       
       <AnimatedTestimonials />
       
