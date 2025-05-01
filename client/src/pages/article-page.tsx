@@ -1409,7 +1409,7 @@ export default function ArticlePage() {
     );
   }
   
-  // Get user data to display author information
+  // Get user data to display author information 
   const { data: adminUser } = useQuery({
     queryKey: ["/api/admin/user"],
     queryFn: async () => {
