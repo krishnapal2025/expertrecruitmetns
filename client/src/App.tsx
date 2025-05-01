@@ -42,6 +42,7 @@ import ApplicationsManagerPage from "@/pages/applications-manager";
 import VacancyFormPage from "@/pages/vacancy-form";
 import InquiryFormPage from "@/pages/inquiry-form";
 import { ProtectedRoute } from "./lib/protected-route";
+import { AdminProtectedRoute } from "./lib/admin-protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
@@ -97,7 +98,7 @@ function Router() {
       <Route path="/vacancy-form" component={VacancyFormPage} />
       <Route path="/inquiry-form" component={InquiryFormPage} />
       <Route path="/admin" component={AdminPage} />
-      <Route path="/admin-dashboard" component={AdminDashboardPage} />
+      <AdminProtectedRoute path="/admin-dashboard" component={AdminDashboardPage} />
       <Route path="/admin-register" component={AdminRegisterPage} />
       <Route path="/admin-login" component={AdminLoginPage} />
       <Route path="/admin/forgot-password" component={AdminForgotPasswordPage} />
