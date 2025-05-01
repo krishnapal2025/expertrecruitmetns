@@ -195,19 +195,21 @@ export default function AboutUsPage() {
                 </a>
               </div>
             </div>
-
-          </div>
             
             {/* Scroll Down Button */}
             <a 
               href="#our-approach" 
-              className="flex flex-col items-center mt-4 text-white/80 hover:text-white transition-colors duration-300"
+              className="flex flex-col items-center mt-12 text-white/80 hover:text-white transition-colors duration-300"
             >
               <span className="text-sm font-medium mb-2">Explore More</span>
               <div className="w-10 h-10 rounded-full border-2 border-white/30 flex items-center justify-center">
                 <ChevronDown className="h-6 w-6" />
               </div>
             </a>
+            
+          </div>
+            
+
           
           {/* Three value propositions */}
          
