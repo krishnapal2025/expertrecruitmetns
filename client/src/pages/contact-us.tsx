@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
-import { Mail, Phone, Send, Loader2, Globe, ArrowRight } from "lucide-react";
+import { Mail, Phone, Send, Loader2, Globe, ArrowRight, ChevronDown } from "lucide-react";
 import { IndiaFlag, UAEFlag, USAFlag } from "@/components/flags";
 import { motion } from "framer-motion";
 import contactHeroBg from "../assets/images/contact-hero-bg.jpg";
@@ -82,74 +82,60 @@ export default function ContactUsPage() {
         <meta name="description" content="Get in touch with Expert Recruitments across our global offices in India, Dubai, and USA. We're here to help with all your recruitment needs." />
       </Helmet>
 
-      {/* Hero Section with Executive Theme - matching About Us page */}
-      <div className="relative py-20 overflow-hidden">
-        {/* Background elements */}
-        <div className="absolute inset-0 bg-gray-900/40 z-10"></div>
+      {/* Hero Section with Black Tint - matching Services page style */}
+      <div className="relative min-h-screen overflow-hidden">
+        {/* Background Image with Black Tint */}
+        <div className="absolute inset-0 bg-black/75 z-10"></div>
         <div 
-          className="absolute inset-0 bg-cover bg-center z-0" 
+          className="absolute inset-0 bg-center bg-cover" 
           style={{ 
             backgroundImage: `url(${contactHeroBg})`,
-            filter: 'brightness(0.9)'
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            height: '100%',
+            width: '100%',
+            filter: 'brightness(0.85)'
           }}
         ></div>
         
         {/* Accent lines */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-20"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>
         
-        {/* Decorative elements with reduced opacity for better readability against the image */}
-        <div className="absolute top-0 right-0 w-1/3 h-full overflow-hidden z-10">
-          <div className="absolute -right-20 top-1/4 w-80 h-80 bg-primary/10 rounded-full"></div>
-          <div className="absolute -right-10 bottom-1/4 w-40 h-40 bg-primary/10 rounded-full"></div>
-        </div>
-        
-        <div className="absolute left-0 bottom-0 w-1/4 h-80 overflow-hidden z-10">
-          <div className="absolute -left-20 bottom-0 w-64 h-64 bg-white/10 rounded-full"></div>
-        </div>
-        
-        <div className="container mx-auto px-4 relative">
+        <div className="w-full max-w-[1440px] mx-auto px-4 relative py-40 md:py-52">
           {/* Main content */}
-          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16">
-            <motion.div 
-              className="inline-block mb-12 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-md rounded-md z-20 relative"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16 relative z-20">
+            <div className="inline-block mb-6 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-sm rounded-md backdrop-blur-sm">
               <span className="font-medium text-primary tracking-wider uppercase text-sm">Global Presence</span>
-            </motion.div>
+            </div>
             
-            <motion.h1 
-              className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-white tracking-tight z-20 relative"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.7 }}
-            >
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-white tracking-tight drop-shadow-md">
               Connect With Us
-            </motion.h1>
+            </h1>
             
-            <motion.p 
-              className="text-xl md:text-2xl text-white/80 leading-relaxed mb-4 max-w-3xl z-20 relative"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-            >
+            <p className="text-xl md:text-2xl text-white leading-relaxed mb-4 max-w-3xl drop-shadow-md">
               Offices in UAE, India, and the United States
-            </motion.p>
+            </p>
             
-            <motion.p 
-              className="text-lg text-white/80 leading-relaxed mb-6 max-w-3xl z-20 relative"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-            >
+            <p className="text-lg text-white/90 leading-relaxed mb-8 max-w-3xl drop-shadow">
               Our global team is ready to provide personalized recruitment solutions to meet your specific needs.
-            </motion.p>
+            </p>
+            
+            {/* Scroll Down Button */}
+            <a 
+              href="#contact-content" 
+              className="flex flex-col items-center mt-8 text-white/80 hover:text-white transition-colors duration-300 animate-pulse"
+            >
+              <span className="text-sm font-medium mb-2">Our Offices</span>
+              <div className="w-10 h-10 rounded-full border-2 border-white/30 flex items-center justify-center">
+                <ChevronDown className="h-6 w-6" />
+              </div>
+            </a>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-16">
+      <div id="contact-content" className="container mx-auto px-4 py-16">
         {/* Office Locations Section */}
         <motion.div 
           className="text-center mb-16"
