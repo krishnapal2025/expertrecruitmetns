@@ -1321,37 +1321,23 @@ function AdminDashboard() {
                               <TableCell className="text-right">
                                 <div className="flex items-center justify-end gap-2">
                                   <Button 
-                                    variant="ghost" 
+                                    variant="outline" 
                                     size="sm" 
                                     onClick={() => navigate(`/article/${post.id}`)}
                                   >
-                                    <Eye className="h-4 w-4" />
+                                    <Eye className="h-4 w-4 mr-1" />
+                                    View
                                   </Button>
                                   <Button 
-                                    variant="ghost" 
+                                    variant="outline" 
                                     size="sm" 
                                     onClick={() => navigate(`/edit-blog/${post.id}`)}
                                   >
-                                    <FileText className="h-4 w-4" />
+                                    <FileText className="h-4 w-4 mr-1" />
+                                    Edit
                                   </Button>
                                   <Button 
-                                    variant="ghost" 
-                                    size="sm"
-                                    onClick={() => {
-                                      toggleBlogPostPublishMutation.mutate({
-                                        postId: post.id,
-                                        published: !post.published
-                                      });
-                                    }}
-                                  >
-                                    {post.published ? (
-                                      <XCircle className="h-4 w-4 text-amber-600" />
-                                    ) : (
-                                      <CheckCircle className="h-4 w-4 text-green-600" />
-                                    )}
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
+                                    variant="outline" 
                                     size="sm" 
                                     className="text-red-500 hover:text-red-700 hover:bg-red-100"
                                     onClick={() => {
@@ -1360,7 +1346,8 @@ function AdminDashboard() {
                                       }
                                     }}
                                   >
-                                    <Trash2 className="h-4 w-4" />
+                                    <Trash2 className="h-4 w-4 mr-1" />
+                                    Delete
                                   </Button>
                                 </div>
                               </TableCell>
