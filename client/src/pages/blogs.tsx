@@ -193,7 +193,13 @@ export default function BlogsPage() {
           author: 'Admin', // Can be enhanced with author lookup
           date: formattedDate,
           readTime: post.readTime || '5 min read',
-          image: post.bannerImage || executiveSearchImage, // Default image if none provided
+          image: (post.bannerImage && post.bannerImage.includes('pexels-photo-8730284.webp')) ? executiveSearchImage :
+                (post.bannerImage && post.bannerImage.includes('pexels-photo-5685937.webp')) ? headhuntersDubaiImage :
+                (post.bannerImage && post.bannerImage.includes('pexels-photo-4344860.webp')) ? recruitmentAgenciesImage :
+                (post.bannerImage && post.bannerImage.includes('pexels-photo-3307862.webp')) ? bestRecruitmentAgencyImage :
+                (post.bannerImage && post.bannerImage.includes('pexels-photo-5668858.webp')) ? partnerHeadhuntersDubaiImage :
+                (post.bannerImage && post.bannerImage.includes('pexels-photo-7078666.jpeg')) ? recruitmentAgenciesForMNCs :
+                executiveSearchImage,
           slug: post.slug,
           content: post.content
         };
