@@ -1082,6 +1082,30 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
             </Select>
           </div>
           
+          {/* Specialization - moved directly below Job Category */}
+          <div className="border border-gray-200 rounded-lg p-3">
+            <h3 className="font-semibold mb-3 text-gray-800">
+              Specialization
+            </h3>
+            <Select
+              value={selectedSpecialization}
+              onValueChange={setSelectedSpecialization}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a specialization" />
+              </SelectTrigger>
+              <SelectContent>
+                <ScrollArea className="h-72">
+                  {filteredSpecializations.map((specialization) => (
+                    <SelectItem key={specialization} value={specialization}>
+                      {specialization}
+                    </SelectItem>
+                  ))}
+                </ScrollArea>
+              </SelectContent>
+            </Select>
+          </div>
+          
           {/* Job Location with custom input option */}
           <div className="border border-gray-200 rounded-lg p-3">
             <h3 className="font-semibold mb-3 text-gray-800">
@@ -1161,30 +1185,6 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
             </div>
           </div>
 
-          {/* Specialization */}
-          <div className="border border-gray-200 rounded-lg p-3">
-            <h3 className="font-semibold mb-3 text-gray-800">
-              Specialization
-            </h3>
-            <Select
-              value={selectedSpecialization}
-              onValueChange={setSelectedSpecialization}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a specialization" />
-              </SelectTrigger>
-              <SelectContent>
-                <ScrollArea className="h-72">
-                  {filteredSpecializations.map((specialization) => (
-                    <SelectItem key={specialization} value={specialization}>
-                      {specialization}
-                    </SelectItem>
-                  ))}
-                </ScrollArea>
-              </SelectContent>
-            </Select>
-          </div>
-          
           {/* Experience Level */}
           <div className="border border-gray-200 rounded-lg p-3">
             <h3 className="font-semibold mb-3 text-gray-800">
