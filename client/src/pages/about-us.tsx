@@ -13,6 +13,7 @@ import {
   Search,
   ArrowUpRight,
   ArrowRight,
+  ChevronDown,
   MapPin
 } from "lucide-react";
 import ourApproachImage from "../assets/our-approach-image.webp";
@@ -71,7 +72,7 @@ export default function AboutUsPage() {
       {/* Hero Section with Premium Executive Design */}
       <div className="relative min-h-screen overflow-hidden" id="about-hero-section">
         {/* Background Image */}
-        <div className="absolute inset-0 bg-black/75 z-10"></div>
+        <div className="absolute inset-0 bg-black/65 z-10"></div>
         <div 
           className="absolute inset-0 bg-center bg-cover" 
           style={{ 
@@ -194,6 +195,17 @@ export default function AboutUsPage() {
             </div>
 
           </div>
+          
+          {/* Scroll Down Button */}
+          <a 
+            href="#our-approach" 
+            className="flex flex-col items-center mt-8 text-white/80 hover:text-white transition-colors duration-300 animate-pulse absolute bottom-16 left-1/2 transform -translate-x-1/2 z-20"
+          >
+            <span className="text-sm font-medium mb-2">Explore More</span>
+            <div className="w-10 h-10 rounded-full border-2 border-white/30 flex items-center justify-center">
+              <ChevronDown className="h-6 w-6" />
+            </div>
+          </a>
           
           {/* Three value propositions */}
          
