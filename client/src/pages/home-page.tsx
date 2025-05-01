@@ -326,7 +326,7 @@ export default function HomePage() {
             
             {/* Career Resources Feature */}
             <motion.div
-              className="group relative col-span-1 md:col-span-2"
+              className="group relative"
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
