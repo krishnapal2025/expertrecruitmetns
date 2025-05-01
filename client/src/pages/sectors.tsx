@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { ChevronDown } from "lucide-react";
-import cityNightImage from "../assets/city-financial-district-glows-blue-twilight-generated-by-ai.jpg";
+import cityscapeImage from "../assets/high-angle-beautiful-tall-buildings-landscape.jpg";
 
 const sectors = [
   {
@@ -132,7 +132,7 @@ export default function SectorsPage() {
         <div 
           className="absolute inset-0 bg-center bg-cover" 
           style={{ 
-            backgroundImage: `url(${cityNightImage})`,
+            backgroundImage: `url(${cityscapeImage})`,
             backgroundPosition: 'center center',
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
