@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { ChevronDown } from "lucide-react";
-import servicesBgImage from "@/assets/modern-equipped-computer-lab.jpg";
+import skyscrapersImage from "../assets/low-angle-view-skyscrapers.jpg";
 
 const sectors = [
   {
@@ -132,7 +132,7 @@ export default function SectorsPage() {
         <div 
           className="absolute inset-0 bg-center bg-cover" 
           style={{ 
-            backgroundImage: `url(${servicesBgImage})`,
+            backgroundImage: `url(${skyscrapersImage})`,
             backgroundPosition: 'center center',
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
