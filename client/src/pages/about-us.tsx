@@ -70,16 +70,18 @@ export default function AboutUsPage() {
       </Helmet>
 
       {/* Hero Section with Premium Executive Design */}
-      <div className="relative min-h-[100vh] overflow-hidden" id="about-hero-section">
+      <div className="relative min-h-screen overflow-hidden" id="about-hero-section">
         {/* Background Image */}
         <div className="absolute inset-0 bg-black/65 z-10"></div>
         <div 
-          className="absolute inset-0" 
+          className="absolute inset-0 bg-center bg-cover" 
           style={{ 
             backgroundImage: `url(${aerialBusinessViewImage})`,
-            backgroundPosition: 'center',
+            backgroundPosition: 'center center',
             backgroundSize: 'cover',
-            backgroundAttachment: 'scroll',
+            backgroundRepeat: 'no-repeat',
+            height: '100%',
+            width: '100%',
             filter: 'brightness(0.85)'
           }}
         ></div>
