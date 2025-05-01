@@ -91,11 +91,14 @@ export default function EditBlogPage() {
       return await res.json();
     },
     onSuccess: () => {
+      // Invalidate the blog posts query cache so the updated list shows immediately
+      queryClient.invalidateQueries({ queryKey: ["/api/blog-posts"] });
+      
       toast({
         title: "Blog post deleted",
         description: "Your blog post has been deleted successfully.",
       });
-      navigate("/admin");
+      navigate("/admin-dashboard");
     },
     onError: (error: Error) => {
       toast({
@@ -162,7 +165,7 @@ export default function EditBlogPage() {
       
       <div className="container mx-auto py-8 max-w-4xl">
         <div className="mb-8">
-          <Button variant="ghost" onClick={() => navigate("/admin")} className="mb-4">
+          <Button variant="ghost" onClick={() => navigate("/admin-dashboard")} className="mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Dashboard
           </Button>
