@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Redirect } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
@@ -9,29 +9,30 @@ function AdminPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
+  const [redirectPath, setRedirectPath] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if user is admin
     if (!user) {
       setIsLoading(false);
       return;
     }
 
-    if (user.userType !== "admin") {
+    // Check if user is admin and handle accordingly
+    if (user.userType === "admin") {
+      setRedirectPath("/admin-dashboard");
+    } else {
       toast({
         title: "Access Denied",
         description: "You don't have permission to access the admin dashboard.",
         variant: "destructive",
       });
-      navigate("/");
-      return;
+      setRedirectPath("/");
     }
-
-    // Redirect to the new admin dashboard
-    navigate("/admin-dashboard");
     
-  }, [user, navigate, toast]);
+    setIsLoading(false);
+  }, [user, toast]);
 
+  // Handle the loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -40,9 +41,14 @@ function AdminPage() {
     );
   }
 
+  // Handle redirection
+  if (redirectPath) {
+    return <Redirect to={redirectPath} />;
+  }
+
+  // Handle not logged in
   if (!user) {
-    navigate("/auth");
-    return null;
+    return <Redirect to="/admin-login" />;
   }
 
   return null;

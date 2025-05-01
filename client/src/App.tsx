@@ -25,6 +25,7 @@ import JobApplicationPage from "@/pages/job-application";
 import HireTalentPage from "@/pages/hire-talent";
 
 import AdminPage from "@/pages/admin-page";
+import AdminDashboardPage from "@/pages/admin-page-new";
 import AdminRegisterPage from "@/pages/admin-register";
 import AdminLoginPage from "@/pages/admin-login";
 import AdminForgotPasswordPage from "@/pages/admin-forgot-password";
@@ -96,10 +97,7 @@ function Router() {
       <Route path="/vacancy-form" component={VacancyFormPage} />
       <Route path="/inquiry-form" component={InquiryFormPage} />
       <Route path="/admin" component={AdminPage} />
-      <Route path="/admin-dashboard" component={() => {
-        const AdminDashboard = require("@/pages/admin-page-new").default;
-        return <AdminDashboard />;
-      }} />
+      <Route path="/admin-dashboard" component={AdminDashboardPage} />
       <Route path="/admin-register" component={AdminRegisterPage} />
       <Route path="/admin-login" component={AdminLoginPage} />
       <Route path="/admin/forgot-password" component={AdminForgotPasswordPage} />
