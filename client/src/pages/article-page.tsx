@@ -1338,31 +1338,98 @@ export default function ArticlePage() {
   const [, setLocation] = useLocation();
   const [article, setArticle] = useState<Article | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   
   useEffect(() => {
-    // In a real app, fetch the article from an API using the ID
+    // Try to fetch the article from the API first
     if (params?.id) {
       const articleId = parseInt(params.id);
-      const foundArticle = articlesData.find(a => a.id === articleId);
       
-      if (foundArticle) {
-        setArticle(foundArticle);
-        
-        // Find related articles by category (in a real app, this would be handled by the API)
-        const related = articlesData.filter(a => 
-          a.id !== articleId && a.category === foundArticle.category
-        ).slice(0, 3);
-        
-        setRelatedArticles(related);
-      } else {
-        // If article not found, redirect to blog listing
-        setLocation("/blogs");
-      }
+      // Try to fetch from API first
+      fetch(`/api/blog-posts/${articleId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Blog post not found');
+          }
+          return response.json();
+        })
+        .then(post => {
+          const publishDate = post.publishDate ? new Date(post.publishDate) : new Date();
+          const formattedDate = publishDate.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          });
+          
+          // Use the helper function to get the appropriate image
+          const imageSource = getImageForBlog(post.id, post.bannerImage);
+          
+          const fetchedArticle: Article = {
+            id: post.id,
+            title: post.title,
+            excerpt: post.excerpt || post.subtitle || '',
+            content: post.content || '',
+            category: post.category || 'Executive Recruitment',
+            author: 'Admin', // This could be enhanced with author lookup
+            date: formattedDate,
+            readTime: post.readTime || '10 min read',
+            image: imageSource
+          };
+          
+          setArticle(fetchedArticle);
+          
+          // Find related sample articles by category 
+          // This would ideally be an API call in production
+          const related = articlesData.filter(a => 
+            a.id !== articleId && a.category === fetchedArticle.category
+          ).slice(0, 3);
+          
+          setRelatedArticles(related);
+          setLoading(false);
+        })
+        .catch(() => {
+          // Fallback to sample data if API fails
+          console.log("Falling back to sample data");
+          const foundArticle = articlesData.find(a => a.id === articleId);
+          
+          if (foundArticle) {
+            setArticle(foundArticle);
+            
+            // Find related articles by category
+            const related = articlesData.filter(a => 
+              a.id !== articleId && a.category === foundArticle.category
+            ).slice(0, 3);
+            
+            setRelatedArticles(related);
+          } else {
+            // If article not found in sample data either, show error
+            setError(true);
+            // And redirect after a short delay
+            setTimeout(() => setLocation("/blogs"), 2000);
+          }
+          setLoading(false);
+        });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params?.id]);
   
-  if (!article) {
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Article not found</h1>
+          <p className="text-gray-600 mb-6">The article you're looking for could not be found. Redirecting to blogs...</p>
+          <Button onClick={() => setLocation("/blogs")}>
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Go to Blogs
+          </Button>
+        </div>
+      </div>
+    );
+  }
+  
+  if (loading || !article) {
     return (
       <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-screen">
         <div className="text-center">

@@ -215,7 +215,7 @@ export default function BlogsPage() {
           author: 'Admin', // Can be enhanced with author lookup
           date: formattedDate,
           readTime: post.readTime || '5 min read',
-          image: getImageForBlog(post.id, post.bannerImage),
+          image: getImageForBlog(post.id, post.bannerImage || undefined),
           slug: post.slug,
           content: post.content
         };
