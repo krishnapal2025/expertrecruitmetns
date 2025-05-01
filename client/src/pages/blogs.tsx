@@ -176,7 +176,7 @@ export default function BlogsPage() {
         <meta name="description" content="Browse our collection of career advice, industry insights, and job search tips to help you advance your professional journey." />
       </Helmet>
 
-      <div className="relative min-h-screen overflow-hidden">
+      <div className="relative min-h-[90vh] overflow-hidden">
         {/* Background Image with Black Tint */}
         <div className="absolute inset-0 bg-black/65 z-10"></div>
         <div 
@@ -195,9 +195,9 @@ export default function BlogsPage() {
         {/* Accent lines */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>
         
-        <div className="w-full max-w-[1440px] mx-auto px-4 relative py-40 md:py-52">
+        <div className="w-full max-w-[1440px] mx-auto px-4 relative py-32 md:py-40">
           {/* Main content */}
-          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-16 relative z-20">
+          <div className="flex flex-col items-center text-center max-w-5xl mx-auto mb-8 relative z-20">
             <div className="inline-block mb-6 px-5 py-2 bg-white/90 border-b-2 border-primary shadow-sm rounded-md backdrop-blur-sm">
               <span className="font-medium text-primary tracking-wider uppercase text-sm">Knowledge Center</span>
             </div>
