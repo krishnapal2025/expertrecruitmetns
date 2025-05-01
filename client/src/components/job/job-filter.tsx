@@ -571,6 +571,121 @@ const specializations = [
 
 ];
 
+// Mapping between categories and specializations
+const categorySpecializationMap: Record<string, string[]> = {
+  "All Categories": ["All Specializations"],
+  "Accounting": [
+    "All Specializations", "Auditor", "Bookkeeper", "Chartered Accountant", "Cost Accountant", 
+    "Financial Accountant", "Management Accountant", "Payroll Specialist", "Tax Consultant", 
+    "Tax Preparer", "Accounts Payable Clerk", "Accounts Receivable Clerk"
+  ],
+  "Administration": [
+    "All Specializations", "Administrative Assistant", "Executive Assistant", "Office Administrator", 
+    "Office Manager", "Receptionist", "Data Entry Clerk", "Clerical Assistant", 
+    "Front Desk Coordinator", "Secretary", "Administrative Coordinator"
+  ],
+  "Architecture": [
+    "All Specializations", "Architect", "Interior Designer", "Landscape Architect", "Urban Planner", 
+    "Architectural Drafter", "Project Architect", "Design Architect", "Construction Architect", 
+    "Architectural Technologist", "Building Designer"
+  ],
+  "Arts": [
+    "All Specializations", "Graphic Designer", "Illustrator", "Animator", "Art Director", 
+    "Fine Artist", "Multimedia Artist", "Photographer", "Creative Director", 
+    "Visual Designer", "Art Teacher"
+  ],
+  "Banking": [
+    "All Specializations", "Bank Teller", "Loan Officer", "Credit Analyst", "Branch Manager", 
+    "Investment Banker", "Mortgage Advisor", "Risk Analyst", "Relationship Manager", 
+    "Compliance Officer", "Financial Advisor"
+  ],
+  "Business": [
+    "All Specializations", "Business Analyst", "Business Development Manager", "Project Manager", "Operations Manager", 
+    "Strategy Consultant", "Management Consultant", "Entrepreneur", "Product Manager", 
+    "Business Consultant", "Business Coordinator"
+  ],
+  "Construction": [
+    "All Specializations", "Construction Manager", "Site Engineer", "Quantity Surveyor", "Civil Engineer", 
+    "Project Engineer", "Safety Officer", "Estimator", "Foreman", 
+    "Architectural Engineer", "Building Inspector"
+  ],
+  "Consulting": [
+    "All Specializations", "Management Consultant", "Strategy Consultant", "IT Consultant", "Financial Consultant", 
+    "HR Consultant", "Operations Consultant", "Risk Consultant", "Business Consultant", 
+    "Environmental Consultant", "Legal Consultant"
+  ],
+  "Customer Service": [
+    "All Specializations", "Customer Service Representative", "Call Center Agent", "Client Support Specialist", "Help Desk Associate", 
+    "Customer Success Manager", "Technical Support Specialist", "Customer Care Executive", "Support Analyst", 
+    "Service Advisor", "Customer Relations Manager"
+  ],
+  "Data Science": [
+    "All Specializations", "Data Scientist", "Data Analyst", "Machine Learning Engineer", "Business Intelligence Analyst", 
+    "Statistician", "Data Engineer", "Quantitative Analyst", "Data Architect", 
+    "AI Engineer", "Big Data Analyst"
+  ],
+  "Design": [
+    "All Specializations", "UX Designer", "UI Designer", "Product Designer", "Graphic Designer", 
+    "Visual Designer", "Interaction Designer", "Web Designer", "Industrial Designer", 
+    "Motion Designer", "Design Researcher"
+  ],
+  "Education": [
+    "All Specializations", "Teacher", "Professor", "Lecturer", "Academic Counselor", 
+    "Instructional Designer", "Curriculum Developer", "Education Coordinator", "School Principal", 
+    "Special Education Teacher", "Education Consultant"
+  ],
+  "Engineering": [
+    "All Specializations", "Mechanical Engineer", "Civil Engineer", "Electrical Engineer", "Chemical Engineer", 
+    "Software Engineer", "Industrial Engineer", "Environmental Engineer", "Structural Engineer", 
+    "Biomedical Engineer", "Aerospace Engineer"
+  ],
+  "Finance": [
+    "All Specializations", "Financial Analyst", "Investment Banker", "Portfolio Manager", "Risk Analyst", 
+    "Treasury Analyst", "Financial Planner", "Credit Analyst", "Budget Analyst", 
+    "Finance Manager", "Equity Analyst"
+  ],
+  "Healthcare": [
+    "All Specializations", "General Practitioner", "Registered Nurse", "Pharmacist", "Physiotherapist", 
+    "Lab Technician", "Radiologist", "Surgeon", "Dentist", 
+    "Medical Assistant", "Occupational Therapist"
+  ],
+  "Hospitality": [
+    "All Specializations", "Hotel Manager", "Chef", "Housekeeping Supervisor", "Front Desk Officer", 
+    "Concierge", "Event Coordinator", "Restaurant Manager", "Bartender", 
+    "Travel Agent", "Tour Guide"
+  ],
+  "Human Resources": [
+    "All Specializations", "HR Manager", "Recruiter", "Talent Acquisition Specialist", "HR Generalist", 
+    "HR Coordinator", "Compensation Analyst", "Training Manager", "Employee Relations Specialist", 
+    "HR Consultant", "Payroll Manager"
+  ],
+  "Information Technology": [
+    "All Specializations", "IT Support Specialist", "Network Administrator", "Systems Analyst", "Database Administrator", 
+    "IT Project Manager", "Cybersecurity Analyst", "Cloud Engineer", "DevOps Engineer", 
+    "Technical Support Engineer", "IT Consultant"
+  ],
+  "Legal": [
+    "All Specializations", "Lawyer", "Paralegal", "Legal Advisor", "Legal Assistant", 
+    "Corporate Counsel", "Compliance Officer", "Legal Analyst", "Judge", 
+    "Notary Public", "Legal Secretary"
+  ],
+  "Marketing": [
+    "All Specializations", "Marketing Manager", "Digital Marketing Specialist", "SEO Analyst", "Content Strategist", 
+    "Brand Manager", "Social Media Manager", "Market Research Analyst", "Email Marketing Specialist", 
+    "Product Marketing Manager", "Advertising Coordinator"
+  ],
+  "Software": [
+    "All Specializations", "Software Developer", "Software Engineer", "Frontend Developer", "Backend Developer", 
+    "Full Stack Developer", "Mobile App Developer", "DevOps Engineer", "QA Engineer", 
+    "UI/UX Designer", "Systems Architect"
+  ],
+  "Sales": [
+    "All Specializations", "Sales Executive", "Account Manager", "Sales Representative", "Business Development Manager", 
+    "Territory Sales Manager", "Inside Sales Representative", "Sales Consultant", "Regional Sales Manager", 
+    "Key Account Manager", "Sales Coordinator"
+  ]
+};
+
 // Job locations
 const locations = [
   // United States
@@ -671,6 +786,18 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
   const [keyword, setKeyword] = useState("");
   const [displaySalary, setDisplaySalary] = useState<string>("$0 - $200,000+");
   const [customCurrency, setCustomCurrency] = useState<string>("");
+  
+  // Get filtered specializations based on the selected category
+  const filteredSpecializations = useMemo(() => {
+    // If All Categories is selected, or the category doesn't have mapped specializations, 
+    // return a default list with just "All Specializations"
+    if (selectedCategory === "All Categories") {
+      return ["All Specializations"];
+    }
+    
+    // Return specializations for the selected category, or default to All Specializations if not found
+    return categorySpecializationMap[selectedCategory] || ["All Specializations"];
+  }, [selectedCategory]);
   
   // Get currency symbol based on custom entry or selected location
   const getCurrencySymbol = (): string => {
@@ -774,6 +901,12 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
     // We can enable this for automatic filtering without button click
     // applyFilters();
   }, [selectedCategory, selectedLocation, selectedJobType, selectedSpecialization, selectedExperience, salaryRange]);
+  
+  // Reset specialization when category changes
+  useEffect(() => {
+    // Reset to default when category changes
+    setSelectedSpecialization("All Specializations");
+  }, [selectedCategory]);
   
   // Update salary display when location or custom currency changes
   useEffect(() => {
@@ -1042,7 +1175,7 @@ export default function JobFilter({ onFilterChange }: JobFilterProps) {
               </SelectTrigger>
               <SelectContent>
                 <ScrollArea className="h-72">
-                  {specializations.map((specialization) => (
+                  {filteredSpecializations.map((specialization) => (
                     <SelectItem key={specialization} value={specialization}>
                       {specialization}
                     </SelectItem>
