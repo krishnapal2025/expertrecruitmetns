@@ -1196,7 +1196,7 @@ function AdminDashboard() {
                   <p className="text-sm text-muted-foreground/70 mb-6 max-w-md">
                     Add engaging content to your website with blog posts about recruitment, career advice, and industry trends
                   </p>
-                  <Button>
+                  <Button onClick={() => navigate("/create-blog")}>
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Create Blog Post
                   </Button>
