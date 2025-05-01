@@ -850,8 +850,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteBlogPost(id: number): Promise<boolean> {
-    const result = await db.delete(blogPosts).where(eq(blogPosts.id, id));
-    return result.rowCount > 0;
+    try {
+      // First check if the blog post exists
+      const post = await this.getBlogPost(id);
+      if (!post) {
+        return false;
+      }
+      
+      // If it exists, delete it
+      await db.delete(blogPosts).where(eq(blogPosts.id, id));
+      
+      // Verify deletion was successful
+      const checkPost = await this.getBlogPost(id);
+      return checkPost === undefined;
+    } catch (error) {
+      console.error("Error in deleteBlogPost:", error);
+      return false;
+    }
   }
 }
 

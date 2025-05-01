@@ -1329,7 +1329,10 @@ function AdminDashboard() {
                                   <Button 
                                     variant="outline" 
                                     size="sm" 
-                                    onClick={() => navigate(`/article/${post.id}`)}
+                                    onClick={() => {
+                                      // Open in a new tab to ensure it's properly loaded
+                                      window.open(`/article/${post.slug}`, '_blank');
+                                    }}
                                   >
                                     <Eye className="h-4 w-4 mr-1" />
                                     View

@@ -1316,20 +1316,34 @@ const articlesData = [
 ];
 
 export default function ArticlePage() {
-  const [, params] = useRoute<{ id: string }>("/article/:id");
+  // Route hooks for both ID and slug patterns
+  const [isIdRoute, idParams] = useRoute<{ id: string }>("/article/:id");
+  const [isSlugRoute, slugParams] = useRoute<{ slug: string }>("/article/:slug");
   const [, setLocation] = useLocation();
   const [relatedArticles, setRelatedArticles] = useState<BlogPost[]>([]);
 
-  // Fetch the blog post by ID
+  // Determine which parameter to use (prefer slug if both are present)
+  const params = isSlugRoute ? { slug: slugParams?.slug } : { id: idParams?.id };
+  const isSlug = isSlugRoute && !!slugParams?.slug;
+
+  // Fetch the blog post by ID or slug
   const { data: blogPost, isLoading, error } = useQuery<BlogPost>({
-    queryKey: ["/api/blog-posts", params?.id],
+    queryKey: isSlug ? ["/api/blog-posts/slug", params.slug] : ["/api/blog-posts", params.id],
     queryFn: async () => {
-      if (!params?.id) return null as unknown as BlogPost;
-      const res = await fetch(`/api/blog-posts/${params.id}`);
-      if (!res.ok) throw new Error("Failed to fetch blog post");
-      return res.json();
+      if (isSlug) {
+        // Fetch by slug
+        const res = await fetch(`/api/blog-posts/slug/${params.slug}`);
+        if (!res.ok) throw new Error("Failed to fetch blog post");
+        return res.json();
+      } else {
+        // Fetch by ID
+        if (!params.id) return null as unknown as BlogPost;
+        const res = await fetch(`/api/blog-posts/${params.id}`);
+        if (!res.ok) throw new Error("Failed to fetch blog post");
+        return res.json();
+      }
     },
-    enabled: !!params?.id,
+    enabled: !!(isSlug ? params.slug : params.id),
   });
 
   // Fetch all blog posts to find related ones
@@ -1553,7 +1567,7 @@ export default function ArticlePage() {
                     <Button 
                       variant="outline" 
                       className="w-full"
-                      onClick={() => setLocation(`/article/${relatedArticle.id}`)}
+                      onClick={() => setLocation(`/article/${relatedArticle.slug}`)}
                     >
                       Read Article
                     </Button>
