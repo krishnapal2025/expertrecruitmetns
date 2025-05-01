@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen, Calendar, Tag, ChevronDown } from "lucide-react";
 import blogsBgImage from "../assets/close-up-person-working-home-night_23-2149090964.avif";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import headhuntersDubaiImage from "../assets/pexels-photo-5685937.webp";
 import executiveSearchImage from "../assets/pexels-photo-8730284.webp";
 import recruitmentAgenciesImage from "../assets/pexels-photo-4344860.webp";
@@ -18,9 +19,11 @@ import healthcareImage from "../assets/articles/healthcare.jpg";
 import sustainabilityImage from "../assets/articles/sustainability.jpg";
 import educationImage from "../assets/articles/education.jpg";
 import gigEconomyImage from "../assets/articles/gig-economy.jpg";
+import { Loader2 } from "lucide-react";
+import type { BlogPost } from "@shared/schema";
 
-// Sample blog data
-const blogPosts = [
+// Sample blog data as fallback
+const sampleBlogPosts = [
   {
     id: 1,
     title: "Executive Search Firms Find Top Talent",
@@ -159,8 +162,56 @@ export default function BlogsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [, setLocation] = useLocation();
 
+  // Fetch blog posts from API
+  const { data: apiPosts, isLoading, error } = useQuery({
+    queryKey: ['/api/blog-posts'],
+    queryFn: async () => {
+      const response = await fetch('/api/blog-posts');
+      if (!response.ok) {
+        throw new Error('Failed to fetch blog posts');
+      }
+      return response.json() as Promise<BlogPost[]>;
+    }
+  });
+
+  // Combine API posts with sample posts, preferring API posts
+  const allBlogPosts = apiPosts?.length 
+    ? apiPosts.map(post => {
+        // Format real blog posts to match display format
+        const publishDate = post.publishDate ? new Date(post.publishDate) : new Date();
+        const formattedDate = publishDate.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric'
+        });
+        
+        return {
+          id: post.id,
+          title: post.title,
+          excerpt: post.excerpt || post.subtitle || (post.content?.substring(0, 150) + '...'),
+          category: post.category || 'General',
+          author: 'Admin', // Can be enhanced with author lookup
+          date: formattedDate,
+          readTime: post.readTime || '5 min read',
+          image: post.bannerImage || executiveSearchImage, // Default image if none provided
+          slug: post.slug,
+          content: post.content
+        };
+      })
+    : sampleBlogPosts;
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-2">Loading blog posts...</span>
+      </div>
+    );
+  }
+
   // Filter blogs based on search term and category
-  const filteredBlogs = blogPosts.filter(blog => {
+  const filteredBlogs = allBlogPosts.filter((blog: any) => {
     const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
     

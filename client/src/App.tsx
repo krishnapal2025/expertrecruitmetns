@@ -24,6 +24,7 @@ import JobDetailsPage from "@/pages/job-details";
 import JobApplicationPage from "@/pages/job-application";
 import HireTalentPage from "@/pages/hire-talent";
 import CreateBlogPage from "@/pages/create-blog";
+import ManageBlogsPage from "@/pages/manage-blogs";
 
 import AdminPage from "@/pages/admin-page";
 import AdminDashboardPage from "@/pages/admin-page-new";
@@ -101,6 +102,7 @@ function Router() {
       <Route path="/admin" component={AdminPage} />
       <AdminProtectedRoute path="/admin-dashboard" component={AdminDashboardPage} />
       <AdminProtectedRoute path="/create-blog" component={CreateBlogPage} />
+      <AdminProtectedRoute path="/manage-blogs" component={ManageBlogsPage} />
       <Route path="/admin-register" component={AdminRegisterPage} />
       <Route path="/admin-login" component={AdminLoginPage} />
       <Route path="/admin/forgot-password" component={AdminForgotPasswordPage} />
