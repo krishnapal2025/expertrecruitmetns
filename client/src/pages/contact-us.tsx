@@ -85,7 +85,7 @@ export default function ContactUsPage() {
       {/* Hero Section with Black Tint - matching Services page style */}
       <div className="relative min-h-screen overflow-hidden">
         {/* Background Image with Black Tint */}
-        <div className="absolute inset-0 bg-black/75 z-10"></div>
+        <div className="absolute inset-0 bg-black/65 z-10"></div>
         <div 
           className="absolute inset-0 bg-center bg-cover" 
           style={{ 
