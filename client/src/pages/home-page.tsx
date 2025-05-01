@@ -406,10 +406,10 @@ export default function HomePage() {
             Whether you're looking for your dream job or seeking top talent, we're here to help
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/auth?type=employer">
+            <Link href="/employer-register">
               <Button variant="secondary" size="lg">Sign Up as Employer</Button>
             </Link>
-            <Link href="/auth?type=jobseeker">
+            <Link href="/job-seeker-register">
               <Button variant="secondary" size="lg">Sign Up as Job Seeker</Button>
             </Link>
           </div>
