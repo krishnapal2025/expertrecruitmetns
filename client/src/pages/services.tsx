@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { 
   Users, Briefcase, Search, Award, 
-  TrendingUp, BookOpen, Clock, Globe 
+  TrendingUp, BookOpen, Clock, Globe,
+  ChevronDown
 } from "lucide-react";
 import servicesBgImage from "@/assets/modern-equipped-computer-lab.jpg";
 
@@ -18,7 +19,7 @@ export default function ServicesPage() {
 
       <div className="relative min-h-screen overflow-hidden">
         {/* Background Image with Black Tint */}
-        <div className="absolute inset-0 bg-black/60 z-10"></div>
+        <div className="absolute inset-0 bg-black/75 z-10"></div>
         <div 
           className="absolute inset-0 bg-center bg-cover" 
           style={{ 
@@ -50,14 +51,25 @@ export default function ServicesPage() {
               Comprehensive solutions to connect talent with opportunity
             </p>
             
-            <p className="text-lg text-white/90 leading-relaxed mb-6 max-w-3xl drop-shadow">
+            <p className="text-lg text-white/90 leading-relaxed mb-8 max-w-3xl drop-shadow">
               Helping businesses grow with the right people through specialized recruitment services
             </p>
+            
+            {/* Scroll Down Button */}
+            <a 
+              href="#services-content" 
+              className="flex flex-col items-center mt-8 text-white/80 hover:text-white transition-colors duration-300 animate-pulse"
+            >
+              <span className="text-sm font-medium mb-2">Explore Our Services</span>
+              <div className="w-10 h-10 rounded-full border-2 border-white/30 flex items-center justify-center">
+                <ChevronDown className="h-6 w-6" />
+              </div>
+            </a>
           </div>
         </div>
       </div>
 
-      <div className="w-full max-w-[1440px] mx-auto px-4 py-12">
+      <div id="services-content" className="w-full max-w-[1440px] mx-auto px-4 py-12">
         {/* For Employers Section */}
         <div className="mb-16">
           <div className="text-center mb-12">
