@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen, Calendar, Tag, ChevronDown } from "lucide-react";
+import { ChevronRight, Search, Clock, User, TrendingUp, Award, BookOpen, Calendar, Tag, ChevronDown, Loader2 } from "lucide-react";
 import blogsBgImage from "../assets/close-up-person-working-home-night_23-2149090964.avif";
 import { useState } from "react";
 import { useLocation, Link } from "wouter";
@@ -18,6 +18,7 @@ import healthcareImage from "../assets/articles/healthcare.jpg";
 import sustainabilityImage from "../assets/articles/sustainability.jpg";
 import educationImage from "../assets/articles/education.jpg";
 import gigEconomyImage from "../assets/articles/gig-economy.jpg";
+import { useQuery } from "@tanstack/react-query";
 
 // Sample blog data
 const blogPosts = [
@@ -159,6 +160,18 @@ export default function BlogsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [, setLocation] = useLocation();
 
+  // Fetch blog posts from the API
+  const { data: apiBlogs, isLoading: isLoadingBlogs } = useQuery({
+    queryKey: ["/api/blog-posts"],
+    queryFn: async () => {
+      const response = await fetch("/api/blog-posts");
+      if (!response.ok) {
+        throw new Error("Failed to fetch blog posts");
+      }
+      return response.json();
+    }
+  });
+
   // Filter blogs based on search term and category
   const filteredBlogs = blogPosts.filter(blog => {
     const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -299,6 +312,72 @@ export default function BlogsPage() {
             </Card>
           </div>
         </div>
+
+        {/* Admin Created Blog Posts */}
+        {apiBlogs && apiBlogs.length > 0 && apiBlogs.some((post: any) => post.published) && (
+          <div className="mb-16 border-b pb-12">
+            <h2 className="text-2xl font-bold mb-6 flex items-center">
+              <BookOpen className="mr-2 h-6 w-6 text-primary" />
+              Latest Articles from Our Team
+            </h2>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {apiBlogs
+                .filter((post: any) => post.published)
+                .map((post: any) => (
+                  <Card key={`api-blog-${post.id}`} className="overflow-hidden flex flex-col h-full border-t-4 border-t-primary shadow-md">
+                    <div className="h-48 overflow-hidden">
+                      {post.bannerImage ? (
+                        <img
+                          src={post.bannerImage}
+                          alt={post.title}
+                          className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-muted flex items-center justify-center">
+                          <BookOpen className="h-12 w-12 text-muted-foreground/50" />
+                        </div>
+                      )}
+                    </div>
+                    <CardHeader>
+                      <div className="text-sm font-medium text-primary mb-2">
+                        {post.category || "Career Insights"}
+                      </div>
+                      <CardTitle>{post.title}</CardTitle>
+                      <CardDescription className="text-base mt-2">
+                        {post.excerpt || post.subtitle || (post.content && post.content.length > 120 ? post.content.substring(0, 120) + "..." : post.content)}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                      <div className="flex items-center text-sm text-gray-500">
+                        <User className="mr-1 h-4 w-4" />
+                        <span className="mr-4">Expert Recruitments</span>
+                        <Clock className="mr-1 h-4 w-4" />
+                        <span>{post.readTime || "5 min read"}</span>
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => setLocation(`/article/${post.id}`)}
+                      >
+                        Read Article
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+            </div>
+          </div>
+        )}
+        
+        {isLoadingBlogs && (
+          <div className="mb-16 text-center py-8 bg-gray-50/50 rounded-lg">
+            <Loader2 className="h-12 w-12 mx-auto text-primary animate-spin mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Loading Blog Posts</h3>
+            <p className="text-gray-600">Please wait while we fetch the latest articles</p>
+          </div>
+        )}
 
         {/* Recent Articles */}
         <div className="mb-16">
