@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
+import { useState, useEffect, useRef } from "react";
+import { useLocation, Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Admin, InvitationCode, User, Job, JobSeeker, Employer, Vacancy, StaffingInquiry } from "@shared/schema";
+import { Admin, User, Job, JobSeeker, Employer, Vacancy, StaffingInquiry } from "@shared/schema";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -35,9 +41,29 @@ import {
   Copy,
   Check,
   RefreshCw,
-  UserCog
+  UserCog,
+  Download,
+  Search,
+  Filter,
+  MoreHorizontal,
+  Trash2,
+  FileSearch,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  Send,
+  ChevronDown,
+  Eye,
+  Filter as FilterIcon,
+  BarChart2,
+  FileText as FileTextIcon,
+  MessageSquare,
+  PlusCircle,
+  FileUp,
+  ExternalLink,
+  UserX
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, subDays } from "date-fns";
 
 // Admin Dashboard Page
 function AdminPage() {
@@ -46,6 +72,19 @@ function AdminPage() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("dashboard");
   
+  // State management for panels and filters
+  const [reportTimeframe, setReportTimeframe] = useState("weekly");
+  const [searchTermEmployers, setSearchTermEmployers] = useState("");
+  const [searchTermJobSeekers, setSearchTermJobSeekers] = useState("");
+  const [selectedVacancyStatus, setSelectedVacancyStatus] = useState("all");
+  const [showVacancyModal, setShowVacancyModal] = useState(false);
+  const [selectedVacancy, setSelectedVacancy] = useState<any>(null);
+  const [recruiterEmail, setRecruiterEmail] = useState("");
+  const [assigningRecruiter, setAssigningRecruiter] = useState(false);
+  
+  // Reference for downloading reports
+  const downloadLinkRef = useRef<HTMLAnchorElement>(null);
+
   // Check if user is admin
   const { data: adminData, isLoading: adminLoading } = useQuery({
     queryKey: ["/api/admin/user"],
@@ -72,8 +111,6 @@ function AdminPage() {
     },
     enabled: !!user && user.userType === "admin"
   });
-  
-  // Removed invitation codes fetching
   
   // Fetch users
   const { data: users, isLoading: usersLoading } = useQuery({
@@ -133,8 +170,6 @@ function AdminPage() {
     enabled: !!user && user.userType === "admin"
   });
   
-  // Removed invitation code mutation
-  
   // Update vacancy status mutation
   const updateVacancyStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: number, status: string }) => {
@@ -187,6 +222,254 @@ function AdminPage() {
     },
   });
   
+  // Delete user mutation
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      const res = await apiRequest("DELETE", `/api/users/${userId}`);
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to delete user");
+      }
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "User deleted",
+        description: "The user has been deleted successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to delete user",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // Delete vacancy mutation
+  const deleteVacancyMutation = useMutation({
+    mutationFn: async (vacancyId: number) => {
+      const res = await apiRequest("DELETE", `/api/admin/vacancies/${vacancyId}`);
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to delete vacancy");
+      }
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Vacancy deleted",
+        description: "The vacancy has been deleted successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/vacancies"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to delete vacancy",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // Assign recruiter mutation
+  const assignRecruiterMutation = useMutation({
+    mutationFn: async ({ vacancyId, email }: { vacancyId: number, email: string }) => {
+      const res = await apiRequest("POST", `/api/admin/vacancies/${vacancyId}/assign`, { 
+        recruiterEmail: email 
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to assign recruiter");
+      }
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Recruiter assigned",
+        description: "The vacancy has been assigned to the recruiter.",
+      });
+      setRecruiterEmail("");
+      setAssigningRecruiter(false);
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/vacancies"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to assign recruiter",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // Delete inquiry mutation
+  const deleteInquiryMutation = useMutation({
+    mutationFn: async (inquiryId: number) => {
+      const res = await apiRequest("DELETE", `/api/staffing-inquiries/${inquiryId}`);
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to delete inquiry");
+      }
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Inquiry deleted",
+        description: "The inquiry has been deleted successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/staffing-inquiries"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to delete inquiry",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // Helper functions for filters and reports
+  
+  // Filter employers based on search term
+  const filteredEmployers = users
+    ? users
+        .filter((u: User) => u.userType === "employer")
+        .filter((employer: any) => {
+          if (!searchTermEmployers) return true;
+          const searchLower = searchTermEmployers.toLowerCase();
+          return (
+            (employer.name && employer.name.toLowerCase().includes(searchLower)) ||
+            (employer.email && employer.email.toLowerCase().includes(searchLower)) ||
+            (employer.location && employer.location.toLowerCase().includes(searchLower))
+          );
+        })
+    : [];
+  
+  // Filter job seekers based on search term
+  const filteredJobSeekers = users
+    ? users
+        .filter((u: User) => u.userType === "jobseeker")
+        .filter((seeker: any) => {
+          if (!searchTermJobSeekers) return true;
+          const searchLower = searchTermJobSeekers.toLowerCase();
+          return (
+            (seeker.name && seeker.name.toLowerCase().includes(searchLower)) ||
+            (seeker.email && seeker.email.toLowerCase().includes(searchLower)) ||
+            (seeker.location && seeker.location.toLowerCase().includes(searchLower))
+          );
+        })
+    : [];
+  
+  // Filter vacancies based on status
+  const filteredVacancies = vacancies
+    ? vacancies.filter((vacancy: any) => {
+        if (selectedVacancyStatus === "all") return true;
+        return vacancy.status === selectedVacancyStatus;
+      })
+    : [];
+  
+  // Handle vacancy status change
+  const handleVacancyStatusChange = (vacancy: any, status: string) => {
+    updateVacancyStatusMutation.mutate({ id: vacancy.id, status });
+  };
+  
+  // Handle recruiter assignment
+  const handleAssignRecruiter = (vacancy: any) => {
+    setSelectedVacancy(vacancy);
+    setAssigningRecruiter(true);
+  };
+  
+  // Submit recruiter assignment
+  const submitRecruiterAssignment = () => {
+    if (!recruiterEmail || !selectedVacancy) return;
+    
+    assignRecruiterMutation.mutate({
+      vacancyId: selectedVacancy.id,
+      email: recruiterEmail
+    });
+  };
+  
+  // Handle vacancy deletion
+  const handleDeleteVacancy = (vacancyId: number) => {
+    if (window.confirm("Are you sure you want to delete this vacancy?")) {
+      deleteVacancyMutation.mutate(vacancyId);
+    }
+  };
+  
+  // Handle user deletion
+  const handleDeleteUser = (userId: number, userType: string) => {
+    if (window.confirm(`Are you sure you want to delete this ${userType}?`)) {
+      deleteUserMutation.mutate(userId);
+    }
+  };
+  
+  // Handle inquiry deletion
+  const handleDeleteInquiry = (inquiryId: number) => {
+    if (window.confirm("Are you sure you want to delete this inquiry?")) {
+      deleteInquiryMutation.mutate(inquiryId);
+    }
+  };
+  
+  // Function to generate timeframe dates
+  const getTimeframeDates = () => {
+    const now = new Date();
+    
+    switch (reportTimeframe) {
+      case "weekly":
+        return {
+          start: startOfWeek(now),
+          end: endOfWeek(now)
+        };
+      case "monthly":
+        return {
+          start: startOfMonth(now),
+          end: endOfMonth(now)
+        };
+      case "yearly":
+        return {
+          start: startOfYear(now),
+          end: endOfYear(now)
+        };
+      default:
+        return {
+          start: startOfWeek(now),
+          end: endOfWeek(now)
+        };
+    }
+  };
+  
+  // Mock function to download employer report
+  const downloadEmployerReport = () => {
+    const timeframe = getTimeframeDates();
+    toast({
+      title: "Report Generated",
+      description: `Employer report for ${reportTimeframe} timeframe has been generated.`,
+    });
+    
+    // In a real implementation, this would make a request to generate the report
+    // For demo purposes, we're just showing a success message
+  };
+  
+  // Mock function to download job seeker report
+  const downloadJobSeekerReport = () => {
+    const timeframe = getTimeframeDates();
+    toast({
+      title: "Report Generated",
+      description: `Job seeker report for ${reportTimeframe} timeframe has been generated.`,
+    });
+  };
+  
+  // Mock function to download combined report
+  const downloadCombinedReport = () => {
+    const timeframe = getTimeframeDates();
+    toast({
+      title: "Report Generated",
+      description: `Combined dashboard report for ${reportTimeframe} timeframe has been generated.`,
+    });
+  };
+  
   // Redirect if not admin
   useEffect(() => {
     if (user && user.userType !== "admin") {
@@ -201,8 +484,6 @@ function AdminPage() {
     }
   }, [user, adminLoading, navigate, toast]);
   
-  // Removed invitation code helper functions
-  
   // Loading state
   if (!user || adminLoading) {
     return (
@@ -214,35 +495,47 @@ function AdminPage() {
   
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <div className="flex items-center gap-3">
+          <Button onClick={() => navigate("/post-job")}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Post Job Notification
+          </Button>
+        </div>
+      </div>
       
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-5 mb-8">
+      <Tabs defaultValue="dashboard" className="w-full">
+        <TabsList className="grid grid-cols-6 mb-8">
           <TabsTrigger value="dashboard">
-            <RefreshCw className="mr-2 h-4 w-4" />
+            <BarChart2 className="mr-2 h-4 w-4" />
             Dashboard
           </TabsTrigger>
-          <TabsTrigger value="users">
-            <Users className="mr-2 h-4 w-4" />
-            Users
+          <TabsTrigger value="employers">
+            <Building className="mr-2 h-4 w-4" />
+            Employers
           </TabsTrigger>
-          <TabsTrigger value="jobs">
-            <Briefcase className="mr-2 h-4 w-4" />
-            Jobs
+          <TabsTrigger value="jobseekers">
+            <Users className="mr-2 h-4 w-4" />
+            Job Seekers
+          </TabsTrigger>
+          <TabsTrigger value="messages">
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Messages
           </TabsTrigger>
           <TabsTrigger value="content">
             <FileText className="mr-2 h-4 w-4" />
             Content
           </TabsTrigger>
-          <TabsTrigger value="settings">
-            <Settings className="mr-2 h-4 w-4" />
-            Settings
+          <TabsTrigger value="reports">
+            <FileTextIcon className="mr-2 h-4 w-4" />
+            Reports
           </TabsTrigger>
         </TabsList>
         
-        {/* Dashboard Tab */}
-        <TabsContent value="dashboard" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {/* Main Dashboard Tab */}
+        <TabsContent value="dashboard" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle>Total Users</CardTitle>
