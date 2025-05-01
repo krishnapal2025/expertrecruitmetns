@@ -14,10 +14,12 @@ import {
   insertTestimonialSchema,
   insertVacancySchema,
   insertStaffingInquirySchema,
+  insertBlogPostSchema,
   User,
   Admin,
   Vacancy,
-  StaffingInquiry
+  StaffingInquiry,
+  BlogPost
 } from "@shared/schema";
 import { hashPassword } from "./auth";
 import { generateResetToken, sendPasswordResetEmail } from "./email-service";
@@ -1930,6 +1932,179 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating staffing inquiry status:", error);
       res.status(500).json({ message: "Failed to update staffing inquiry status" });
+    }
+  });
+
+  // Blog Post API Endpoints
+  
+  // Get all blog posts (public endpoint)
+  app.get("/api/blog-posts", async (req, res) => {
+    try {
+      // Optional query parameters for filtering
+      const { category, tag, authorId, published, limit } = req.query;
+      
+      // Get all blog posts with optional filters
+      const posts = await storage.getBlogPosts({
+        category: category ? String(category) : undefined,
+        tag: tag ? String(tag) : undefined,
+        authorId: authorId ? parseInt(String(authorId)) : undefined,
+        published: published === 'true' ? true : published === 'false' ? false : undefined,
+        limit: limit ? parseInt(String(limit)) : undefined
+      });
+      
+      // If requesting only published posts and not logged in as admin, filter them
+      if (!req.isAuthenticated() || req.user.userType !== "admin") {
+        const publicPosts = posts.filter(post => post.published);
+        return res.json(publicPosts);
+      }
+      
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching blog posts:", error);
+      res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
+  });
+  
+  // Get blog post by ID
+  app.get("/api/blog-posts/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const post = await storage.getBlogPost(parseInt(id));
+      
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      // If post is not published and user is not admin, don't allow access
+      if (!post.published && (!req.isAuthenticated() || req.user.userType !== "admin")) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      res.json(post);
+    } catch (error) {
+      console.error("Error fetching blog post:", error);
+      res.status(500).json({ message: "Failed to fetch blog post" });
+    }
+  });
+  
+  // Get blog post by slug (for friendly URLs)
+  app.get("/api/blog-posts/slug/:slug", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const post = await storage.getBlogPostBySlug(slug);
+      
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      // If post is not published and user is not admin, don't allow access
+      if (!post.published && (!req.isAuthenticated() || req.user.userType !== "admin")) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      res.json(post);
+    } catch (error) {
+      console.error("Error fetching blog post by slug:", error);
+      res.status(500).json({ message: "Failed to fetch blog post" });
+    }
+  });
+  
+  // Create a new blog post (admin only)
+  app.post("/api/blog-posts", async (req, res) => {
+    if (!req.isAuthenticated() || req.user.userType !== "admin") {
+      return res.status(403).json({ message: "Unauthorized: Admin access required" });
+    }
+    
+    try {
+      // Validate blog post data with Zod schema
+      const postData = insertBlogPostSchema.parse(req.body);
+      
+      // Generate slug if not provided
+      if (!postData.slug) {
+        postData.slug = postData.title
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '') // Remove special chars
+          .replace(/\s+/g, '-') // Replace spaces with hyphens
+          .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+          .trim();
+      }
+      
+      // Get admin info for author reference
+      const admin = await storage.getAdminByUserId(req.user.id);
+      if (!admin) {
+        return res.status(404).json({ message: "Admin profile not found" });
+      }
+      
+      // Add admin as author if not specified
+      if (!postData.authorId) {
+        postData.authorId = admin.id;
+      }
+      
+      // Create the blog post
+      const newPost = await storage.createBlogPost(postData);
+      res.status(201).json(newPost);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      
+      console.error("Error creating blog post:", error);
+      res.status(500).json({ message: "Failed to create blog post" });
+    }
+  });
+  
+  // Update an existing blog post (admin only)
+  app.patch("/api/blog-posts/:id", async (req, res) => {
+    if (!req.isAuthenticated() || req.user.userType !== "admin") {
+      return res.status(403).json({ message: "Unauthorized: Admin access required" });
+    }
+    
+    try {
+      const { id } = req.params;
+      const post = await storage.getBlogPost(parseInt(id));
+      
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      // Update the blog post
+      const updatedPost = await storage.updateBlogPost(parseInt(id), req.body);
+      
+      if (!updatedPost) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      res.json(updatedPost);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      
+      console.error("Error updating blog post:", error);
+      res.status(500).json({ message: "Failed to update blog post" });
+    }
+  });
+  
+  // Delete a blog post (admin only)
+  app.delete("/api/blog-posts/:id", async (req, res) => {
+    if (!req.isAuthenticated() || req.user.userType !== "admin") {
+      return res.status(403).json({ message: "Unauthorized: Admin access required" });
+    }
+    
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteBlogPost(parseInt(id));
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      res.status(204).end();
+    } catch (error) {
+      console.error("Error deleting blog post:", error);
+      res.status(500).json({ message: "Failed to delete blog post" });
     }
   });
 
