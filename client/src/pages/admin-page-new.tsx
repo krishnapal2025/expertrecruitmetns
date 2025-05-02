@@ -47,6 +47,7 @@ import {
   PlusCircle,
   Download,
   Search,
+  UserPlus,
 } from "lucide-react";
 
 // Date utilities
@@ -63,6 +64,12 @@ function AdminDashboard() {
   const [searchEmployers, setSearchEmployers] = useState("");
   const [searchJobSeekers, setSearchJobSeekers] = useState("");
   const [vacancyStatusFilter, setVacancyStatusFilter] = useState("all");
+  
+  // State for vacancy assignment
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+  const [selectedVacancy, setSelectedVacancy] = useState<any>(null);
+  const [recruiterEmail, setRecruiterEmail] = useState("");
+  const [recruiterName, setRecruiterName] = useState("");
   
   // Check authentication
   useEffect(() => {
@@ -253,6 +260,52 @@ function AdminDashboard() {
     },
   });
   
+  // Vacancy assignment mutation
+  const assignVacancyMutation = useMutation({
+    mutationFn: async ({ 
+      vacancyId, 
+      recruiterEmail, 
+      recruiterName 
+    }: { 
+      vacancyId: number, 
+      recruiterEmail: string, 
+      recruiterName: string 
+    }) => {
+      const res = await apiRequest(
+        "PATCH", 
+        `/api/admin/vacancies/${vacancyId}/assign`, 
+        { recruiterEmail, recruiterName }
+      );
+      
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to assign vacancy to recruiter");
+      }
+      
+      return await res.json();
+    },
+    onSuccess: () => {
+      setAssignDialogOpen(false);
+      setRecruiterEmail("");
+      setRecruiterName("");
+      setSelectedVacancy(null);
+      
+      toast({
+        title: "Vacancy assigned",
+        description: "The vacancy has been assigned to the recruiter successfully.",
+      });
+      
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/vacancies"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to assign vacancy",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
   // Filter functions
   const filteredEmployers = users
     ? users
@@ -294,6 +347,32 @@ function AdminDashboard() {
     if (window.confirm(`Are you sure you want to delete this ${userType}?`)) {
       deleteUserMutation.mutate(userId);
     }
+  };
+  
+  // Handle vacancy assignment
+  const handleAssignVacancy = (vacancy: any) => {
+    setSelectedVacancy(vacancy);
+    setAssignDialogOpen(true);
+  };
+  
+  // Handle assignment submission
+  const submitAssignment = () => {
+    if (!selectedVacancy) return;
+    
+    if (!recruiterEmail || !recruiterName) {
+      toast({
+        title: "Missing information",
+        description: "Please enter both recruiter email and name.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    assignVacancyMutation.mutate({
+      vacancyId: selectedVacancy.id,
+      recruiterEmail,
+      recruiterName
+    });
   };
   
   // We now have a single authentication check in the useEffect at the top
