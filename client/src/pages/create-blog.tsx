@@ -60,8 +60,26 @@ const CreateBlogPage = () => {
   const [location, navigate] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
-  const [contentSections, setContentSections] = useState<{ type: 'paragraph' | 'header' | 'image'; content: string }[]>([
-    { type: 'paragraph', content: '' }
+  type ContentSection = {
+    type: 'paragraph' | 'header' | 'image';
+    content: string;
+    format?: {
+      color?: string;
+      alignment?: string;
+      size?: string;
+      weight?: string;
+      style?: string;
+    };
+  };
+
+  const [contentSections, setContentSections] = useState<ContentSection[]>([
+    { 
+      type: 'paragraph', 
+      content: '',
+      format: {
+        alignment: 'left'
+      }
+    }
   ]);
   
   // State for title formatting
@@ -140,7 +158,7 @@ const CreateBlogPage = () => {
     contentSections.forEach(section => {
       if (section.type === 'header' && section.content) {
         // Get the selected header color if it exists in the section's format state
-        const headerColor = "slate-900"; // Default color
+        const headerColor = section.format?.color || "slate-900"; // Default color if not set
         previewContent += `<h2 class="text-xl font-semibold my-4 text-${headerColor}">${section.content}</h2>`;
       } else if (section.type === 'paragraph' && section.content) {
         previewContent += `<div class="my-4">${section.content}</div>`;
@@ -220,7 +238,15 @@ const CreateBlogPage = () => {
   };
 
   const addSection = (type: 'paragraph' | 'header' | 'image') => {
-    setContentSections([...contentSections, { type, content: '' }]);
+    // Initialize with default format options
+    setContentSections([...contentSections, { 
+      type, 
+      content: '',
+      format: {
+        color: type === 'header' ? 'slate-900' : undefined,
+        alignment: 'left'
+      }
+    }]);
   };
 
   const updateSection = (index: number, content: string) => {
