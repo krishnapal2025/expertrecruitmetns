@@ -527,17 +527,6 @@ export default function Navbar() {
                               onClick={() => {
                                 setIsMobileMenuOpen(false);
                                 window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/post-job", 100);
-                              }}
-                            >
-                              <Briefcase className="mr-2 h-4 w-4" />
-                              Post a Job
-                            </div>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
                                 setTimeout(() => window.location.href = "/create-blog", 100);
                               }}
                             >
@@ -558,13 +547,15 @@ export default function Navbar() {
                           </>
                         )}
                         
-                        <button
-                          onClick={handleLogout}
-                          className="w-full text-left px-4 py-2 rounded-md hover:bg-gray-100 flex items-center"
-                        >
-                          <LogOut className="mr-2 h-4 w-4" />
-                          Log out
-                        </button>
+                        <div className="mt-4 px-4">
+                          <button
+                            onClick={handleLogout}
+                            className="w-full text-left py-3 rounded-md bg-red-50 hover:bg-red-100 flex items-center justify-center font-medium text-red-600"
+                          >
+                            <LogOut className="mr-2 h-5 w-5" />
+                            Log out
+                          </button>
+                        </div>
                       </>
                     ) : (
                       <>
