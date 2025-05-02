@@ -9,6 +9,9 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 
 export default function SiteMap() {
+  const { user } = useAuth();
+  const isAdmin = user?.userType === "admin";
+  
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
     animate: {
@@ -20,6 +23,7 @@ export default function SiteMap() {
     },
   };
 
+  // Define site map categories, filtering out Admin Portal for non-admin users
   const categories = [
     {
       title: "Main Navigation | Head Hunters Dubai",
@@ -54,11 +58,11 @@ export default function SiteMap() {
         { name: "Employer Registration", url: "/employer-register" },
         { name: "Hire Talent", url: "/hire-talent" },
         { name: "Submit a Vacancy", url: "/vacancy-form" },
-
         { name: "Employer Login", url: "/auth" },
       ],
     },
-    {
+    // Only show Admin Portal section to admin users
+    ...(isAdmin ? [{
       title: "Admin Portal | Talent Acquisition Management",
       icon: <ShieldCheck className="h-5 w-5 text-primary mr-2" />,
       links: [
@@ -71,7 +75,7 @@ export default function SiteMap() {
         { name: "Post New Job", url: "/post-job" },
         { name: "Legacy Admin Panel", url: "/admin" },
       ],
-    },
+    }] : []),
     {
       title: "Knowledge Center | Recruitment Agencies in Dubai",
       icon: <BookOpen className="h-5 w-5 text-primary mr-2" />,
