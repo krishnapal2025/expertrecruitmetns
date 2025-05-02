@@ -849,7 +849,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         </TabsContent>
-        </Tabs>
+      </Tabs>
       )}
     </div>
   );
