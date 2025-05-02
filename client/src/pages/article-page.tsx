@@ -97,7 +97,16 @@ const BlogPostContent = ({
         
         {/* Article content */}
         <div className="max-w-4xl mx-auto mb-12">
-          <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: blogPost.content }}></div>
+          <div 
+            className="prose prose-lg max-w-none" 
+            style={{ whiteSpace: 'pre-wrap' }}
+            dangerouslySetInnerHTML={{ 
+              __html: blogPost.content
+                .split('\n')
+                .map(line => line.trim() ? line : '<br>')
+                .join('\n')
+            }}
+          ></div>
           
           {/* Tags */}
           {blogPost.tags && blogPost.tags.length > 0 && (

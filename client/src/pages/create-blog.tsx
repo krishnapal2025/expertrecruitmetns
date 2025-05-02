@@ -91,6 +91,7 @@ const CreateBlogPage = () => {
           if (section.type === 'header') {
             return `## ${section.content}\n\n`;
           } else if (section.type === 'paragraph') {
+            // Preserve all line breaks and whitespace in paragraphs
             return `${section.content}\n\n`;
           } else if (section.type === 'image') {
             return `![image](${section.content})\n\n`;
@@ -151,6 +152,7 @@ const CreateBlogPage = () => {
         if (section.type === 'header') {
           return `## ${section.content}\n\n`;
         } else if (section.type === 'paragraph') {
+          // Preserve all line breaks and whitespace in paragraphs
           return `${section.content}\n\n`;
         } else if (section.type === 'image') {
           return `![image](${section.content})\n\n`;
@@ -328,7 +330,8 @@ const CreateBlogPage = () => {
                         value={section.content}
                         onChange={(e) => updateSection(index, e.target.value)}
                         placeholder="Enter paragraph text"
-                        className="min-h-[100px]"
+                        className="min-h-[100px] whitespace-pre-wrap"
+                        style={{ whiteSpace: 'pre-wrap' }}
                       />
                     )}
                     
