@@ -372,7 +372,25 @@ export default function BlogsPage() {
                       <Button 
                         variant="outline" 
                         className="w-full"
-                        onClick={() => setLocation(`/article/${post.slug || post.id}`)}
+                        onClick={() => {
+                          // For hardcoded blog posts, find the corresponding slug in the database
+                          // We used to use IDs 1-10 but now we have proper slugs defined in the database
+                          const slugMap: { [key: number]: string } = {
+                            1: "executive-search-firms-find-top-talent",
+                            2: "top-headhunters-dubai",
+                            3: "recruitment-agencies-uae",
+                            4: "best-recruitment-agency-dubai",
+                            5: "partner-headhunters-dubai",
+                            6: "recruitment-agencies-mnc",
+                            7: "tech-growth-outlook",
+                            8: "remote-work-trends",
+                            9: "healthcare-expansion",
+                            10: "sustainability-roles"
+                          };
+                          
+                          const slug = post.slug || slugMap[post.id] || post.id;
+                          setLocation(`/article/${slug}`);
+                        }}
                       >
                         Read Article
                       </Button>
@@ -426,7 +444,24 @@ export default function BlogsPage() {
                     <Button 
                       variant="outline" 
                       className="w-full"
-                      onClick={() => setLocation(`/article/${post.slug || post.id}`)}
+                      onClick={() => {
+                        // For hardcoded blog posts, find the corresponding slug in the database
+                        const slugMap: { [key: number]: string } = {
+                          1: "executive-search-firms-find-top-talent",
+                          2: "top-headhunters-dubai",
+                          3: "recruitment-agencies-uae",
+                          4: "best-recruitment-agency-dubai",
+                          5: "partner-headhunters-dubai",
+                          6: "recruitment-agencies-mnc",
+                          7: "tech-growth-outlook",
+                          8: "remote-work-trends",
+                          9: "healthcare-expansion",
+                          10: "sustainability-roles"
+                        };
+                        
+                        const slug = post.slug || slugMap[post.id] || post.id;
+                        setLocation(`/article/${slug}`);
+                      }}
                     >
                       Read Article
                     </Button>
