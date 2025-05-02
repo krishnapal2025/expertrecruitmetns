@@ -18,7 +18,6 @@ import ArticlePage from "@/pages/article-page";
 import CareersPage from "@/pages/careers";
 import AuthPage from "@/pages/auth-page";
 import ForgotPasswordPage from "@/pages/forgot-password";
-import ResetPasswordPage from "@/pages/reset-password";
 import JobSeekerRegisterPage from "@/pages/job-seeker-register";
 import EmployerRegisterPage from "@/pages/employer-register";
 import JobDetailsPage from "@/pages/job-details";
@@ -32,7 +31,6 @@ import AdminDashboardPage from "@/pages/admin-page-new";
 import AdminRegisterPage from "@/pages/admin-register";
 import AdminLoginPage from "@/pages/admin-login";
 import AdminForgotPasswordPage from "@/pages/admin-forgot-password";
-import AdminResetPasswordPage from "@/pages/admin-reset-password";
 import ProfilePage from "@/pages/profile-page";
 import PostJobPage from "@/pages/post-job";
 import PostManagerPage from "@/pages/post-manager";
@@ -43,7 +41,6 @@ import CareerAdvicePage from "@/pages/resources/career-advice";
 import SalaryNegotiationPage from "@/pages/resources/salary-negotiation";
 import ApplicationsManagerPage from "@/pages/applications-manager";
 import VacancyFormPage from "@/pages/vacancy-form";
-import InquiryFormPage from "@/pages/inquiry-form";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AdminProtectedRoute } from "./lib/admin-protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
@@ -95,12 +92,10 @@ function Router() {
       <Route path="/careers" component={CareersPage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/auth/forgot-password" component={ForgotPasswordPage} />
-      <Route path="/auth/reset-password" component={ResetPasswordPage} />
       <Route path="/job-seeker-register" component={JobSeekerRegisterPage} />
       <Route path="/employer-register" component={EmployerRegisterPage} />
       <Route path="/hire-talent" component={HireTalentPage} />
       <Route path="/vacancy-form" component={VacancyFormPage} />
-      <Route path="/inquiry-form" component={InquiryFormPage} />
       <Route path="/admin" component={AdminPage} />
       <AdminProtectedRoute path="/admin-dashboard" component={AdminDashboardPage} />
       <AdminProtectedRoute path="/create-blog" component={CreateBlogPage} />
@@ -110,7 +105,6 @@ function Router() {
       <Route path="/admin-register" component={AdminRegisterPage} />
       <Route path="/admin-login" component={AdminLoginPage} />
       <Route path="/admin/forgot-password" component={AdminForgotPasswordPage} />
-      <Route path="/admin/reset-password" component={AdminResetPasswordPage} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
       <AdminProtectedRoute path="/post-job" component={PostJobPage} />
       <AdminProtectedRoute path="/post-manager" component={PostManagerPage} />
