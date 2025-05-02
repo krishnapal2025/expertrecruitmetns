@@ -99,11 +99,15 @@ const BlogPostContent = ({
         <div className="max-w-4xl mx-auto mb-12">
           <div 
             className="prose prose-lg max-w-none" 
-            style={{ whiteSpace: 'pre-wrap' }}
+            style={{ 
+              whiteSpace: 'pre-wrap',
+              lineHeight: '1.3' // Reduced line height for minimal spacing
+            }}
             dangerouslySetInnerHTML={{ 
               __html: blogPost.content
+                .replace(/\n\n+/g, '\n')  // Replace multiple line breaks with single one
                 .split('\n')
-                .map(line => line.trim() ? line : '<br>')
+                .map(line => line.trim() ? `<span style="margin-bottom: -10px; display: block;">${line}</span>` : '<br style="margin-top: -10px; margin-bottom: -10px;" />')
                 .join('')
             }}
           ></div>
