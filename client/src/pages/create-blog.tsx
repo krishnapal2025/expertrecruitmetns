@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useForm } from "react-hook-form";
@@ -7,7 +7,7 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Loader2, Image, Trash2 } from "lucide-react";
+import { Loader2, Image, Trash2, AlignLeft, AlignCenter, AlignRight, Bold, Italic, List, ListOrdered, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -38,6 +38,9 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 // Blog post creation schema
 const blogPostSchema = z.object({
@@ -326,24 +329,125 @@ const CreateBlogPage = () => {
                     </div>
                     
                     {section.type === 'paragraph' && (
-                      <Textarea
-                        value={section.content}
-                        onChange={(e) => updateSection(index, e.target.value)}
-                        placeholder="Enter paragraph text"
-                        className="min-h-[100px] whitespace-pre-wrap"
-                        style={{ 
-                          whiteSpace: 'pre-wrap',
-                          lineHeight: '1.6' // Standard line height for normal spacing
-                        }}
-                      />
+                      <div>
+                        <div className="mb-2">
+                          <div className="flex flex-wrap gap-2 mb-2">
+                            <h4 className="text-sm font-medium w-full mb-1">Text Formatting</h4>
+                            <ToggleGroup type="multiple" className="justify-start">
+                              <ToggleGroupItem value="bold" aria-label="Toggle bold" title="Bold">
+                                <Bold className="h-4 w-4" />
+                              </ToggleGroupItem>
+                              <ToggleGroupItem value="italic" aria-label="Toggle italic" title="Italic">
+                                <Italic className="h-4 w-4" />
+                              </ToggleGroupItem>
+                              <ToggleGroupItem value="align-left" aria-label="Align left" title="Align Left">
+                                <AlignLeft className="h-4 w-4" />
+                              </ToggleGroupItem>
+                              <ToggleGroupItem value="align-center" aria-label="Align center" title="Align Center">
+                                <AlignCenter className="h-4 w-4" />
+                              </ToggleGroupItem>
+                              <ToggleGroupItem value="align-right" aria-label="Align right" title="Align Right">
+                                <AlignRight className="h-4 w-4" />
+                              </ToggleGroupItem>
+                            </ToggleGroup>
+                          </div>
+                          
+                          <div className="flex flex-wrap gap-2">
+                            <h4 className="text-sm font-medium w-full mb-1">Lists</h4>
+                            <ToggleGroup type="single" className="justify-start">
+                              <ToggleGroupItem value="bullet" aria-label="Bullet list" title="Bullet List">
+                                <List className="h-4 w-4" />
+                              </ToggleGroupItem>
+                              <ToggleGroupItem value="numbered" aria-label="Numbered list" title="Numbered List">
+                                <ListOrdered className="h-4 w-4" />
+                              </ToggleGroupItem>
+                            </ToggleGroup>
+                          </div>
+                          
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            <h4 className="text-sm font-medium w-full mb-1">Font Size</h4>
+                            <Select
+                              onValueChange={(value) => console.log('Font size changed:', value)}
+                              defaultValue="normal"
+                            >
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Font Size" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="small">Small</SelectItem>
+                                <SelectItem value="normal">Normal</SelectItem>
+                                <SelectItem value="large">Large</SelectItem>
+                                <SelectItem value="xl">Extra Large</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                        
+                        <ReactQuill
+                          theme="snow"
+                          value={section.content}
+                          onChange={(content) => updateSection(index, content)}
+                          placeholder="Enter paragraph text"
+                          modules={{
+                            toolbar: [
+                              ['bold', 'italic', 'underline', 'strike'],
+                              [{ 'align': [] }],
+                              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                              [{ 'size': ['small', false, 'large', 'huge'] }],
+                              [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                              ['clean']
+                            ]
+                          }}
+                          className="min-h-[150px]"
+                        />
+                      </div>
                     )}
                     
                     {section.type === 'header' && (
-                      <Input
-                        value={section.content}
-                        onChange={(e) => updateSection(index, e.target.value)}
-                        placeholder="Enter header text"
-                      />
+                      <div>
+                        <div className="mb-2">
+                          <div className="flex flex-wrap gap-2 mb-2">
+                            <h4 className="text-sm font-medium w-full mb-1">Heading Style</h4>
+                            <Select
+                              onValueChange={(value) => console.log('Header style changed:', value)}
+                              defaultValue="h2"
+                            >
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Heading Size" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="h1">Heading 1 (Largest)</SelectItem>
+                                <SelectItem value="h2">Heading 2</SelectItem>
+                                <SelectItem value="h3">Heading 3</SelectItem>
+                                <SelectItem value="h4">Heading 4</SelectItem>
+                                <SelectItem value="h5">Heading 5 (Smallest)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div className="flex flex-wrap gap-2">
+                            <h4 className="text-sm font-medium w-full mb-1">Alignment</h4>
+                            <ToggleGroup type="single" className="justify-start">
+                              <ToggleGroupItem value="left" aria-label="Align left" title="Align Left">
+                                <AlignLeft className="h-4 w-4" />
+                              </ToggleGroupItem>
+                              <ToggleGroupItem value="center" aria-label="Align center" title="Align Center">
+                                <AlignCenter className="h-4 w-4" />
+                              </ToggleGroupItem>
+                              <ToggleGroupItem value="right" aria-label="Align right" title="Align Right">
+                                <AlignRight className="h-4 w-4" />
+                              </ToggleGroupItem>
+                            </ToggleGroup>
+                          </div>
+                        </div>
+                        
+                        <Input
+                          value={section.content}
+                          onChange={(e) => updateSection(index, e.target.value)}
+                          placeholder="Enter header text"
+                          className="text-lg font-semibold"
+                        />
+                      </div>
                     )}
                     
                     {section.type === 'image' && (
