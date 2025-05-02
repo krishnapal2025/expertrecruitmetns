@@ -113,7 +113,7 @@ function Router() {
       <Route path="/admin/reset-password" component={AdminResetPasswordPage} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
       <ProtectedRoute path="/post-job" component={PostJobPage} />
-      <ProtectedRoute path="/my-jobs" component={PostManagerPage} />
+      <Route path="/post-manager" component={PostManagerPage} />
       <Route path="/resources/create-resume" component={CreateResumePage} />
       <Route path="/resources/interview-prep" component={InterviewPrepPage} />
       <Route path="/resources/career-advice" component={CareerAdvicePage} />
