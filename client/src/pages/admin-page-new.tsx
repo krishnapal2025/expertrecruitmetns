@@ -65,8 +65,9 @@ function AdminDashboard() {
   const [searchJobSeekers, setSearchJobSeekers] = useState("");
   const [vacancyStatusFilter, setVacancyStatusFilter] = useState("all");
   
-  // State for vacancy assignment
+  // State for vacancy management
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [selectedVacancy, setSelectedVacancy] = useState<any>(null);
   const [recruiterEmail, setRecruiterEmail] = useState("");
   const [recruiterName, setRecruiterName] = useState("");
@@ -355,6 +356,12 @@ function AdminDashboard() {
     setAssignDialogOpen(true);
   };
   
+  // Handle vacancy view
+  const handleViewVacancy = (vacancy: any) => {
+    setSelectedVacancy(vacancy);
+    setViewDialogOpen(true);
+  };
+  
   // Handle assignment submission
   const submitAssignment = () => {
     if (!selectedVacancy) return;
@@ -388,6 +395,114 @@ function AdminDashboard() {
   
   return (
     <div className="container mx-auto py-8 max-w-[1400px]">
+      {/* View Vacancy Dialog */}
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Vacancy Details</DialogTitle>
+            <DialogDescription>
+              Review the detailed information for this vacancy.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedVacancy && (
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="text-sm font-medium">Position</h3>
+                  <p className="text-sm">{selectedVacancy.positionName || selectedVacancy.jobTitle || "N/A"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Company</h3>
+                  <p className="text-sm">{selectedVacancy.companyName || "N/A"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Industry</h3>
+                  <p className="text-sm">{selectedVacancy.industry || "N/A"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Location</h3>
+                  <p className="text-sm">{selectedVacancy.location || "N/A"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Status</h3>
+                  <Badge variant={
+                    selectedVacancy.status === "open" 
+                      ? "default" 
+                      : selectedVacancy.status === "closed" 
+                      ? "secondary" 
+                      : selectedVacancy.status === "lost"
+                      ? "destructive"
+                      : "outline"
+                  }>
+                    {selectedVacancy.status || "pending"}
+                  </Badge>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Salary Range</h3>
+                  <p className="text-sm">{selectedVacancy.salaryRange || "Not specified"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Deadline</h3>
+                  <p className="text-sm">{formatDate(selectedVacancy.applicationDeadline)}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Submitted</h3>
+                  <p className="text-sm">{formatDate(selectedVacancy.submittedAt || selectedVacancy.createdAt)}</p>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-medium">Job Description</h3>
+                <div className="mt-1 p-3 bg-muted rounded-md text-sm max-h-[200px] overflow-y-auto">
+                  {selectedVacancy.jobDescription || "No job description provided."}
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-medium">Recruiter Assignment</h3>
+                {selectedVacancy.assignedName ? (
+                  <div className="p-3 bg-muted rounded-md text-sm mt-1">
+                    <p><span className="font-medium">Assigned to:</span> {selectedVacancy.assignedName}</p>
+                    <p><span className="font-medium">Email:</span> {selectedVacancy.assignedTo}</p>
+                    <p><span className="font-medium">Assigned at:</span> {formatDate(selectedVacancy.assignedAt)}</p>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground mt-1">Not assigned to any recruiter yet.</p>
+                )}
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="text-sm font-medium">Contact Name</h3>
+                  <p className="text-sm">{selectedVacancy.contactName || "N/A"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Contact Email</h3>
+                  <p className="text-sm">{selectedVacancy.contactEmail || "N/A"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Contact Phone</h3>
+                  <p className="text-sm">{selectedVacancy.contactPhone || "N/A"}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
+              Close
+            </Button>
+            {selectedVacancy && !selectedVacancy.assignedName && (
+              <Button onClick={() => {
+                setViewDialogOpen(false);
+                handleAssignVacancy(selectedVacancy);
+              }}>
+                Assign to Recruiter
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Vacancy Assignment Dialog */}
       <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
@@ -982,7 +1097,8 @@ function AdminDashboard() {
                               </TableCell>
                               <TableCell>{formatDate(vacancy.submittedAt || vacancy.createdAt)}</TableCell>
                               <TableCell>
-                                {vacancy.assignedRecruiter || 
+                                {vacancy.assignedName ? 
+                                  <span>{vacancy.assignedName} <span className="text-xs text-muted-foreground">({vacancy.assignedTo})</span></span> : 
                                   <span className="text-muted-foreground text-sm">Not assigned</span>
                                 }
                               </TableCell>
@@ -991,6 +1107,8 @@ function AdminDashboard() {
                                   <Button 
                                     variant="ghost" 
                                     size="sm"
+                                    onClick={() => handleViewVacancy(vacancy)}
+                                    title="View Vacancy Form"
                                   >
                                     <Eye className="h-4 w-4" />
                                   </Button>
