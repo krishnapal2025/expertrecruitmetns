@@ -120,7 +120,7 @@ export default function Navbar() {
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
         { name: "Hire Talent", href: "/hire-talent" },
-        { name: "Applications Manager", href: "/applications-manager" },
+        { name: "Vacancy Form", href: "/vacancy-form" },
         { name: "Blogs", href: "/blogs" },
         { name: "Contact Us", href: "/contact-us" },
       ];
@@ -236,35 +236,7 @@ export default function Navbar() {
                         </DropdownMenuItem>
                       </ScrollLink>
                     )}
-                    {currentUser.user.userType === "employer" && (
-                      <>
-                        <ScrollLink href="/applications-manager" className="w-full">
-                          <DropdownMenuItem>
-                            <User className="mr-2 h-4 w-4" />
-                            <span>Applications Manager</span>
-                          </DropdownMenuItem>
-                        </ScrollLink>
-                        <ScrollLink href="/post-job" className="w-full">
-                          <DropdownMenuItem>
-                            <svg
-                              className="mr-2 h-4 w-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 4v16m8-8H4"
-                              />
-                            </svg>
-                            <span>Post New Job</span>
-                          </DropdownMenuItem>
-                        </ScrollLink>
-                      </>
-                    )}
+                    {/* Employer-specific menu items removed */}
                     {currentUser.user.userType === "admin" && (
                       <ScrollLink href="/admin" className="w-full">
                         <DropdownMenuItem>
@@ -427,46 +399,7 @@ export default function Navbar() {
                           </div>
                         )}
                         
-                        {currentUser.user.userType === "employer" && (
-                          <>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/post-job", 100);
-                              }}
-                            >
-                              <svg
-                                className="mr-2 h-4 w-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M12 4v16m8-8H4"
-                                />
-                              </svg>
-                              Post New Job
-                            </div>
-
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/applications-manager", 100);
-                              }}
-                            >
-                              <User className="mr-2 h-4 w-4" />
-                              Applications Manager
-                            </div>
-                          </>
-                        )}
+                        {/* Employer-specific menu items removed from mobile menu */}
                         
                         {currentUser.user.userType === "admin" && (
                           <div 
