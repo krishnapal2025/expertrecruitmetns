@@ -670,6 +670,45 @@ export class DatabaseStorage implements IStorage {
       .returning();
     return vacancy;
   }
+  
+  async assignVacancyToRecruiter(
+    id: number, 
+    recruiterEmail: string, 
+    recruiterName: string
+  ): Promise<Vacancy | undefined> {
+    // Get the current status of the vacancy
+    const [vacancy] = await db.select().from(vacancies).where(eq(vacancies.id, id));
+    if (!vacancy) {
+      console.error(`Vacancy with ID ${id} not found`);
+      return undefined;
+    }
+    
+    const now = new Date();
+    
+    // Update status to 'assigned' if it's 'new' or 'pending'
+    const newStatus = vacancy.status === 'new' || vacancy.status === 'pending' ? 'assigned' : vacancy.status;
+    
+    console.log(`Assigning vacancy ID ${id} to ${recruiterName} (${recruiterEmail}), changing status from ${vacancy.status} to ${newStatus}`);
+    
+    try {
+      const [updatedVacancy] = await db
+        .update(vacancies)
+        .set({ 
+          assignedTo: recruiterEmail,
+          assignedName: recruiterName,
+          assignedAt: now,
+          status: newStatus
+        })
+        .where(eq(vacancies.id, id))
+        .returning();
+      
+      console.log(`Successfully updated vacancy ID ${id} in database`);
+      return updatedVacancy;
+    } catch (error) {
+      console.error(`Error assigning vacancy to recruiter:`, error);
+      return undefined;
+    }
+  }
 
   // Staffing Inquiry methods
   async getStaffingInquiry(id: number): Promise<StaffingInquiry | undefined> {
