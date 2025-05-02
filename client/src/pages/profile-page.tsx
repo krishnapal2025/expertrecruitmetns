@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Briefcase, Building, Globe, Phone, MapPin, AtSign, User as UserIcon, Check, CheckCircle } from "lucide-react";
+import { Loader2, Briefcase, Building, Building2, Globe, Phone, MapPin, AtSign, User as UserIcon, Check, CheckCircle, ShieldCheck } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -322,9 +322,28 @@ export default function ProfilePage() {
               ? currentUser.profile.companyName
               : 'My Profile'}
           </h1>
-          <p className="text-gray-500">
-            {currentUser.user.email} • {currentUser.user.userType === 'jobseeker' ? 'Job Seeker' : 'Employer'}
+          <p className="text-gray-500 mb-2">
+            {currentUser.user.email}
           </p>
+          {/* User type badge */}
+          <div className="mt-1">
+            {currentUser.user.userType === "admin" ? (
+              <div className="flex items-center bg-purple-50 text-purple-800 rounded-full px-3 py-1 text-sm font-medium border border-purple-200 shadow-sm">
+                <ShieldCheck className="mr-1.5 h-4 w-4 text-purple-500" /> 
+                <span>Administrator Account</span>
+              </div>
+            ) : currentUser.user.userType === "employer" ? (
+              <div className="flex items-center bg-blue-50 text-blue-800 rounded-full px-3 py-1 text-sm font-medium border border-blue-200 shadow-sm">
+                <Building2 className="mr-1.5 h-4 w-4 text-blue-500" /> 
+                <span>Employer Account</span>
+              </div>
+            ) : (
+              <div className="flex items-center bg-green-50 text-green-800 rounded-full px-3 py-1 text-sm font-medium border border-green-200 shadow-sm">
+                <UserIcon className="mr-1.5 h-4 w-4 text-green-500" /> 
+                <span>Job Seeker Account</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
