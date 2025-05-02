@@ -69,7 +69,8 @@ const CreateBlogPage = () => {
     fontStyle: 'normal',
     fontWeight: 'bold',
     fontSize: '2xl',
-    alignment: 'left'
+    alignment: 'left',
+    color: 'primary'
   });
   
   // State for subtitle formatting
@@ -77,7 +78,8 @@ const CreateBlogPage = () => {
     fontStyle: 'normal',
     fontWeight: 'medium',
     fontSize: 'lg',
-    alignment: 'left'
+    alignment: 'left',
+    color: 'gray-600'
   });
   
   // State for preview content
@@ -127,17 +129,19 @@ const CreateBlogPage = () => {
     }
     
     if (title) {
-      previewContent += `<h1 class="text-3xl font-bold mt-6 mb-2">${title}</h1>`;
+      previewContent += `<h1 class="text-3xl font-${titleFormatting.fontWeight} font-${titleFormatting.fontStyle} text-${titleFormatting.fontSize} text-${titleFormatting.alignment} text-${titleFormatting.color} mt-6 mb-2">${title}</h1>`;
     }
     
     if (subtitle) {
-      previewContent += `<p class="text-xl text-gray-600 mb-6">${subtitle}</p>`;
+      previewContent += `<p class="text-xl font-${subtitleFormatting.fontWeight} font-${subtitleFormatting.fontStyle} text-${subtitleFormatting.fontSize} text-${subtitleFormatting.alignment} text-${subtitleFormatting.color} mb-6">${subtitle}</p>`;
     }
     
     previewContent += '<div class="prose max-w-none">';
     contentSections.forEach(section => {
       if (section.type === 'header' && section.content) {
-        previewContent += `<h2 class="text-xl font-semibold my-4">${section.content}</h2>`;
+        // Get the selected header color if it exists in the section's format state
+        const headerColor = "slate-900"; // Default color
+        previewContent += `<h2 class="text-xl font-semibold my-4 text-${headerColor}">${section.content}</h2>`;
       } else if (section.type === 'paragraph' && section.content) {
         previewContent += `<div class="my-4">${section.content}</div>`;
       } else if (section.type === 'image' && section.content) {
@@ -160,7 +164,7 @@ const CreateBlogPage = () => {
     previewContent += '</div>';
     
     setPreviewHtml(previewContent);
-  }, [form, contentSections]);
+  }, [form, contentSections, titleFormatting, subtitleFormatting]);
 
   const createBlogMutation = useMutation({
     mutationFn: async (data: BlogFormValues) => {
@@ -364,13 +368,75 @@ const CreateBlogPage = () => {
                                   </ToggleGroupItem>
                                 </ToggleGroup>
                               </div>
+                              
+                              <div>
+                                <h4 className="text-sm font-medium mb-1">Text Color</h4>
+                                <Select 
+                                  defaultValue={titleFormatting.color}
+                                  onValueChange={(value) => setTitleFormatting({...titleFormatting, color: value})}
+                                >
+                                  <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Color" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="primary">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-primary mr-2" />
+                                        <span>Primary</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="slate-900">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-slate-900 mr-2" />
+                                        <span>Black</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="gray-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-gray-600 mr-2" />
+                                        <span>Gray</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="blue-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-blue-600 mr-2" />
+                                        <span>Blue</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="green-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-green-600 mr-2" />
+                                        <span>Green</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="red-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-red-600 mr-2" />
+                                        <span>Red</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="purple-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-purple-600 mr-2" />
+                                        <span>Purple</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="amber-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-amber-600 mr-2" />
+                                        <span>Amber</span>
+                                      </div>
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
                             </div>
                           </div>
                           <FormControl>
                             <Input 
                               placeholder="Enter blog title" 
                               {...field} 
-                              className={`text-${titleFormatting.fontSize} font-${titleFormatting.fontWeight} font-${titleFormatting.fontStyle} text-${titleFormatting.alignment}`}
+                              className={`text-${titleFormatting.fontSize} font-${titleFormatting.fontWeight} font-${titleFormatting.fontStyle} text-${titleFormatting.alignment} text-${titleFormatting.color}`}
                             />
                           </FormControl>
                           <FormMessage />
@@ -461,13 +527,69 @@ const CreateBlogPage = () => {
                                   </ToggleGroupItem>
                                 </ToggleGroup>
                               </div>
+                              
+                              <div>
+                                <h4 className="text-sm font-medium mb-1">Text Color</h4>
+                                <Select 
+                                  defaultValue={subtitleFormatting.color}
+                                  onValueChange={(value) => setSubtitleFormatting({...subtitleFormatting, color: value})}
+                                >
+                                  <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Color" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="gray-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-gray-600 mr-2" />
+                                        <span>Gray</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="slate-700">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-slate-700 mr-2" />
+                                        <span>Dark Gray</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="primary">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-primary mr-2" />
+                                        <span>Primary</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="blue-500">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-blue-500 mr-2" />
+                                        <span>Blue</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="green-500">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-green-500 mr-2" />
+                                        <span>Green</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="amber-500">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-amber-500 mr-2" />
+                                        <span>Amber</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="purple-500">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-purple-500 mr-2" />
+                                        <span>Purple</span>
+                                      </div>
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
                             </div>
                           </div>
                           <FormControl>
                             <Input 
                               placeholder="Enter optional subtitle" 
                               {...field} 
-                              className={`text-${subtitleFormatting.fontSize} font-${subtitleFormatting.fontWeight} font-${subtitleFormatting.fontStyle} text-${subtitleFormatting.alignment} text-gray-600`} 
+                              className={`text-${subtitleFormatting.fontSize} font-${subtitleFormatting.fontWeight} font-${subtitleFormatting.fontStyle} text-${subtitleFormatting.alignment} text-${subtitleFormatting.color}`} 
                             />
                           </FormControl>
                           <FormMessage />
@@ -706,6 +828,70 @@ const CreateBlogPage = () => {
                                     <AlignRight className="h-4 w-4" />
                                   </ToggleGroupItem>
                                 </ToggleGroup>
+                              </div>
+                              
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                <h4 className="text-sm font-medium w-full mb-1">Heading Color</h4>
+                                <Select
+                                  onValueChange={(value) => {
+                                    // Store the selected color with the section
+                                    const newSections = [...contentSections];
+                                    if (!newSections[index].format) {
+                                      newSections[index].format = {};
+                                    }
+                                    newSections[index].format.color = value;
+                                    setContentSections(newSections);
+                                  }}
+                                  defaultValue="slate-900"
+                                >
+                                  <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Color" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="slate-900">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-slate-900 mr-2" />
+                                        <span>Black</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="primary">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-primary mr-2" />
+                                        <span>Primary</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="blue-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-blue-600 mr-2" />
+                                        <span>Blue</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="green-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-green-600 mr-2" />
+                                        <span>Green</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="purple-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-purple-600 mr-2" />
+                                        <span>Purple</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="amber-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-amber-600 mr-2" />
+                                        <span>Amber</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="red-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-red-600 mr-2" />
+                                        <span>Red</span>
+                                      </div>
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
                             </div>
                             
