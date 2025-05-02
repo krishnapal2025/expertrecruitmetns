@@ -263,6 +263,12 @@ export default function Navbar() {
                             <span>Post Manager</span>
                           </DropdownMenuItem>
                         </ScrollLink>
+                        <ScrollLink href="/post-job" className="w-full">
+                          <DropdownMenuItem>
+                            <Briefcase className="mr-2 h-4 w-4" />
+                            <span>Post Job</span>
+                          </DropdownMenuItem>
+                        </ScrollLink>
                       </>
                     )}
                     <DropdownMenuSeparator />
@@ -427,6 +433,28 @@ export default function Navbar() {
                             >
                               <ShieldCheck className="mr-2 h-4 w-4" />
                               Admin Dashboard
+                            </div>
+                            <div 
+                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/post-manager", 100);
+                              }}
+                            >
+                              <Briefcase className="mr-2 h-4 w-4" />
+                              Post Manager
+                            </div>
+                            <div 
+                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/post-job", 100);
+                              }}
+                            >
+                              <Briefcase className="mr-2 h-4 w-4" />
+                              Post Job
                             </div>
                             <div 
                               className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"

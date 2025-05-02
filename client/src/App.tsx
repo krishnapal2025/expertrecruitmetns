@@ -105,7 +105,7 @@ function Router() {
       <AdminProtectedRoute path="/admin-dashboard" component={AdminDashboardPage} />
       <AdminProtectedRoute path="/create-blog" component={CreateBlogPage} />
       <Route path="/edit-blog/:id">
-        {params => <AdminProtectedRoute path={`/edit-blog/${params.id}`} component={() => <EditBlogPage />} />}
+        {params => <AdminProtectedRoute path={`/edit-blog/${params.id}`} component={EditBlogPage} />}
       </Route>
       <Route path="/admin-register" component={AdminRegisterPage} />
       <Route path="/admin-login" component={AdminLoginPage} />
@@ -119,7 +119,7 @@ function Router() {
       <Route path="/resources/career-advice" component={CareerAdvicePage} />
       <Route path="/resources/salary-negotiation" component={SalaryNegotiationPage} />
       <Route path="/edit-job/:id">
-        {params => <ProtectedRoute path={`/edit-job/${params.id}`} component={() => <EditJobPage />} />}
+        {params => <ProtectedRoute path={`/edit-job/${params.id}`} component={EditJobPage} />}
       </Route>
       <Route component={NotFound} />
     </Switch>

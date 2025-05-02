@@ -47,9 +47,6 @@ export default function SiteMap() {
       icon: <Building className="h-5 w-5 text-primary mr-2" />,
       links: [
         { name: "Register as Employer", url: "/employer-register" },
-        { name: "Post a Job", url: "/post-job" },
-        { name: "Post Manager", url: "/post-manager" },
-        { name: "Applications Manager", url: "/applications-manager" },
         { name: "Hire Talent", url: "/hire-talent" },
         { name: "Submit a Vacancy", url: "/vacancy-form" },
         { name: "Inquiry Form", url: "/inquiry-form" },
@@ -65,6 +62,7 @@ export default function SiteMap() {
         { name: "Admin Register", url: "/admin-register" },
         { name: "Create Blog", url: "/create-blog" },
         { name: "Post Manager", url: "/post-manager" },
+        { name: "Post Job", url: "/post-job" },
         { name: "Legacy Admin", url: "/admin" },
       ],
     },
