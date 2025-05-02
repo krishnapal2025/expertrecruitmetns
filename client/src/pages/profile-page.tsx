@@ -542,34 +542,33 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       ) : (
-        <div>
-          <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="w-full border-b justify-start rounded-none p-0">
-              <TabsTrigger 
-                value="profile" 
-                className="rounded-t-lg rounded-b-none data-[state=active]:border-b-2 data-[state=active]:border-primary"
-              >
-                Company Profile
-              </TabsTrigger>
-              <TabsTrigger 
-                value="vacancy" 
-                className="rounded-t-lg rounded-b-none data-[state=active]:border-b-2 data-[state=active]:border-primary"
-              >
-                Submit Vacancy
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="profile">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Employer Profile</CardTitle>
-                  <CardDescription>
-                    Update your company profile to attract the best talent
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Form {...employerForm}>
-                    <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-6">
+        <Tabs defaultValue="profile" className="space-y-6">
+          <TabsList className="w-full border-b justify-start rounded-none p-0">
+            <TabsTrigger 
+              value="profile" 
+              className="rounded-t-lg rounded-b-none data-[state=active]:border-b-2 data-[state=active]:border-primary"
+            >
+              Company Profile
+            </TabsTrigger>
+            <TabsTrigger 
+              value="vacancy" 
+              className="rounded-t-lg rounded-b-none data-[state=active]:border-b-2 data-[state=active]:border-primary"
+            >
+              Submit Vacancy
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="profile">
+            <Card>
+              <CardHeader>
+                <CardTitle>Employer Profile</CardTitle>
+                <CardDescription>
+                  Update your company profile to attract the best talent
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...employerForm}>
+                  <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-6">
                   <FormField
                     control={employerForm.control}
                     name="companyName"
@@ -851,7 +850,6 @@ export default function ProfilePage() {
           </Card>
         </TabsContent>
         </Tabs>
-        </div>
       )}
     </div>
   );
