@@ -21,7 +21,31 @@ export default function HomePage() {
       <Helmet>
         <title>Expert Recruitments LLC | Find Your Next Career Opportunity</title>
         <meta name="description" content="Connect with the best job opportunities and top talent through our professional job portal. Specializing in executive search across UAE & GCC markets." />
+        <meta name="keywords" content="Expert Recruitments LLC, Recruitment agency in Dubai, UAE head hunters, Executive search services, Job vacancies in Dubai, Hiring in UAE, Top recruitment agency, Employment in GCC, Talent acquisition specialists, Dubai career portal, Middle East job market, Professional recruiters, Headhunting services, Gulf employment, Job search Dubai" />
       </Helmet>
+      
+      {/* Hidden SEO keywords for search engines */}
+      <div className="hidden" aria-hidden="true">
+        <h2>Expert Recruitments LLC - Leading Recruitment Agency in Dubai, UAE</h2>
+        <p>Welcome to Expert Recruitments LLC, one of the top recruitment agencies in Dubai, UAE. As premier headhunters in the region, we specialize in executive search and talent acquisition across the GCC and Middle East.</p>
+        <p>Our recruitment services span multiple industries including finance, technology, healthcare, construction, engineering, oil & gas, and hospitality. Whether you're a job seeker looking for your next career opportunity or an employer seeking to hire top talent, our expert recruiters are here to assist you.</p>
+        <ul>
+          <li>Recruitment Agency Dubai</li>
+          <li>Best Headhunters UAE</li>
+          <li>Executive Search Services Middle East</li>
+          <li>Top Employment Agency Dubai</li>
+          <li>Job Opportunities in GCC</li>
+          <li>Career Development Dubai</li>
+          <li>C-Level Recruitment UAE</li>
+          <li>UAE Staffing Solutions</li>
+          <li>Talent Acquisition Dubai</li>
+          <li>Professional Recruiters UAE</li>
+          <li>HR Consultancy Dubai</li>
+          <li>Hiring Services UAE</li>
+          <li>Executive Placement Specialists</li>
+          <li>Job Search Assistance Dubai</li>
+        </ul>
+      </div>
       
       <Welcome />
       

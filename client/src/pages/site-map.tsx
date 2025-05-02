@@ -135,6 +135,25 @@ export default function SiteMap() {
               <p className="text-gray-600 max-w-2xl mx-auto text-lg">
                 Navigate our website with ease using this comprehensive guide to all pages and resources available at Expert Recruitments LLC - premier head hunters in Dubai and leading recruitment agencies in UAE offering specialized talent acquisition services.
               </p>
+              
+              {/* SEO keywords hidden from users but visible to search engines */}
+              <div className="hidden" aria-hidden="true">
+                <span>Headhunters Dubai</span>
+                <span>Executive Search UAE</span>
+                <span>Recruitment Agencies in Dubai</span>
+                <span>Recruitment Agencies in UAE</span>
+                <span>Best Recruitment Agency Dubai</span>
+                <span>Top Headhunters in Dubai</span>
+                <span>Job Consultants in UAE</span>
+                <span>Executive Recruitment Services</span>
+                <span>C-Level Executive Search</span>
+                <span>Talent Acquisition Specialists</span>
+                <span>IT Recruitment Dubai</span>
+                <span>Banking Jobs in UAE</span>
+                <span>Finance Recruitment Dubai</span>
+                <span>Healthcare Jobs in UAE</span>
+                <span>Engineering Recruitment UAE</span>
+              </div>
             </motion.div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
@@ -244,6 +263,28 @@ export default function SiteMap() {
               <p className="text-gray-400 mt-2 text-xs">
                 Leading talent acquisition and recruitment agencies in Dubai and UAE offering specialized headhunting services.
               </p>
+              
+              {/* Additional hidden SEO keywords related to specific sectors and job functions */}
+              <div className="hidden" aria-hidden="true">
+                <span>Oil and Gas Recruitment Dubai</span>
+                <span>Technology Jobs UAE</span>
+                <span>Finance Director Jobs Dubai</span>
+                <span>C-Suite Executive Search</span>
+                <span>CEO Positions UAE</span>
+                <span>CFO Search Dubai</span>
+                <span>CTO Positions Middle East</span>
+                <span>HR Director Jobs UAE</span>
+                <span>Construction Management Recruitment</span>
+                <span>Hospitality Leadership Jobs</span>
+                <span>Healthcare Executive Recruitment</span>
+                <span>Supply Chain Management Jobs</span>
+                <span>Digital Marketing Roles UAE</span>
+                <span>Senior Management Positions</span>
+                <span>Board Member Recruitment Dubai</span>
+                <span>COO Positions Middle East</span>
+                <span>Sales Director Recruitment</span>
+                <span>Gulf Region Job Opportunities</span>
+              </div>
             </motion.div>
           </div>
         </div>

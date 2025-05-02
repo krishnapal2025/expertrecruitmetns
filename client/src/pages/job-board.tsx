@@ -160,7 +160,31 @@ export default function JobBoardPage() {
       <Helmet>
         <title>Find Jobs | Expert Recruitments</title>
         <meta name="description" content="Browse through our extensive collection of job listings across various sectors and locations. Find your perfect career opportunity today." />
+        <meta name="keywords" content="Executive search UAE, Recruitment agency Dubai, Headhunters Dubai, Job opportunities UAE, Career Dubai, Employment agencies UAE, Executive jobs Dubai, Top recruitment firms, Dubai job market, UAE employment, Senior management positions, C-level jobs UAE, UAE hiring services, Dubai employment portal, Recruitment companies UAE" />
       </Helmet>
+      
+      {/* Hidden SEO keywords that are not visible to users but help with search engines */}
+      <div className="sr-only" aria-hidden="true">
+        <h2>Find Jobs in Dubai and UAE with Expert Recruitments</h2>
+        <p>Looking for executive positions in Dubai? Expert Recruitments is a leading headhunting firm in the UAE offering premium job opportunities across finance, technology, healthcare, construction, oil & gas, and hospitality sectors.</p>
+        <p>Browse our job board for senior management roles, director positions, C-suite opportunities, and specialized professional careers throughout the UAE and Middle East.</p>
+        <ul>
+          <li>CEO Jobs Dubai</li>
+          <li>CFO Positions UAE</li>
+          <li>IT Director Jobs Dubai</li>
+          <li>Finance Manager UAE</li>
+          <li>Operations Director Middle East</li>
+          <li>Sales Executive Dubai</li>
+          <li>Marketing Director UAE</li>
+          <li>Human Resources Manager Dubai</li>
+          <li>Engineering Director UAE</li>
+          <li>Healthcare Administrator Dubai</li>
+          <li>Construction Project Manager UAE</li>
+          <li>Banking Executive Dubai</li>
+          <li>Legal Counsel UAE</li>
+          <li>Supply Chain Director Middle East</li>
+        </ul>
+      </div>
 
       {/* Hero Section with Professional Background Image */}
       <div className="relative min-h-[90vh] overflow-hidden" id="job-board-hero-section">
