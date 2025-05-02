@@ -105,9 +105,11 @@ const BlogPostContent = ({
             }}
             dangerouslySetInnerHTML={{ 
               __html: blogPost.content
-                .replace(/\n\n+/g, '\n')  // Replace multiple line breaks with single one
+                // Keep single line breaks
                 .split('\n')
-                .map(line => line.trim() ? `<span style="margin-bottom: -10px; display: block;">${line}</span>` : '<br style="margin-top: -10px; margin-bottom: -10px;" />')
+                .map(line => line.trim() 
+                  ? `<p style="margin-top: 0; margin-bottom: 0; padding-bottom: 4px;">${line}</p>` 
+                  : '')
                 .join('')
             }}
           ></div>
