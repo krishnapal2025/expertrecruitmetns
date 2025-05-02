@@ -1055,26 +1055,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Job not found" });
       }
 
-      // Get employer profile
-      const employer = await storage.getEmployerByUserId(user.id);
-      if (!employer) {
-        return res.status(404).json({ message: "Employer profile not found" });
-      }
+      // For employers, verify ownership of the job
+      if (user.userType === "employer") {
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (!employer) {
+          return res.status(404).json({ message: "Employer profile not found" });
+        }
 
-      // Check if job belongs to this employer
-      if (job.employerId !== employer.id) {
-        return res.status(403).json({ message: "You can only edit your own job listings" });
+        // Check if job belongs to this employer
+        if (job.employerId !== employer.id) {
+          return res.status(403).json({ message: "You can only edit your own job listings" });
+        }
       }
+      // Admin users can edit any job
 
       // Validate job data
       const validatedData = insertJobSchema.parse(req.body);
+
+      let employerId = job.employerId;
+      
+      // If user is an employer, use their employer ID
+      if (user.userType === "employer") {
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (employer) {
+          employerId = employer.id;
+        }
+      }
 
       // Update the job
       const updatedJob = await storage.updateJob({
         ...job,
         ...validatedData,
         id: jobId,
-        employerId: employer.id
+        employerId: employerId
       });
 
       res.json(updatedJob);
@@ -1112,16 +1125,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Job not found" });
       }
 
-      // Get employer profile
-      const employer = await storage.getEmployerByUserId(user.id);
-      if (!employer) {
-        return res.status(404).json({ message: "Employer profile not found" });
-      }
+      // For employers, verify ownership of the job
+      if (user.userType === "employer") {
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (!employer) {
+          return res.status(404).json({ message: "Employer profile not found" });
+        }
 
-      // Check if job belongs to this employer
-      if (job.employerId !== employer.id) {
-        return res.status(403).json({ message: "You can only delete your own job listings" });
+        // Check if job belongs to this employer
+        if (job.employerId !== employer.id) {
+          return res.status(403).json({ message: "You can only delete your own job listings" });
+        }
       }
+      // Admin users can delete any job
 
       // First, get all applications for this job
       const applications = await storage.getApplicationsByJobId(jobId);
@@ -1191,16 +1207,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = req.user;
 
-      if (user.userType === "employer") {
-        // Get employer profile
-        const employer = await storage.getEmployerByUserId(user.id);
-        if (!employer) {
-          return res.status(404).json({ message: "Employer profile not found" });
-        }
+      if (user.userType === "employer" || user.userType === "admin") {
+        // Get employer profile for employers
+        let employerJobs = [];
+        
+        if (user.userType === "employer") {
+          const employer = await storage.getEmployerByUserId(user.id);
+          if (!employer) {
+            return res.status(404).json({ message: "Employer profile not found" });
+          }
 
-        // Get all jobs for this employer
-        const jobs = await storage.getJobs();
-        const employerJobs = jobs.filter(job => job.employerId === employer.id);
+          // Get all jobs for this employer
+          const jobs = await storage.getJobs();
+          employerJobs = jobs.filter(job => job.employerId === employer.id);
+        } else {
+          // For admin users, get all jobs
+          employerJobs = await storage.getJobs();
+        }
 
         // Get new applications for all jobs
         let newApplications: any[] = [];
@@ -1224,7 +1247,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastId: realtimeStore.lastApplicationId
         });
       } else {
-        res.status(403).json({ message: "Only employers can access this endpoint" });
+        res.status(403).json({ message: "Only employers or admins can access this endpoint" });
       }
     } catch (error) {
       console.error("Error fetching real-time application updates:", error);
