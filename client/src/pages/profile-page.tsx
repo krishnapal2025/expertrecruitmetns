@@ -550,12 +550,6 @@ export default function ProfilePage() {
             >
               Company Profile
             </TabsTrigger>
-            <TabsTrigger 
-              value="vacancy" 
-              className="rounded-t-lg rounded-b-none data-[state=active]:border-b-2 data-[state=active]:border-primary"
-            >
-              Submit Vacancy
-            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="profile">
@@ -754,101 +748,9 @@ export default function ProfilePage() {
               </Form>
             </CardContent>
           </Card>
-
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle>Post a New Job</CardTitle>
-              <CardDescription>Create a job listing to find the right talent</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="bg-gray-50 p-8 rounded-lg border border-gray-200">
-                <div className="flex flex-col items-center text-center">
-                  <Briefcase className="h-16 w-16 text-primary mb-4" />
-                  <h3 className="text-xl font-medium mb-2">Create a Job Listing</h3>
-                  <p className="text-gray-500 mb-6 max-w-lg">
-                    Post a new job opportunity to find qualified candidates for your company. You can specify job requirements, 
-                    responsibilities, qualifications, and other details to attract the right talent.
-                  </p>
-                  <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-                    <Link href="/post-job" className="flex items-center">
-                      <svg
-                        className="mr-2 h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 4v16m8-8H4"
-                        />
-                      </svg>
-                      Post New Job
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
         
-        <TabsContent value="vacancy">
-          <Card>
-            <CardHeader>
-              <CardTitle>Submit a Vacancy</CardTitle>
-              <CardDescription>
-                Fill in the details below to let us know about your hiring needs
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="bg-gradient-to-r from-primary/10 to-transparent p-6 rounded-lg mb-6">
-                <h3 className="text-lg font-semibold mb-2">Need to hire talent?</h3>
-                <p className="text-gray-600 mb-4">
-                  Submit your vacancy details and our expert recruitment team will help you find the perfect candidates.
-                </p>
-                <Button asChild className="bg-primary hover:bg-primary/90">
-                  <Link href="/vacancy-form">
-                    Go to Vacancy Form
-                  </Link>
-                </Button>
-              </div>
-              
-              <div className="grid gap-6">
-                <div className="flex items-center gap-4">
-                  <div className="bg-primary/10 p-3 rounded-full">
-                    <Briefcase className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Detailed Job Requirements</h4>
-                    <p className="text-sm text-gray-500">Provide specific requirements to attract qualified candidates</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-4">
-                  <div className="bg-primary/10 p-3 rounded-full">
-                    <UserIcon className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Expert Talent Matching</h4>
-                    <p className="text-sm text-gray-500">Our recruiters match your requirements with the best candidates</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-4">
-                  <div className="bg-primary/10 p-3 rounded-full">
-                    <CheckCircle className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Streamlined Hiring Process</h4>
-                    <p className="text-sm text-gray-500">Fast and efficient recruitment to fill your positions quickly</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+        
       </Tabs>
       )}
     </div>

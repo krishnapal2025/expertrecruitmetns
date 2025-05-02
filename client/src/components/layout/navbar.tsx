@@ -232,22 +232,6 @@ export default function Navbar() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    {/* User type badge */}
-                    <div className="flex justify-center px-4 pt-1 pb-2">
-                      {currentUser.user.userType === "admin" ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                          <ShieldCheck className="mr-1 h-3 w-3" /> Admin
-                        </span>
-                      ) : currentUser.user.userType === "employer" ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          <Building2 className="mr-1 h-3 w-3" /> Employer
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          <User className="mr-1 h-3 w-3" /> Job Seeker
-                        </span>
-                      )}
-                    </div>
                     <DropdownMenuSeparator />
                     <ScrollLink href="/profile" className="w-full">
                       <DropdownMenuItem>
@@ -412,22 +396,6 @@ export default function Navbar() {
                           </div>
                           <div className="text-sm text-gray-500">
                             {currentUser.user.email}
-                          </div>
-                          {/* User type badge */}
-                          <div className="mt-2">
-                            {currentUser.user.userType === "admin" ? (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                <ShieldCheck className="mr-1 h-3 w-3" /> Admin
-                              </span>
-                            ) : currentUser.user.userType === "employer" ? (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                <Building2 className="mr-1 h-3 w-3" /> Employer
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                <User className="mr-1 h-3 w-3" /> Job Seeker
-                              </span>
-                            )}
                           </div>
                         </div>
                         <div 
