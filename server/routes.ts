@@ -778,8 +778,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "jobseeker") {
-        return res.status(403).json({ message: "Only job seekers can access this endpoint" });
+      if (user.userType !== "jobseeker" && user.userType !== "admin") {
+        return res.status(403).json({ message: "Only job seekers or admins can access this endpoint" });
       }
 
       // Get the job seeker profile
@@ -823,8 +823,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = req.user;
 
-      if (user.userType !== "jobseeker") {
-        return res.status(403).json({ message: "Only job seekers can access this endpoint" });
+      if (user.userType !== "jobseeker" && user.userType !== "admin") {
+        return res.status(403).json({ message: "Only job seekers or admins can access this endpoint" });
       }
 
       // Get jobseeker profile
@@ -889,6 +889,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (!employer || !job || job.employerId !== employer.id) {
           return res.status(403).json({ message: "You can only delete applications for your own jobs" });
         }
+      } else if (user.userType === "admin") {
+        // Admins can delete any application
       } else {
         return res.status(403).json({ message: "Unauthorized to delete applications" });
       }
@@ -907,7 +909,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update application status (employers only)
+  // Update application status (employers and admins only)
   app.patch("/api/applications/:id/status", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
@@ -915,8 +917,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "employer") {
-        return res.status(403).json({ message: "Only employers can update application status" });
+      if (user.userType !== "employer" && user.userType !== "admin") {
+        return res.status(403).json({ message: "Only employers or admins can update application status" });
       }
 
       const applicationId = parseInt(req.params.id);
@@ -1010,8 +1012,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "employer") {
-        return res.status(403).json({ message: "Only employers can access this endpoint" });
+      if (user.userType !== "employer" && user.userType !== "admin") {
+        return res.status(403).json({ message: "Only employers or admins can access this endpoint" });
       }
 
       // Get employer profile
@@ -1030,7 +1032,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Edit a job (requires employer authentication)
+  // Edit a job (requires employer or admin authentication)
   app.put("/api/jobs/:id", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
@@ -1038,8 +1040,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "employer") {
-        return res.status(403).json({ message: "Only employers can edit jobs" });
+      if (user.userType !== "employer" && user.userType !== "admin") {
+        return res.status(403).json({ message: "Only employers or admins can edit jobs" });
       }
 
       const jobId = parseInt(req.params.id);
@@ -1087,7 +1089,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Delete a job (requires employer authentication)
+  // Delete a job (requires employer or admin authentication)
   app.delete("/api/jobs/:id", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
@@ -1095,8 +1097,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "employer") {
-        return res.status(403).json({ message: "Only employers can delete jobs" });
+      if (user.userType !== "employer" && user.userType !== "admin") {
+        return res.status(403).json({ message: "Only employers or admins can delete jobs" });
       }
 
       const jobId = parseInt(req.params.id);
