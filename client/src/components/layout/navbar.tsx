@@ -239,12 +239,6 @@ export default function Navbar() {
                     )}
                     {currentUser.user.userType === "employer" && (
                       <>
-                        <ScrollLink href="/my-jobs" className="w-full">
-                          <DropdownMenuItem>
-                            <Briefcase className="mr-2 h-4 w-4" />
-                            <span>Post Manager</span>
-                          </DropdownMenuItem>
-                        </ScrollLink>
                         <ScrollLink href="/applications-manager" className="w-full">
                           <DropdownMenuItem>
                             <User className="mr-2 h-4 w-4" />
@@ -460,17 +454,7 @@ export default function Navbar() {
                               </svg>
                               Post New Job
                             </div>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/my-jobs", 100);
-                              }}
-                            >
-                              <Briefcase className="mr-2 h-4 w-4" />
-                              Post Manager
-                            </div>
+
                             <div 
                               className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
                               onClick={() => {
