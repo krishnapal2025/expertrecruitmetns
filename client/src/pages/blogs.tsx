@@ -302,7 +302,7 @@ export default function BlogsPage() {
                     </div>
                   </CardContent>
                   <CardFooter className="p-0">
-                    <Button className="mt-2" onClick={() => setLocation("/article/1")}>
+                    <Button className="mt-2" onClick={() => setLocation("/article/executive-search-firms-find-top-talent")}>
                       Read Article
                       <ChevronRight className="ml-1 h-4 w-4" />
                     </Button>
@@ -372,7 +372,7 @@ export default function BlogsPage() {
                       <Button 
                         variant="outline" 
                         className="w-full"
-                        onClick={() => setLocation(`/article/${post.id}`)}
+                        onClick={() => setLocation(`/article/${post.slug || post.id}`)}
                       >
                         Read Article
                       </Button>
@@ -426,7 +426,7 @@ export default function BlogsPage() {
                     <Button 
                       variant="outline" 
                       className="w-full"
-                      onClick={() => setLocation(`/article/${post.id}`)}
+                      onClick={() => setLocation(`/article/${post.slug || post.id}`)}
                     >
                       Read Article
                     </Button>

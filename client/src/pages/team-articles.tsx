@@ -178,7 +178,7 @@ export default function TeamArticlesPage() {
                     <Button 
                       variant="outline" 
                       className="w-full"
-                      onClick={() => setLocation(`/article/${post.id}`)}
+                      onClick={() => setLocation(`/article/${post.slug || post.id}`)}
                     >
                       Read Article <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
