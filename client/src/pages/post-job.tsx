@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -445,6 +445,30 @@ export default function PostJobPage() {
                           </FormItem>
                         )}
                       />
+                      
+                      {/* Admin-only employer selection dropdown */}
+                      {currentUser?.user.userType === "admin" && (
+                        <div className="mb-4">
+                          <FormLabel>Select Employer</FormLabel>
+                          <Select
+                            onValueChange={(value) => setSelectedEmployerId(Number(value))}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select an employer" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {employers?.map((employer: any) => (
+                                <SelectItem key={employer.id} value={employer.id.toString()}>
+                                  {employer.companyName}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            As an admin, you are posting on behalf of this employer
+                          </p>
+                        </div>
+                      )}
                       
                       <FormField
                         control={form.control}
