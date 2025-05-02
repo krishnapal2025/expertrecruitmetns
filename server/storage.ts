@@ -1654,4 +1654,11 @@ export class MemStorage implements IStorage {
 }
 
 // Use Database storage for persistent data
-export const storage = new DatabaseStorage();
+console.log("Creating DatabaseStorage instance...");
+const dbStorage = new DatabaseStorage();
+
+// Verify assignVacancyToRecruiter method exists
+console.log("Checking if assignVacancyToRecruiter method exists:", 
+  typeof dbStorage.assignVacancyToRecruiter === 'function' ? "YES" : "NO");
+
+export const storage = dbStorage;
