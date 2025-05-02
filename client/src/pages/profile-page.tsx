@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Briefcase, Building, Globe, Phone, MapPin, AtSign, User as UserIcon, Check } from "lucide-react";
+import { Loader2, Briefcase, Building, Globe, Phone, MapPin, AtSign, User as UserIcon, Check, CheckCircle } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -543,16 +543,33 @@ export default function ProfilePage() {
         </Card>
       ) : (
         <div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Employer Profile</CardTitle>
-              <CardDescription>
-                Update your company profile to attract the best talent
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Form {...employerForm}>
-                <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-6">
+          <Tabs defaultValue="profile" className="space-y-6">
+            <TabsList className="w-full border-b justify-start rounded-none p-0">
+              <TabsTrigger 
+                value="profile" 
+                className="rounded-t-lg rounded-b-none data-[state=active]:border-b-2 data-[state=active]:border-primary"
+              >
+                Company Profile
+              </TabsTrigger>
+              <TabsTrigger 
+                value="vacancy" 
+                className="rounded-t-lg rounded-b-none data-[state=active]:border-b-2 data-[state=active]:border-primary"
+              >
+                Submit Vacancy
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="profile">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Employer Profile</CardTitle>
+                  <CardDescription>
+                    Update your company profile to attract the best talent
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Form {...employerForm}>
+                    <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-6">
                   <FormField
                     control={employerForm.control}
                     name="companyName"
@@ -776,6 +793,64 @@ export default function ProfilePage() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+        
+        <TabsContent value="vacancy">
+          <Card>
+            <CardHeader>
+              <CardTitle>Submit a Vacancy</CardTitle>
+              <CardDescription>
+                Fill in the details below to let us know about your hiring needs
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-gradient-to-r from-primary/10 to-transparent p-6 rounded-lg mb-6">
+                <h3 className="text-lg font-semibold mb-2">Need to hire talent?</h3>
+                <p className="text-gray-600 mb-4">
+                  Submit your vacancy details and our expert recruitment team will help you find the perfect candidates.
+                </p>
+                <Button asChild className="bg-primary hover:bg-primary/90">
+                  <Link href="/vacancy-form">
+                    Go to Vacancy Form
+                  </Link>
+                </Button>
+              </div>
+              
+              <div className="grid gap-6">
+                <div className="flex items-center gap-4">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <Briefcase className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium">Detailed Job Requirements</h4>
+                    <p className="text-sm text-gray-500">Provide specific requirements to attract qualified candidates</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <User className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium">Expert Talent Matching</h4>
+                    <p className="text-sm text-gray-500">Our recruiters match your requirements with the best candidates</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <CheckCircle className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium">Streamlined Hiring Process</h4>
+                    <p className="text-sm text-gray-500">Fast and efficient recruitment to fill your positions quickly</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        </Tabs>
         </div>
       )}
     </div>
