@@ -576,6 +576,12 @@ const CreateBlogPage = () => {
                                     <SelectValue placeholder="Color" />
                                   </SelectTrigger>
                                   <SelectContent>
+                                    <SelectItem value="slate-900">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-slate-900 mr-2" />
+                                        <span>Black</span>
+                                      </div>
+                                    </SelectItem>
                                     <SelectItem value="gray-600">
                                       <div className="flex items-center">
                                         <div className="w-4 h-4 rounded-full bg-gray-600 mr-2" />
