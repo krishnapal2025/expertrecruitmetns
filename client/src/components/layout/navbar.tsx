@@ -25,13 +25,23 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Menu, User, LogOut, ChevronDown, Briefcase, ShieldCheck } from "lucide-react";
 import expertLogo from "../../assets/er-logo-icon.png";
 import NotificationsPopover from "@/components/common/notifications";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
   const [location] = useLocation();
   const { currentUser, logoutMutation } = useAuth();
   const scrollToTop = useScrollToTop();
+  
+  // Toggle dropdown in mobile view
+  const toggleDropdown = (name: string) => {
+    setOpenDropdowns((prev) => ({
+      ...prev,
+      [name]: !prev[name]
+    }));
+  };
   
   // Detect scroll to change navbar appearance
   useEffect(() => {
@@ -334,24 +344,30 @@ export default function Navbar() {
                 <div className="flex flex-col space-y-4 py-4">
                   {navigationLinks.map((link) => 
                     link.isDropdown ? (
-                      <div key={link.name} className="flex flex-col">
-                        <div className="px-4 py-3 font-medium text-gray-800 text-base">
+                      <div key={link.name} className="flex flex-col mb-2">
+                        <div 
+                          className="px-4 py-3 font-medium text-gray-800 text-base hover:bg-gray-100 rounded-md flex items-center justify-between cursor-pointer"
+                          onClick={() => toggleDropdown(link.name)}
+                        >
                           {link.name}
+                          <ChevronDown className={`h-5 w-5 transition-transform duration-200 ${openDropdowns[link.name] ? 'rotate-180' : ''}`} />
                         </div>
-                        <div className="ml-4 flex flex-col space-y-2 mt-2">
-                          {link.dropdownItems?.map((item) => (
-                            <div key={item.name} 
-                              className={`px-4 py-2 rounded-md cursor-pointer ${location === item.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = item.href, 100);
-                              }}
-                            >
-                              {item.name}
-                            </div>
-                          ))}
-                        </div>
+                        {openDropdowns[link.name] && (
+                          <div className="ml-4 flex flex-col space-y-2 mt-2">
+                            {link.dropdownItems?.map((item) => (
+                              <div key={item.name} 
+                                className={`px-4 py-2 rounded-md cursor-pointer ${location === item.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}
+                                onClick={() => {
+                                  setIsMobileMenuOpen(false);
+                                  window.scrollTo(0, 0);
+                                  setTimeout(() => window.location.href = item.href, 100);
+                                }}
+                              >
+                                {item.name}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div key={link.name}
@@ -552,44 +568,47 @@ export default function Navbar() {
                       </>
                     ) : (
                       <>
-                        <Button 
-                          variant="default" 
-                          className="w-full mb-2 text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold text-white focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                          onClick={() => {
-                            setIsMobileMenuOpen(false);
-                            window.scrollTo(0, 0);
-                            setTimeout(() => window.location.href = "/auth", 100);
-                          }}
-                        >
-                          Sign In
-                        </Button>
-                        <div className="mb-2">
-                          <div className="font-medium text-sm mb-2">Sign Up as:</div>
-                          <div className="space-y-2">
-                            <Button 
-                              variant="default" 
-                              className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/employer-register", 100);
-                              }}
-                            >
-                              <Briefcase className="mr-2 h-5 w-5" />
-                              Employer
-                            </Button>
-                            <Button 
-                              variant="default" 
-                              className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/job-seeker-register", 100);
-                              }}
-                            >
-                              <User className="mr-2 h-5 w-5" />
-                              Job Seeker
-                            </Button>
+                        <div className="px-4 py-2 mb-4">
+                          <Button 
+                            variant="default" 
+                            className="w-full mb-4 text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold text-white focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                            onClick={() => {
+                              setIsMobileMenuOpen(false);
+                              window.scrollTo(0, 0);
+                              setTimeout(() => window.location.href = "/auth", 100);
+                            }}
+                          >
+                            Sign In
+                          </Button>
+                        
+                          <div className="mt-6 mb-2">
+                            <div className="font-medium text-base mb-3 text-center">Sign Up as:</div>
+                            <div className="space-y-3">
+                              <Button 
+                                variant="default" 
+                                className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                                onClick={() => {
+                                  setIsMobileMenuOpen(false);
+                                  window.scrollTo(0, 0);
+                                  setTimeout(() => window.location.href = "/employer-register", 100);
+                                }}
+                              >
+                                <Briefcase className="mr-2 h-5 w-5" />
+                                Employer
+                              </Button>
+                              <Button 
+                                variant="default" 
+                                className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                                onClick={() => {
+                                  setIsMobileMenuOpen(false);
+                                  window.scrollTo(0, 0);
+                                  setTimeout(() => window.location.href = "/job-seeker-register", 100);
+                                }}
+                              >
+                                <User className="mr-2 h-5 w-5" />
+                                Job Seeker
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </>
