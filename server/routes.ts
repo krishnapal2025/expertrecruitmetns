@@ -691,20 +691,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
 
         res.json(applicationsWithJobs);
-      } else if (user.userType === "employer") {
-        // Get employer profile
-        const employer = await storage.getEmployerByUserId(user.id);
-        if (!employer) {
-          return res.status(404).json({ message: "Employer profile not found" });
-        }
+      } else if (user.userType === "employer" || user.userType === "admin") {
+        let jobs = [];
+        
+        if (user.userType === "employer") {
+          // Get employer profile
+          const employer = await storage.getEmployerByUserId(user.id);
+          if (!employer) {
+            return res.status(404).json({ message: "Employer profile not found" });
+          }
 
-        // Get all jobs for this employer
-        const jobs = await storage.getJobs();
-        const employerJobs = jobs.filter(job => job.employerId === employer.id);
+          // Get all jobs for this employer
+          const allJobs = await storage.getJobs();
+          jobs = allJobs.filter(job => job.employerId === employer.id);
+        } else {
+          // Admin gets access to all jobs
+          jobs = await storage.getJobs();
+        }
 
         // Get applications for all jobs
         let applications: any[] = [];
-        for (const job of employerJobs) {
+        for (const job of jobs) {
           const jobApplications = await storage.getApplicationsByJobId(job.id);
 
           // Add job data to each application
@@ -805,14 +812,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only job seekers or admins can access this endpoint" });
       }
 
-      // Get the job seeker profile
-      const jobSeeker = await storage.getJobSeekerByUserId(user.id);
-      if (!jobSeeker) {
-        return res.status(404).json({ message: "Job seeker profile not found" });
-      }
+      // For job seekers, get their own applications
+      // For admins, get all applications for all job seekers
+      let applications = [];
+      
+      if (user.userType === "jobseeker") {
+        // Get the job seeker profile
+        const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+        if (!jobSeeker) {
+          return res.status(404).json({ message: "Job seeker profile not found" });
+        }
 
-      // Get all applications for this jobseeker
-      const applications = await storage.getApplicationsByJobSeekerId(jobSeeker.id);
+        // Get all applications for this jobseeker
+        applications = await storage.getApplicationsByJobSeekerId(jobSeeker.id);
+      } else if (user.userType === "admin") {
+        // Get all applications across all job seekers
+        const allJobSeekers = await storage.getJobSeekers();
+        for (const seeker of allJobSeekers) {
+          const seekerApplications = await storage.getApplicationsByJobSeekerId(seeker.id);
+          applications = applications.concat(seekerApplications);
+        }
+      }
 
       // Get job details for each application
       const applicationsWithJobs = await Promise.all(
@@ -850,14 +870,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only job seekers or admins can access this endpoint" });
       }
 
-      // Get jobseeker profile
-      const jobSeeker = await storage.getJobSeekerByUserId(user.id);
-      if (!jobSeeker) {
-        return res.status(404).json({ message: "Job seeker profile not found" });
-      }
+      // For job seekers, get their own applications
+      // For admins, get all applications for all job seekers
+      let applications = [];
+      
+      if (user.userType === "jobseeker") {
+        // Get the job seeker profile
+        const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+        if (!jobSeeker) {
+          return res.status(404).json({ message: "Job seeker profile not found" });
+        }
 
-      // Get all applications for this jobseeker
-      const applications = await storage.getApplicationsByJobSeekerId(jobSeeker.id);
+        // Get all applications for this jobseeker
+        applications = await storage.getApplicationsByJobSeekerId(jobSeeker.id);
+      } else if (user.userType === "admin") {
+        // Get all applications across all job seekers
+        const allJobSeekers = await storage.getJobSeekers();
+        for (const seeker of allJobSeekers) {
+          const seekerApplications = await storage.getApplicationsByJobSeekerId(seeker.id);
+          applications = applications.concat(seekerApplications);
+        }
+      }
 
       // Get job details for each application
       const applicationsWithJobs = await Promise.all(
@@ -1042,14 +1075,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only employers or admins can access this endpoint" });
       }
 
-      // Get employer profile
-      const employer = await storage.getEmployerByUserId(user.id);
-      if (!employer) {
-        return res.status(404).json({ message: "Employer profile not found" });
-      }
+      let jobs = [];
+      
+      if (user.userType === "employer") {
+        // Get employer profile
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (!employer) {
+          return res.status(404).json({ message: "Employer profile not found" });
+        }
 
-      // Get jobs posted by this employer
-      const jobs = await storage.getJobsByEmployerId(employer.id);
+        // Get jobs posted by this employer
+        jobs = await storage.getJobsByEmployerId(employer.id);
+      } else if (user.userType === "admin") {
+        // Admin users get all jobs from all employers
+        jobs = await storage.getJobs();
+      }
 
       res.json(jobs);
     } catch (error) {
