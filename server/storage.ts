@@ -1549,6 +1549,30 @@ export class MemStorage implements IStorage {
     return updatedVacancy;
   }
   
+  async assignVacancyToRecruiter(
+    id: number, 
+    recruiterEmail: string, 
+    recruiterName: string
+  ): Promise<Vacancy | undefined> {
+    const vacancy = this.vacancies.get(id);
+    if (!vacancy) {
+      return undefined;
+    }
+
+    const now = new Date();
+    const updatedVacancy: Vacancy = {
+      ...vacancy,
+      assignedTo: recruiterEmail,
+      assignedName: recruiterName,
+      assignedAt: now,
+      // If the vacancy is still in 'new' or 'pending' status, update it to 'assigned'
+      status: vacancy.status === 'new' || vacancy.status === 'pending' ? 'assigned' : vacancy.status
+    };
+
+    this.vacancies.set(id, updatedVacancy);
+    return updatedVacancy;
+  }
+  
   // Staffing Inquiry methods
   async getStaffingInquiry(id: number): Promise<StaffingInquiry | undefined> {
     return this.staffingInquiries.get(id);

@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import { randomBytes } from 'crypto';
 import jwt from 'jsonwebtoken';
-import { User } from '@shared/schema';
+import { User, Vacancy } from '@shared/schema';
 import { log } from './vite';
 
 // Secret for JWT token signing
@@ -120,6 +120,149 @@ export const sendPasswordResetEmail = async (
     console.error('Error sending email:', error);
     return { 
       success: false
+    };
+  }
+};
+
+/**
+ * Send a vacancy assignment email to a recruiter
+ */
+export const sendVacancyAssignmentEmail = async (
+  recruiterEmail: string,
+  recruiterName: string,
+  vacancy: Vacancy,
+  origin: string
+): Promise<{ success: boolean; message?: string }> => {
+  try {
+    console.log(`Sending vacancy assignment email to ${recruiterEmail}`);
+    
+    // Create a view vacancy URL
+    const vacancyUrl = `${origin}/recruiter/vacancy/${vacancy.id}`;
+    
+    // In development mode, we'll log instead of sending an email
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Development mode - would send assignment email to recruiter');
+      console.log(`Recruiter: ${recruiterName} (${recruiterEmail})`);
+      console.log(`Vacancy: ${vacancy.jobTitle} at ${vacancy.companyName}`);
+      console.log(`Vacancy URL: ${vacancyUrl}`);
+      
+      return {
+        success: true,
+        message: `Development mode - Email would be sent to ${recruiterEmail}`
+      };
+    }
+    
+    // For production, use a real email service
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER || 'noreply@expertrecruitments.com',
+        pass: process.env.EMAIL_PASSWORD || 'placeholder_password',
+      },
+    });
+    
+    // Set up email data
+    const mailOptions = {
+      from: '"Expert Recruitments" <admin@expertrecruitments.com>',
+      to: recruiterEmail,
+      subject: `New Vacancy Assignment: ${vacancy.jobTitle} at ${vacancy.companyName}`,
+      text: `
+        Hello ${recruiterName},
+        
+        You have been assigned a new vacancy to handle:
+        
+        Company: ${vacancy.companyName}
+        Position: ${vacancy.jobTitle}
+        Location: ${vacancy.location}
+        
+        Job Description:
+        ${vacancy.jobDescription}
+        
+        Required Skills:
+        ${vacancy.requiredSkills}
+        
+        Experience Level:
+        ${vacancy.experienceLevel}
+        
+        Salary Range:
+        ${vacancy.salaryRange || 'Not specified'}
+        
+        Contact Person:
+        ${vacancy.contactName}
+        
+        Please review the details and begin the recruitment process as soon as possible.
+        
+        Regards,
+        Expert Recruitments Team
+      `,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img src="https://expertrecruitments.com/logo.png" alt="Expert Recruitments Logo" style="max-width: 200px;">
+          </div>
+          <h2 style="color: #333; text-align: center;">New Vacancy Assignment</h2>
+          <p>Hello ${recruiterName},</p>
+          <p>You have been assigned a new vacancy to handle:</p>
+          
+          <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <h3 style="color: #ff0077; margin-top: 0;">${vacancy.jobTitle}</h3>
+            <p><strong>Company:</strong> ${vacancy.companyName}</p>
+            <p><strong>Location:</strong> ${vacancy.location}</p>
+            <p><strong>Industry:</strong> ${vacancy.industry}</p>
+            <p><strong>Employment Type:</strong> ${vacancy.employmentType}</p>
+            <p><strong>Salary Range:</strong> ${vacancy.salaryRange || 'Not specified'}</p>
+          </div>
+          
+          <h4 style="color: #333;">Job Description:</h4>
+          <p style="line-height: 1.6;">${vacancy.jobDescription}</p>
+          
+          <h4 style="color: #333;">Required Skills:</h4>
+          <p style="line-height: 1.6;">${vacancy.requiredSkills}</p>
+          
+          <h4 style="color: #333;">Experience Level:</h4>
+          <p style="line-height: 1.6;">${vacancy.experienceLevel}</p>
+          
+          <h4 style="color: #333;">Contact Information:</h4>
+          <p><strong>Name:</strong> ${vacancy.contactName}</p>
+          <p><strong>Email:</strong> ${vacancy.contactEmail}</p>
+          <p><strong>Phone:</strong> ${vacancy.contactPhone}</p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${vacancyUrl}" style="background-color: #ff0077; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">View Vacancy Details</a>
+          </div>
+          
+          <p>Please review the details and begin the recruitment process as soon as possible.</p>
+          <p>Regards,<br>Expert Recruitments Team</p>
+          
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; font-size: 0.8em; color: #888; text-align: center;">
+            <p>Expert Recruitments LLC, Dubai, UAE</p>
+            <p>© ${new Date().getFullYear()} Expert Recruitments. All rights reserved.</p>
+          </div>
+        </div>
+      `
+    };
+    
+    // Send the email
+    console.log('Attempting to send assignment email...');
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log(`Email sent successfully, message ID: ${info.messageId}`);
+      return { 
+        success: true,
+        message: `Vacancy assignment email sent to ${recruiterEmail}`
+      };
+    } catch (mailError) {
+      console.error('Error sending email:', mailError);
+      return { 
+        success: false,
+        message: `Failed to send email to ${recruiterEmail}: ${mailError.message}`
+      };
+    }
+  } catch (error) {
+    console.error('Error in sendVacancyAssignmentEmail:', error);
+    return { 
+      success: false,
+      message: `Error processing email: ${error.message}`
     };
   }
 };

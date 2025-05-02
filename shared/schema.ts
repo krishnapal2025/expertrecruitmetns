@@ -125,6 +125,9 @@ export const vacancies = pgTable("vacancies", {
   additionalInformation: text("additional_information"),
   status: text("status").default("new"), // 'new', 'reviewed', 'contacted', 'rejected'
   submittedAt: timestamp("submitted_at").defaultNow(),
+  assignedTo: text("assigned_to"), // Email of the recruiter
+  assignedName: text("assigned_name"), // Name of the recruiter
+  assignedAt: timestamp("assigned_at"), // When the vacancy was assigned
 });
 
 // Temporary Staffing Inquiries table
