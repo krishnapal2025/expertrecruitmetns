@@ -44,18 +44,18 @@ export default function AnimatedTestimonials() {
     },
     {
       id: 2,
-      name: "Michael Chen",
-      role: "Software Engineer",
-      content: "After struggling with my job search for months, I turned to Expert Recruitments LLC  and landed three interviews in the first week. The platform is intuitive and the career resources are invaluable.",
+      name: "RAJENDRA LINGWAL",
+      role: "Client",
+      content: "True to their name, they are EXPERTs in their work and provide world class service to their clients. Dealing with them will only benefit us 👍",
       rating: 5,
       userId: null
     },
     {
       id: 3,
-      name: "Priya Patel",
-      role: "Finance Manager",
-      content: "As someone transitioning to a new industry, I was worried about finding the right opportunity. Expert Recruitments LLC  made it easy with their specialized industry insights and personalized job recommendations.",
-      rating: 4,
+      name: "Ajay Singh",
+      role: "Client",
+      content: "Probably the best recruitment company in Dubai. Super friendly staff! Always there to support us and very concern. They helped us every step of the way.",
+      rating: 5,
       userId: null
     }
   ] as Testimonial[];
@@ -348,18 +348,22 @@ export default function AnimatedTestimonials() {
                   </ul>
                 </motion.div>
                 
-                <Link href="/job-seeker-register">
+                  <a
+                    href="https://g.page/r/CfeX4Gp1NP7PEAE/review"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                   <Button 
                     className="w-full bg-primary hover:bg-primary/90 group relative overflow-hidden"
                     size="lg"
                   >
                     <span className="relative z-10 flex items-center justify-center">
-                      Start Your Success Story
+                      Share Your Success Story
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                   </Button>
-                </Link>
+                </a>
               </div>
             </motion.div>
           </div>

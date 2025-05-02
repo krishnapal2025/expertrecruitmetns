@@ -596,7 +596,7 @@ function AdminDashboard() {
           </TabsTrigger>
           <TabsTrigger value="posts">
             <FileTextIcon className="mr-2 h-4 w-4" />
-            Posts
+            Blogs
           </TabsTrigger>
           <TabsTrigger value="content">
             <FileText className="mr-2 h-4 w-4" />
@@ -1560,7 +1560,7 @@ function AdminDashboard() {
             <CardHeader className="pb-2">
               <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <div>
-                  <CardTitle>Post Manager</CardTitle>
+                  <CardTitle>Article Manager</CardTitle>
                   <CardDescription>
                     Create and manage blog posts and articles
                   </CardDescription>
@@ -1568,7 +1568,7 @@ function AdminDashboard() {
                 
                 <Button onClick={() => navigate("/create-blog")} className="shrink-0">
                   <PlusCircle className="mr-2 h-4 w-4" />
-                  Create New Post
+                  Create New Article
                 </Button>
               </div>
             </CardHeader>
