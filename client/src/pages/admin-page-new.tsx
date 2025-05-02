@@ -48,6 +48,7 @@ import {
   Download,
   Search,
   UserPlus,
+  Pencil,
   MapPin,
 } from "lucide-react";
 
@@ -1661,7 +1662,11 @@ function AdminDashboard() {
                                   variant="outline" 
                                   size="sm"
                                   className="text-red-500 hover:text-red-700 hover:bg-red-100" 
-                                  onClick={() => handleDeleteBlogPost(post.id)}
+                                  onClick={() => {
+                                    if (window.confirm("Are you sure you want to delete this blog post? This action cannot be undone.")) {
+                                      deleteBlogPostMutation.mutate(post.id);
+                                    }
+                                  }}
                                 >
                                   <Trash2 className="h-4 w-4 mr-1" />
                                   Delete
