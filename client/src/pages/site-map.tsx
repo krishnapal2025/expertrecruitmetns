@@ -21,7 +21,7 @@ export default function SiteMap() {
 
   const categories = [
     {
-      title: "Main Navigation",
+      title: "Main Navigation | Head Hunters Dubai",
       icon: <Globe className="h-5 w-5 text-primary mr-2" />,
       links: [
         { name: "Home", url: "/" },
@@ -33,7 +33,7 @@ export default function SiteMap() {
       ],
     },
     {
-      title: "Job Seeker Resources",
+      title: "Job Seeker Resources | Top Recruitment Agencies in UAE",
       icon: <User className="h-5 w-5 text-primary mr-2" />,
       links: [
         { name: "Job Seeker Registration", url: "/job-seeker-register" },
@@ -47,7 +47,7 @@ export default function SiteMap() {
       ],
     },
     {
-      title: "Employer Resources",
+      title: "Employer Resources | Executive Search UAE Services",
       icon: <Building className="h-5 w-5 text-primary mr-2" />,
       links: [
         { name: "Employer Registration", url: "/employer-register" },
@@ -58,7 +58,7 @@ export default function SiteMap() {
       ],
     },
     {
-      title: "Admin Portal",
+      title: "Admin Portal | Talent Acquisition Management",
       icon: <ShieldCheck className="h-5 w-5 text-primary mr-2" />,
       links: [
         { name: "Admin Dashboard", url: "/admin-dashboard" },
@@ -71,7 +71,7 @@ export default function SiteMap() {
       ],
     },
     {
-      title: "Knowledge Center",
+      title: "Knowledge Center | Recruitment Agencies in Dubai",
       icon: <BookOpen className="h-5 w-5 text-primary mr-2" />,
       links: [
         { name: "Blog Articles", url: "/blogs" },
@@ -81,7 +81,7 @@ export default function SiteMap() {
       ],
     },
     {
-      title: "User Account",
+      title: "User Account | Executive Search Services",
       icon: <Settings className="h-5 w-5 text-primary mr-2" />,
       links: [
         { name: "User Profile", url: "/profile" },
@@ -91,7 +91,7 @@ export default function SiteMap() {
       ],
     },
     {
-      title: "Legal Information",
+      title: "Legal Information | Headhunting Services",
       icon: <FileText className="h-5 w-5 text-primary mr-2" />,
       links: [
         { name: "Privacy Policy", url: "/privacy-policy" },
@@ -104,10 +104,14 @@ export default function SiteMap() {
   return (
     <>
       <Helmet>
-        <title>Site Map | Expert Recruitments LLC</title>
+        <title>Site Map | Executive Search UAE | Recruitment Agencies in Dubai | Expert Recruitments LLC</title>
         <meta
           name="description"
-          content="Navigate our website easily with our comprehensive site map. Find all sections and pages of Expert Recruitments LLC."
+          content="Navigate our website easily with our comprehensive site map. Leading headhunters in Dubai and recruitment agencies in UAE offering talent acquisition and executive search services."
+        />
+        <meta
+          name="keywords"
+          content="Executive search UAE, Talent acquisition, Recruitment agencies in Dubai, Recruitment agencies in UAE, Head hunting, Head hunters Dubai"
         />
       </Helmet>
 
@@ -121,11 +125,11 @@ export default function SiteMap() {
               variants={fadeIn}
             >
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Complete Site Map
+                Complete Site Map | Executive Search UAE
               </h1>
               <div className="w-24 h-1 bg-primary mx-auto mb-6"></div>
               <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-                Navigate our website with ease using this comprehensive guide to all pages and resources available on the Expert Recruitments LLC platform.
+                Navigate our website with ease using this comprehensive guide to all pages and resources available at Expert Recruitments LLC - premier head hunters in Dubai and leading recruitment agencies in UAE offering specialized talent acquisition services.
               </p>
             </motion.div>
 
@@ -175,7 +179,7 @@ export default function SiteMap() {
                   <MapPin className="h-5 w-5 text-primary" />
                 </div>
                 <h2 className="text-xl font-semibold text-gray-800">
-                  Global Office Locations
+                  Global Office Locations | Recruitment Agencies in Dubai & UAE
                 </h2>
               </div>
               <div className="w-full h-0.5 bg-gray-100 mb-6"></div>
@@ -231,7 +235,10 @@ export default function SiteMap() {
                 Back to Homepage <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
               <p className="text-gray-500 mt-4 text-sm">
-                © {new Date().getFullYear()} Expert Recruitments LLC. All rights reserved.
+                © {new Date().getFullYear()} Expert Recruitments LLC - Premier Head Hunters Dubai & Executive Search UAE. All rights reserved.
+              </p>
+              <p className="text-gray-400 mt-2 text-xs">
+                Leading talent acquisition and recruitment agencies in Dubai and UAE offering specialized headhunting services.
               </p>
             </motion.div>
           </div>
