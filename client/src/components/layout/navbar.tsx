@@ -412,44 +412,7 @@ export default function Navbar() {
                         
                         {/* Job seeker mobile menu items removed as requested */}
                         
-                        {/* Employer-specific menu items */}
-                        {currentUser.user.userType === "employer" && (
-                          <>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/post-job", 100);
-                              }}
-                            >
-                              <Briefcase className="mr-2 h-4 w-4" />
-                              Post a Job
-                            </div>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/my-posted-jobs", 100);
-                              }}
-                            >
-                              <Briefcase className="mr-2 h-4 w-4" />
-                              My Jobs
-                            </div>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/vacancy-form", 100);
-                              }}
-                            >
-                              <Briefcase className="mr-2 h-4 w-4" />
-                              Vacancy Form
-                            </div>
-                          </>
-                        )}
+                        {/* Employer-specific menu items removed as requested */}
                         
                         {currentUser.user.userType === "admin" && (
                           <>
@@ -489,10 +452,11 @@ export default function Navbar() {
                           </>
                         )}
                         
-                        <div className="mt-4 px-4">
+                        <div className="mt-8 px-4 mb-4">
+                          <div className="border-t border-gray-200 pt-6 mb-4"></div>
                           <button
                             onClick={handleLogout}
-                            className="w-full text-left py-3 rounded-md bg-red-50 hover:bg-red-100 flex items-center justify-center font-medium text-red-600"
+                            className="w-full text-left py-4 rounded-md bg-red-50 hover:bg-red-100 flex items-center justify-center font-medium text-red-600 shadow-sm"
                           >
                             <LogOut className="mr-2 h-5 w-5" />
                             Log out
