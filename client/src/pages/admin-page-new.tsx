@@ -581,7 +581,7 @@ function AdminDashboard() {
       </div>
       
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-8">
+        <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-8">
           <TabsTrigger value="dashboard">
             <BarChart2 className="mr-2 h-4 w-4" />
             Dashboard
@@ -597,6 +597,10 @@ function AdminDashboard() {
           <TabsTrigger value="messages">
             <MessageSquare className="mr-2 h-4 w-4" />
             Messages
+          </TabsTrigger>
+          <TabsTrigger value="posts">
+            <FileTextIcon className="mr-2 h-4 w-4" />
+            Posts
           </TabsTrigger>
           <TabsTrigger value="content">
             <FileText className="mr-2 h-4 w-4" />
@@ -1549,6 +1553,126 @@ function AdminDashboard() {
                     Messages from the contact form will appear here
                   </p>
                 </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        {/* Posts Panel */}
+        <TabsContent value="posts" className="space-y-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                <div>
+                  <CardTitle>Post Manager</CardTitle>
+                  <CardDescription>
+                    Create and manage blog posts and articles
+                  </CardDescription>
+                </div>
+                
+                <Button onClick={() => navigate("/create-blog")} className="shrink-0">
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Create New Post
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {blogPostsLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : !blogPosts || blogPosts.length === 0 ? (
+                <div className="flex justify-center py-10 border rounded-md bg-muted/20">
+                  <div className="text-center">
+                    <FileTextIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-medium mb-2">No blog posts yet</h3>
+                    <p className="text-sm text-muted-foreground mb-4 max-w-md">
+                      Create your first blog post to share insights with your audience
+                    </p>
+                    <Button 
+                      onClick={() => navigate("/create-blog")}
+                      size="sm"
+                    >
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      Create Post
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <ScrollArea className="h-[600px]">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {blogPosts
+                        .sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+                        .map((post: any) => (
+                          <TableRow key={post.id}>
+                            <TableCell className="font-medium">
+                              {post.title || "Untitled"}
+                              {post.subtitle && (
+                                <p className="text-xs text-muted-foreground truncate max-w-[250px]">
+                                  {post.subtitle}
+                                </p>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              {post.published ? (
+                                <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-200 border-green-200">
+                                  Published
+                                </Badge>
+                              ) : (
+                                <Badge variant="secondary" className="bg-amber-100 text-amber-800 hover:bg-amber-200">
+                                  Draft
+                                </Badge>
+                              )}
+                            </TableCell>
+                            <TableCell>{post.category || "Uncategorized"}</TableCell>
+                            <TableCell>{formatDate(post.createdAt)}</TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => {
+                                    // Open in a new tab to ensure it's properly loaded
+                                    window.open(`/article/${post.slug}`, '_blank');
+                                  }}
+                                >
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  View
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => navigate(`/edit-blog/${post.id}`)}
+                                >
+                                  <Pencil className="h-4 w-4 mr-1" />
+                                  Edit
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-100" 
+                                  onClick={() => handleDeleteBlogPost(post.id)}
+                                >
+                                  <Trash2 className="h-4 w-4 mr-1" />
+                                  Delete
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
               )}
             </CardContent>
           </Card>
