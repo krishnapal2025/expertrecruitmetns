@@ -48,6 +48,7 @@ import {
   Download,
   Search,
   UserPlus,
+  MapPin,
 } from "lucide-react";
 
 // Date utilities
@@ -967,20 +968,26 @@ function AdminDashboard() {
                               <TableCell>{formatDate(employer.createdAt)}</TableCell>
                               <TableCell>
                                 {employer.lastActive ? (
-                                  formatDate(employer.lastActive)
+                                  <span className="text-green-600 font-medium">{formatDate(employer.lastActive)}</span>
                                 ) : employer.lastLogin ? (
-                                  formatDate(employer.lastLogin)
+                                  <span className="text-blue-600">{formatDate(employer.lastLogin)}</span>
                                 ) : (
-                                  <span className="text-muted-foreground text-sm">Not available</span>
+                                  <span className="text-gray-500 text-sm">Not active yet</span>
                                 )}
                               </TableCell>
                               <TableCell>
                                 {employer.location ? (
-                                  <span className="font-medium">{employer.location}</span>
+                                  <span className="font-medium flex items-center gap-1">
+                                    <MapPin className="h-3 w-3 text-primary" />
+                                    {employer.location}
+                                  </span>
                                 ) : employer.city ? (
-                                  <span>{employer.city}{employer.country ? `, ${employer.country}` : ''}</span>
+                                  <span className="flex items-center gap-1">
+                                    <MapPin className="h-3 w-3 text-primary" />
+                                    {employer.city}{employer.country ? `, ${employer.country}` : ''}
+                                  </span>
                                 ) : (
-                                  <span className="text-muted-foreground text-sm">Not specified</span>
+                                  <span className="text-gray-500 text-sm">Location not provided</span>
                                 )}
                               </TableCell>
                               <TableCell className="text-right">
