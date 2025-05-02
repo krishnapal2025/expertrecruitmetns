@@ -131,6 +131,7 @@ export default function Navbar() {
       return [
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
+        { name: "Post Manager", href: "/post-manager" },
         { 
           name: "Solutions", 
           href: "#",
@@ -238,12 +239,20 @@ export default function Navbar() {
                     )}
                     {/* Employer-specific menu items removed */}
                     {currentUser.user.userType === "admin" && (
-                      <ScrollLink href="/admin" className="w-full">
-                        <DropdownMenuItem>
-                          <ShieldCheck className="mr-2 h-4 w-4" />
-                          <span>Admin Dashboard</span>
-                        </DropdownMenuItem>
-                      </ScrollLink>
+                      <>
+                        <ScrollLink href="/admin" className="w-full">
+                          <DropdownMenuItem>
+                            <ShieldCheck className="mr-2 h-4 w-4" />
+                            <span>Admin Dashboard</span>
+                          </DropdownMenuItem>
+                        </ScrollLink>
+                        <ScrollLink href="/post-manager" className="w-full">
+                          <DropdownMenuItem>
+                            <Briefcase className="mr-2 h-4 w-4" />
+                            <span>Post Manager</span>
+                          </DropdownMenuItem>
+                        </ScrollLink>
+                      </>
                     )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout}>
@@ -402,17 +411,30 @@ export default function Navbar() {
                         {/* Employer-specific menu items removed from mobile menu */}
                         
                         {currentUser.user.userType === "admin" && (
-                          <div 
-                            className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer"
-                            onClick={() => {
-                              setIsMobileMenuOpen(false);
-                              window.scrollTo(0, 0);
-                              setTimeout(() => window.location.href = "/admin", 100);
-                            }}
-                          >
-                            <ShieldCheck className="mr-2 h-4 w-4" />
-                            Admin Dashboard
-                          </div>
+                          <>
+                            <div 
+                              className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/admin", 100);
+                              }}
+                            >
+                              <ShieldCheck className="mr-2 h-4 w-4" />
+                              Admin Dashboard
+                            </div>
+                            <div 
+                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.scrollTo(0, 0);
+                                setTimeout(() => window.location.href = "/post-manager", 100);
+                              }}
+                            >
+                              <Briefcase className="mr-2 h-4 w-4" />
+                              Post Manager
+                            </div>
+                          </>
                         )}
                         
                         <button
