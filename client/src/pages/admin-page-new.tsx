@@ -1303,8 +1303,8 @@ function AdminDashboard() {
                             <TableHead>Name</TableHead>
                             <TableHead>ID</TableHead>
                             <TableHead>Signup Date</TableHead>
-                            <TableHead>Resumes</TableHead>
-                            <TableHead>Inquiries</TableHead>
+                            <TableHead>Last Active</TableHead>
+                            <TableHead>Location</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -1316,8 +1316,30 @@ function AdminDashboard() {
                               </TableCell>
                               <TableCell>{seeker.id}</TableCell>
                               <TableCell>{formatDate(seeker.createdAt)}</TableCell>
-                              <TableCell>{seeker.resumeCount || 0}</TableCell>
-                              <TableCell>{seeker.inquiryCount || 0}</TableCell>
+                              <TableCell>
+                                {seeker.lastActive ? (
+                                  <span className="text-green-600 font-medium">{formatDate(seeker.lastActive)}</span>
+                                ) : seeker.lastLogin ? (
+                                  <span className="text-blue-600">{formatDate(seeker.lastLogin)}</span>
+                                ) : (
+                                  <span className="text-gray-500 text-sm">Not active yet</span>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {seeker.location ? (
+                                  <span className="font-medium flex items-center gap-1">
+                                    <MapPin className="h-3 w-3 text-primary" />
+                                    {seeker.location}
+                                  </span>
+                                ) : seeker.city ? (
+                                  <span className="flex items-center gap-1">
+                                    <MapPin className="h-3 w-3 text-primary" />
+                                    {seeker.city}{seeker.country ? `, ${seeker.country}` : ''}
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-500 text-sm">Location not provided</span>
+                                )}
+                              </TableCell>
                               <TableCell className="text-right">
                                 <Button 
                                   variant="ghost" 
