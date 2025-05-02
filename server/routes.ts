@@ -1855,16 +1855,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Assign the vacancy to the recruiter
-      const updatedVacancy = await storage.assignVacancyToRecruiter(
-        parseInt(id), 
-        recruiterEmail, 
-        recruiterName
-      );
+      console.log(`Calling assignVacancyToRecruiter with id=${id}, email=${recruiterEmail}, name=${recruiterName}`);
+      console.log(`Method exists: ${typeof storage.assignVacancyToRecruiter === 'function' ? "YES" : "NO"}`);
       
-      if (!updatedVacancy) {
+      let updatedVacancy;
+      try {
+        updatedVacancy = await storage.assignVacancyToRecruiter(
+          parseInt(id), 
+          recruiterEmail, 
+          recruiterName
+        );
+        
+        console.log("Assignment result:", updatedVacancy ? "success" : "failed");
+        
+        if (!updatedVacancy) {
+          return res.status(500).json({ 
+            success: false, 
+            message: "Failed to assign vacancy" 
+          });
+        }
+      } catch (assignError) {
+        console.error("Assignment function error:", assignError);
         return res.status(500).json({ 
           success: false, 
-          message: "Failed to assign vacancy" 
+          message: "Error during vacancy assignment process" 
         });
       }
 
