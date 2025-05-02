@@ -345,7 +345,7 @@ export default function HireTalentPage() {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-md px-8" asChild>
-              <Link href="/inquiry-form">Send Executive Inquiry </Link>
+              <Link href="/contact-us">Send Executive Inquiry </Link>
             </Button>
           </div>
         </div>

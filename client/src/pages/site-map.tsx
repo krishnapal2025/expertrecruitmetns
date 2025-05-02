@@ -53,7 +53,7 @@ export default function SiteMap() {
         { name: "Employer Registration", url: "/employer-register" },
         { name: "Hire Talent", url: "/hire-talent" },
         { name: "Submit a Vacancy", url: "/vacancy-form" },
-        { name: "Request Consultation", url: "/inquiry-form" },
+
         { name: "Employer Login", url: "/auth" },
       ],
     },
@@ -86,7 +86,7 @@ export default function SiteMap() {
       links: [
         { name: "User Profile", url: "/profile" },
         { name: "Forgot Password", url: "/auth/forgot-password" },
-        { name: "Reset Password", url: "/auth/reset-password" },
+
         { name: "Admin Password Reset", url: "/admin/forgot-password" },
       ],
     },

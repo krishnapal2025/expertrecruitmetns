@@ -1151,7 +1151,7 @@ export default function AboutUsPage() {
                 transition={{ delay: 0.4, duration: 0.5 }}
               >
                 <a 
-                  href="/inquiry-form" 
+                  href="/contact-us" 
                   className="px-6 py-3 bg-primary text-white font-medium rounded-md shadow-md hover:shadow-lg transition-all hover:bg-primary/90 flex items-center"
                 >
                   <span>Get in Touch</span>

@@ -133,7 +133,7 @@ export default function ServicesPage() {
                   This service is currently available only in India and the USA. Employers interested in our Temporary Staffing services can register their interest by filling out the inquiry form below.
                 </p>
                 <div className="mt-auto pt-4">
-                  <Link href="/inquiry-form">
+                  <Link href="/contact-us">
                     <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">Inquiry Form</Button>
                   </Link>
                 </div>
