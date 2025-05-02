@@ -271,6 +271,18 @@ const CreateBlogPage = () => {
     form.setValue('content', compiledContent);
   };
 
+  const updateSectionFormat = (index: number, formatKey: string, formatValue: string) => {
+    const newSections = [...contentSections];
+    if (!newSections[index].format) {
+      newSections[index].format = {};
+    }
+    newSections[index].format = {
+      ...newSections[index].format,
+      [formatKey]: formatValue
+    };
+    setContentSections(newSections);
+  };
+
   const removeSection = (index: number) => {
     if (contentSections.length > 1) {
       const newSections = [...contentSections];
@@ -297,7 +309,7 @@ const CreateBlogPage = () => {
     <div className="container max-w-7xl py-12">
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Editor Column */}
-        <div className="w-full lg:w-3/5">
+        <div className="w-full lg:w-[55%]">
           <Card className="w-full shadow-md">
             <CardHeader className="bg-slate-50 border-b">
               <CardTitle className="text-3xl font-bold text-primary">Create New Blog Post</CardTitle>
@@ -843,7 +855,14 @@ const CreateBlogPage = () => {
                               
                               <div className="flex flex-wrap gap-2">
                                 <h4 className="text-sm font-medium w-full mb-1">Alignment</h4>
-                                <ToggleGroup type="single" className="justify-start">
+                                <ToggleGroup 
+                                  type="single" 
+                                  className="justify-start"
+                                  value={section.format?.alignment || 'left'}
+                                  onValueChange={(value) => {
+                                    if (value) updateSectionFormat(index, 'alignment', value);
+                                  }}
+                                >
                                   <ToggleGroupItem value="left" aria-label="Align left" title="Align Left">
                                     <AlignLeft className="h-4 w-4" />
                                   </ToggleGroupItem>
@@ -854,6 +873,68 @@ const CreateBlogPage = () => {
                                     <AlignRight className="h-4 w-4" />
                                   </ToggleGroupItem>
                                 </ToggleGroup>
+                              </div>
+                              
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                <h4 className="text-sm font-medium w-full mb-1">Text Color</h4>
+                                <Select 
+                                  value={section.format?.color || 'slate-900'}
+                                  onValueChange={(value) => updateSectionFormat(index, 'color', value)}
+                                >
+                                  <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Color" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="primary">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-primary mr-2" />
+                                        <span>Primary</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="slate-900">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-slate-900 mr-2" />
+                                        <span>Black</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="gray-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-gray-600 mr-2" />
+                                        <span>Gray</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="blue-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-blue-600 mr-2" />
+                                        <span>Blue</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="green-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-green-600 mr-2" />
+                                        <span>Green</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="red-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-red-600 mr-2" />
+                                        <span>Red</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="purple-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-purple-600 mr-2" />
+                                        <span>Purple</span>
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="amber-600">
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 rounded-full bg-amber-600 mr-2" />
+                                        <span>Amber</span>
+                                      </div>
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
                               
                               <div className="flex flex-wrap gap-2 mt-2">
@@ -1109,7 +1190,7 @@ const CreateBlogPage = () => {
         </div>
         
         {/* Preview Column */}
-        <div className="w-full lg:w-2/5">
+        <div className="w-full lg:w-[45%]">
           <Card className="w-full h-full shadow-md sticky top-6">
             <CardHeader className="bg-slate-50 border-b">
               <CardTitle className="text-xl font-bold text-primary flex items-center">
@@ -1119,7 +1200,7 @@ const CreateBlogPage = () => {
                 See how your blog post will look
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-4 overflow-y-auto bg-white" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+            <CardContent className="p-4 overflow-y-auto bg-white" style={{ maxHeight: 'calc(100vh - 170px)' }}>
               <div className="rounded-md border p-4 bg-white">
                 {!previewHtml ? (
                   <div className="py-12 text-center text-gray-500">
