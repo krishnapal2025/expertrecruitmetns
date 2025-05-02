@@ -388,6 +388,68 @@ function AdminDashboard() {
   
   return (
     <div className="container mx-auto py-8 max-w-[1400px]">
+      {/* Vacancy Assignment Dialog */}
+      <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Assign Vacancy to Recruiter</DialogTitle>
+            <DialogDescription>
+              Enter the recruiter's email and name to assign this vacancy for handling.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="recruiter-email">Recruiter Email</Label>
+              <Input
+                id="recruiter-email"
+                type="email"
+                value={recruiterEmail}
+                onChange={(e) => setRecruiterEmail(e.target.value)}
+                placeholder="recruiter@example.com"
+                autoComplete="email"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="recruiter-name">Recruiter Name</Label>
+              <Input
+                id="recruiter-name"
+                value={recruiterName}
+                onChange={(e) => setRecruiterName(e.target.value)}
+                placeholder="John Doe"
+              />
+            </div>
+            {selectedVacancy && (
+              <div className="bg-muted p-3 rounded-md mt-2">
+                <p className="text-sm font-medium">Vacancy Details:</p>
+                <div className="text-sm text-muted-foreground mt-1">
+                  <p><span className="font-medium">Company:</span> {selectedVacancy.companyName}</p>
+                  <p><span className="font-medium">Position:</span> {selectedVacancy.positionName || selectedVacancy.jobTitle}</p>
+                  <p><span className="font-medium">Status:</span> {selectedVacancy.status || "pending"}</p>
+                </div>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAssignDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={submitAssignment} 
+              disabled={assignVacancyMutation.isPending}
+            >
+              {assignVacancyMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Assigning...
+                </>
+              ) : (
+                <>Assign Vacancy</>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
@@ -931,6 +993,14 @@ function AdminDashboard() {
                                     size="sm"
                                   >
                                     <Eye className="h-4 w-4" />
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => handleAssignVacancy(vacancy)}
+                                    title="Assign to Recruiter"
+                                  >
+                                    <UserPlus className="h-4 w-4" />
                                   </Button>
                                   <Button 
                                     variant="ghost" 
