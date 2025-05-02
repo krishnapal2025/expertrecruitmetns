@@ -2,7 +2,10 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowRight, User, Building, Briefcase, Globe, ChevronRight, MapPin } from "lucide-react";
+import { 
+  ArrowRight, User, Building, Briefcase, Globe, ChevronRight, MapPin, 
+  FileText, BookOpen, GraduationCap, Settings, Newspaper, Mail, ShieldCheck, Search
+} from "lucide-react";
 
 export default function SiteMap() {
   const fadeIn = {
@@ -19,6 +22,7 @@ export default function SiteMap() {
   const categories = [
     {
       title: "Main Navigation",
+      icon: <Globe className="h-5 w-5 text-primary mr-2" />,
       links: [
         { name: "Home", url: "/" },
         { name: "About Us", url: "/about-us" },
@@ -29,64 +33,70 @@ export default function SiteMap() {
       ],
     },
     {
-      title: "For Job Seekers",
+      title: "Job Seeker Resources",
       icon: <User className="h-5 w-5 text-primary mr-2" />,
       links: [
-        { name: "Register as Job Seeker", url: "/job-seeker-register" },
-        { name: "Find Jobs", url: "/job-board" },
+        { name: "Job Seeker Registration", url: "/job-seeker-register" },
+        { name: "Browse Available Jobs", url: "/job-board" },
         { name: "Create Resume", url: "/resources/create-resume" },
         { name: "Interview Preparation", url: "/resources/interview-prep" },
         { name: "Career Advice", url: "/resources/career-advice" },
         { name: "Salary Negotiation", url: "/resources/salary-negotiation" },
-        { name: "Job Application", url: "/apply" },
-        { name: "Login", url: "/auth" },
+        { name: "Apply for Jobs", url: "/job-board" },
+        { name: "Job Seeker Login", url: "/auth" },
       ],
     },
     {
-      title: "For Employers",
+      title: "Employer Resources",
       icon: <Building className="h-5 w-5 text-primary mr-2" />,
       links: [
-        { name: "Register as Employer", url: "/employer-register" },
+        { name: "Employer Registration", url: "/employer-register" },
         { name: "Hire Talent", url: "/hire-talent" },
         { name: "Submit a Vacancy", url: "/vacancy-form" },
-        { name: "Inquiry Form", url: "/inquiry-form" },
-        { name: "Login", url: "/auth" },
+        { name: "Request Consultation", url: "/inquiry-form" },
+        { name: "Employer Login", url: "/auth" },
       ],
     },
     {
-      title: "Admin Section",
-      icon: <Briefcase className="h-5 w-5 text-primary mr-2" />,
+      title: "Admin Portal",
+      icon: <ShieldCheck className="h-5 w-5 text-primary mr-2" />,
       links: [
         { name: "Admin Dashboard", url: "/admin-dashboard" },
         { name: "Admin Login", url: "/admin-login" },
-        { name: "Admin Register", url: "/admin-register" },
-        { name: "Create Blog", url: "/create-blog" },
-        { name: "Post Manager", url: "/post-manager" },
-        { name: "Post Job", url: "/post-job" },
-        { name: "Legacy Admin", url: "/admin" },
+        { name: "Admin Registration", url: "/admin-register" },
+        { name: "Create Blog Post", url: "/create-blog" },
+        { name: "Job Post Manager", url: "/post-manager" },
+        { name: "Post New Job", url: "/post-job" },
+        { name: "Legacy Admin Panel", url: "/admin" },
       ],
     },
     {
-      title: "Content & Information",
-      icon: <Globe className="h-5 w-5 text-primary mr-2" />,
+      title: "Knowledge Center",
+      icon: <BookOpen className="h-5 w-5 text-primary mr-2" />,
       links: [
-        { name: "Blogs", url: "/blogs" },
-        { name: "Team Articles", url: "/team-articles" },
-        { name: "Careers", url: "/careers" },
+        { name: "Blog Articles", url: "/blogs" },
+        { name: "Expert Team Articles", url: "/team-articles" },
+        { name: "Career Opportunities", url: "/careers" },
+        { name: "Industry Insights", url: "/blogs" },
+      ],
+    },
+    {
+      title: "User Account",
+      icon: <Settings className="h-5 w-5 text-primary mr-2" />,
+      links: [
+        { name: "User Profile", url: "/profile" },
+        { name: "Forgot Password", url: "/auth/forgot-password" },
+        { name: "Reset Password", url: "/auth/reset-password" },
+        { name: "Admin Password Reset", url: "/admin/forgot-password" },
+      ],
+    },
+    {
+      title: "Legal Information",
+      icon: <FileText className="h-5 w-5 text-primary mr-2" />,
+      links: [
         { name: "Privacy Policy", url: "/privacy-policy" },
         { name: "Terms & Conditions", url: "/terms-conditions" },
         { name: "Site Map", url: "/site-map" },
-      ],
-    },
-    {
-      title: "Account Management",
-      icon: <User className="h-5 w-5 text-primary mr-2" />,
-      links: [
-        { name: "Profile", url: "/profile" },
-        { name: "Forgot Password", url: "/auth/forgot-password" },
-        { name: "Reset Password", url: "/auth/reset-password" },
-        { name: "Admin Forgot Password", url: "/admin/forgot-password" },
-        { name: "Admin Reset Password", url: "/admin/reset-password" },
       ],
     },
   ];
@@ -103,19 +113,19 @@ export default function SiteMap() {
 
       <div className="bg-gray-50 py-12 md:py-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <motion.div
-              className="text-center mb-10"
+              className="text-center mb-12"
               initial="initial"
               animate="animate"
               variants={fadeIn}
             >
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Site Map
+                Complete Site Map
               </h1>
-              <div className="w-16 h-1 bg-primary mx-auto mb-6"></div>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                Use our site map to easily navigate and find all the pages available on the Expert Recruitments LLC website.
+              <div className="w-24 h-1 bg-primary mx-auto mb-6"></div>
+              <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+                Navigate our website with ease using this comprehensive guide to all pages and resources available on the Expert Recruitments LLC platform.
               </p>
             </motion.div>
 
@@ -123,23 +133,26 @@ export default function SiteMap() {
               {categories.map((category, index) => (
                 <motion.div
                   key={index}
-                  className="bg-white rounded-lg shadow-md p-6 border border-gray-100 h-full"
+                  className="bg-white rounded-lg shadow-md p-6 border-t-4 border-primary border-r border-b border-l border-gray-100 h-full hover:shadow-lg transition-shadow duration-300"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index, duration: 0.5 }}
                 >
-                  <div className="flex items-center mb-4">
-                    {category.icon && category.icon}
+                  <div className="flex items-center mb-5">
+                    <div className="bg-primary/10 p-2 rounded-full mr-3">
+                      {category.icon}
+                    </div>
                     <h2 className="text-xl font-semibold text-gray-800">
                       {category.title}
                     </h2>
                   </div>
+                  <div className="w-full h-0.5 bg-gray-100 mb-4"></div>
                   <ul className="space-y-3">
                     {category.links.map((link, linkIndex) => (
                       <li key={linkIndex}>
                         <Link
                           to={link.url}
-                          className="text-gray-600 hover:text-primary flex items-center group"
+                          className="text-gray-600 hover:text-primary flex items-center group py-1.5"
                         >
                           <ChevronRight className="h-4 w-4 text-primary mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                           {link.name}
@@ -152,48 +165,53 @@ export default function SiteMap() {
             </div>
 
             <motion.div
-              className="bg-white rounded-lg shadow-md p-6 border border-gray-100 mb-12"
+              className="bg-white rounded-lg shadow-md p-6 border-t-4 border-primary border-r border-b border-l border-gray-100 mb-12"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
             >
-              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                <MapPin className="h-5 w-5 text-primary mr-2" />
-                Global Offices
-              </h2>
+              <div className="flex items-center mb-5">
+                <div className="bg-primary/10 p-2 rounded-full mr-3">
+                  <MapPin className="h-5 w-5 text-primary" />
+                </div>
+                <h2 className="text-xl font-semibold text-gray-800">
+                  Global Office Locations
+                </h2>
+              </div>
+              <div className="w-full h-0.5 bg-gray-100 mb-6"></div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-gray-50 p-4 rounded-md">
-                  <h3 className="font-medium text-primary mb-2 flex items-center">
+                <div className="bg-gray-50 p-5 rounded-md hover:shadow-md transition-shadow duration-300 border border-gray-100">
+                  <h3 className="font-medium text-primary mb-3 flex items-center">
                     <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
                     Dubai, UAE
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-gray-600">
                     Office No. 306, Al Shali Building, Dubai, United Arab Emirates
                   </p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-md">
-                  <h3 className="font-medium text-primary mb-2 flex items-center">
+                <div className="bg-gray-50 p-5 rounded-md hover:shadow-md transition-shadow duration-300 border border-gray-100">
+                  <h3 className="font-medium text-primary mb-3 flex items-center">
                     <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
                     India
                   </h3>
                   <ul className="space-y-2">
-                    <li className="text-sm text-gray-600">
-                      Navi Mumbai: 302, Foundation Tower, CBD Belapur, Maharashtra
+                    <li className="text-gray-600">
+                      <span className="font-medium">Navi Mumbai:</span> 302, Foundation Tower, CBD Belapur, Maharashtra
                     </li>
-                    <li className="text-sm text-gray-600">
-                      Lucknow: 05, Kisan Bazar, Bibhuti Nagar, Uttar Pradesh
+                    <li className="text-gray-600">
+                      <span className="font-medium">Lucknow:</span> 05, Kisan Bazar, Bibhuti Nagar, Uttar Pradesh
                     </li>
-                    <li className="text-sm text-gray-600">
-                      Hyderabad: Level 1, Phase 2, N-Heights, Plot No 38, Siddiq Nagar, HITEC City
+                    <li className="text-gray-600">
+                      <span className="font-medium">Hyderabad:</span> Level 1, Phase 2, N-Heights, Plot No 38, Siddiq Nagar, HITEC City
                     </li>
                   </ul>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-md">
-                  <h3 className="font-medium text-primary mb-2 flex items-center">
+                <div className="bg-gray-50 p-5 rounded-md hover:shadow-md transition-shadow duration-300 border border-gray-100">
+                  <h3 className="font-medium text-primary mb-3 flex items-center">
                     <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
                     New Jersey, USA
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-gray-600">
                     6 Moyse Place, Suite 302 Edison, New Jersey 08820
                   </p>
                 </div>
@@ -208,10 +226,13 @@ export default function SiteMap() {
             >
               <Link
                 to="/"
-                className="inline-flex items-center text-primary font-medium hover:underline"
+                className="inline-flex items-center justify-center bg-primary text-white px-6 py-3 rounded-md font-medium hover:bg-primary/90 transition-colors shadow-md"
               >
-                Back to Home <ArrowRight className="ml-2 h-4 w-4" />
+                Back to Homepage <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
+              <p className="text-gray-500 mt-4 text-sm">
+                © {new Date().getFullYear()} Expert Recruitments LLC. All rights reserved.
+              </p>
             </motion.div>
           </div>
         </div>
