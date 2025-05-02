@@ -2,7 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowRight, User, Building, Briefcase, Globe, ChevronRight } from "lucide-react";
+import { ArrowRight, User, Building, Briefcase, Globe, ChevronRight, MapPin } from "lucide-react";
 
 export default function SiteMap() {
   const fadeIn = {
@@ -23,7 +23,8 @@ export default function SiteMap() {
         { name: "Home", url: "/" },
         { name: "About Us", url: "/about-us" },
         { name: "Services", url: "/services" },
-        { name: "Job Board", url: "/job-board" },
+        { name: "Sectors", url: "/sectors" },
+        { name: "Find Jobs", url: "/job-board" },
         { name: "Contact Us", url: "/contact-us" },
       ],
     },
@@ -33,9 +34,12 @@ export default function SiteMap() {
       links: [
         { name: "Register as Job Seeker", url: "/job-seeker-register" },
         { name: "Find Jobs", url: "/job-board" },
-        { name: "Applied Jobs", url: "/applied-jobs" },
-        { name: "Career Sectors", url: "/sectors" },
-        { name: "Career Advice", url: "/blogs" },
+        { name: "Create Resume", url: "/resources/create-resume" },
+        { name: "Interview Preparation", url: "/resources/interview-prep" },
+        { name: "Career Advice", url: "/resources/career-advice" },
+        { name: "Salary Negotiation", url: "/resources/salary-negotiation" },
+        { name: "Job Application", url: "/apply" },
+        { name: "Login", url: "/auth" },
       ],
     },
     {
@@ -48,26 +52,43 @@ export default function SiteMap() {
         { name: "Applications Manager", url: "/applications-manager" },
         { name: "Hire Talent", url: "/hire-talent" },
         { name: "Submit a Vacancy", url: "/vacancy-form" },
+        { name: "Inquiry Form", url: "/inquiry-form" },
+        { name: "Login", url: "/auth" },
       ],
     },
     {
-      title: "Job Services",
+      title: "Admin Section",
       icon: <Briefcase className="h-5 w-5 text-primary mr-2" />,
       links: [
-        { name: "UAE", url: "/services#uae" },
-        { name: "India", url: "/services#india" },
-        { name: "USA", url: "/services#usa" },
-        { name: "Inquiry Form", url: "/inquiry-form" },
+        { name: "Admin Dashboard", url: "/admin-dashboard" },
+        { name: "Admin Login", url: "/admin-login" },
+        { name: "Admin Register", url: "/admin-register" },
+        { name: "Create Blog", url: "/create-blog" },
+        { name: "Post Manager", url: "/post-manager" },
+        { name: "Legacy Admin", url: "/admin" },
       ],
     },
     {
-      title: "Information",
+      title: "Content & Information",
       icon: <Globe className="h-5 w-5 text-primary mr-2" />,
       links: [
+        { name: "Blogs", url: "/blogs" },
+        { name: "Team Articles", url: "/team-articles" },
+        { name: "Careers", url: "/careers" },
         { name: "Privacy Policy", url: "/privacy-policy" },
         { name: "Terms & Conditions", url: "/terms-conditions" },
-        { name: "Accessibility", url: "/accessibility" },
         { name: "Site Map", url: "/site-map" },
+      ],
+    },
+    {
+      title: "Account Management",
+      icon: <User className="h-5 w-5 text-primary mr-2" />,
+      links: [
+        { name: "Profile", url: "/profile" },
+        { name: "Forgot Password", url: "/auth/forgot-password" },
+        { name: "Reset Password", url: "/auth/reset-password" },
+        { name: "Admin Forgot Password", url: "/admin/forgot-password" },
+        { name: "Admin Reset Password", url: "/admin/reset-password" },
       ],
     },
   ];
@@ -100,11 +121,11 @@ export default function SiteMap() {
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {categories.map((category, index) => (
                 <motion.div
                   key={index}
-                  className="bg-white rounded-lg shadow-md p-6 border border-gray-100"
+                  className="bg-white rounded-lg shadow-md p-6 border border-gray-100 h-full"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index, duration: 0.5 }}
@@ -138,18 +159,25 @@ export default function SiteMap() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
             >
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <MapPin className="h-5 w-5 text-primary mr-2" />
                 Global Offices
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <h3 className="font-medium text-primary mb-2">Dubai, UAE</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="bg-gray-50 p-4 rounded-md">
+                  <h3 className="font-medium text-primary mb-2 flex items-center">
+                    <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
+                    Dubai, UAE
+                  </h3>
                   <p className="text-sm text-gray-600">
                     Office No. 306, Al Shali Building, Dubai, United Arab Emirates
                   </p>
                 </div>
-                <div>
-                  <h3 className="font-medium text-primary mb-2">India</h3>
+                <div className="bg-gray-50 p-4 rounded-md">
+                  <h3 className="font-medium text-primary mb-2 flex items-center">
+                    <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
+                    India
+                  </h3>
                   <ul className="space-y-2">
                     <li className="text-sm text-gray-600">
                       Navi Mumbai: 302, Foundation Tower, CBD Belapur, Maharashtra
@@ -162,8 +190,11 @@ export default function SiteMap() {
                     </li>
                   </ul>
                 </div>
-                <div>
-                  <h3 className="font-medium text-primary mb-2">New Jersey, USA</h3>
+                <div className="bg-gray-50 p-4 rounded-md">
+                  <h3 className="font-medium text-primary mb-2 flex items-center">
+                    <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
+                    New Jersey, USA
+                  </h3>
                   <p className="text-sm text-gray-600">
                     6 Moyse Place, Suite 302 Edison, New Jersey 08820
                   </p>
