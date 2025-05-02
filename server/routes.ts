@@ -2152,46 +2152,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Get blog post by ID
-  app.get("/api/blog-posts/:id", async (req, res) => {
+  // Get blog post by slug (for friendly URLs) - THIS MUST COME BEFORE THE :id ROUTE
+  app.get("/api/blog-posts/slug/:slug", async (req, res) => {
     try {
-      const { id } = req.params;
-      const post = await storage.getBlogPost(parseInt(id));
+      const { slug } = req.params;
+      console.log(`Fetching blog post by slug: ${slug}`);
+      const post = await storage.getBlogPostBySlug(slug);
       
       if (!post) {
+        console.log(`Blog post with slug '${slug}' not found`);
         return res.status(404).json({ message: "Blog post not found" });
       }
       
       // If post is not published and user is not admin, don't allow access
       if (!post.published && (!req.isAuthenticated() || req.user.userType !== "admin")) {
+        console.log(`Blog post with slug '${slug}' is not published and user is not admin`);
         return res.status(404).json({ message: "Blog post not found" });
       }
       
+      console.log(`Successfully found blog post with slug '${slug}'`);
       res.json(post);
     } catch (error) {
-      console.error("Error fetching blog post:", error);
+      console.error("Error fetching blog post by slug:", error);
       res.status(500).json({ message: "Failed to fetch blog post" });
     }
   });
   
-  // Get blog post by slug (for friendly URLs)
-  app.get("/api/blog-posts/slug/:slug", async (req, res) => {
+  // Get blog post by ID
+  app.get("/api/blog-posts/:id", async (req, res) => {
     try {
-      const { slug } = req.params;
-      const post = await storage.getBlogPostBySlug(slug);
+      const { id } = req.params;
+      console.log(`Fetching blog post by ID: ${id}`);
+      const post = await storage.getBlogPost(parseInt(id));
       
       if (!post) {
+        console.log(`Blog post with ID ${id} not found`);
         return res.status(404).json({ message: "Blog post not found" });
       }
       
       // If post is not published and user is not admin, don't allow access
       if (!post.published && (!req.isAuthenticated() || req.user.userType !== "admin")) {
+        console.log(`Blog post with ID ${id} is not published and user is not admin`);
         return res.status(404).json({ message: "Blog post not found" });
       }
       
+      console.log(`Successfully found blog post with ID ${id}`);
       res.json(post);
     } catch (error) {
-      console.error("Error fetching blog post by slug:", error);
+      console.error("Error fetching blog post:", error);
       res.status(500).json({ message: "Failed to fetch blog post" });
     }
   });
