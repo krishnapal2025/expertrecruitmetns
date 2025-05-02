@@ -113,8 +113,16 @@ const CreateBlogPage = () => {
     let previewContent = '';
     
     if (bannerImage) {
-      previewContent += `<div class="w-full h-56 overflow-hidden rounded-t-lg">
-        <img src="${bannerImage}" alt="Banner" class="w-full h-full object-cover" />
+      previewContent += `
+      <div class="w-full overflow-hidden rounded-t-lg">
+        <div class="relative w-full" style="padding-top: 56.25%"> <!-- 16:9 aspect ratio -->
+          <img 
+            src="${bannerImage}" 
+            alt="Banner" 
+            class="absolute top-0 left-0 w-full h-full object-cover"
+            onerror="this.src='https://placehold.co/600x338?text=Invalid+Image+URL'" 
+          />
+        </div>
       </div>`;
     }
     
@@ -133,7 +141,20 @@ const CreateBlogPage = () => {
       } else if (section.type === 'paragraph' && section.content) {
         previewContent += `<div class="my-4">${section.content}</div>`;
       } else if (section.type === 'image' && section.content) {
-        previewContent += `<div class="my-6"><img src="${section.content}" alt="Blog image" class="w-full rounded-md" /></div>`;
+        previewContent += `
+          <div class="my-6">
+            <div class="rounded-md overflow-hidden">
+              <div class="relative w-full" style="padding-top: 56.25%"> <!-- 16:9 aspect ratio -->
+                <img 
+                  src="${section.content}" 
+                  alt="Blog image" 
+                  class="absolute top-0 left-0 w-full h-full object-cover" 
+                  onerror="this.src='https://placehold.co/600x338?text=Invalid+Image+URL'" 
+                />
+              </div>
+            </div>
+          </div>
+        `;
       }
     });
     previewContent += '</div>';
@@ -508,10 +529,15 @@ const CreateBlogPage = () => {
                       <FormItem>
                         <FormLabel>Banner Image URL</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="https://example.com/image.jpg"
-                            {...field}
-                          />
+                          <div className="space-y-1">
+                            <Input
+                              placeholder="https://example.com/image.jpg"
+                              {...field}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Banner images will be displayed in 16:9 aspect ratio
+                            </p>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -519,15 +545,22 @@ const CreateBlogPage = () => {
                   />
 
                   {form.getValues('bannerImage') && (
-                    <div className="mt-2 rounded-md overflow-hidden border border-border">
-                      <img
-                        src={form.getValues('bannerImage')}
-                        alt="Banner preview"
-                        className="w-full h-48 object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=Invalid+Image+URL';
-                        }}
-                      />
+                    <div className="mt-3">
+                      <div className="rounded-md overflow-hidden border border-border">
+                        <div className="relative w-full" style={{ paddingTop: '56.25%' }}> {/* 16:9 aspect ratio */}
+                          <img
+                            src={form.getValues('bannerImage')}
+                            alt="Banner preview"
+                            className="absolute top-0 left-0 w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = 'https://placehold.co/600x338?text=Invalid+Image+URL';
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Banner image preview (16:9 aspect ratio)
+                      </p>
                     </div>
                   )}
 
@@ -687,21 +720,51 @@ const CreateBlogPage = () => {
                         
                         {section.type === 'image' && (
                           <div className="space-y-2">
-                            <Input
-                              value={section.content}
-                              onChange={(e) => updateSection(index, e.target.value)}
-                              placeholder="Enter image URL"
-                            />
-                            {section.content && (
-                              <div className="mt-2 rounded-md overflow-hidden border border-border">
-                                <img
-                                  src={section.content}
-                                  alt="Image preview"
-                                  className="w-full h-48 object-cover"
-                                  onError={(e) => {
-                                    (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=Invalid+Image+URL';
-                                  }}
+                            <div className="flex gap-3">
+                              <div className="flex-1">
+                                <Input
+                                  value={section.content}
+                                  onChange={(e) => updateSection(index, e.target.value)}
+                                  placeholder="Enter image URL"
+                                  className="mb-1"
                                 />
+                                <p className="text-xs text-muted-foreground">
+                                  Images will be displayed in 16:9 aspect ratio
+                                </p>
+                              </div>
+                              <Button 
+                                type="button"
+                                variant="outline"
+                                className="h-10 mt-0 px-3"
+                                onClick={() => {
+                                  // This is just a UI placeholder. For actual implementation, we'd need to handle file uploads
+                                  toast({
+                                    title: "Upload Image",
+                                    description: "Currently only supporting image URLs. File uploads will be implemented in a future version.",
+                                  });
+                                }}
+                              >
+                                Upload
+                              </Button>
+                            </div>
+                            
+                            {section.content && (
+                              <div className="mt-3">
+                                <div className="rounded-md overflow-hidden border border-border">
+                                  <div className="relative w-full" style={{ paddingTop: '56.25%' }}> {/* 16:9 aspect ratio */}
+                                    <img
+                                      src={section.content}
+                                      alt="Image preview"
+                                      className="absolute top-0 left-0 w-full h-full object-cover"
+                                      onError={(e) => {
+                                        (e.target as HTMLImageElement).src = 'https://placehold.co/600x338?text=Invalid+Image+URL';
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">
+                                  Preview of 16:9 image display
+                                </p>
                               </div>
                             )}
                           </div>
