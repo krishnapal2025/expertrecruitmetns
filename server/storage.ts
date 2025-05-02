@@ -110,6 +110,7 @@ export interface IStorage {
   getVacancies(): Promise<Vacancy[]>;
   createVacancy(vacancy: InsertVacancy): Promise<Vacancy>;
   updateVacancyStatus(id: number, status: string): Promise<Vacancy | undefined>;
+  assignVacancyToRecruiter(id: number, recruiterEmail: string, recruiterName: string): Promise<Vacancy | undefined>;
   
   // Staffing Inquiry methods
   getStaffingInquiry(id: number): Promise<StaffingInquiry | undefined>;
