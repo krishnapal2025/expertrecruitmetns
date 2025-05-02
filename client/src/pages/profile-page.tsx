@@ -828,7 +828,7 @@ export default function ProfilePage() {
                 
                 <div className="flex items-center gap-4">
                   <div className="bg-primary/10 p-3 rounded-full">
-                    <User className="h-6 w-6 text-primary" />
+                    <UserIcon className="h-6 w-6 text-primary" />
                   </div>
                   <div>
                     <h4 className="font-medium">Expert Talent Matching</h4>
