@@ -1122,12 +1122,6 @@ function AdminDashboard() {
                                   </Button>
                                   <Button 
                                     variant="ghost" 
-                                    size="sm"
-                                  >
-                                    <Send className="h-4 w-4" />
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
                                     size="sm" 
                                     className="text-red-500 hover:text-red-700 hover:bg-red-100"
                                   >
