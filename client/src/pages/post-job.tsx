@@ -181,7 +181,20 @@ export default function PostJobPage() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isPreview, setIsPreview] = useState(false);
+  const [selectedEmployerId, setSelectedEmployerId] = useState<number | null>(null);
   const queryClient = useQueryClient();
+  
+  // Fetch employers list for admin users to select from
+  const { data: employers } = useQuery({
+    queryKey: ['/api/employers'],
+    queryFn: async () => {
+      if (currentUser?.user.userType !== 'admin') return [];
+      const res = await apiRequest('GET', '/api/employers');
+      if (!res.ok) throw new Error('Failed to fetch employers');
+      return await res.json();
+    },
+    enabled: !!currentUser && currentUser.user.userType === 'admin'
+  });
   
   // Set up form with validation
   const form = useForm<JobPostFormValues>({
@@ -211,10 +224,17 @@ export default function PostJobPage() {
   // Create job mutation
   const createJobMutation = useMutation({
     mutationFn: async (data: JobPostFormValues) => {
-      const res = await apiRequest("POST", "/api/jobs", {
+      // For admin users, use the selected employer ID
+      const payload = {
         ...data,
-        employerId: currentUser?.profile.id,
-      });
+        // If admin with selected employer, use selectedEmployerId
+        // Otherwise use the current user's profile ID
+        ...(currentUser?.user.userType === "admin" && selectedEmployerId 
+          ? { selectedEmployerId } 
+          : { employerId: currentUser?.profile.id })
+      };
+      
+      const res = await apiRequest("POST", "/api/jobs", payload);
       return await res.json();
     },
     onSuccess: (data) => {
@@ -281,7 +301,7 @@ export default function PostJobPage() {
               </Button>
             </AlertDescription>
           </Alert>
-        ) : currentUser.user.userType !== "employer" ? (
+        ) : (currentUser.user.userType !== "employer" && currentUser.user.userType !== "admin") ? (
           <Alert className="mb-6">
             <AlertTitle>Employer Account Required</AlertTitle>
             <AlertDescription>
