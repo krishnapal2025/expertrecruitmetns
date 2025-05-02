@@ -274,7 +274,7 @@ export default function EditBlogPage() {
                     className="min-h-[300px] whitespace-pre-wrap"
                     style={{ 
                       whiteSpace: 'pre-wrap',
-                      lineHeight: '1.3' // Reduced line height for minimal spacing
+                      lineHeight: '1.6' // Standard line height for normal spacing
                     }}
                     required
                   />

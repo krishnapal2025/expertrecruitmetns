@@ -101,15 +101,14 @@ const BlogPostContent = ({
             className="prose prose-lg max-w-none" 
             style={{ 
               whiteSpace: 'pre-wrap',
-              lineHeight: '1.3' // Reduced line height for minimal spacing
+              lineHeight: '1.6' // Standard line height for normal spacing
             }}
             dangerouslySetInnerHTML={{ 
               __html: blogPost.content
-                // Keep single line breaks
                 .split('\n')
                 .map(line => line.trim() 
-                  ? `<p style="margin-top: 0; margin-bottom: 0; padding-bottom: 4px;">${line}</p>` 
-                  : '')
+                  ? `<p style="margin-bottom: 1em;">${line}</p>` 
+                  : '<br />')
                 .join('')
             }}
           ></div>
