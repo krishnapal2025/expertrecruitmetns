@@ -104,7 +104,7 @@ const BlogPostContent = ({
               __html: blogPost.content
                 .split('\n')
                 .map(line => line.trim() ? line : '<br>')
-                .join('\n')
+                .join('')
             }}
           ></div>
           
