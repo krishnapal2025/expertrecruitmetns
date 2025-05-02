@@ -271,7 +271,11 @@ export default function EditBlogPage() {
                     placeholder="Write your blog post content here..."
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    className="min-h-[300px]"
+                    className="min-h-[300px] whitespace-pre-wrap"
+                    style={{ 
+                      whiteSpace: 'pre-wrap',
+                      lineHeight: '1.3' // Reduced line height for minimal spacing
+                    }}
                     required
                   />
                 </div>
