@@ -146,21 +146,15 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/post-job" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Post a Job
-                  </a>
-                </li>
-                <li>
                   <a href="/hire-talent" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Hire Talent
                   </a>
                 </li>
                 <li>
-                  <a href="/seo-insights" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/vacancy-form" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    SEO Insights
+                    Vacancy Form
                   </a>
                 </li>
               </ul>
@@ -182,15 +176,27 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/sectors" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/resources/create-resume" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Career Sectors
+                    Create Resume
                   </a>
                 </li>
                 <li>
-                  <a href="/blogs" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/resources/interview-prep" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Interview Prep
+                  </a>
+                </li>
+                <li>
+                  <a href="/resources/career-advice" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Career Advice
+                  </a>
+                </li>
+                <li>
+                  <a href="/resources/salary-negotiation" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
+                    Salary Negotiation
                   </a>
                 </li>
               </ul>
