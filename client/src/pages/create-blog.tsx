@@ -876,7 +876,7 @@ const CreateBlogPage = () => {
                               </div>
                               
                               <div className="flex flex-wrap gap-2 mt-2">
-                                <h4 className="text-sm font-medium w-full mb-1">Text Color</h4>
+                                <h4 className="text-sm font-medium w-full mb-1">Heading Color</h4>
                                 <Select 
                                   value={section.format?.color || 'slate-900'}
                                   onValueChange={(value) => updateSectionFormat(index, 'color', value)}
@@ -931,70 +931,6 @@ const CreateBlogPage = () => {
                                       <div className="flex items-center">
                                         <div className="w-4 h-4 rounded-full bg-amber-600 mr-2" />
                                         <span>Amber</span>
-                                      </div>
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                              
-                              <div className="flex flex-wrap gap-2 mt-2">
-                                <h4 className="text-sm font-medium w-full mb-1">Heading Color</h4>
-                                <Select
-                                  onValueChange={(value) => {
-                                    // Store the selected color with the section
-                                    const newSections = [...contentSections];
-                                    if (!newSections[index].format) {
-                                      newSections[index].format = {};
-                                    }
-                                    newSections[index].format.color = value;
-                                    setContentSections(newSections);
-                                  }}
-                                  defaultValue="slate-900"
-                                >
-                                  <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Color" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="slate-900">
-                                      <div className="flex items-center">
-                                        <div className="w-4 h-4 rounded-full bg-slate-900 mr-2" />
-                                        <span>Black</span>
-                                      </div>
-                                    </SelectItem>
-                                    <SelectItem value="primary">
-                                      <div className="flex items-center">
-                                        <div className="w-4 h-4 rounded-full bg-primary mr-2" />
-                                        <span>Primary</span>
-                                      </div>
-                                    </SelectItem>
-                                    <SelectItem value="blue-600">
-                                      <div className="flex items-center">
-                                        <div className="w-4 h-4 rounded-full bg-blue-600 mr-2" />
-                                        <span>Blue</span>
-                                      </div>
-                                    </SelectItem>
-                                    <SelectItem value="green-600">
-                                      <div className="flex items-center">
-                                        <div className="w-4 h-4 rounded-full bg-green-600 mr-2" />
-                                        <span>Green</span>
-                                      </div>
-                                    </SelectItem>
-                                    <SelectItem value="purple-600">
-                                      <div className="flex items-center">
-                                        <div className="w-4 h-4 rounded-full bg-purple-600 mr-2" />
-                                        <span>Purple</span>
-                                      </div>
-                                    </SelectItem>
-                                    <SelectItem value="amber-600">
-                                      <div className="flex items-center">
-                                        <div className="w-4 h-4 rounded-full bg-amber-600 mr-2" />
-                                        <span>Amber</span>
-                                      </div>
-                                    </SelectItem>
-                                    <SelectItem value="red-600">
-                                      <div className="flex items-center">
-                                        <div className="w-4 h-4 rounded-full bg-red-600 mr-2" />
-                                        <span>Red</span>
                                       </div>
                                     </SelectItem>
                                   </SelectContent>
