@@ -64,6 +64,7 @@ export default function SiteMap() {
         { name: "Admin Dashboard", url: "/admin-dashboard" },
         { name: "Admin Login", url: "/admin-login" },
         { name: "Admin Registration", url: "/admin-register" },
+        { name: "Admin Password Reset", url: "/admin/forgot-password" },
         { name: "Create Blog Post", url: "/create-blog" },
         { name: "Job Post Manager", url: "/post-manager" },
         { name: "Post New Job", url: "/post-job" },
@@ -86,8 +87,6 @@ export default function SiteMap() {
       links: [
         { name: "User Profile", url: "/profile" },
         { name: "Forgot Password", url: "/auth/forgot-password" },
-
-        { name: "Admin Password Reset", url: "/admin/forgot-password" },
       ],
     },
     {
