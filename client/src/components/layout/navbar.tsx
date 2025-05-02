@@ -80,6 +80,8 @@ export default function Navbar() {
         href: "#",
         isDropdown: true,
         dropdownItems: [
+          { name: "Hire Talent", href: "/hire-talent" },
+          { name: "Find Jobs", href: "/job-board" },
           { name: "Services", href: "/services" },
           { name: "Sectors", href: "/sectors" },
           { name: "Blogs", href: "/blogs" },
@@ -137,6 +139,8 @@ export default function Navbar() {
           href: "#",
           isDropdown: true,
           dropdownItems: [
+            { name: "Hire Talent", href: "/hire-talent" },
+            { name: "Find Jobs", href: "/job-board" },
             { name: "Services", href: "/services" },
             { name: "Sectors", href: "/sectors" },
             { name: "Blogs", href: "/blogs" },
