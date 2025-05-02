@@ -112,13 +112,12 @@ function Router() {
       <Route path="/admin/forgot-password" component={AdminForgotPasswordPage} />
       <Route path="/admin/reset-password" component={AdminResetPasswordPage} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
-      <ProtectedRoute path="/post-job" component={PostJobPage} />
-      <Route path="/post-manager" component={PostManagerPage} />
+      <AdminProtectedRoute path="/post-job" component={PostJobPage} />
+      <AdminProtectedRoute path="/post-manager" component={PostManagerPage} />
       <Route path="/resources/create-resume" component={CreateResumePage} />
       <Route path="/resources/interview-prep" component={InterviewPrepPage} />
       <Route path="/resources/career-advice" component={CareerAdvicePage} />
       <Route path="/resources/salary-negotiation" component={SalaryNegotiationPage} />
-      <ProtectedRoute path="/applications-manager" component={ApplicationsManagerPage} />
       <Route path="/edit-job/:id">
         {params => <ProtectedRoute path={`/edit-job/${params.id}`} component={() => <EditJobPage />} />}
       </Route>

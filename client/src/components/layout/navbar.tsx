@@ -142,6 +142,7 @@ export default function Navbar() {
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
         { name: "Post Manager", href: "/post-manager" },
+        { name: "Post Job", href: "/post-job" },
         { 
           name: "Solutions", 
           href: "#",
