@@ -22,7 +22,7 @@ import {
   BlogPost
 } from "@shared/schema";
 import { hashPassword } from "./auth";
-import { generateResetToken, sendPasswordResetEmail } from "./email-service";
+import { generateResetToken, sendPasswordResetEmail, sendVacancyAssignmentEmail } from "./email-service";
 import { seedJobs } from "./seed-jobs";
 import { generateResumePDF, resumeDataSchema, bufferToStream, ResumeData } from "./pdf-service";
 
@@ -1806,6 +1806,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating vacancy status:", error);
       res.status(500).json({ message: "Failed to update vacancy status" });
+    }
+  });
+  
+  // Assign vacancy to recruiter (admin only)
+  app.patch("/api/admin/vacancies/:id/assign", async (req, res) => {
+    try {
+      // Check if user is authenticated and is an admin
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = req.user;
+      const { id } = req.params;
+      const { recruiterEmail, recruiterName } = req.body;
+
+      // Validate required fields
+      if (!recruiterEmail || !recruiterName) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Recruiter email and name are required" 
+        });
+      }
+
+      // Validate email format
+      if (!recruiterEmail.includes('@')) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid email format" 
+        });
+      }
+
+      // Check userType directly
+      if (user.userType !== "admin") {
+        return res.status(403).json({ 
+          success: false, 
+          message: "Only administrators can assign vacancies" 
+        });
+      }
+
+      const vacancy = await storage.getVacancy(parseInt(id));
+      
+      if (!vacancy) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Vacancy not found" 
+        });
+      }
+
+      // Assign the vacancy to the recruiter
+      const updatedVacancy = await storage.assignVacancyToRecruiter(
+        parseInt(id), 
+        recruiterEmail, 
+        recruiterName
+      );
+      
+      if (!updatedVacancy) {
+        return res.status(500).json({ 
+          success: false, 
+          message: "Failed to assign vacancy" 
+        });
+      }
+
+      // Send notification email to the recruiter
+      const origin = `${req.protocol}://${req.get('host')}`;
+      const emailResult = await sendVacancyAssignmentEmail(
+        recruiterEmail,
+        recruiterName,
+        updatedVacancy,
+        origin
+      );
+
+      res.json({ 
+        success: true, 
+        vacancy: updatedVacancy,
+        emailStatus: emailResult
+      });
+    } catch (error) {
+      console.error("Error assigning vacancy to recruiter:", error);
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to assign vacancy to recruiter" 
+      });
     }
   });
 
