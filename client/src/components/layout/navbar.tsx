@@ -410,32 +410,7 @@ export default function Navbar() {
                           Profile
                         </div>
                         
-                        {currentUser.user.userType === "jobseeker" && (
-                          <>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/resources/create-resume", 100);
-                              }}
-                            >
-                              <Briefcase className="mr-2 h-4 w-4" />
-                              Create Resume
-                            </div>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/job-board", 100);
-                              }}
-                            >
-                              <Briefcase className="mr-2 h-4 w-4" />
-                              Find Jobs
-                            </div>
-                          </>
-                        )}
+                        {/* Job seeker mobile menu items removed as requested */}
                         
                         {/* Employer-specific menu items */}
                         {currentUser.user.userType === "employer" && (
