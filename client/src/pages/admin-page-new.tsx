@@ -965,8 +965,24 @@ function AdminDashboard() {
                               </TableCell>
                               <TableCell>{employer.id}</TableCell>
                               <TableCell>{formatDate(employer.createdAt)}</TableCell>
-                              <TableCell>{employer.lastActive ? formatDate(employer.lastActive) : "N/A"}</TableCell>
-                              <TableCell>{employer.location || "N/A"}</TableCell>
+                              <TableCell>
+                                {employer.lastActive ? (
+                                  formatDate(employer.lastActive)
+                                ) : employer.lastLogin ? (
+                                  formatDate(employer.lastLogin)
+                                ) : (
+                                  <span className="text-muted-foreground text-sm">Not available</span>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {employer.location ? (
+                                  <span className="font-medium">{employer.location}</span>
+                                ) : employer.city ? (
+                                  <span>{employer.city}{employer.country ? `, ${employer.country}` : ''}</span>
+                                ) : (
+                                  <span className="text-muted-foreground text-sm">Not specified</span>
+                                )}
+                              </TableCell>
                               <TableCell className="text-right">
                                 <Button 
                                   variant="ghost" 
