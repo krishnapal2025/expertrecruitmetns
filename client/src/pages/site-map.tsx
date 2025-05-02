@@ -6,6 +6,7 @@ import {
   ArrowRight, User, Building, Briefcase, Globe, ChevronRight, MapPin, 
   FileText, BookOpen, GraduationCap, Settings, Newspaper, Mail, ShieldCheck, Search
 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function SiteMap() {
   const fadeIn = {
