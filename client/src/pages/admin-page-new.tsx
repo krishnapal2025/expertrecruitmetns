@@ -574,11 +574,6 @@ function AdminDashboard() {
             Manage job postings, users, and content
           </p>
         </div>
-        
-        <Button onClick={() => navigate("/post-job")} size="lg" className="shrink-0">
-          <PlusCircle className="mr-2 h-5 w-5" />
-          Post Job Notification
-        </Button>
       </div>
       
       <Tabs defaultValue="dashboard" className="w-full">
