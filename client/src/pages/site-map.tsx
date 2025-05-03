@@ -70,9 +70,6 @@ export default function SiteMap() {
         { name: "Admin Login", url: "/admin-login" },
         { name: "Admin Registration", url: "/admin-register" },
         { name: "Admin Password Reset", url: "/admin/forgot-password" },
-        { name: "Create Blog Post", url: "/create-blog" },
-        { name: "Job Post Manager", url: "/post-manager" },
-        { name: "Post New Job", url: "/post-job" },
         { name: "Legacy Admin Panel", url: "/admin" },
       ],
     }] : []),
@@ -85,6 +82,16 @@ export default function SiteMap() {
         { name: "Industry Insights", url: "/blogs" },
       ],
     },
+    ...(isAdmin ? [{
+      title: "Blog Management | Content Publishing System",
+      icon: <FileText className="h-5 w-5 text-primary mr-2" />,
+      links: [
+        { name: "Create Blog Post", url: "/create-blog" },
+        { name: "Manage Blog Posts", url: "/admin-dashboard?tab=content" },
+        { name: "Post Manager", url: "/post-manager" },
+        { name: "Post New Job", url: "/post-job" },
+      ],
+    }] : []),
     {
       title: "User Account | Executive Search Services",
       icon: <Settings className="h-5 w-5 text-primary mr-2" />,
