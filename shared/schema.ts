@@ -283,10 +283,17 @@ export const blogPosts = pgTable("blog_posts", {
   readTime: text("read_time")
 });
 
-// Create insert schema
-export const insertBlogPostSchema = createInsertSchema(blogPosts).extend({
-  tags: z.array(z.string()).optional(),
-});
+// Create insert schema for blog posts
+export const insertBlogPostSchema = createInsertSchema(blogPosts)
+  .omit({ id: true, publishDate: true })
+  .extend({
+    // Handle tags as either string array or undefined
+    tags: z.union([z.array(z.string()), z.undefined()]),
+    // Make slug optional - we'll generate it if not provided
+    slug: z.string().optional(),
+    // Handle HTML content correctly
+    content: z.string().min(10, "Content must be at least 10 characters"),
+  });
 
 // Export types
 export type User = typeof users.$inferSelect;

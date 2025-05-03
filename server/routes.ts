@@ -2211,18 +2211,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     try {
-      // Validate blog post data with Zod schema
-      const postData = insertBlogPostSchema.parse(req.body);
+      console.log("Received blog post data:", req.body);
+      
+      // Process incoming data
+      let processedData = { ...req.body };
       
       // Generate slug if not provided
-      if (!postData.slug) {
-        postData.slug = postData.title
+      if (!processedData.slug) {
+        processedData.slug = processedData.title
           .toLowerCase()
           .replace(/[^\w\s-]/g, '') // Remove special chars
           .replace(/\s+/g, '-') // Replace spaces with hyphens
           .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
           .trim();
       }
+      
+      // Set default values for optional fields
+      processedData.readTime = processedData.readTime || "5 min read";
+      processedData.published = processedData.published === false ? false : true;
+      
+      // If excerpt is not provided, create one from content
+      if (!processedData.excerpt && processedData.content) {
+        // Strip HTML tags and limit to 150 chars
+        const plainText = processedData.content.replace(/<[^>]*>/g, '');
+        processedData.excerpt = plainText.substring(0, 150) + (plainText.length > 150 ? '...' : '');
+      }
+      
+      // Handle tags - ensure it's an array
+      if (typeof processedData.tags === 'string') {
+        processedData.tags = processedData.tags.split(',').map(tag => tag.trim());
+      }
+      
+      // Now validate with Zod schema
+      const postData = insertBlogPostSchema.parse(processedData);
+      
+      // Set author ID to current user
+      postData.authorId = req.user.id;
       
       // Get admin info for author reference
       const admin = await storage.getAdminByUserId(req.user.id);

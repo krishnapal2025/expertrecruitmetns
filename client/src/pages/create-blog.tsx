@@ -41,16 +41,20 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-// Blog post creation schema
+// Blog post creation schema for the form
+// Note: This schema matches the database schema in shared/schema.ts but with some form-specific modifications
 const blogPostSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(100, "Title must be less than 100 characters"),
   subtitle: z.string().max(150, "Subtitle must be less than 150 characters").optional(),
   slug: z.string().max(100, "Slug must be less than 100 characters").optional(),
-  content: z.string().min(100, "Content must be at least 100 characters"),
+  content: z.string().min(10, "Content must be at least 10 characters"),
   bannerImage: z.string().url("Please enter a valid image URL").optional(),
-  published: z.boolean().default(false),
+  published: z.boolean().default(true),
   category: z.string().min(1, "Please select a category"),
+  // Tags are entered as a comma-separated string in the form
   tags: z.string().optional(),
+  readTime: z.string().optional(),
+  excerpt: z.string().optional(),
   metaDescription: z.string().max(160, "Meta description must be less than 160 characters").optional(),
 });
 
@@ -186,16 +190,22 @@ const CreateBlogPage = () => {
 
   const createBlogMutation = useMutation({
     mutationFn: async (data: BlogFormValues) => {
-      // Get the content from ReactQuill editor
-      const editorContent = form.getValues('content');
+      // Convert tags from string to array for the API
+      const tagsArray = data.tags ? data.tags.split(',').map(tag => tag.trim()) : [];
       
-      // Update data with content and properly format tags
+      // Create API-compatible data structure
       const postData = {
-        ...data,
-        content: editorContent, // Use the HTML content directly
-        tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : [],
-        // Set default publish date if it's published
-        publishDate: data.published ? new Date().toISOString() : null,
+        title: data.title,
+        subtitle: data.subtitle,
+        content: data.content,
+        bannerImage: data.bannerImage,
+        category: data.category,
+        excerpt: data.excerpt,
+        readTime: data.readTime,
+        metaDescription: data.metaDescription,
+        slug: data.slug,
+        published: data.published,
+        tags: tagsArray, // Pass as array to the API
       };
 
       console.log("Submitting blog post:", postData);
@@ -203,6 +213,7 @@ const CreateBlogPage = () => {
       const response = await apiRequest("POST", "/api/blog-posts", postData);
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("API Error:", errorData);
         throw new Error(errorData.message || "Failed to create blog post");
       }
       return await response.json();
@@ -245,12 +256,16 @@ const CreateBlogPage = () => {
       return;
     }
     
-    // Convert tags string to array
+    // Generate slug if one doesn't exist
+    const slug = data.slug || data.title.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-');
+    
+    // Pass the form data directly - the mutation function will handle the tags conversion
+    // Don't convert tags to array here; it will be done in the mutation function
     const submissionData = {
       ...data,
-      tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : undefined,
-      // Generate a slug if one doesn't exist
-      slug: data.slug || data.title.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-')
+      slug,
+      readTime: data.readTime || "5 min read",
+      excerpt: data.excerpt || data.content.replace(/<[^>]*>/g, '').substring(0, 150) + "...",
     };
     
     console.log("Submitting data:", submissionData);
