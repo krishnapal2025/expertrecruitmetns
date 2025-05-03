@@ -20,129 +20,8 @@ import educationImage from "../assets/articles/education.jpg";
 import gigEconomyImage from "../assets/articles/gig-economy.jpg";
 import { useQuery } from "@tanstack/react-query";
 
-// Sample blog data
-const blogPosts = [
-  {
-    id: 1,
-    title: "Executive Search Firms Find Top Talent",
-    excerpt: "Explore how executive search firms help organizations find top leadership talent and what makes them essential partners in the hiring process.",
-    category: "Executive Recruitment",
-    author: "James Wilson",
-    date: "April 27, 2025",
-    readTime: "10 min read",
-    image: executiveSearchImage
-  },
-  {
-    id: 2,
-    title: "Top Headhunters in Dubai",
-    excerpt: "How we helped a tech firm hire the perfect C-Suite candidate through our specialized executive search process and industry network.",
-    category: "Executive Recruitment",
-    author: "Sarah Ahmed",
-    date: "April 25, 2025",
-    readTime: "7 min read",
-    image: headhuntersDubaiImage
-  },
-  {
-    id: 3,
-    title: "Recruitment Agencies in the UAE",
-    excerpt: "Top Recruitment Agency in UAE: Premier Headhunting Services in Dubai",
-    category: "Executive Recruitment",
-    author: "David Chen",
-    date: "April 27, 2025",
-    readTime: "8 min read",
-    image: recruitmentAgenciesImage
-  },
-  {
-    id: 4,
-    title: "Best Recruitment Agency in Dubai",
-    excerpt: "Best Recruitment Agency in Dubai – Find Skilled Talent Today through effective partnership with a top recruitment agency.",
-    category: "Executive Recruitment",
-    author: "Sarah Khan",
-    date: "April 27, 2025",
-    readTime: "10 min read",
-    image: bestRecruitmentAgencyImage
-  },
-  {
-    id: 5,
-    title: "Partner with HeadHunters Dubai",
-    excerpt: "Why Partnering with a HeadHunter in Dubai Can Skyrocket Your Talent Acquisition",
-    category: "Executive Recruitment",
-    author: "David Chen",
-    date: "April 27, 2025",
-    readTime: "8 min read",
-    image: partnerHeadhuntersDubaiImage
-  },
-  {
-    id: 6,
-    title: "Recruitment Agencies for MNCs",
-    excerpt: "How Recruitment Agencies Simplify Hiring for Multinational Companies",
-    category: "Executive Recruitment",
-    author: "Michael Roberts",
-    date: "April 27, 2025",
-    readTime: "9 min read",
-    image: recruitmentAgenciesForMNCs
-  },
-  {
-    id: 7,
-    title: "Tech Growth Outlook",
-    excerpt: "Google, Microsoft, and NVIDIA lead unprecedented demand for AI engineers and data scientists with 35% growth projected for 2025.",
-    category: "Technology",
-    author: "Dr. Sara Menendez",
-    date: "April 20, 2025",
-    readTime: "8 min read",
-    image: techGrowthImage
-  },
-  {
-    id: 8,
-    title: "Remote Work Trends",
-    excerpt: "Amazon, GitLab, and Spotify lead the remote work revolution, now offering 76% of positions as permanent remote across departments.",
-    category: "Workplace Trends",
-    author: "Alex Robertson",
-    date: "April 15, 2025",
-    readTime: "9 min read",
-    image: remoteWorkImage
-  },
-  {
-    id: 9,
-    title: "Healthcare Expansion",
-    excerpt: "Mayo Clinic, Kaiser Permanente, and Cleveland Clinic projected to add 1.5 million healthcare jobs over the next five years.",
-    category: "Healthcare",
-    author: "Dr. Priya Sharma",
-    date: "April 18, 2025",
-    readTime: "10 min read",
-    image: healthcareImage
-  },
-  {
-    id: 10,
-    title: "Sustainability Roles",
-    excerpt: "Tesla, Patagonia & Unilever lead Fortune 500 growth with ESG positions increasing by 45% in the past year.",
-    category: "Sustainability",
-    author: "Michael Cohen",
-    date: "April 17, 2025",
-    readTime: "9 min read",
-    image: sustainabilityImage
-  },
-  {
-    id: 11,
-    title: "Education Evolution",
-    excerpt: "Coursera, Udemy & Khan Academy EdTech specialists among fastest-growing education roles as digital learning transforms the sector.",
-    category: "Education",
-    author: "Dr. Emily Washington",
-    date: "April 15, 2025",
-    readTime: "8 min read",
-    image: educationImage
-  },
-  {
-    id: 12,
-    title: "Gig Economy Expansion",
-    excerpt: "Upwork, Fiverr & Toptal freelance marketplace expected to represent 50% of workforce by 2027, transforming traditional employment models.",
-    category: "Employment Trends",
-    author: "Daniel Fernandez",
-    date: "April 19, 2025",
-    readTime: "9 min read",
-    image: gigEconomyImage
-  }
-];
+// Import a placeholder image for when blog images are not available
+import placeholderImage from "../assets/pexels-photo-3184311.jpg";
 
 const categories = [
   "All Categories",
@@ -173,14 +52,20 @@ export default function BlogsPage() {
   });
 
   // Filter blogs based on search term and category
-  const filteredBlogs = blogPosts.filter(blog => {
-    const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredBlogs = apiBlogs ? apiBlogs.filter((blog: any) => {
+    // For search, look at title, subtitle/excerpt, and content
+    const matchesSearch = 
+      blog.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      (blog.subtitle && blog.subtitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (blog.excerpt && blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (blog.content && blog.content.toLowerCase().includes(searchTerm.toLowerCase()));
     
+    // For category, either match the selected category or show all if "All Categories" is selected
     const matchesCategory = selectedCategory === "All Categories" || blog.category === selectedCategory;
     
-    return matchesSearch && matchesCategory;
-  });
+    // Only include published blogs
+    return blog.published && matchesSearch && matchesCategory;
+  }) : [];
 
   return (
     <>
@@ -269,49 +154,7 @@ export default function BlogsPage() {
           </div>
         </div>
 
-        {/* Featured Articles */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-6 flex items-center">
-            <TrendingUp className="mr-2 h-6 w-6 text-primary" />
-            Featured Articles
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card className="md:col-span-2 overflow-hidden">
-              <div className="flex flex-col md:flex-row">
-                <div className="md:w-1/2 h-60 md:h-auto">
-                  <img
-                    src={executiveSearchImage}
-                    alt="Executive Search Firms article"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="md:w-1/2 p-6">
-                  <CardHeader className="p-0 pb-4">
-                    <div className="text-sm font-medium text-primary mb-2">Executive Recruitment</div>
-                    <CardTitle className="text-2xl">Executive Search Firms Find Top Talent</CardTitle>
-                    <CardDescription className="text-base mt-2">
-                      Explore how executive search firms help organizations find top leadership talent and what makes them essential partners in the hiring process.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-0 py-4">
-                    <div className="flex items-center text-sm text-gray-500 mb-4">
-                      <User className="mr-1 h-4 w-4" />
-                      <span className="mr-4">James Wilson</span>
-                      <Clock className="mr-1 h-4 w-4" />
-                      <span>April 27, 2025</span>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="p-0">
-                    <Button className="mt-2" onClick={() => setLocation("/article/executive-search-firms-find-top-talent")}>
-                      Read Article
-                      <ChevronRight className="ml-1 h-4 w-4" />
-                    </Button>
-                  </CardFooter>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
+
 
         {/* Admin Created Blog Posts */}
         {apiBlogs && apiBlogs.length > 0 && apiBlogs.some((post: any) => post.published) && (
@@ -409,35 +252,45 @@ export default function BlogsPage() {
           </div>
         )}
 
-        {/* Recent Articles */}
+        {/* All Articles */}
         <div className="mb-16">
           <h2 className="text-2xl font-bold mb-6 flex items-center">
             <BookOpen className="mr-2 h-6 w-6 text-primary" />
-            Recent Articles
+            All Articles
           </h2>
           
-          {filteredBlogs.length > 0 ? (
+          {!isLoadingBlogs && filteredBlogs.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredBlogs.map((post) => (
+              {filteredBlogs.map((post: any) => (
                 <Card key={post.id} className="overflow-hidden flex flex-col h-full">
                   <div className="h-48 overflow-hidden">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
-                    />
+                    {post.bannerImage ? (
+                      <img
+                        src={post.bannerImage}
+                        alt={post.title}
+                        className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <BookOpen className="h-12 w-12 text-muted-foreground/50" />
+                      </div>
+                    )}
                   </div>
                   <CardHeader>
-                    <div className="text-sm font-medium text-primary mb-2">{post.category}</div>
+                    <div className="text-sm font-medium text-primary mb-2">
+                      {post.category || "Career Insights"}
+                    </div>
                     <CardTitle>{post.title}</CardTitle>
-                    <CardDescription className="text-base mt-2">{post.excerpt}</CardDescription>
+                    <CardDescription className="text-base mt-2">
+                      {post.excerpt || post.subtitle || (post.content && post.content.length > 120 ? post.content.substring(0, 120) + "..." : post.content)}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
                     <div className="flex items-center text-sm text-gray-500">
                       <User className="mr-1 h-4 w-4" />
-                      <span className="mr-4">{post.author}</span>
+                      <span className="mr-4">Expert Recruitments</span>
                       <Clock className="mr-1 h-4 w-4" />
-                      <span>{post.readTime}</span>
+                      <span>{post.readTime || "5 min read"}</span>
                     </div>
                   </CardContent>
                   <CardFooter>
@@ -445,21 +298,7 @@ export default function BlogsPage() {
                       variant="outline" 
                       className="w-full"
                       onClick={() => {
-                        // For hardcoded blog posts, find the corresponding slug in the database
-                        const slugMap: { [key: number]: string } = {
-                          1: "executive-search-firms-find-top-talent",
-                          2: "top-headhunters-dubai",
-                          3: "recruitment-agencies-uae",
-                          4: "best-recruitment-agency-dubai",
-                          5: "partner-headhunters-dubai",
-                          6: "recruitment-agencies-mnc",
-                          7: "tech-growth-outlook",
-                          8: "remote-work-trends",
-                          9: "healthcare-expansion",
-                          10: "sustainability-roles"
-                        };
-                        
-                        const slug = post.slug || slugMap[post.id] || post.id;
+                        const slug = post.slug || `blog-${post.id}`;
                         setLocation(`/article/${slug}`);
                       }}
                     >
@@ -469,7 +308,7 @@ export default function BlogsPage() {
                 </Card>
               ))}
             </div>
-          ) : (
+          ) : !isLoadingBlogs ? (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
               <BookOpen className="h-12 w-12 mx-auto text-gray-400 mb-4" />
               <h3 className="text-xl font-semibold mb-2">No articles found</h3>
@@ -483,7 +322,7 @@ export default function BlogsPage() {
                 Clear Filters
               </Button>
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Categories */}
