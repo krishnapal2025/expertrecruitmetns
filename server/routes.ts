@@ -2239,6 +2239,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to update staffing inquiry status" });
     }
   });
+  
+  // Reply to a staffing inquiry (admin only)
+  app.post("/api/staffing-inquiries/:id/reply", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { subject, message } = req.body;
+      const user = req.user as Express.User;
+      
+      // Authorization check
+      if (!user || user.userType !== "admin") {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      // Input validation
+      if (!message || message.trim() === "") {
+        return res.status(400).json({ message: "Message is required" });
+      }
+      
+      // Get the inquiry
+      const inquiry = await storage.getStaffingInquiry(parseInt(id));
+      if (!inquiry) {
+        return res.status(404).json({ message: "Staffing inquiry not found" });
+      }
+      
+      // Send email reply
+      const emailResult = await sendInquiryReply(
+        inquiry.email,
+        inquiry.name,
+        subject || `Re: Your inquiry to Expert Recruitments`,
+        message,
+        user.name || user.email
+      );
+      
+      if (!emailResult.success) {
+        console.warn("Could not send email, but will continue with notification", emailResult);
+      }
+      
+      // Update inquiry status to at least "contacted" if it's currently "new"
+      if (inquiry.status === "new") {
+        await storage.updateStaffingInquiryStatus(parseInt(id), "contacted");
+      }
+      
+      // Create a notification for the user if they have an account
+      try {
+        // Find if this inquiry is associated with a registered user
+        let userToNotify;
+        
+        if (inquiry.email) {
+          userToNotify = await storage.getUserByEmail(inquiry.email);
+        }
+        
+        if (userToNotify) {
+          // Create a notification for the user
+          const notificationType = inquiry.inquiryType === "business" ? "business_inquiry_reply" : "general_inquiry_reply";
+          
+          await storage.createNotification({
+            userId: userToNotify.id,
+            message: `You have received a reply to your ${inquiry.inquiryType === "business" ? "business" : "general"} inquiry`,
+            type: notificationType,
+            entityId: parseInt(id)
+          });
+          
+          console.log(`Created notification for user ${userToNotify.id} about inquiry reply`);
+        } else {
+          console.log(`No registered user found with email ${inquiry.email} to notify`);
+        }
+      } catch (notificationError) {
+        console.error("Failed to create notification, but email was sent:", notificationError);
+      }
+      
+      res.status(200).json({ 
+        success: true, 
+        message: "Reply sent successfully",
+        emailPreviewUrl: emailResult.previewUrl
+      });
+    } catch (error) {
+      console.error("Error replying to inquiry:", error);
+      res.status(500).json({ message: "Failed to send reply", error: String(error) });
+    }
+  });
 
   // Blog Post API Endpoints
   
