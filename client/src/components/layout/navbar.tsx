@@ -406,6 +406,19 @@ export default function Navbar() {
                             {currentUser.user.email}
                           </div>
                         </div>
+                        
+                        {/* Logout button placed at the very top for maximum visibility */}
+                        <div className="px-4 py-2 mb-3">
+                          <button
+                            onClick={handleLogout}
+                            className="w-full py-3 rounded-md bg-red-100 hover:bg-red-200 flex items-center justify-center font-semibold text-red-600 shadow-sm border-2 border-red-300"
+                            style={{ fontSize: '1.05rem' }}
+                          >
+                            <LogOut className="mr-2 h-5 w-5" />
+                            Log out
+                          </button>
+                        </div>
+                        
                         <div 
                           className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
                           onClick={() => {
@@ -416,17 +429,6 @@ export default function Navbar() {
                         >
                           <User className="mr-2 h-4 w-4" />
                           Profile
-                        </div>
-                        
-                        {/* Logout button placed higher in the menu for better visibility */}
-                        <div className="px-4 py-2 mt-2 mb-3">
-                          <button
-                            onClick={handleLogout}
-                            className="w-full py-3 rounded-md bg-red-50 hover:bg-red-100 flex items-center justify-center font-medium text-red-600 shadow-sm border border-red-200"
-                          >
-                            <LogOut className="mr-2 h-5 w-5" />
-                            Log out
-                          </button>
                         </div>
                         
                         {/* Job seeker mobile menu items removed as requested */}
