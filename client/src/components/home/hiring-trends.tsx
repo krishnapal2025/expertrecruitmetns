@@ -9,7 +9,7 @@ const trendingIndustries = [
   {
     id: 1,
     title: "Tech Growth Outlook",
-    description: "Google & Microsoft AI engineers and NVIDIA data scientists see 35% higher demand in 2025",
+    description: "Google & Microsoft AI engineers and NVIDIA data scientists see 35% higher demand.",
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&h=450&fit=crop",
     icon: <Code className="h-5 w-5" />,
     link: "/article/7"
@@ -49,7 +49,7 @@ const trendingIndustries = [
   {
     id: 6,
     title: "Gig Economy Expansion",
-    description: "Upwork, Fiverr & Toptal freelance marketplace expected to represent 50% of workforce by 2027",
+    description: "Upwork, Fiverr & Toptal freelance marketplace expected to represent 50% of workforce.",
     image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=800&h=450&fit=crop",
     icon: <Briefcase className="h-5 w-5" />,
     link: "/article/12"
@@ -331,16 +331,7 @@ export default function HiringTrends() {
                       </div>
                     </div>
                     
-                    <Link href={trend.link} className="group/link inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary/90 px-4 py-2 rounded-full transition-colors duration-300">
-                      <span>View Trends</span>
-                      <motion.span 
-                        className="ml-2"
-                        initial={{ x: 0 }}
-                        whileHover={{ x: 3 }}
-                      >
-                        <ArrowUpRight className="h-4 w-4" />
-                      </motion.span>
-                    </Link>
+                    
                   </div>
                 </div>
               </motion.div>

@@ -37,7 +37,7 @@ export default function AnimatedTestimonials() {
     {
       id: 1,
       name: "Vincy John",
-      role : "Media Fusion",
+      role : "Client",
       content: "Experts Recruitment Services is an excellent agency for finding the right candidates for the job description, with a strong follow-up process to ensure seamless hiring",
       rating: 5,
       userId: null
@@ -52,6 +52,22 @@ export default function AnimatedTestimonials() {
     },
     {
       id: 3,
+      name: "Akhila Sista",
+      role: "Client",
+      content: "Expert Recruitment is one of the best recruiting agency. They were incredibly supportive throughout my job search, helping me with everything from scheduling interviews to ultimately landing into  the perfect job. I highly recommend Expert Recruitment to anyone new to Dubai and looking for work.  They'll be a great help in your job hunt!",
+      rating: 5,
+      userId: null
+    },
+    {
+      id: 4,
+      name: "Akshata",
+      role: "Client",
+      content: "They are one of the best recruitment agencies to work with as a candidate looking for work opportunities in Dubai. Venkat was my POC, and he was so helpful and supportive not just through my hiring process but also beyond that on a personal level as a friend, especially for a woman working for the first time in UAE.Highly recommended!",
+      rating: 5,
+      userId: null
+    },
+    {
+      id: 5,
       name: "Ajay Singh",
       role: "Client",
       content: "Probably the best recruitment company in Dubai. Super friendly staff! Always there to support us and very concern. They helped us every step of the way.",
