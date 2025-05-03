@@ -22,7 +22,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, User, LogOut, ChevronDown, Briefcase, ShieldCheck, Building2, FileText } from "lucide-react";
+import { Menu, User, LogOut, ChevronDown, Briefcase, ShieldCheck, Building2, FileText, Mail } from "lucide-react";
 import expertLogo from "../../assets/er-logo-icon.png";
 import NotificationsPopover from "@/components/common/notifications";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
