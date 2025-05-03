@@ -98,6 +98,7 @@ function Router() {
       <Route path="/employer-register" component={EmployerRegisterPage} />
       <Route path="/hire-talent" component={HireTalentPage} />
       <Route path="/vacancy-form" component={VacancyFormPage} />
+      {/* <Route path="/employer-inquiry" component={EmployerInquiryPage} /> */}
       <Route path="/admin" component={AdminPage} />
       <AdminProtectedRoute path="/admin-dashboard" component={AdminDashboardPage} />
       <AdminProtectedRoute path="/create-blog" component={CreateBlogPage} />
