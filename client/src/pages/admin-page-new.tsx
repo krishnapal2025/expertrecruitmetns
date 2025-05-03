@@ -546,6 +546,51 @@ function AdminDashboard() {
         </DialogContent>
       </Dialog>
       
+      {/* Delete Vacancy Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this vacancy? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedVacancy && (
+            <div className="py-4">
+              <div className="bg-muted p-4 rounded-md flex items-start space-x-4">
+                <AlertCircle className="h-5 w-5 text-destructive mt-0.5" />
+                <div>
+                  <h4 className="font-medium">Vacancy details:</h4>
+                  <p className="text-sm mt-1"><span className="font-medium">Company:</span> {selectedVacancy.companyName}</p>
+                  <p className="text-sm"><span className="font-medium">Position:</span> {selectedVacancy.positionName || selectedVacancy.jobTitle}</p>
+                  <p className="text-sm"><span className="font-medium">Status:</span> {selectedVacancy.status || "pending"}</p>
+                  <p className="text-sm"><span className="font-medium">Submitted:</span> {formatDate(selectedVacancy.submittedAt || selectedVacancy.createdAt)}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive"
+              onClick={() => deleteVacancyMutation.mutate(selectedVacancy.id)} 
+              disabled={deleteVacancyMutation.isPending}
+            >
+              {deleteVacancyMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                <>Delete Vacancy</>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
@@ -1125,6 +1170,8 @@ function AdminDashboard() {
                                     variant="ghost" 
                                     size="sm" 
                                     className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                    onClick={() => handleDeleteVacancy(vacancy)}
+                                    title="Delete Vacancy Form"
                                   >
                                     <Trash2 className="h-4 w-4" />
                                   </Button>
