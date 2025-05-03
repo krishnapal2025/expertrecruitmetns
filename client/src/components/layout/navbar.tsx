@@ -418,6 +418,17 @@ export default function Navbar() {
                           Profile
                         </div>
                         
+                        {/* Logout button placed higher in the menu for better visibility */}
+                        <div className="px-4 py-2 mt-2 mb-3">
+                          <button
+                            onClick={handleLogout}
+                            className="w-full py-3 rounded-md bg-red-50 hover:bg-red-100 flex items-center justify-center font-medium text-red-600 shadow-sm border border-red-200"
+                          >
+                            <LogOut className="mr-2 h-5 w-5" />
+                            Log out
+                          </button>
+                        </div>
+                        
                         {/* Job seeker mobile menu items removed as requested */}
                         
                         {/* Employer-specific menu items removed as requested */}
@@ -472,16 +483,7 @@ export default function Navbar() {
                           </>
                         )}
                         
-                        <div className="mt-8 px-4 mb-4">
-                          <div className="border-t border-gray-200 pt-6 mb-4"></div>
-                          <button
-                            onClick={handleLogout}
-                            className="w-full text-left py-4 rounded-md bg-red-50 hover:bg-red-100 flex items-center justify-center font-medium text-red-600 shadow-sm"
-                          >
-                            <LogOut className="mr-2 h-5 w-5" />
-                            Log out
-                          </button>
-                        </div>
+                        {/* Original logout button removed - now higher in the mobile menu */}
                       </>
                     ) : (
                       <>
