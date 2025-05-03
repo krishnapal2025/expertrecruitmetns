@@ -22,7 +22,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, User, LogOut, ChevronDown, Briefcase, ShieldCheck, Building2, FileText, Mail } from "lucide-react";
+import { Menu, User, LogOut, ChevronDown, Briefcase, ShieldCheck, Building2, FileText } from "lucide-react";
 import expertLogo from "../../assets/er-logo-icon.png";
 import NotificationsPopover from "@/components/common/notifications";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -433,34 +433,7 @@ export default function Navbar() {
                         
                         {/* Job seeker mobile menu items removed as requested */}
                         
-                        {/* Employer-specific menu items */}
-                        {currentUser.user.userType === "employer" && (
-                          <>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/vacancy-form", 100);
-                              }}
-                            >
-                              <Briefcase className="mr-2 h-4 w-4" />
-                              Vacancy Form
-                            </div>
-                            
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/contact-us?type=inquiry", 100);
-                              }}
-                            >
-                              <Mail className="mr-2 h-4 w-4" />
-                              Inquiry Form
-                            </div>
-                          </>
-                        )}
+                        {/* Employer-specific menu items removed as requested */}
                         
                         {currentUser.user.userType === "admin" && (
                           <>
