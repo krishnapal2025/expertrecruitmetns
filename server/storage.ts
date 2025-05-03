@@ -128,6 +128,14 @@ export interface IStorage {
   updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
   deleteBlogPost(id: number): Promise<boolean>;
 
+  // Notification methods
+  getNotifications(userId?: number, limit?: number): Promise<Notification[]>;
+  getNotification(id: number): Promise<Notification | undefined>;
+  createNotification(notification: InsertNotification): Promise<Notification>;
+  markNotificationAsRead(id: number): Promise<Notification | undefined>;
+  markAllNotificationsAsRead(userId: number): Promise<boolean>;
+  getUnreadNotificationCount(userId: number): Promise<number>;
+  
   // Session store
   sessionStore: session.Store;
 }
@@ -929,6 +937,65 @@ export class DatabaseStorage implements IStorage {
       return false;
     }
   }
+  
+  // Notification methods
+  async getNotifications(userId?: number, limit: number = 50): Promise<Notification[]> {
+    let query = db.select().from(notifications).orderBy(desc(notifications.createdAt));
+    
+    if (userId) {
+      query = query.where(eq(notifications.userId, userId));
+    }
+    
+    if (limit > 0) {
+      query = query.limit(limit);
+    }
+    
+    return await query;
+  }
+  
+  async getNotification(id: number): Promise<Notification | undefined> {
+    const [notification] = await db.select().from(notifications).where(eq(notifications.id, id));
+    return notification;
+  }
+  
+  async createNotification(insertNotification: InsertNotification): Promise<Notification> {
+    const [notification] = await db.insert(notifications).values(insertNotification).returning();
+    return notification;
+  }
+  
+  async markNotificationAsRead(id: number): Promise<Notification | undefined> {
+    const [notification] = await db
+      .update(notifications)
+      .set({ read: true })
+      .where(eq(notifications.id, id))
+      .returning();
+    return notification;
+  }
+  
+  async markAllNotificationsAsRead(userId: number): Promise<boolean> {
+    try {
+      await db
+        .update(notifications)
+        .set({ read: true })
+        .where(eq(notifications.userId, userId));
+      return true;
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error);
+      return false;
+    }
+  }
+  
+  async getUnreadNotificationCount(userId: number): Promise<number> {
+    const result = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(notifications)
+      .where(and(
+        eq(notifications.userId, userId),
+        eq(notifications.read, false)
+      ));
+    
+    return result[0]?.count || 0;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -943,6 +1010,7 @@ export class MemStorage implements IStorage {
   private vacancies: Map<number, Vacancy>;
   private staffingInquiries: Map<number, StaffingInquiry>;
   private blogPosts: Map<number, BlogPost>;
+  private notifications: Map<number, Notification>;
 
   sessionStore: session.Store;
 
@@ -957,6 +1025,7 @@ export class MemStorage implements IStorage {
   private vacancyIdCounter: number;
   private staffingInquiryIdCounter: number;
   private blogPostIdCounter: number;
+  private notificationIdCounter: number;
 
   constructor() {
     this.users = new Map();
@@ -970,6 +1039,7 @@ export class MemStorage implements IStorage {
     this.vacancies = new Map();
     this.staffingInquiries = new Map();
     this.blogPosts = new Map();
+    this.notifications = new Map();
 
     this.userIdCounter = 1;
     this.jobSeekerIdCounter = 1;
@@ -981,6 +1051,7 @@ export class MemStorage implements IStorage {
     this.vacancyIdCounter = 1;
     this.staffingInquiryIdCounter = 1;
     this.blogPostIdCounter = 1;
+    this.notificationIdCounter = 1;
 
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // prune expired entries every 24h
@@ -1679,6 +1750,85 @@ export class MemStorage implements IStorage {
 
     this.staffingInquiries.set(id, updatedInquiry);
     return updatedInquiry;
+  }
+  
+  // Notification methods
+  async getNotifications(userId?: number, limit: number = 50): Promise<Notification[]> {
+    let notifications = Array.from(this.notifications.values());
+    
+    // Filter by userId if provided
+    if (userId !== undefined) {
+      notifications = notifications.filter(n => n.userId === userId);
+    }
+    
+    // Sort by createdAt in descending order (newest first)
+    notifications.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    
+    // Apply limit if provided
+    if (limit > 0 && notifications.length > limit) {
+      notifications = notifications.slice(0, limit);
+    }
+    
+    return notifications;
+  }
+  
+  async getNotification(id: number): Promise<Notification | undefined> {
+    return this.notifications.get(id);
+  }
+  
+  async createNotification(insertNotification: InsertNotification): Promise<Notification> {
+    const id = this.notificationIdCounter++;
+    const now = new Date();
+    
+    const notification: Notification = {
+      ...insertNotification,
+      id,
+      createdAt: now,
+      read: false
+    };
+    
+    this.notifications.set(id, notification);
+    return notification;
+  }
+  
+  async markNotificationAsRead(id: number): Promise<Notification | undefined> {
+    const notification = this.notifications.get(id);
+    if (!notification) {
+      return undefined;
+    }
+    
+    const updatedNotification: Notification = {
+      ...notification,
+      read: true
+    };
+    
+    this.notifications.set(id, updatedNotification);
+    return updatedNotification;
+  }
+  
+  async markAllNotificationsAsRead(userId: number): Promise<boolean> {
+    try {
+      const userNotifications = Array.from(this.notifications.values())
+        .filter(n => n.userId === userId);
+        
+      userNotifications.forEach(notification => {
+        this.notifications.set(notification.id, {
+          ...notification,
+          read: true
+        });
+      });
+      
+      return true;
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error);
+      return false;
+    }
+  }
+  
+  async getUnreadNotificationCount(userId: number): Promise<number> {
+    return Array.from(this.notifications.values())
+      .filter(n => n.userId === userId && !n.read)
+      .length;
   }
 }
 
