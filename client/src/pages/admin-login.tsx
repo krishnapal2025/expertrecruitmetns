@@ -86,7 +86,7 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <div className="flex min-h-screen items-center justify-center p-4 sm:p-8">
+      <div className="flex items-start justify-center pt-24 px-4 sm:px-8">
         <div className="w-full max-w-5xl flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-xl">
           {/* Left Side - Form */}
           <div className="w-full md:w-2/5 bg-white p-6 sm:p-10">
@@ -181,18 +181,6 @@ export default function AdminLoginPage() {
                 </Button>
               </form>
             </Form>
-
-            <div className="mt-8">
-              <Separator className="mb-4" />
-              <div className="text-center">
-                <p className="text-gray-600 text-sm">
-                  Need an invitation code?{" "}
-                  <Link href="/contact-us" className="text-primary hover:text-primary/80 font-medium">
-                    Contact Us
-                  </Link>
-                </p>
-              </div>
-            </div>
           </div>
 
           {/* Right Side - Hero Content */}

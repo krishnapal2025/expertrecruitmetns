@@ -154,7 +154,7 @@ export default function AdminForgotPassword() {
             </CardContent>
             <CardFooter className="flex justify-center">
               <Button variant="link" asChild>
-                <Link to="/admin/login">Back to Login</Link>
+                <Link to="/admin-login">Back to Login</Link>
               </Button>
             </CardFooter>
           </Card>
