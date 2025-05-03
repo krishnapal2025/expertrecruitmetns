@@ -89,42 +89,42 @@ export default function AdminLoginPage() {
       <div className="flex items-start justify-center pt-24 px-4 sm:px-8">
         <div className="w-full max-w-5xl flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-xl">
           {/* Left Side - Form */}
-          <div className="w-full md:w-2/5 bg-white p-6 sm:p-10">
-            <div className="flex justify-center mb-6">
+          <div className="w-full md:w-2/5 bg-white p-5 sm:p-7">
+            <div className="flex justify-center mb-4">
               <div className="flex items-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 p-2 mr-3">
-                  <ShieldCheck className="h-7 w-7 text-primary" />
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 p-2 mr-3">
+                  <ShieldCheck className="h-6 w-6 text-primary" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-bold text-xl uppercase text-gray-800" style={{ letterSpacing: '0.15em' }}>Admin</span>
+                  <span className="font-bold text-lg uppercase text-gray-800" style={{ letterSpacing: '0.15em' }}>Admin</span>
                   <span className="text-xs text-gray-500">Secure Portal</span>
                 </div>
               </div>
             </div>
             
-            <div className="mb-8 text-center">
-              <h1 className="text-2xl font-bold text-gray-900">Admin Login</h1>
-              <p className="text-sm text-gray-600 mt-1">
+            <div className="mb-5 text-center">
+              <h1 className="text-xl font-bold text-gray-900">Admin Login</h1>
+              <p className="text-xs text-gray-600 mt-1">
                 Access restricted to authorized personnel only
               </p>
             </div>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-700">Email</FormLabel>
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-gray-700 text-sm">Email</FormLabel>
                       <FormControl>
                         <Input 
                           placeholder="your@email.com" 
-                          className="border-gray-300 focus:border-primary focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                          className="border-gray-300 focus:border-primary focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-9"
                           {...field} 
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
@@ -133,14 +133,14 @@ export default function AdminLoginPage() {
                   control={form.control}
                   name="password"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-700">Password</FormLabel>
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-gray-700 text-sm">Password</FormLabel>
                       <div className="relative">
                         <FormControl>
                           <Input 
                             type={showPassword ? "text" : "password"} 
                             placeholder="Enter your password" 
-                            className="border-gray-300 focus:border-primary focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 pr-10"
+                            className="border-gray-300 focus:border-primary focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 pr-10 h-9"
                             {...field} 
                           />
                         </FormControl>
@@ -156,20 +156,20 @@ export default function AdminLoginPage() {
                           )}
                         </button>
                       </div>
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
 
-                <div className="flex justify-end mb-2">
-                  <Link href="/admin/forgot-password" className="text-sm text-primary hover:underline">
+                <div className="flex justify-end">
+                  <Link href="/admin/forgot-password" className="text-xs text-primary hover:underline">
                     Forgot password?
                   </Link>
                 </div>
 
                 <Button 
                   type="submit" 
-                  className="w-full font-medium bg-[#5372f1] hover:bg-[#4060e0] text-white py-6 transition-colors"
+                  className="w-full font-medium bg-[#5372f1] hover:bg-[#4060e0] text-white py-2 transition-colors h-10"
                   disabled={loginMutation.isPending}
                 >
                   {loginMutation.isPending ? (
@@ -184,10 +184,10 @@ export default function AdminLoginPage() {
           </div>
 
           {/* Right Side - Hero Content */}
-          <div className="hidden md:block md:w-3/5 bg-[#5372f1] text-white p-10 flex flex-col justify-between">
-            <div className="mb-auto">
-              <div className="flex items-center mb-8">
-                <div className="flex items-center justify-center h-12 w-12 rounded-full bg-white p-2 border-2 border-white shadow-md mr-3">
+          <div className="hidden md:block md:w-3/5 bg-[#5372f1] text-white py-6 px-8 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center mb-4">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-white p-2 border-2 border-white shadow-md mr-3">
                   <img 
                     src={expertLogo} 
                     alt="Expert Recruitments LLC" 
@@ -195,60 +195,60 @@ export default function AdminLoginPage() {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-white font-bold text-xl uppercase" style={{ letterSpacing: '0.15em' }}>Expert</span>
+                  <span className="text-white font-bold text-lg uppercase" style={{ letterSpacing: '0.15em' }}>Expert</span>
                   <span className="text-white text-xs">Recruitments LLC</span>
                 </div>
               </div>
 
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 Admin Dashboard
               </h2>
               
-              <p className="text-white/90 text-lg mb-8">
+              <p className="text-white/90 text-base mb-4">
                 Manage your recruitment platform, monitor applications, and oversee
                 all aspects of the Expert Recruitments ecosystem.
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Card className="bg-white/10 border-0 backdrop-blur-sm text-white">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">User Management</CardTitle>
+                  <CardHeader className="py-2 px-4">
+                    <CardTitle className="text-base">User Management</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-white/80">
+                  <CardContent className="py-1 px-4 pb-3">
+                    <CardDescription className="text-white/80 text-sm">
                       Manage job seekers, employers, and administrative accounts.
                     </CardDescription>
                   </CardContent>
                 </Card>
                 
                 <Card className="bg-white/10 border-0 backdrop-blur-sm text-white">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">Content Control</CardTitle>
+                  <CardHeader className="py-2 px-4">
+                    <CardTitle className="text-base">Content Control</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-white/80">
+                  <CardContent className="py-1 px-4 pb-3">
+                    <CardDescription className="text-white/80 text-sm">
                       Update job listings, blog posts, and site content.
                     </CardDescription>
                   </CardContent>
                 </Card>
                 
                 <Card className="bg-white/10 border-0 backdrop-blur-sm text-white">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">Analytics</CardTitle>
+                  <CardHeader className="py-2 px-4">
+                    <CardTitle className="text-base">Analytics</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-white/80">
-                      Monitor platform statistics, user engagement, and performance metrics.
+                  <CardContent className="py-1 px-4 pb-3">
+                    <CardDescription className="text-white/80 text-sm">
+                      Monitor platform statistics, user engagement, and metrics.
                     </CardDescription>
                   </CardContent>
                 </Card>
                 
                 <Card className="bg-white/10 border-0 backdrop-blur-sm text-white">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">Security</CardTitle>
+                  <CardHeader className="py-2 px-4">
+                    <CardTitle className="text-base">Security</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-white/80">
+                  <CardContent className="py-1 px-4 pb-3">
+                    <CardDescription className="text-white/80 text-sm">
                       Manage access controls, invitations, and system security.
                     </CardDescription>
                   </CardContent>
@@ -256,8 +256,8 @@ export default function AdminLoginPage() {
               </div>
             </div>
             
-            <div className="mt-8 text-white/90">
-              <p className="font-medium">
+            <div className="mt-4 text-white/90">
+              <p className="font-medium text-sm">
                 Expert Recruitments LLC — Connecting exceptional talent with opportunity
               </p>
             </div>
