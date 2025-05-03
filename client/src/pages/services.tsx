@@ -7,6 +7,7 @@ import {
   TrendingUp, BookOpen, Clock, Globe,
   ChevronDown
 } from "lucide-react";
+import MinimalistTestimonialSlider from "@/components/services/minimalist-testimonial-slider";
 import servicesBgImage from "@/assets/modern-equipped-computer-lab.jpg";
 
 export default function ServicesPage() {
@@ -300,26 +301,20 @@ export default function ServicesPage() {
           </div>
         </div>
         
-        {/* Testimonial */}
-        <div className="bg-primary/5 p-8 rounded-lg mb-16">
-          <div className="max-w-3xl mx-auto text-center">
-            <svg className="w-12 h-12 text-primary/40 mx-auto mb-4" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z"></path>
-            </svg>
-            <blockquote className="text-xl italic text-gray-700 mb-6">
-              "Working with the Expert Recruitments LLC team transformed our recruitment process. Their understanding of our industry and culture helped us find exceptional talent that has driven our business forward."
-            </blockquote>
-            <div className="flex items-center justify-center">
-              <img 
-                src="https://images.unsplash.com/photo-1507679799987-c73779587ccf" 
-                alt="Company CEO" 
-                className="w-12 h-12 rounded-full object-cover mr-4" 
-              />
-              <div className="text-left">
-                <div className="font-bold">Michael Anderson</div>
-                <div className="text-sm text-gray-600">CEO, Tech Innovations Inc.</div>
-              </div>
+        {/* Client Reviews Slider */}
+        <div className="mb-16">
+          <div className="text-center mb-12">
+            <div className="inline-block p-3 bg-primary/10 rounded-full text-primary mb-4">
+              <Users size={28} />
             </div>
+            <h2 className="text-3xl font-bold mb-4">Client Reviews</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              What our clients and partners say about working with Expert Recruitments
+            </p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <MinimalistTestimonialSlider />
           </div>
         </div>
         
