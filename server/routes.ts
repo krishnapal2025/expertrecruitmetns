@@ -2308,25 +2308,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (inquiryUser) {
           console.log(`Found user: ID=${inquiryUser.id}, Type=${inquiryUser.userType}, Email=${inquiryUser.email}`);
           
-          // For debugging - list all available fields
-          console.log("User object keys:", Object.keys(inquiryUser));
+          // Double check that this is a valid user that can receive notifications
+          if (!inquiryUser.id) {
+            console.error("Invalid user object, missing ID:", inquiryUser);
+            throw new Error("Invalid user object for notification creation");
+          }
           
           // Create notification with complete required fields
           const notificationData = {
             userId: inquiryUser.id,
             message: `We've replied to your ${inquiry.inquiryType === "business" ? "business" : "general"} inquiry. Check your email.`,
+            // Always include the type for proper routing
             type: "inquiry_reply",
             entityId: parseInt(id),
           };
           
-          console.log("Creating notification with data:", notificationData);
+          console.log("Creating notification with data:", JSON.stringify(notificationData));
           
           // Create the notification
           const notification = await storage.createNotification(notificationData);
-          console.log(`Successfully created notification: ID=${notification.id}`);
-
+          
+          if (!notification || !notification.id) {
+            throw new Error("Failed to create notification - invalid response from storage");
+          }
+          
+          console.log(`Successfully created notification: ID=${notification.id} for user ${inquiryUser.id} (${inquiryUser.userType})`);
+          
           // Also write to stdout to see in logs
-          process.stdout.write(`[NOTIFICATION CREATED] userId=${inquiryUser.id}, id=${notification.id}\n`);
+          process.stdout.write(`[NOTIFICATION CREATED] userId=${inquiryUser.id}, userType=${inquiryUser.userType}, id=${notification.id}, type=${notificationData.type}\n`);
         } else {
           console.log(`User with email ${inquiry.email} not found for notification`);
         }
