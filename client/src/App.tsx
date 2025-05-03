@@ -25,6 +25,7 @@ import JobApplicationPage from "@/pages/job-application";
 import HireTalentPage from "@/pages/hire-talent";
 import CreateBlogPage from "@/pages/create-blog";
 import EditBlogPage from "@/pages/edit-blog";
+import BlogManagerPage from "@/pages/blog-manager";
 
 import AdminPage from "@/pages/admin-page";
 import AdminDashboardPage from "@/pages/admin-page-new";
@@ -99,6 +100,7 @@ function Router() {
       <Route path="/admin" component={AdminPage} />
       <AdminProtectedRoute path="/admin-dashboard" component={AdminDashboardPage} />
       <AdminProtectedRoute path="/create-blog" component={CreateBlogPage} />
+      <AdminProtectedRoute path="/blog-manager" component={BlogManagerPage} />
       <Route path="/edit-blog/:id">
         {params => <AdminProtectedRoute path={`/edit-blog/${params.id}`} component={EditBlogPage} />}
       </Route>
