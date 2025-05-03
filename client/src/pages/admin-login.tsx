@@ -86,24 +86,24 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <div className="flex items-start justify-center pt-24 px-4 sm:px-8">
-        <div className="w-full max-w-5xl flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-xl">
+      <div className="flex items-start justify-center pt-16 px-4 sm:px-8">
+        <div className="w-full max-w-4xl flex flex-col md:flex-row rounded-lg overflow-hidden shadow-lg">
           {/* Left Side - Form */}
-          <div className="w-full md:w-2/5 bg-white p-5 sm:p-7">
-            <div className="flex justify-center mb-4">
+          <div className="w-full md:w-2/5 bg-white p-6">
+            <div className="flex justify-center mb-5">
               <div className="flex items-center">
-                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 p-2 mr-3">
-                  <ShieldCheck className="h-6 w-6 text-primary" />
+                <div className="flex items-center justify-center h-9 w-9 rounded-full bg-primary/10 p-2 mr-3">
+                  <ShieldCheck className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-bold text-lg uppercase text-gray-800" style={{ letterSpacing: '0.15em' }}>Admin</span>
+                  <span className="font-bold text-base uppercase text-gray-800" style={{ letterSpacing: '0.1em' }}>Admin</span>
                   <span className="text-xs text-gray-500">Secure Portal</span>
                 </div>
               </div>
             </div>
             
-            <div className="mb-5 text-center">
-              <h1 className="text-xl font-bold text-gray-900">Admin Login</h1>
+            <div className="mb-4 text-center">
+              <h1 className="text-lg font-bold text-gray-900">Admin Login</h1>
               <p className="text-xs text-gray-600 mt-1">
                 Access restricted to authorized personnel only
               </p>
@@ -184,10 +184,10 @@ export default function AdminLoginPage() {
           </div>
 
           {/* Right Side - Hero Content */}
-          <div className="hidden md:block md:w-3/5 bg-[#5372f1] text-white py-6 px-8 flex flex-col justify-between">
+          <div className="hidden md:block md:w-3/5 bg-[#5372f1] text-white p-6 flex flex-col justify-between">
             <div>
-              <div className="flex items-center mb-4">
-                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-white p-2 border-2 border-white shadow-md mr-3">
+              <div className="flex items-center mb-3">
+                <div className="flex items-center justify-center h-9 w-9 rounded-full bg-white p-2 border border-white shadow-sm mr-3">
                   <img 
                     src={expertLogo} 
                     alt="Expert Recruitments LLC" 
@@ -195,69 +195,69 @@ export default function AdminLoginPage() {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-white font-bold text-lg uppercase" style={{ letterSpacing: '0.15em' }}>Expert</span>
+                  <span className="text-white font-bold text-base uppercase" style={{ letterSpacing: '0.1em' }}>Expert</span>
                   <span className="text-white text-xs">Recruitments LLC</span>
                 </div>
               </div>
 
-              <h2 className="text-2xl md:text-3xl font-bold mb-3">
+              <h2 className="text-xl font-bold mb-2">
                 Admin Dashboard
               </h2>
               
-              <p className="text-white/90 text-base mb-4">
-                Manage your recruitment platform, monitor applications, and oversee
-                all aspects of the Expert Recruitments ecosystem.
+              <p className="text-white/90 text-sm mb-3">
+                Manage recruitment platform, monitor applications, and oversee
+                Expert Recruitments ecosystem.
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 mb-2">
                 <Card className="bg-white/10 border-0 backdrop-blur-sm text-white">
-                  <CardHeader className="py-2 px-4">
-                    <CardTitle className="text-base">User Management</CardTitle>
+                  <CardHeader className="py-1.5 px-3">
+                    <CardTitle className="text-sm">User Management</CardTitle>
                   </CardHeader>
-                  <CardContent className="py-1 px-4 pb-3">
-                    <CardDescription className="text-white/80 text-sm">
-                      Manage job seekers, employers, and administrative accounts.
+                  <CardContent className="py-1 px-3 pb-2">
+                    <CardDescription className="text-white/80 text-xs">
+                      Manage job seekers, employers, and admin accounts.
                     </CardDescription>
                   </CardContent>
                 </Card>
                 
                 <Card className="bg-white/10 border-0 backdrop-blur-sm text-white">
-                  <CardHeader className="py-2 px-4">
-                    <CardTitle className="text-base">Content Control</CardTitle>
+                  <CardHeader className="py-1.5 px-3">
+                    <CardTitle className="text-sm">Content Control</CardTitle>
                   </CardHeader>
-                  <CardContent className="py-1 px-4 pb-3">
-                    <CardDescription className="text-white/80 text-sm">
+                  <CardContent className="py-1 px-3 pb-2">
+                    <CardDescription className="text-white/80 text-xs">
                       Update job listings, blog posts, and site content.
                     </CardDescription>
                   </CardContent>
                 </Card>
                 
                 <Card className="bg-white/10 border-0 backdrop-blur-sm text-white">
-                  <CardHeader className="py-2 px-4">
-                    <CardTitle className="text-base">Analytics</CardTitle>
+                  <CardHeader className="py-1.5 px-3">
+                    <CardTitle className="text-sm">Analytics</CardTitle>
                   </CardHeader>
-                  <CardContent className="py-1 px-4 pb-3">
-                    <CardDescription className="text-white/80 text-sm">
-                      Monitor platform statistics, user engagement, and metrics.
+                  <CardContent className="py-1 px-3 pb-2">
+                    <CardDescription className="text-white/80 text-xs">
+                      Monitor statistics, user engagement, and metrics.
                     </CardDescription>
                   </CardContent>
                 </Card>
                 
                 <Card className="bg-white/10 border-0 backdrop-blur-sm text-white">
-                  <CardHeader className="py-2 px-4">
-                    <CardTitle className="text-base">Security</CardTitle>
+                  <CardHeader className="py-1.5 px-3">
+                    <CardTitle className="text-sm">Security</CardTitle>
                   </CardHeader>
-                  <CardContent className="py-1 px-4 pb-3">
-                    <CardDescription className="text-white/80 text-sm">
-                      Manage access controls, invitations, and system security.
+                  <CardContent className="py-1 px-3 pb-2">
+                    <CardDescription className="text-white/80 text-xs">
+                      Manage access controls and system security.
                     </CardDescription>
                   </CardContent>
                 </Card>
               </div>
             </div>
             
-            <div className="mt-4 text-white/90">
-              <p className="font-medium text-sm">
+            <div className="text-white/90">
+              <p className="font-medium text-xs">
                 Expert Recruitments LLC — Connecting exceptional talent with opportunity
               </p>
             </div>
