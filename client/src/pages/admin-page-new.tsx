@@ -512,7 +512,7 @@ function AdminDashboard() {
       </div>
       
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-8">
+        <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-8">
           <TabsTrigger value="dashboard">
             <BarChart2 className="mr-2 h-4 w-4" />
             Dashboard
@@ -532,10 +532,6 @@ function AdminDashboard() {
           <TabsTrigger value="posts">
             <FileTextIcon className="mr-2 h-4 w-4" />
             Blogs
-          </TabsTrigger>
-          <TabsTrigger value="content">
-            <FileText className="mr-2 h-4 w-4" />
-            Content
           </TabsTrigger>
         </TabsList>
         
@@ -1499,27 +1495,6 @@ function AdminDashboard() {
                   <h3 className="text-xl font-medium mb-2">Article Management</h3>
                   <p className="text-muted-foreground max-w-md mx-auto mb-6">
                     Use the Post Manager page to create and manage blog articles and content.
-                  </p>
-                  <Button variant="default" onClick={() => navigate("/post-manager")}>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Go to Post Manager
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        {/* Content Panel */}
-        <TabsContent value="content" className="space-y-4">
-          <Card>
-            <CardContent className="py-10">
-              <div className="flex justify-center">
-                <div className="text-center">
-                  <FileTextIcon className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-medium mb-2">Content Management</h3>
-                  <p className="text-muted-foreground max-w-md mx-auto mb-6">
-                    Use the Post Manager page to create and manage blog content.
                   </p>
                   <Button variant="default" onClick={() => navigate("/post-manager")}>
                     <PlusCircle className="mr-2 h-4 w-4" />
