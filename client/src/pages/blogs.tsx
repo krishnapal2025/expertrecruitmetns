@@ -23,6 +23,23 @@ import { useQuery } from "@tanstack/react-query";
 // Import a placeholder image for when blog images are not available
 import placeholderImage from "../assets/pexels-photo-3184311.jpg";
 
+// Define a type for the blog post from the API to avoid using 'any'
+interface ApiBlogPost {
+  id: number;
+  title: string;
+  subtitle: string | null;
+  content: string;
+  bannerImage: string | null;
+  authorId: number | null;
+  publishDate: string | null;
+  published: boolean;
+  category: string | null;
+  tags: string[] | null;
+  slug: string;
+  excerpt: string | null;
+  readTime: string | null;
+}
+
 const categories = [
   "All Categories",
   "Executive Recruitment",
@@ -40,7 +57,7 @@ export default function BlogsPage() {
   const [, setLocation] = useLocation();
 
   // Fetch blog posts from the API
-  const { data: apiBlogs, isLoading: isLoadingBlogs } = useQuery({
+  const { data: apiBlogs, isLoading: isLoadingBlogs } = useQuery<ApiBlogPost[]>({
     queryKey: ["/api/blog-posts"],
     queryFn: async () => {
       const response = await fetch("/api/blog-posts");
@@ -52,7 +69,7 @@ export default function BlogsPage() {
   });
 
   // Filter blogs based on search term and category
-  const filteredBlogs = apiBlogs ? apiBlogs.filter((blog: any) => {
+  const filteredBlogs = apiBlogs ? apiBlogs.filter((blog) => {
     // For search, look at title, subtitle/excerpt, and content
     const matchesSearch = 
       blog.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -157,7 +174,7 @@ export default function BlogsPage() {
 
 
         {/* Admin Created Blog Posts */}
-        {apiBlogs && apiBlogs.length > 0 && apiBlogs.some((post: any) => post.published) && (
+        {apiBlogs && apiBlogs.length > 0 && apiBlogs.some(post => post.published) && (
           <div className="mb-16 border-b pb-12">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
               <h2 className="text-2xl font-bold flex items-center">
@@ -176,10 +193,10 @@ export default function BlogsPage() {
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {apiBlogs
-                .filter((post: any) => post.published)
-                .sort((a: any, b: any) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime())
+                .filter(post => post.published)
+                .sort((a, b) => new Date(b.publishDate || "").getTime() - new Date(a.publishDate || "").getTime())
                 .slice(0, 3)
-                .map((post: any) => (
+                .map(post => (
                   <Card key={`api-blog-${post.id}`} className="overflow-hidden flex flex-col h-full border-t-4 border-t-primary shadow-md">
                     <div className="h-48 overflow-hidden">
                       {post.bannerImage ? (
@@ -261,7 +278,7 @@ export default function BlogsPage() {
           
           {!isLoadingBlogs && filteredBlogs.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredBlogs.map((post: any) => (
+              {filteredBlogs.map(post => (
                 <Card key={post.id} className="overflow-hidden flex flex-col h-full">
                   <div className="h-48 overflow-hidden">
                     {post.bannerImage ? (
