@@ -70,6 +70,7 @@ function AdminDashboard() {
   // State for vacancy management
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedVacancy, setSelectedVacancy] = useState<any>(null);
   const [recruiterEmail, setRecruiterEmail] = useState("");
   const [recruiterName, setRecruiterName] = useState("");
@@ -244,6 +245,41 @@ function AdminDashboard() {
     },
   });
   
+  // Vacancy delete mutation
+  const deleteVacancyMutation = useMutation({
+    mutationFn: async (vacancyId: number) => {
+      const res = await apiRequest(
+        "DELETE", 
+        `/api/admin/vacancies/${vacancyId}`
+      );
+      
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to delete vacancy");
+      }
+      
+      return await res.json();
+    },
+    onSuccess: () => {
+      setDeleteDialogOpen(false);
+      setSelectedVacancy(null);
+      
+      toast({
+        title: "Vacancy deleted",
+        description: "The vacancy has been deleted successfully.",
+      });
+      
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/vacancies"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to delete vacancy",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
   // Filter functions
   const filteredEmployers = users
     ? users
@@ -297,6 +333,12 @@ function AdminDashboard() {
   const handleViewVacancy = (vacancy: any) => {
     setSelectedVacancy(vacancy);
     setViewDialogOpen(true);
+  };
+  
+  // Handle vacancy delete
+  const handleDeleteVacancy = (vacancy: any) => {
+    setSelectedVacancy(vacancy);
+    setDeleteDialogOpen(true);
   };
   
   // Handle assignment submission
