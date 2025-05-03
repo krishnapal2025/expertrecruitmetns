@@ -274,9 +274,6 @@ export default function SectorsPage() {
             <Link href="/job-board">
               <Button size="lg">Browse All Jobs</Button>
             </Link>
-            <Link href="/auth?type=jobseeker">
-              <Button variant="outline" size="lg">Create Account</Button>
-            </Link>
           </div>
         </div>
       </div>
