@@ -111,6 +111,7 @@ export interface IStorage {
   createVacancy(vacancy: InsertVacancy): Promise<Vacancy>;
   updateVacancyStatus(id: number, status: string): Promise<Vacancy | undefined>;
   assignVacancyToRecruiter(id: number, recruiterEmail: string, recruiterName: string): Promise<Vacancy | undefined>;
+  deleteVacancy(id: number): Promise<boolean>;
   
   // Staffing Inquiry methods
   getStaffingInquiry(id: number): Promise<StaffingInquiry | undefined>;
@@ -707,6 +708,25 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error(`Error assigning vacancy to recruiter:`, error);
       return undefined;
+    }
+  }
+  
+  async deleteVacancy(id: number): Promise<boolean> {
+    try {
+      console.log(`Attempting to delete vacancy with ID ${id}`);
+      const result = await db.delete(vacancies).where(eq(vacancies.id, id));
+      const success = result.rowCount > 0;
+      
+      if (success) {
+        console.log(`Successfully deleted vacancy ID ${id}`);
+      } else {
+        console.log(`No vacancy found with ID ${id} to delete`);
+      }
+      
+      return success;
+    } catch (error) {
+      console.error(`Error deleting vacancy:`, error);
+      return false;
     }
   }
 
