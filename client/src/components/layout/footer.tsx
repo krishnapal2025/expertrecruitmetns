@@ -319,10 +319,10 @@ export default function Footer() {
                 href="https://g.page/r/CfeX4Gp1NP7PEAE/review" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="inline-flex items-center bg-primary/10 hover:bg-primary/20 text-primary text-xs font-medium px-3 py-1.5 rounded-md border border-primary/20 transition-all duration-300 mb-3 shadow-sm"
+                className="inline-flex items-center bg-primary/10 hover:bg-primary/20 text-primary text-xs font-medium px-2.5 py-1.5 rounded-md border border-primary/20 transition-all duration-300 mb-3 shadow-sm w-28"
               >
-                <Star className="h-3.5 w-3.5 mr-1.5 text-primary" />
-                Leave a Review
+                <Star className="h-3 w-3 mr-1 flex-shrink-0 text-primary" />
+                <span className="truncate">Review</span>
               </a>
               
               <div className="mt-2">
