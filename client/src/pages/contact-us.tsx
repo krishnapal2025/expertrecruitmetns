@@ -651,24 +651,28 @@ export default function ContactUsPage() {
               Connect with us on social media
             </motion.h3>
             
-            {/* Social Media Icons - Minimalistic Row */}
-            <div className="flex justify-center space-x-8 md:space-x-12 relative z-10">
+            {/* Social Media Icons - Modern & Elegant Design */}
+            <div className="flex justify-center gap-5 mt-6 relative z-10">
               <motion.a 
                 href="https://www.facebook.com/expertrecruitmentsdubai" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 variants={{
-                  hidden: { opacity: 0, y: 10 },
+                  hidden: { opacity: 0, scale: 0.8 },
                   visible: { 
                     opacity: 1, 
-                    y: 0,
+                    scale: 1,
                     transition: { duration: 0.3, delay: 0.1 } 
                   }
                 }}
-                whileHover={{ y: -5 }}
-                className="text-gray-500 hover:text-blue-500 transition-colors duration-300"
+                whileHover={{ 
+                  scale: 1.15, 
+                  backgroundColor: "#1877F2",
+                  boxShadow: "0 10px 15px -3px rgba(24, 119, 242, 0.35)" 
+                }}
+                className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-white text-gray-700 hover:text-white shadow-md transition-all duration-300"
               >
-                <svg className="w-6 h-6 md:w-7 md:h-7" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9.101 23.691v-9.747H6.627v-3.754h2.474v-2.833c0-2.534 1.513-3.911 3.776-3.911 1.074 0 1.997.079 2.266.114v2.669h-1.56c-1.221 0-1.457.589-1.457 1.451v1.908h2.913l-.379 3.754h-2.534v9.749" />
                 </svg>
               </motion.a>
@@ -678,21 +682,79 @@ export default function ContactUsPage() {
                 target="_blank" 
                 rel="noopener noreferrer"
                 variants={{
-                  hidden: { opacity: 0, y: 10 },
+                  hidden: { opacity: 0, scale: 0.8 },
                   visible: { 
                     opacity: 1, 
-                    y: 0,
-                    transition: { duration: 0.3, delay: 0.4 } 
+                    scale: 1,
+                    transition: { duration: 0.3, delay: 0.2 } 
                   }
                 }}
-                whileHover={{ y: -5 }}
-                className="text-gray-500 hover:text-blue-700 transition-colors duration-300"
+                whileHover={{ 
+                  scale: 1.15, 
+                  backgroundColor: "#0A66C2",
+                  boxShadow: "0 10px 15px -3px rgba(10, 102, 194, 0.35)" 
+                }}
+                className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-white text-gray-700 hover:text-white shadow-md transition-all duration-300"
               >
-                <svg className="w-6 h-6 md:w-7 md:h-7" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path d="M20.447 20.452H16.893V14.883C16.893 13.555 16.866 11.846 15.041 11.846C13.188 11.846 12.905 13.291 12.905 14.785V20.452H9.351V9H12.765V10.561H12.811C13.288 9.661 14.448 8.711 16.181 8.711C19.782 8.711 20.448 11.081 20.448 14.166V20.452H20.447ZM5.337 7.433C4.193 7.433 3.274 6.507 3.274 5.368C3.274 4.23 4.194 3.305 5.337 3.305C6.477 3.305 7.401 4.23 7.401 5.368C7.401 6.507 6.476 7.433 5.337 7.433ZM7.119 20.452H3.555V9H7.119V20.452ZM22.225 0H1.771C0.792 0 0 0.774 0 1.729V22.271C0 23.227 0.792 24 1.771 24H22.222C23.2 24 24 23.227 24 22.271V1.729C24 0.774 23.2 0 22.222 0H22.225Z"/>
                 </svg>
               </motion.a>
+              
+              <motion.a 
+                href="https://twitter.com/ExpertRecruitLLC" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                variants={{
+                  hidden: { opacity: 0, scale: 0.8 },
+                  visible: { 
+                    opacity: 1, 
+                    scale: 1,
+                    transition: { duration: 0.3, delay: 0.3 } 
+                  }
+                }}
+                whileHover={{ 
+                  scale: 1.15, 
+                  backgroundColor: "#1DA1F2",
+                  boxShadow: "0 10px 15px -3px rgba(29, 161, 242, 0.35)" 
+                }}
+                className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-white text-gray-700 hover:text-white shadow-md transition-all duration-300"
+              >
+                <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                </svg>
+              </motion.a>
+              
+              <motion.a 
+                href="https://www.instagram.com/expertrecruitmentsdubai/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                variants={{
+                  hidden: { opacity: 0, scale: 0.8 },
+                  visible: { 
+                    opacity: 1, 
+                    scale: 1,
+                    transition: { duration: 0.3, delay: 0.4 } 
+                  }
+                }}
+                whileHover={{ 
+                  scale: 1.15,
+                  boxShadow: "0 10px 15px -3px rgba(193, 53, 132, 0.35)" 
+                }}
+                className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-white text-gray-700 hover:text-white shadow-md transition-all duration-300 instagram-gradient"
+              >
+                <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                </svg>
+              </motion.a>
             </div>
+            
+            {/* Add Instagram gradient styles */}
+            <style jsx>{`
+              .instagram-gradient:hover {
+                background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+              }
+            `}</style>
           </div>
         </motion.div>
       </div>
