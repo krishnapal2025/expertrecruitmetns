@@ -248,6 +248,8 @@ function AdminDashboard() {
   // Vacancy delete mutation
   const deleteVacancyMutation = useMutation({
     mutationFn: async (vacancyId: number) => {
+      console.log("Deleting vacancy with ID:", vacancyId);
+      
       const res = await apiRequest(
         "DELETE", 
         `/api/admin/vacancies/${vacancyId}`
@@ -255,6 +257,7 @@ function AdminDashboard() {
       
       if (!res.ok) {
         const error = await res.json();
+        console.error("Delete vacancy error:", error);
         throw new Error(error.message || "Failed to delete vacancy");
       }
       
@@ -575,7 +578,10 @@ function AdminDashboard() {
             </Button>
             <Button 
               variant="destructive"
-              onClick={() => deleteVacancyMutation.mutate(selectedVacancy.id)} 
+              onClick={() => {
+                console.log("Selected vacancy for deletion:", selectedVacancy);
+                deleteVacancyMutation.mutate(selectedVacancy.id);
+              }} 
               disabled={deleteVacancyMutation.isPending}
             >
               {deleteVacancyMutation.isPending ? (
