@@ -129,7 +129,7 @@ export default function VacancyFormPage() {
         positionName: data.jobTitle, // Add position name field for admin dashboard compatibility
         experienceRequired: data.experienceLevel,
         skillsRequired: data.requiredSkills,
-        requirements: data.employmentType + " - " + data.salaryRange,
+        requirements: data.employmentType + " - " + data.currency + " " + data.salaryRange,
       };
       
       // Make the actual API call to the backend
@@ -596,6 +596,36 @@ export default function VacancyFormPage() {
                                       </SelectGroup>
                                     </SelectContent>
                                   </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="currency"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Currency*</FormLabel>
+                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select currency" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectGroup>
+                                        <SelectLabel>Currencies</SelectLabel>
+                                        {currencies.map((currency) => (
+                                          <SelectItem key={currency.code} value={currency.code}>
+                                            {currency.name} - {currency.country}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormDescription>
+                                    Choose the currency for salary range
+                                  </FormDescription>
                                   <FormMessage />
                                 </FormItem>
                               )}
