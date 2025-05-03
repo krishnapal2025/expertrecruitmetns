@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -42,7 +43,6 @@ import {
   Send,
   Eye,
   BarChart2,
-  FileText as FileTextIcon,
   MessageSquare,
   PlusCircle,
   Download,
@@ -196,63 +196,7 @@ function AdminDashboard() {
     },
   });
   
-  // Blog post mutations
-  const deleteBlogPostMutation = useMutation({
-    mutationFn: async (postId: number) => {
-      const res = await apiRequest("DELETE", `/api/blog-posts/${postId}`);
-      if (!res.ok) {
-        // Try to parse error as JSON, but handle cases where it's not JSON
-        try {
-          const error = await res.json();
-          throw new Error(error.message || "Failed to delete blog post");
-        } catch (e) {
-          throw new Error("Failed to delete blog post");
-        }
-      }
-      // Return success even if there's no content (204 response)
-      return true;
-    },
-    onSuccess: () => {
-      toast({
-        title: "Blog post deleted",
-        description: "The blog post has been deleted successfully.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/blog-posts"] });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Failed to delete blog post",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-  
-  const toggleBlogPostPublishMutation = useMutation({
-    mutationFn: async ({ postId, published }: { postId: number, published: boolean }) => {
-      const res = await apiRequest("PATCH", `/api/blog-posts/${postId}`, { published });
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || `Failed to ${published ? 'publish' : 'unpublish'} blog post`);
-      }
-      return await res.json();
-    },
-    onSuccess: (data, variables) => {
-      const { published } = variables;
-      toast({
-        title: published ? "Blog post published" : "Blog post unpublished",
-        description: `The blog post has been ${published ? 'published' : 'unpublished'} successfully.`,
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/blog-posts"] });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Action failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+  // Blog-related mutations removed
   
   // Vacancy assignment mutation
   const assignVacancyMutation = useMutation({
