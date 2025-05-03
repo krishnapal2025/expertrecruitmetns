@@ -319,12 +319,8 @@ export default function EmployerInquiryPage() {
                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
                       <Users className="h-6 w-6 text-primary" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">What Sets Us Apart</h3>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">Why Partner With Us</h3>
                   </div>
-                  
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
-                    What sets us apart from other recruitment agencies in Dubai is our unwavering dedication to delivering growth. When talent acquisition works properly, it takes your organization to the next level of its development.
-                  </p>
                   
                   <ul className="space-y-4">
                     <motion.li 
@@ -333,8 +329,8 @@ export default function EmployerInquiryPage() {
                     >
                       <ArrowRight className="h-5 w-5 text-primary mt-0.5 mr-3 flex-shrink-0" />
                       <div>
-                        <span className="font-semibold text-gray-900 dark:text-white">Embracing Technology</span>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">We embrace the latest technologies – including AI and Machine Learning – to ensure we're one step ahead of other recruiters when it comes to securing best-in-class talent.</p>
+                        <span className="font-semibold text-gray-900 dark:text-white">Industry Expertise</span>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Our recruiters understand your industry's specific needs and challenges.</p>
                       </div>
                     </motion.li>
                     
@@ -344,8 +340,8 @@ export default function EmployerInquiryPage() {
                     >
                       <ArrowRight className="h-5 w-5 text-primary mt-0.5 mr-3 flex-shrink-0" />
                       <div>
-                        <span className="font-semibold text-gray-900 dark:text-white">Prioritizing Experience</span>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">We focus on matching specific industry experience with the right positions. The talent acquisition work we do empowers businesses to deliver their commercial objectives.</p>
+                        <span className="font-semibold text-gray-900 dark:text-white">Talent Network</span>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Access to a pre-vetted network of qualified professionals across various specialties.</p>
                       </div>
                     </motion.li>
                     
@@ -355,8 +351,8 @@ export default function EmployerInquiryPage() {
                     >
                       <ArrowRight className="h-5 w-5 text-primary mt-0.5 mr-3 flex-shrink-0" />
                       <div>
-                        <span className="font-semibold text-gray-900 dark:text-white">Leveraging Big Data</span>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">By processing and utilizing huge volumes of industry-specific data, our executive search experts in Dubai gain the insights needed to develop effective recruiting strategies.</p>
+                        <span className="font-semibold text-gray-900 dark:text-white">Time & Cost Savings</span>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Reduce hiring time and costs with our streamlined recruitment process.</p>
                       </div>
                     </motion.li>
                     
@@ -366,8 +362,8 @@ export default function EmployerInquiryPage() {
                     >
                       <ArrowRight className="h-5 w-5 text-primary mt-0.5 mr-3 flex-shrink-0" />
                       <div>
-                        <span className="font-semibold text-gray-900 dark:text-white">Industry-Specific Services</span>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Our executive search professionals and head hunters in Dubai tailor our proven search strategies according to the specific needs of each industry we serve.</p>
+                        <span className="font-semibold text-gray-900 dark:text-white">Tailored Solutions</span>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Customized recruitment strategies that align with your company's specific needs.</p>
                       </div>
                     </motion.li>
                     
@@ -377,8 +373,8 @@ export default function EmployerInquiryPage() {
                     >
                       <ArrowRight className="h-5 w-5 text-primary mt-0.5 mr-3 flex-shrink-0" />
                       <div>
-                        <span className="font-semibold text-gray-900 dark:text-white">Exceeding Client Expectations</span>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Your success is our success. That's why we'll go the extra mile to ensure your team has the skills and qualities it needs to succeed.</p>
+                        <span className="font-semibold text-gray-900 dark:text-white">Long-term Partnership</span>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">We focus on building lasting relationships to support your ongoing talent needs.</p>
                       </div>
                     </motion.li>
                   </ul>
@@ -388,49 +384,39 @@ export default function EmployerInquiryPage() {
               <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700">
                 <div className="h-2 bg-primary"></div>
                 <div className="p-8">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Our Comprehensive Recruitment Process</h3>
-                  
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-5">
-                    At Expert Recruitments, we work tirelessly to ensure a comprehensive and meticulous approach to executive search in Dubai and across the UAE. Our experienced recruiting agents use a proven talent acquisition process that guarantees best-in-class employees who exceed the expectations of our clients.
-                  </p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Our Recruitment Process</h3>
                   
                   <ol className="relative border-l border-gray-200 dark:border-gray-700 ml-3 space-y-6">
                     <motion.li className="ml-6" variants={fadeIn}>
                       <span className="absolute flex items-center justify-center w-6 h-6 bg-primary rounded-full -left-3 ring-8 ring-white dark:ring-gray-800 text-xs text-white">1</span>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">Detailed Requirement Analysis</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Understanding your organization's culture, values, and specific staffing needs</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">Initial Consultation</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Understanding your company culture and recruitment needs</p>
                     </motion.li>
                     
                     <motion.li className="ml-6" variants={fadeIn}>
                       <span className="absolute flex items-center justify-center w-6 h-6 bg-primary rounded-full -left-3 ring-8 ring-white dark:ring-gray-800 text-xs text-white">2</span>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">Strategic Talent Sourcing</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Leveraging our extensive network and cutting-edge technologies to identify top talent</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">Candidate Sourcing</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Leveraging our network to find qualified candidates</p>
                     </motion.li>
                     
                     <motion.li className="ml-6" variants={fadeIn}>
                       <span className="absolute flex items-center justify-center w-6 h-6 bg-primary rounded-full -left-3 ring-8 ring-white dark:ring-gray-800 text-xs text-white">3</span>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">Rigorous Screening & Assessment</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Comprehensive evaluation of skills, experience, and cultural fit through our meticulous process</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">Screening & Assessment</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Thorough evaluation of candidates' skills and experience</p>
                     </motion.li>
                     
                     <motion.li className="ml-6" variants={fadeIn}>
                       <span className="absolute flex items-center justify-center w-6 h-6 bg-primary rounded-full -left-3 ring-8 ring-white dark:ring-gray-800 text-xs text-white">4</span>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">Precise Candidate Matching</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Presenting only the most qualified candidates who will drive your organization's growth</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">Presentation & Selection</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Presenting top candidates and facilitating the selection process</p>
                     </motion.li>
                     
                     <motion.li className="ml-6" variants={fadeIn}>
                       <span className="absolute flex items-center justify-center w-6 h-6 bg-primary rounded-full -left-3 ring-8 ring-white dark:ring-gray-800 text-xs text-white">5</span>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">Comprehensive Onboarding Support</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Ensuring a smooth transition and long-term success for both employer and employee</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">Onboarding Support</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Ensuring a smooth transition for new hires</p>
                     </motion.li>
                   </ol>
-                  
-                  <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
-                    <p className="text-sm text-gray-700 dark:text-gray-300 italic">
-                      "By utilizing tried-and-tested executive search and head-hunting processes in the UAE, we give our clients the talent they need quickly and efficiently. Whether we're serving businesses in Dubai, the wider GCC region, India, or Europe, our attention to detail and meticulous approach guarantees results."
-                    </p>
-                  </div>
                 </div>
               </div>
             </motion.div>
