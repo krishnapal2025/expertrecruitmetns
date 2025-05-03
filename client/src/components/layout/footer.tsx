@@ -292,21 +292,14 @@ export default function Footer() {
               <h3 className="text-lg font-bold mb-3">Follow Us</h3>
               <div className="flex flex-col space-y-4">
                 <div className="flex space-x-4">
-                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition-colors">
+                  <a href="https://www.facebook.com/expertrecruitmentsdubai" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition-colors">
                     <Facebook className="h-5 w-5 text-white" />
                   </a>
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-sky-500 transition-colors">
-                    <Twitter className="h-5 w-5 text-white" />
-                  </a>
-                </div>
-                <div className="flex space-x-4">
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-700 transition-colors">
+                  <a href="https://www.linkedin.com/company/expertrecruitmentsllc/?viewAsMember=true" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-700 transition-colors">
                     <Linkedin className="h-5 w-5 text-white" />
                   </a>
-                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-pink-600 transition-colors">
-                    <Instagram className="h-5 w-5 text-white" />
-                  </a>
                 </div>
+                
               </div>
             </div>
             

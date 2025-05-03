@@ -337,7 +337,7 @@ export default function HomePage() {
                   
                   <Link href="/employer-register">
                     <Button variant="default" className="group w-full justify-between bg-indigo-600 hover:bg-indigo-700 text-white">
-                      <span className="mr-2">Post a Job</span>
+                      <span className="mr-2">Submit Vacancy</span>
                       <span className="relative inline-block transition-transform duration-300 group-hover:translate-x-1">
                         <ArrowRight className="h-4 w-4" />
                       </span>

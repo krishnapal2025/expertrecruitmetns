@@ -105,11 +105,7 @@ export default function HireTalentPage() {
                 <p className="text-gray-600 mb-4">
                   Our specialized recruitment services target senior leadership roles including CEOs, CFOs, CIOs, and other C-level executives for organizations across all sectors.
                 </p>
-                <Button variant="link" className="p-0 h-auto text-primary flex items-center" asChild>
-                  <Link href="/submit-vacancy">
-                    Learn More <ArrowRight className="ml-1 h-4 w-4" />
-                  </Link>
-                </Button>
+                
               </CardContent>
             </Card>
             
@@ -124,11 +120,7 @@ export default function HireTalentPage() {
                 <p className="text-gray-600 mb-4">
                   We proactively identify and approach high-performing executives who aren't actively seeking new roles but may be open to the right opportunity.
                 </p>
-                <Button variant="link" className="p-0 h-auto text-primary flex items-center" asChild>
-                  <Link href="/submit-vacancy">
-                    Learn More <ArrowRight className="ml-1 h-4 w-4" />
-                  </Link>
-                </Button>
+                
               </CardContent>
             </Card>
             
@@ -143,11 +135,7 @@ export default function HireTalentPage() {
                 <p className="text-gray-600 mb-4">
                   Leverage our global network to attract world-class executive talent to the UAE, with comprehensive relocation and cultural integration support.
                 </p>
-                <Button variant="link" className="p-0 h-auto text-primary flex items-center" asChild>
-                  <Link href="/submit-vacancy">
-                    Learn More <ArrowRight className="ml-1 h-4 w-4" />
-                  </Link>
-                </Button>
+               
               </CardContent>
             </Card>
           </div>
@@ -345,7 +333,7 @@ export default function HireTalentPage() {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-md px-8" asChild>
-              <Link href="/contact-us">Send Executive Inquiry </Link>
+              <Link href="/vacancy-form">Contact for Executive Search</Link>
             </Button>
           </div>
         </div>

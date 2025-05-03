@@ -96,8 +96,8 @@ export default function ServicesPage() {
                   Access a diverse pool of qualified candidates through our extensive network and advanced matching technology.
                 </p>
                 <div className="mt-auto pt-4">
-                  <Link href="/employer-register">
-                    <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">Post a Job</Button>
+                  <Link href="/vacancy-form">
+                    <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">Submit Vacancy</Button>
                   </Link>
                 </div>
               </CardContent>
@@ -115,8 +115,8 @@ export default function ServicesPage() {
                   Specialized recruitment services for senior-level and executive positions tailored to your requirements.
                 </p>
                 <div className="mt-auto pt-4">
-                  <Link href="/contact-us">
-                    <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">Contact Us</Button>
+                  <Link href="/vacancy-form">
+                    <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">Submit Vacancy</Button>
                   </Link>
                 </div>
               </CardContent>
@@ -193,7 +193,7 @@ export default function ServicesPage() {
                   Access resources and guidance to help you enhance your skills and advance your career path.
                 </p>
                 <div className="mt-auto pt-4">
-                  <Link href="/blogs">
+                  <Link href="/job-seeker-register">
                     <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">View Resources</Button>
                   </Link>
                 </div>
@@ -212,7 +212,7 @@ export default function ServicesPage() {
                   Get expert advice on crafting a compelling resume that showcases your strengths and experience.
                 </p>
                 <div className="mt-auto pt-4">
-                  <Link href="/contact-us">
+                  <Link href="/job-seeker-register">
                     <Button variant="outline" size="lg" className="w-full h-[60px] bg-white text-primary hover:bg-primary/5 border-primary border font-medium text-base rounded-full shadow-md transition-all duration-300">Learn More</Button>
                   </Link>
                 </div>
