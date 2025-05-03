@@ -22,7 +22,7 @@ import {
   BlogPost
 } from "@shared/schema";
 import { hashPassword } from "./auth";
-import { generateResetToken, sendPasswordResetEmail, sendVacancyAssignmentEmail } from "./email-service";
+import { generateResetToken, sendPasswordResetEmail, sendVacancyAssignmentEmail, sendInquiryReply } from "./email-service";
 import { seedJobs } from "./seed-jobs";
 import { generateResumePDF, resumeDataSchema, bufferToStream, ResumeData } from "./pdf-service";
 
@@ -2253,66 +2253,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Input validation
-      if (!message || message.trim() === "") {
+      if (!message) {
         return res.status(400).json({ message: "Message is required" });
       }
       
-      // Get the inquiry
+      // Get the inquiry details
       const inquiry = await storage.getStaffingInquiry(parseInt(id));
+      
       if (!inquiry) {
         return res.status(404).json({ message: "Staffing inquiry not found" });
       }
       
-      // Send email reply
+      // Get the admin info
+      const admin = await storage.getAdmin(user.id);
+      const adminName = admin ? `${admin.firstName} ${admin.lastName}` : "Administrator";
+      
+      // Send the email reply
       const emailResult = await sendInquiryReply(
         inquiry.email,
         inquiry.name,
         subject || `Re: Your inquiry to Expert Recruitments`,
         message,
-        user.name || user.email
+        adminName
       );
       
       if (!emailResult.success) {
-        console.warn("Could not send email, but will continue with notification", emailResult);
+        return res.status(500).json({ message: "Failed to send reply email" });
       }
       
-      // Update inquiry status to at least "contacted" if it's currently "new"
-      if (inquiry.status === "new") {
-        await storage.updateStaffingInquiryStatus(parseInt(id), "contacted");
+      // Update the inquiry status to 'contacted' if it was 'new'
+      if (inquiry.status === 'new' || !inquiry.status) {
+        await storage.updateStaffingInquiryStatus(parseInt(id), 'contacted');
       }
       
-      // Create a notification for the user if they have an account
+      // Create a notification for the user if we can find them
       try {
-        // Find if this inquiry is associated with a registered user
-        let userToNotify;
-        
-        if (inquiry.email) {
-          userToNotify = await storage.getUserByEmail(inquiry.email);
-        }
-        
-        if (userToNotify) {
-          // Create a notification for the user
-          const notificationType = inquiry.inquiryType === "business" ? "business_inquiry_reply" : "general_inquiry_reply";
-          
+        const inquiryUser = await storage.getUserByEmail(inquiry.email);
+        if (inquiryUser) {
           await storage.createNotification({
-            userId: userToNotify.id,
-            message: `You have received a reply to your ${inquiry.inquiryType === "business" ? "business" : "general"} inquiry`,
-            type: notificationType,
-            entityId: parseInt(id)
+            userId: inquiryUser.id,
+            message: `We've replied to your ${inquiry.inquiryType === "business" ? "business" : "general"} inquiry. Check your email.`,
+            read: false,
+            createdAt: new Date(),
           });
-          
-          console.log(`Created notification for user ${userToNotify.id} about inquiry reply`);
-        } else {
-          console.log(`No registered user found with email ${inquiry.email} to notify`);
         }
-      } catch (notificationError) {
-        console.error("Failed to create notification, but email was sent:", notificationError);
+      } catch (err) {
+        console.log("Could not create notification for inquiry reply:", err);
+        // Continue with the operation even if notification creation fails
       }
       
-      res.status(200).json({ 
+      res.json({ 
         success: true, 
         message: "Reply sent successfully",
-        emailPreviewUrl: emailResult.previewUrl
+        previewUrl: emailResult.previewUrl
       });
     } catch (error) {
       console.error("Error replying to inquiry:", error);
