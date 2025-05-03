@@ -14,6 +14,8 @@ import { Mail, Phone, Send, Loader2, Globe, ArrowRight, ChevronDown } from "luci
 import { IndiaFlag, UAEFlag, USAFlag } from "@/components/flags";
 import { motion } from "framer-motion";
 import contactHeroBg from "../assets/images/contact-hero-bg.jpg";
+import { useAuth } from "@/hooks/use-auth";
+import { apiRequest } from "@/lib/queryClient";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -42,6 +44,7 @@ export default function ContactUsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInquiryForm, setIsInquiryForm] = useState(false);
   const [location] = useLocation();
+  const { user } = useAuth();
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -63,14 +66,67 @@ export default function ContactUsPage() {
       // Auto-set subject for employer inquiry forms
       form.setValue('subject', 'Employer Inquiry');
     }
-  }, [location, form]);
+    
+    // Pre-fill form with user data if logged in
+    if (user) {
+      // Set email from the user's email
+      form.setValue('email', user.email);
+      
+      // Fill name if it's available based on user type
+      if (user.userType === 'jobseeker' && user.profile && 'firstName' in user.profile) {
+        form.setValue('name', `${user.profile.firstName} ${user.profile.lastName}`);
+        
+        // If phone number is available, set it
+        if ('phoneNumber' in user.profile) {
+          form.setValue('phone', user.profile.phoneNumber);
+        }
+      } else if (user.userType === 'employer' && user.profile && 'companyName' in user.profile) {
+        form.setValue('name', user.profile.companyName);
+        
+        // If phone number is available, set it
+        if ('phoneNumber' in user.profile) {
+          form.setValue('phone', user.profile.phoneNumber);
+        }
+      }
+    }
+  }, [location, form, user]);
 
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Determine the inquiry type based on user type or form context
+      let inquiryType = "contact"; // Default type for anonymous users
+      
+      if (user) {
+        // If user is logged in, set inquiry type based on user type
+        inquiryType = user.userType === "employer" ? "business" : "general";
+      } else if (isInquiryForm) {
+        // If not logged in but using inquiry form, assume business inquiry
+        inquiryType = "business";
+      }
+      
+      // Prepare the inquiry data
+      const inquiryData = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        company: user?.userType === "employer" && user.profile && 'companyName' in user.profile 
+          ? user.profile.companyName 
+          : null,
+        message: data.message,
+        inquiryType: inquiryType, // Set to "business" for employers, "general" for job seekers
+        marketing: false // Default setting
+      };
+      
+      console.log("Submitting inquiry:", inquiryData);
+      
+      // Send to staffing-inquiries endpoint
+      const response = await apiRequest("POST", "/api/staffing-inquiries", inquiryData);
+      
+      if (!response.ok) {
+        throw new Error("Failed to send your message");
+      }
       
       toast({
         title: "Message sent!",
@@ -79,9 +135,10 @@ export default function ContactUsPage() {
       
       form.reset();
     } catch (error) {
+      console.error("Error submitting form:", error);
       toast({
         title: "Error",
-        description: "Failed to send your message. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to send your message. Please try again.",
         variant: "destructive",
       });
     } finally {
