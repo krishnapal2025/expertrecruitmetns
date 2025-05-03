@@ -107,16 +107,7 @@ export default function HomePage() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="inline-block mb-4">
-              <motion.div 
-                className="px-5 py-2 rounded-full bg-white border border-primary/20 shadow-lg shadow-primary/5"
-                initial={{ scale: 0.9 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-              >
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-600 font-semibold text-sm">
-                  Job Portal Features
-                </span>
-              </motion.div>
+           
             </div>
             <h2 className="text-4xl md:text-4xl font-bold mb-4 tracking-tight">
               Your Path to <span className="text-primary">Career Success</span>
