@@ -298,13 +298,8 @@ export default function Footer() {
                   <a href="https://www.linkedin.com/company/expertrecruitmentsllc/?viewAsMember=true" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-700 transition-colors">
                     <Linkedin className="h-5 w-5 text-white" />
                   </a>
-                  <a href="https://twitter.com/ExpertRecruitLLC" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-[#1DA1F2] transition-colors">
-                    <Twitter className="h-5 w-5 text-white" />
-                  </a>
-                  <a href="https://www.instagram.com/expertrecruitmentsdubai/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-gradient-to-r hover:from-[#F56040] hover:via-[#E1306C] hover:to-[#833AB4] transition-colors">
-                    <Instagram className="h-5 w-5 text-white" />
-                  </a>
                 </div>
+                
               </div>
             </div>
             
