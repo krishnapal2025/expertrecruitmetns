@@ -176,29 +176,11 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/resources/create-resume" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+                  <a href="/job-seeker-register" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Create Resume
+                    Resources
                   </a>
-                </li>
-                <li>
-                  <a href="/resources/interview-prep" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Interview Prep
-                  </a>
-                </li>
-                <li>
-                  <a href="/resources/career-advice" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Career Advice
-                  </a>
-                </li>
-                <li>
-                  <a href="/resources/salary-negotiation" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                    Salary Negotiation
-                  </a>
-                </li>
+                </li>     
               </ul>
             </div>
             
