@@ -107,20 +107,20 @@ export default function EmployerRegisterPage() {
   };
   
   return (
-    <div className="min-h-screen pt-6 pb-12 bg-gray-50">
+    <div className="min-h-screen py-4 bg-gray-50 flex items-center">
       <div className="container px-4 mx-auto">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-5 gap-8">
+          <div className="grid md:grid-cols-5 gap-6">
             {/* Left side: Registration form */}
             <div className="md:col-span-3">
               <Card className="shadow-lg border-t-4 border-t-primary">
-                <CardHeader className="pb-4">
+                <CardHeader className="pb-2">
                   <CardTitle className="text-2xl text-primary font-bold">Employer Registration</CardTitle>
                   <CardDescription className="text-base">Create your employer account and hire top talent in UAE & GCC</CardDescription>
                 </CardHeader>
-                <CardContent className="px-6 py-2">
+                <CardContent className="px-6 py-1">
                   <Form {...employerForm}>
-                    <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-6">
+                    <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-4">
                       <FormField
                         control={employerForm.control}
                         name="companyName"
@@ -260,7 +260,7 @@ export default function EmployerRegisterPage() {
                         )}
                       />
                       
-                      <Separator className="my-4" />
+                      <Separator className="my-2" />
                       
                       <FormField
                         control={employerForm.control}
@@ -308,7 +308,7 @@ export default function EmployerRegisterPage() {
                       
                       <Button 
                         type="submit" 
-                        className="w-full text-base py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold" 
+                        className="w-full text-base py-4 bg-[#4060e0] hover:bg-[#3050d0] font-bold" 
                         disabled={registerEmployerMutation.isPending}
                       >
                         {registerEmployerMutation.isPending ? (
@@ -331,15 +331,15 @@ export default function EmployerRegisterPage() {
             </div>
             
             {/* Right side: Hero section */}
-            <div className="md:col-span-2 bg-primary text-white rounded-lg p-8 flex flex-col justify-center shadow-lg h-full">
-              <div className="mb-8">
-                <h2 className="text-3xl font-bold mb-3">For Employers</h2>
-                <p className="text-primary-foreground/90 text-lg">
+            <div className="md:col-span-2 bg-primary text-white rounded-lg p-6 flex flex-col justify-center shadow-lg h-full">
+              <div className="mb-5">
+                <h2 className="text-2xl font-bold mb-2">For Employers</h2>
+                <p className="text-primary-foreground/90 text-base">
                   Connect with talented professionals and grow your team with our comprehensive recruitment tools.
                 </p>
               </div>
               
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="flex items-start">
                   <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
