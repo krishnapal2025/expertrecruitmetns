@@ -107,7 +107,7 @@ export default function EmployerRegisterPage() {
   };
   
   return (
-    <div className="min-h-screen pt-0 pb-4 bg-gray-50 flex items-start mt-2">
+    <div className="min-h-screen pt-0 pb-4 bg-gray-50 flex items-start mt-4">
       <div className="container px-4 mx-auto">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-5 gap-6">
