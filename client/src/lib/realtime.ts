@@ -6,6 +6,8 @@ export interface Notification {
   message: string;
   read: boolean;
   createdAt: Date;
+  type?: string;
+  entityId?: number;
 }
 
 export interface RealtimeJobsResponse {

@@ -2288,21 +2288,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Create a notification for the user if we can find them
       try {
+        // Find the associated user by email
+        console.log(`Looking for user with email: ${inquiry.email}`);
         const inquiryUser = await storage.getUserByEmail(inquiry.email);
+        
         if (inquiryUser) {
-          console.log(`Creating notification for user ID ${inquiryUser.id} with email ${inquiry.email}`);
-          await storage.createNotification({
+          console.log(`Found user: ID=${inquiryUser.id}, Type=${inquiryUser.userType}, Email=${inquiryUser.email}`);
+          
+          // For debugging - list all available fields
+          console.log("User object keys:", Object.keys(inquiryUser));
+          
+          // Create notification with complete required fields
+          const notificationData = {
             userId: inquiryUser.id,
             message: `We've replied to your ${inquiry.inquiryType === "business" ? "business" : "general"} inquiry. Check your email.`,
             type: "inquiry_reply",
             entityId: parseInt(id),
-          });
-          console.log(`Successfully created notification for user ID ${inquiryUser.id}`);
+          };
+          
+          console.log("Creating notification with data:", notificationData);
+          
+          // Create the notification
+          const notification = await storage.createNotification(notificationData);
+          console.log(`Successfully created notification: ID=${notification.id}`);
+
+          // Also write to stdout to see in logs
+          process.stdout.write(`[NOTIFICATION CREATED] userId=${inquiryUser.id}, id=${notification.id}\n`);
         } else {
           console.log(`User with email ${inquiry.email} not found for notification`);
         }
       } catch (err) {
         console.error("Could not create notification for inquiry reply:", err);
+        console.error(err instanceof Error ? err.stack : String(err));
         // Continue with the operation even if notification creation fails
       }
       
