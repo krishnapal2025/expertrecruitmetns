@@ -1332,22 +1332,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const sinceId = parseInt(since as string) || 0;
 
       const userId = req.user.id;
+      const userType = req.user.userType;
+      
+      console.log(`Fetching notifications for user ID ${userId} (${userType}), since notification ID ${sinceId}`);
 
       // Get all notifications for this user
       const allNotifications = await storage.getNotifications(userId, 50);
+      console.log(`Retrieved ${allNotifications.length} total notifications for user ID ${userId}`);
+      
+      if (allNotifications.length > 0) {
+        console.log(`Sample notification:`, JSON.stringify(allNotifications[0]));
+      }
       
       // Filter to just the new ones since last check
       const newNotifications = allNotifications.filter(notification => notification.id > sinceId);
+      console.log(`Found ${newNotifications.length} new notifications since ID ${sinceId}`);
       
       // Get the highest ID from the notifications
       const lastId = newNotifications.length > 0
         ? Math.max(...newNotifications.map(n => n.id))
         : (allNotifications.length > 0 ? allNotifications[0]?.id : 0);
 
+      // Count unread notifications
+      const unreadCount = await storage.getUnreadNotificationCount(userId);
+      console.log(`Unread notification count for user ID ${userId}: ${unreadCount}`);
+
       res.json({
         notifications: newNotifications,
         lastId: lastId,
-        unreadCount: await storage.getUnreadNotificationCount(userId)
+        unreadCount: unreadCount
       });
     } catch (error) {
       console.error("Error fetching notifications:", error);

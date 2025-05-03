@@ -99,11 +99,40 @@ export default function NotificationsPopover() {
   // Setup real-time polling for notifications when user is logged in
   useEffect(() => {
     if (currentUser) {
+      console.log(`Starting real-time polling for user: ${currentUser.id} (${currentUser.userType})`);
+      
+      // First, directly fetch existing notifications 
+      const fetchInitialNotifications = async () => {
+        try {
+          const response = await fetch('/api/realtime/notifications');
+          if (!response.ok) throw new Error('Failed to fetch initial notifications');
+          const data = await response.json();
+          
+          console.log(`Initial fetch: Found ${data.notifications.length} notifications, lastId=${data.lastId}`);
+          
+          if (data.notifications.length > 0) {
+            setNotifications(data.notifications.map(n => ({
+              ...n,
+              createdAt: n.createdAt instanceof Date ? n.createdAt : new Date(n.createdAt)
+            })).sort((a, b) => 
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            ));
+          }
+        } catch (error) {
+          console.error('Error fetching initial notifications:', error);
+        }
+      };
+      
+      fetchInitialNotifications();
+      
       startRealtimePolling({
-        // Poll every 15 seconds
-        intervalMs: 15000,
+        // Poll more frequently (every 5 seconds)
+        intervalMs: 5000,
         // Handle new notifications
         onNewNotifications: (newNotifications) => {
+          console.log(`Real-time update: Received ${newNotifications.length} new notifications`, 
+            newNotifications.map(n => `id=${n.id}, type=${n.type || 'unknown'}`));
+          
           setNotifications(prev => {
             // Create a map of existing notifications by ID
             const existingMap = new Map(prev.map(n => [n.id, n]));
@@ -125,12 +154,13 @@ export default function NotificationsPopover() {
               );
           });
           
-          // Show a toast for the newest notification if the popover is closed
+          // Show a toast for each new notification if the popover is closed
           if (!open && newNotifications.length > 0) {
-            const newest = newNotifications[0];
-            toast({
-              title: "New Notification",
-              description: newest.message,
+            newNotifications.forEach(notification => {
+              toast({
+                title: notification.type === 'inquiry_reply' ? "Inquiry Reply" : "New Notification",
+                description: notification.message,
+              });
             });
           }
         }
