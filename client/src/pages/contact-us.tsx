@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useLocation } from "wouter";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,19 @@ const staggerContainer = {
 
 export default function ContactUsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isInquiryForm, setIsInquiryForm] = useState(false);
+  const [location] = useLocation();
+
+  // Parse URL parameters to check if this is an inquiry form
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+    if (type === 'inquiry') {
+      setIsInquiryForm(true);
+      // Auto-set subject for employer inquiry forms
+      form.setValue('subject', 'Employer Inquiry');
+    }
+  }, [location, form]);
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -389,7 +403,7 @@ export default function ContactUsPage() {
               }
             }}
           >
-            Get In Touch
+            {isInquiryForm ? 'Employer Inquiry' : 'Get In Touch'}
           </motion.div>
           <motion.h2 
             className="text-3xl md:text-4xl font-bold mb-6 text-gray-800"
@@ -404,7 +418,7 @@ export default function ContactUsPage() {
               }
             }}
           >
-            Let's Start a Conversation
+            {isInquiryForm ? 'Tell Us About Your Hiring Needs' : 'Let\'s Start a Conversation'}
           </motion.h2>
           <motion.div 
             className="w-16 h-1 bg-primary mx-auto mb-6"
