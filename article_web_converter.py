@@ -1,13 +1,10 @@
 import trafilatura
 import json
 import re
-from flask import Flask, request, render_template_string, jsonify, session
+from flask import Flask, request, render_template_string, jsonify
 import argparse
-import secrets
-import requests
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
 
 HTML_TEMPLATE = '''
 <!DOCTYPE html>
@@ -145,23 +142,6 @@ HTML_TEMPLATE = '''
                 <textarea id="content" name="content" placeholder="Article content will appear here"></textarea>
                 <button onclick="copyContent('content')" class="copy-button">Copy Content</button>
             </div>
-            
-            <div class="card">
-                <h2>Admin Login (Optional)</h2>
-                <p>Login to post directly to your blog:</p>
-                
-                <label for="base_url">Site URL:</label>
-                <input type="text" id="base_url" name="base_url" value="http://localhost:3000" placeholder="http://localhost:3000">
-                
-                <label for="email">Admin Email:</label>
-                <input type="text" id="email" name="email" placeholder="admin@example.com">
-                
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="••••••••">
-                
-                <button onclick="createBlogPost()" class="create-button" style="background-color: #ff6f00; width: 100%; margin-top: 15px;">Create Blog Post</button>
-                <div id="create-status" class="status-message"></div>
-            </div>
         </div>
     </div>
     
@@ -221,103 +201,6 @@ HTML_TEMPLATE = '''
             setTimeout(() => {
                 copyButton.textContent = originalText;
             }, 2000);
-        }
-        
-        function createBlogPost() {
-            // Get admin credentials
-            const baseUrl = document.getElementById('base_url').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            // Get blog data
-            const blogData = {
-                title: document.getElementById('title').value,
-                subtitle: document.getElementById('subtitle').value,
-                content: document.getElementById('content').value,
-                slug: document.getElementById('slug').value,
-                category: document.getElementById('category').value,
-                readTime: document.getElementById('readTime').value,
-                published: true  // Set to published by default
-            };
-            
-            // Validate inputs
-            if (!blogData.title || !blogData.content) {
-                updateStatus('Please make sure title and content are filled', 'error');
-                return;
-            }
-            
-            if (!email || !password) {
-                updateStatus('Admin email and password are required', 'error');
-                return;
-            }
-            
-            // Show loading state
-            const button = document.querySelector('.create-button');
-            const originalText = button.textContent;
-            button.textContent = 'Creating...';
-            button.disabled = true;
-            
-            // First, login
-            fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ baseUrl, email, password }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Login failed. Please check your credentials.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Now create the blog post
-                return fetch('/api/create-blog', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ blogData, baseUrl }),
-                });
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to create blog post.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                updateStatus('Blog post created successfully! ✓', 'success');
-                // Reset button
-                button.textContent = originalText;
-                button.disabled = false;
-            })
-            .catch(error => {
-                updateStatus('Error: ' + error.message, 'error');
-                // Reset button
-                button.textContent = originalText;
-                button.disabled = false;
-            });
-        }
-        
-        function updateStatus(message, type) {
-            const statusElement = document.getElementById('create-status');
-            statusElement.textContent = message;
-            statusElement.style.display = 'block';
-            
-            if (type === 'error') {
-                statusElement.style.color = 'red';
-            } else if (type === 'success') {
-                statusElement.style.color = 'green';
-            } else {
-                statusElement.style.color = 'black';
-            }
-            
-            // Clear after 5 seconds
-            setTimeout(() => {
-                statusElement.style.display = 'none';
-            }, 5000);
         }
     </script>
 </body>
