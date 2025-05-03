@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import expertLogo from "../assets/er-logo-icon.png";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { queryClient } from "@/lib/queryClient";
 
 // Define form schema
 const formSchema = z.object({
@@ -47,32 +48,40 @@ export default function AdminLoginPage() {
     },
   });
   
-  // Handle form submission
-  const onSubmit = (data: FormValues) => {
-    loginMutation.mutate(data, {
-      onSuccess: (userData) => {
-        if (userData.user.userType !== "admin") {
-          toast({
-            title: "Access Denied",
-            description: "This login is for administrators only.",
-            variant: "destructive",
-          });
-          return;
-        }
-        toast({
-          title: "Login Successful",
-          description: "Welcome to your admin dashboard.",
-        });
-        setLocation("/admin");
-      },
-      onError: (error: Error) => {
-        toast({
-          title: "Login Failed",
-          description: error.message || "Invalid credentials. Please try again.",
-          variant: "destructive",
-        });
-      },
-    });
+  // Handle form submission - use dedicated admin login endpoint
+  const onSubmit = async (data: FormValues) => {
+    try {
+      // Make a direct API call to the admin-only login endpoint
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      
+      const responseData = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(responseData.message || 'Login failed');
+      }
+      
+      // Update the user data in React Query cache
+      queryClient.setQueryData(["/api/user"], responseData);
+      
+      toast({
+        title: "Login Successful",
+        description: "Welcome to your admin dashboard.",
+      });
+      
+      setLocation("/admin");
+    } catch (error) {
+      toast({
+        title: "Login Failed",
+        description: error instanceof Error ? error.message : "Invalid credentials. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

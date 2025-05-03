@@ -258,6 +258,47 @@ export function setupAuth(app: Express) {
       });
     })(req, res, next);
   });
+  
+  // Admin-only login route
+  app.post("/api/admin/login", (req, res, next) => {
+    passport.authenticate("local", async (err, user, info) => {
+      if (err) return next(err);
+      if (!user) return res.status(400).json({ message: info.message || "Invalid credentials" });
+      
+      // Check if the user is an admin
+      if (user.userType !== "admin") {
+        return res.status(403).json({ 
+          message: "Access denied. This login is for administrators only." 
+        });
+      }
+      
+      req.login(user, async (err) => {
+        if (err) return next(err);
+        
+        // Get admin profile
+        const admin = await storage.getAdminByUserId(user.id);
+        
+        if (!admin) {
+          return res.status(404).json({ 
+            message: "Admin profile not found. Please contact support." 
+          });
+        }
+        
+        // Update last login time
+        await storage.updateAdminLastLogin(admin.id);
+        
+        res.status(200).json({ 
+          user, 
+          profile: { 
+            id: admin.id, 
+            role: admin.role,
+            firstName: admin.firstName,
+            lastName: admin.lastName
+          } 
+        });
+      });
+    })(req, res, next);
+  });
 
   // Logout route
   app.post("/api/logout", (req, res, next) => {
