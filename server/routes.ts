@@ -2177,9 +2177,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const inquiryId = result[0].id;
           
           const notificationPromises = adminUsers.map(admin => {
+            // Customize notification message based on inquiry type
+            let notificationMessage = "";
+            
+            if (req.body.inquiryType === "business") {
+              notificationMessage = `New business inquiry from ${req.body.name} - Employer inquiry`;
+            } else if (req.body.inquiryType === "general") {
+              notificationMessage = `New general inquiry from ${req.body.name} - Job seeker inquiry`;
+            } else {
+              notificationMessage = `New ${req.body.inquiryType} inquiry from ${req.body.name}`;
+            }
+            
             return storage.createNotification({
               userId: admin.id,
-              message: `New staffing inquiry from ${req.body.name} - ${req.body.inquiryType} inquiry`,
+              message: notificationMessage,
               type: "staffing_inquiry",
               entityId: inquiryId
             });
