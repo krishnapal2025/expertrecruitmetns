@@ -107,18 +107,18 @@ export default function EmployerRegisterPage() {
   };
   
   return (
-    <div className="min-h-screen pt-4 pb-8 bg-gray-50">
-      <div className="container px-4 mx-auto">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-5 gap-6">
+    <div className="h-screen flex items-center bg-gray-50 overflow-y-auto">
+      <div className="container px-2 mx-auto py-0 flex-grow">
+        <div className="max-w-7xl mx-auto h-full flex items-center">
+          <div className="grid md:grid-cols-5 gap-3 w-full">
             {/* Left side: Registration form */}
             <div className="md:col-span-3">
               <Card className="shadow-lg border-t-4 border-t-primary">
-                <CardHeader className="pb-2 pt-4">
-                  <CardTitle className="text-xl text-primary font-bold">Employer Registration</CardTitle>
-                  <CardDescription className="text-sm">Create your employer account and hire top talent in UAE & GCC</CardDescription>
+                <CardHeader className="pb-1 pt-3">
+                  <CardTitle className="text-lg text-primary font-bold">Employer Registration</CardTitle>
+                  <CardDescription className="text-xs">Create your employer account and hire top talent in UAE & GCC</CardDescription>
                 </CardHeader>
-                <CardContent className="px-5 py-1">
+                <CardContent className="px-4 py-1">
                   <Form {...employerForm}>
                     <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-3">
                       <div className="grid md:grid-cols-3 gap-3">
@@ -314,11 +314,11 @@ export default function EmployerRegisterPage() {
                       
                       <Button 
                         type="submit" 
-                        className="w-full text-base py-4 mt-1 bg-[#4060e0] hover:bg-[#3050d0] font-bold" 
+                        className="w-full text-sm py-2 mt-1 bg-[#4060e0] hover:bg-[#3050d0] font-bold" 
                         disabled={registerEmployerMutation.isPending}
                       >
                         {registerEmployerMutation.isPending ? (
-                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                          <Loader2 className="h-4 w-4 animate-spin mr-1" />
                         ) : null}
                         Create Employer Account
                       </Button>
@@ -337,60 +337,57 @@ export default function EmployerRegisterPage() {
             </div>
             
             {/* Right side: Hero section */}
-            <div className="md:col-span-2 bg-primary text-white rounded-lg p-5 flex flex-col justify-center shadow-lg h-full">
-              <div className="mb-4">
-                <h2 className="text-2xl font-bold mb-2">For Employers</h2>
-                <p className="text-primary-foreground/90 text-sm">
-                  Connect with talented professionals and grow your team with our comprehensive recruitment tools.
+            <div className="md:col-span-2 bg-primary text-white rounded-lg p-3 flex flex-col justify-center shadow-lg h-full">
+              <div className="mb-2">
+                <h2 className="text-xl font-bold mb-1">For Employers</h2>
+                <p className="text-primary-foreground/90 text-xs">
+                  Connect with talented professionals and grow your team
                 </p>
               </div>
               
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div className="flex items-start">
-                  <div className="bg-white/20 p-1.5 rounded-full mr-3 flex-shrink-0">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <div className="bg-white/20 p-1 rounded-full mr-2 flex-shrink-0">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-base">Talent Acquisition</h3>
-                    <p className="text-xs text-primary-foreground/90">Access a pool of qualified candidates across UAE & GCC</p>
+                    <h3 className="font-semibold text-sm">Talent Acquisition</h3>
+                    <p className="text-xs text-primary-foreground/90">Access qualified candidates across UAE & GCC</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start">
-                  <div className="bg-white/20 p-1.5 rounded-full mr-3 flex-shrink-0">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <div className="bg-white/20 p-1 rounded-full mr-2 flex-shrink-0">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-base">Simplified Hiring</h3>
-                    <p className="text-xs text-primary-foreground/90">Post jobs, screen applicants, and conduct interviews in one place</p>
+                    <h3 className="font-semibold text-sm">Simplified Hiring</h3>
+                    <p className="text-xs text-primary-foreground/90">Post jobs, screen and interview in one place</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start">
-                  <div className="bg-white/20 p-1.5 rounded-full mr-3 flex-shrink-0">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <div className="bg-white/20 p-1 rounded-full mr-2 flex-shrink-0">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-base">Recruitment Analytics</h3>
-                    <p className="text-xs text-primary-foreground/90">Track recruitment metrics and optimize hiring process</p>
+                    <h3 className="font-semibold text-sm">Recruitment Analytics</h3>
+                    <p className="text-xs text-primary-foreground/90">Track metrics and optimize hiring process</p>
                   </div>
                 </div>
               </div>
               
-              <div className="mt-auto pt-4">
-                <div className="bg-white/10 rounded-lg p-3 border border-white/20">
-                  <h3 className="font-semibold text-base mb-1">Join Today and Get:</h3>
-                  <p className="text-xs text-primary-foreground/90 mb-2">
-                    Access to Dubai & UAE's top talent pool for your hiring needs
-                  </p>
-                  <p className="text-xs text-primary-foreground/70">
-                    By joining, you agree to our terms of service and privacy policy
+              <div className="mt-auto pt-2">
+                <div className="bg-white/10 rounded-lg p-2 border border-white/20">
+                  <h3 className="font-semibold text-sm">Join Today and Get:</h3>
+                  <p className="text-xs text-primary-foreground/90">
+                    Access to Dubai & UAE's top talent pool for your needs
                   </p>
                 </div>
               </div>
