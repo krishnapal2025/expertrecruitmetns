@@ -319,9 +319,9 @@ export default function Footer() {
                 href="https://g.page/r/CfeX4Gp1NP7PEAE/review" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="inline-flex items-center bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors mb-4"
+                className="inline-flex items-center bg-primary/10 hover:bg-primary/20 text-primary text-xs font-medium px-3 py-1.5 rounded-md border border-primary/20 transition-all duration-300 mb-3 shadow-sm"
               >
-                <Star className="h-5 w-5 mr-2 text-yellow-400" />
+                <Star className="h-3.5 w-3.5 mr-1.5 text-primary" />
                 Leave a Review
               </a>
               
