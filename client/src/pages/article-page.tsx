@@ -100,16 +100,10 @@ const BlogPostContent = ({
           <div 
             className="prose prose-lg max-w-none" 
             style={{ 
-              whiteSpace: 'pre-wrap',
               lineHeight: '1.6' // Standard line height for normal spacing
             }}
             dangerouslySetInnerHTML={{ 
               __html: blogPost.content
-                .split('\n')
-                .map(line => line.trim() 
-                  ? `<p style="margin-bottom: 1em;">${line}</p>` 
-                  : '<br />')
-                .join('')
             }}
           ></div>
           

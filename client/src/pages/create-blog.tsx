@@ -186,27 +186,20 @@ const CreateBlogPage = () => {
 
   const createBlogMutation = useMutation({
     mutationFn: async (data: BlogFormValues) => {
-      // Compile content from sections
-      const compiledContent = contentSections
-        .map(section => {
-          if (section.type === 'header') {
-            return `## ${section.content}\n\n`;
-          } else if (section.type === 'paragraph') {
-            return `${section.content}\n`;
-          } else if (section.type === 'image') {
-            return `![image](${section.content})\n\n`;
-          }
-          return '';
-        })
-        .join('');
-
-      // Update data with compiled content
+      // Get the content from ReactQuill editor
+      const editorContent = form.getValues('content');
+      
+      // Update data with content and properly format tags
       const postData = {
         ...data,
-        content: compiledContent,
+        content: editorContent, // Use the HTML content directly
         tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : [],
+        // Set default publish date if it's published
+        publishDate: data.published ? new Date().toISOString() : null,
       };
 
+      console.log("Submitting blog post:", postData);
+      
       const response = await apiRequest("POST", "/api/blog-posts", postData);
       if (!response.ok) {
         const errorData = await response.json();
@@ -214,7 +207,7 @@ const CreateBlogPage = () => {
       }
       return await response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Invalidate the blog posts query cache so the updated list shows immediately
       queryClient.invalidateQueries({ queryKey: ["/api/blog-posts"] });
       
@@ -222,7 +215,13 @@ const CreateBlogPage = () => {
         title: "Success",
         description: "Blog post created successfully",
       });
-      navigate("/admin-dashboard");
+      
+      // Navigate to the blog post
+      if (data.slug) {
+        navigate(`/article/${data.slug}`);
+      } else {
+        navigate("/blogs");
+      }
     },
     onError: (error: Error) => {
       toast({
