@@ -161,7 +161,11 @@ export default function AdminLoginPage() {
                   )}
                 />
 
-                {/* Forgot password link removed as requested */}
+                <div className="flex justify-end mb-2">
+                  <Link href="/admin/forgot-password" className="text-sm text-primary hover:underline">
+                    Forgot password?
+                  </Link>
+                </div>
 
                 <Button 
                   type="submit" 
