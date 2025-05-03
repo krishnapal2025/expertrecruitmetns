@@ -403,7 +403,7 @@ export default function ContactUsPage() {
               }
             }}
           >
-            {isInquiryForm ? 'Employer Inquiry' : 'Get In Touch'}
+            {isInquiryForm ? 'Send Us a Message' : 'Get In Touch'}
           </motion.div>
           <motion.h2 
             className="text-3xl md:text-4xl font-bold mb-6 text-gray-800"
@@ -447,8 +447,8 @@ export default function ContactUsPage() {
             }}
           >
             {isInquiryForm 
-              ? 'Submit your employer inquiry and our expert recruitment team will contact you promptly to discuss your hiring needs and solutions.'
-              : 'Have a question or inquiry? Fill out the form below and our team will get back to you as soon as possible.'}
+              ? 'Send us a message about your hiring needs and our expert recruitment team will contact you promptly to discuss solutions tailored for you.'
+              : 'Have a question or need assistance? Fill out the form below and our team will get back to you as soon as possible.'}
           </motion.p>
         </motion.div>
 
@@ -469,7 +469,7 @@ export default function ContactUsPage() {
                   <Mail className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {isInquiryForm ? 'Submit Your Employer Inquiry' : 'Send Us a Message'}
+                  Send Us a Message
                 </h3>
               </div>
               
@@ -568,7 +568,7 @@ export default function ContactUsPage() {
                     ) : (
                       <>
                         <Send className="mr-2 h-5 w-5" />
-                        {isInquiryForm ? 'Submit Inquiry' : 'Send Message'}
+                        Send Message
                       </>
                     )}
                   </Button>
