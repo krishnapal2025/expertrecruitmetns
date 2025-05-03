@@ -85,7 +85,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-6">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-6" style={{ paddingBottom: '10rem' }}>
       <div className="w-full max-w-5xl flex flex-col md:flex-row rounded-lg overflow-hidden shadow-xl">
         {/* Left Side - Form */}
         <div className="w-full md:w-2/5 bg-white p-8">
