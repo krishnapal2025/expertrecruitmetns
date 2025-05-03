@@ -107,47 +107,63 @@ export default function EmployerRegisterPage() {
   };
   
   return (
-    <div className="min-h-screen pt-6 pb-12 bg-gray-50">
+    <div className="min-h-screen py-2 bg-gray-50">
       <div className="container px-4 mx-auto">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-5 gap-8">
+          <div className="grid md:grid-cols-5 gap-6">
             {/* Left side: Registration form */}
             <div className="md:col-span-3">
               <Card className="shadow-lg border-t-4 border-t-primary">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-2xl text-primary font-bold">Employer Registration</CardTitle>
-                  <CardDescription className="text-base">Create your employer account and hire top talent in UAE & GCC</CardDescription>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-xl text-primary font-bold">Employer Registration</CardTitle>
+                  <CardDescription>Create your employer account and hire top talent in UAE & GCC</CardDescription>
                 </CardHeader>
-                <CardContent className="px-6 py-2">
+                <CardContent className="px-6 py-1">
                   <Form {...employerForm}>
-                    <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-6">
-                      <FormField
-                        control={employerForm.control}
-                        name="companyName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Company Name</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Company Ltd." {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                    <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-3">
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <FormField
+                          control={employerForm.control}
+                          name="companyName"
+                          render={({ field }) => (
+                            <FormItem className="space-y-1">
+                              <FormLabel className="text-sm">Company Name</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Company Ltd." {...field} className="h-9" />
+                              </FormControl>
+                              <FormMessage className="text-xs" />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={employerForm.control}
+                          name="website"
+                          render={({ field }) => (
+                            <FormItem className="space-y-1">
+                              <FormLabel className="text-sm">Website</FormLabel>
+                              <FormControl>
+                                <Input placeholder="https://www.example.com" {...field} className="h-9" />
+                              </FormControl>
+                              <FormMessage className="text-xs" />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                       
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid md:grid-cols-2 gap-3">
                         <FormField
                           control={employerForm.control}
                           name="industry"
                           render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Industry</FormLabel>
+                            <FormItem className="space-y-1">
+                              <FormLabel className="text-sm">Industry</FormLabel>
                               <Select 
                                 onValueChange={field.onChange} 
                                 defaultValue={field.value}
                               >
                                 <FormControl>
-                                  <SelectTrigger>
+                                  <SelectTrigger className="h-9">
                                     <SelectValue placeholder="Select industry" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -159,7 +175,7 @@ export default function EmployerRegisterPage() {
                                   ))}
                                 </SelectContent>
                               </Select>
-                              <FormMessage />
+                              <FormMessage className="text-xs" />
                             </FormItem>
                           )}
                         />
@@ -168,14 +184,14 @@ export default function EmployerRegisterPage() {
                           control={employerForm.control}
                           name="companyType"
                           render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Company Type</FormLabel>
+                            <FormItem className="space-y-1">
+                              <FormLabel className="text-sm">Company Type</FormLabel>
                               <Select 
                                 onValueChange={field.onChange} 
                                 defaultValue={field.value}
                               >
                                 <FormControl>
-                                  <SelectTrigger>
+                                  <SelectTrigger className="h-9">
                                     <SelectValue placeholder="Select company type" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -187,25 +203,25 @@ export default function EmployerRegisterPage() {
                                   ))}
                                 </SelectContent>
                               </Select>
-                              <FormMessage />
+                              <FormMessage className="text-xs" />
                             </FormItem>
                           )}
                         />
                       </div>
                       
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid md:grid-cols-2 gap-3">
                         <FormField
                           control={employerForm.control}
                           name="country"
                           render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Country</FormLabel>
+                            <FormItem className="space-y-1">
+                              <FormLabel className="text-sm">Country</FormLabel>
                               <Select 
                                 onValueChange={field.onChange} 
                                 defaultValue={field.value}
                               >
                                 <FormControl>
-                                  <SelectTrigger>
+                                  <SelectTrigger className="h-9">
                                     <SelectValue placeholder="Select country" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -217,7 +233,7 @@ export default function EmployerRegisterPage() {
                                   ))}
                                 </SelectContent>
                               </Select>
-                              <FormMessage />
+                              <FormMessage className="text-xs" />
                             </FormItem>
                           )}
                         />
@@ -226,67 +242,49 @@ export default function EmployerRegisterPage() {
                           control={employerForm.control}
                           name="phoneNumber"
                           render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Phone Number</FormLabel>
+                            <FormItem className="space-y-1">
+                              <FormLabel className="text-sm">Phone Number</FormLabel>
                               <FormControl>
                                 <Input 
                                   type="tel"
-                                  placeholder="Enter your phone number" 
+                                  placeholder={selectedEmployerCountryCode ? `${selectedEmployerCountryCode} phone number` : "Enter your phone number"} 
                                   {...field} 
+                                  className="h-9"
                                 />
                               </FormControl>
-                              {selectedEmployerCountryCode && (
-                                <FormDescription>
-                                  Include country code: {selectedEmployerCountryCode}
-                                </FormDescription>
-                              )}
-                              <FormMessage />
+                              <FormMessage className="text-xs" />
                             </FormItem>
                           )}
                         />
                       </div>
                       
-                      <FormField
-                        control={employerForm.control}
-                        name="website"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Website</FormLabel>
-                            <FormControl>
-                              <Input placeholder="https://www.example.com" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      <Separator className="my-2" />
                       
-                      <Separator className="my-4" />
-                      
-                      <FormField
-                        control={employerForm.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email Address</FormLabel>
-                            <FormControl>
-                              <Input placeholder="email@example.com" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid md:grid-cols-3 gap-3">
+                        <FormField
+                          control={employerForm.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem className="space-y-1">
+                              <FormLabel className="text-sm">Email Address</FormLabel>
+                              <FormControl>
+                                <Input placeholder="email@example.com" {...field} className="h-9" />
+                              </FormControl>
+                              <FormMessage className="text-xs" />
+                            </FormItem>
+                          )}
+                        />
+                        
                         <FormField
                           control={employerForm.control}
                           name="password"
                           render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Password</FormLabel>
+                            <FormItem className="space-y-1">
+                              <FormLabel className="text-sm">Password</FormLabel>
                               <FormControl>
-                                <Input type="password" placeholder="••••••••" {...field} />
+                                <Input type="password" placeholder="••••••••" {...field} className="h-9" />
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage className="text-xs" />
                             </FormItem>
                           )}
                         />
@@ -295,12 +293,12 @@ export default function EmployerRegisterPage() {
                           control={employerForm.control}
                           name="confirmPassword"
                           render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Confirm Password</FormLabel>
+                            <FormItem className="space-y-1">
+                              <FormLabel className="text-sm">Confirm Password</FormLabel>
                               <FormControl>
-                                <Input type="password" placeholder="••••••••" {...field} />
+                                <Input type="password" placeholder="••••••••" {...field} className="h-9" />
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage className="text-xs" />
                             </FormItem>
                           )}
                         />
@@ -308,19 +306,19 @@ export default function EmployerRegisterPage() {
                       
                       <Button 
                         type="submit" 
-                        className="w-full text-base py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold" 
+                        className="w-full text-sm py-4 bg-[#4060e0] hover:bg-[#3050d0] font-bold" 
                         disabled={registerEmployerMutation.isPending}
                       >
                         {registerEmployerMutation.isPending ? (
-                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
                         ) : null}
                         Create Employer Account
                       </Button>
                     </form>
                   </Form>
                 </CardContent>
-                <CardFooter className="flex justify-center">
-                  <p className="text-sm text-gray-500">
+                <CardFooter className="flex justify-center pt-1 pb-3">
+                  <p className="text-xs text-gray-500">
                     Already have an account?{" "}
                     <Link href="/auth?tab=login" className="text-primary font-medium hover:underline">
                       Sign in
@@ -331,60 +329,57 @@ export default function EmployerRegisterPage() {
             </div>
             
             {/* Right side: Hero section */}
-            <div className="md:col-span-2 bg-primary text-white rounded-lg p-8 flex flex-col justify-center shadow-lg h-full">
-              <div className="mb-8">
-                <h2 className="text-3xl font-bold mb-3">For Employers</h2>
-                <p className="text-primary-foreground/90 text-lg">
+            <div className="md:col-span-2 bg-primary text-white rounded-lg p-5 flex flex-col justify-center shadow-lg">
+              <div className="mb-3">
+                <h2 className="text-2xl font-bold mb-2">For Employers</h2>
+                <p className="text-primary-foreground/90 text-sm">
                   Connect with talented professionals and grow your team with our comprehensive recruitment tools.
                 </p>
               </div>
               
-              <div className="space-y-6">
+              <div className="space-y-3">
                 <div className="flex items-start">
-                  <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <div className="bg-white/20 p-1.5 rounded-full mr-3 flex-shrink-0">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Talent Acquisition</h3>
-                    <p className="text-base text-primary-foreground/90">Access a pool of qualified candidates across UAE & GCC</p>
+                    <h3 className="font-semibold text-sm">Talent Acquisition</h3>
+                    <p className="text-xs text-primary-foreground/90">Access a pool of qualified candidates across UAE & GCC</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start">
-                  <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <div className="bg-white/20 p-1.5 rounded-full mr-3 flex-shrink-0">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Simplified Hiring</h3>
-                    <p className="text-base text-primary-foreground/90">Post jobs, screen applicants, and conduct interviews all in one place</p>
+                    <h3 className="font-semibold text-sm">Simplified Hiring</h3>
+                    <p className="text-xs text-primary-foreground/90">Post jobs, screen applicants, and conduct interviews</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start">
-                  <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <div className="bg-white/20 p-1.5 rounded-full mr-3 flex-shrink-0">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Recruitment Analytics</h3>
-                    <p className="text-base text-primary-foreground/90">Track recruitment metrics and optimize your hiring process</p>
+                    <h3 className="font-semibold text-sm">Recruitment Analytics</h3>
+                    <p className="text-xs text-primary-foreground/90">Track metrics and optimize your hiring process</p>
                   </div>
                 </div>
               </div>
               
-              <div className="mt-auto pt-8">
-                <div className="bg-white/10 rounded-lg p-4 border border-white/20">
-                  <h3 className="font-semibold text-lg mb-2">Join Today and Get:</h3>
-                  <p className="text-base text-primary-foreground/90 mb-3">
+              <div className="mt-3">
+                <div className="bg-white/10 rounded-lg p-3 border border-white/20">
+                  <h3 className="font-semibold text-sm mb-1">Join Today and Get:</h3>
+                  <p className="text-xs text-primary-foreground/90">
                     Access to Dubai & UAE's top talent pool for your hiring needs
-                  </p>
-                  <p className="text-sm text-primary-foreground/70">
-                    By joining, you agree to our terms of service and privacy policy
                   </p>
                 </div>
               </div>
