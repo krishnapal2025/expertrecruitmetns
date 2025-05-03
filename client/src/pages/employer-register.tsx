@@ -113,12 +113,12 @@ export default function EmployerRegisterPage() {
           <div className="grid md:grid-cols-5 gap-6">
             {/* Left side: Registration form */}
             <div className="md:col-span-3">
-              <Card className="shadow-lg border-t-4 border-t-primary">
+              <Card className="shadow-lg border-t-4 border-t-primary h-[calc(100vh-6rem)]">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-xl text-primary font-bold">Employer Registration</CardTitle>
                   <CardDescription>Create your employer account and hire top talent in UAE & GCC</CardDescription>
                 </CardHeader>
-                <CardContent className="px-6 py-1">
+                <CardContent className="px-6 py-4">
                   <Form {...employerForm}>
                     <form onSubmit={employerForm.handleSubmit(onEmployerSubmit)} className="space-y-3">
                       <div className="grid md:grid-cols-2 gap-3">
