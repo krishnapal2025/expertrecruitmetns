@@ -61,7 +61,7 @@ export default function EmployerInquiryPage() {
   // Handle form submission
   const mutation = useMutation({
     mutationFn: async (values: FormValues) => {
-      const response = await apiRequest("POST", "/api/inquiries", {
+      const response = await apiRequest("POST", "/api/contact", {
         ...values,
         inquiryType: "Employer Inquiry" // Always mark as employer inquiry
       });
