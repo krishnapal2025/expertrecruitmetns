@@ -1255,13 +1255,28 @@ function AdminDashboard() {
                                 <TableCell>{formatDate(inquiry.submittedAt || inquiry.createdAt)}</TableCell>
                                 <TableCell className="text-right">
                                   <div className="flex justify-end gap-1">
-                                    <Button variant="ghost" size="sm">
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm"
+                                      onClick={() => handleViewInquiry(inquiry)}
+                                      title="View Inquiry"
+                                    >
                                       <Eye className="h-4 w-4" />
+                                    </Button>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm"
+                                      onClick={() => handleReplyInquiry(inquiry)}
+                                      title="Send Reply"
+                                    >
+                                      <Mail className="h-4 w-4" />
                                     </Button>
                                     <Button 
                                       variant="ghost" 
                                       size="sm" 
                                       className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                      onClick={() => handleDeleteInquiry(inquiry)}
+                                      title="Delete Inquiry"
                                     >
                                       <Trash2 className="h-4 w-4" />
                                     </Button>
@@ -1498,13 +1513,28 @@ function AdminDashboard() {
                                 <TableCell>{formatDate(inquiry.submittedAt || inquiry.createdAt)}</TableCell>
                                 <TableCell className="text-right">
                                   <div className="flex justify-end gap-1">
-                                    <Button variant="ghost" size="sm">
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm"
+                                      onClick={() => handleViewInquiry(inquiry)}
+                                      title="View Inquiry"
+                                    >
                                       <Eye className="h-4 w-4" />
+                                    </Button>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm"
+                                      onClick={() => handleReplyInquiry(inquiry)}
+                                      title="Send Reply"
+                                    >
+                                      <Mail className="h-4 w-4" />
                                     </Button>
                                     <Button 
                                       variant="ghost" 
                                       size="sm" 
                                       className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                      onClick={() => handleDeleteInquiry(inquiry)}
+                                      title="Delete Inquiry"
                                     >
                                       <Trash2 className="h-4 w-4" />
                                     </Button>
@@ -1567,16 +1597,28 @@ function AdminDashboard() {
                             <TableCell>{formatDate(message.submittedAt || message.createdAt)}</TableCell>
                             <TableCell className="text-right">
                               <div className="flex justify-end gap-1">
-                                <Button variant="ghost" size="sm">
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => handleViewInquiry(message)}
+                                  title="View Message"
+                                >
                                   <Eye className="h-4 w-4" />
                                 </Button>
-                                <Button variant="ghost" size="sm">
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => handleReplyInquiry(message)}
+                                  title="Send Reply"
+                                >
                                   <Mail className="h-4 w-4" />
                                 </Button>
                                 <Button 
                                   variant="ghost" 
                                   size="sm" 
                                   className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                  onClick={() => handleDeleteInquiry(message)}
+                                  title="Delete Message"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>

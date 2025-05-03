@@ -209,6 +209,85 @@ export const sendPasswordResetEmail = async (
 };
 
 /**
+ * Send a reply to an inquiry
+ */
+export const sendInquiryReply = async (
+  recipientEmail: string,
+  recipientName: string,
+  subject: string,
+  message: string,
+  senderName: string
+): Promise<{ success: boolean; previewUrl?: string }> => {
+  try {
+    console.log(`Sending inquiry reply to ${recipientEmail}`);
+    
+    // In development mode, we'll use Ethereal mail for testing (no real emails sent)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Development mode - using Ethereal test email account');
+      
+      try {
+        // Create a test account on Ethereal for development testing
+        const testAccount = await nodemailer.createTestAccount();
+        console.log('Created Ethereal test account for inquiry reply');
+        
+        // Create a transporter using the test account
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.ethereal.email',
+          port: 587,
+          secure: false,
+          auth: {
+            user: testAccount.user,
+            pass: testAccount.pass,
+          },
+        });
+        
+        // Set up email options
+        const mailOptions = {
+          from: '"Expert Recruitments" <info@expertrecruitments.com>',
+          to: `"${recipientName}" <${recipientEmail}>`,
+          subject: subject,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+              <div style="text-align: center; margin-bottom: 20px;">
+                <img src="https://expertrecruitments.com/logo.png" alt="Expert Recruitments Logo" style="max-width: 200px;">
+              </div>
+              <h2 style="color: #333; text-align: center;">Inquiry Response</h2>
+              <p>Dear ${recipientName},</p>
+              <div style="margin: 20px 0; line-height: 1.6; white-space: pre-wrap; background-color: #f9f9f9; padding: 15px; border-radius: 5px;">${message}</div>
+              <p>Best regards,<br>${senderName}<br>Expert Recruitments Team</p>
+              <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; font-size: 0.8em; color: #888; text-align: center;">
+                <p>If you have any further questions, please feel free to contact us by replying to this email or using our contact form.</p>
+                <p>&copy; ${new Date().getFullYear()} Expert Recruitments. All rights reserved.</p>
+              </div>
+            </div>
+          `
+        };
+        
+        // Send the email
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Inquiry reply email sent successfully (development mode)');
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        
+        return {
+          success: true,
+          previewUrl: nodemailer.getTestMessageUrl(info)
+        };
+      } catch (mailError) {
+        console.error('Error sending inquiry reply email:', mailError);
+        return { success: false };
+      }
+    } else {
+      // TODO: Implement production email sending
+      console.log('Production email sending not yet implemented');
+      return { success: false };
+    }
+  } catch (error) {
+    console.error('Error sending inquiry reply email:', error);
+    return { success: false };
+  }
+};
+
+/**
  * Send a vacancy assignment email to a recruiter
  */
 export const sendVacancyAssignmentEmail = async (
