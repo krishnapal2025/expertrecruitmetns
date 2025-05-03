@@ -577,7 +577,7 @@ function AdminDashboard() {
       </div>
       
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-8">
+        <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-8">
           <TabsTrigger value="dashboard">
             <BarChart2 className="mr-2 h-4 w-4" />
             Dashboard
@@ -593,10 +593,6 @@ function AdminDashboard() {
           <TabsTrigger value="messages">
             <MessageSquare className="mr-2 h-4 w-4" />
             Messages
-          </TabsTrigger>
-          <TabsTrigger value="posts">
-            <FileTextIcon className="mr-2 h-4 w-4" />
-            Blogs
           </TabsTrigger>
           <TabsTrigger value="content">
             <FileText className="mr-2 h-4 w-4" />
