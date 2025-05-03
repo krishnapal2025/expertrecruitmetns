@@ -33,6 +33,7 @@ import AdminRegisterPage from "@/pages/admin-register";
 import AdminLoginPage from "@/pages/admin-login";
 import AdminForgotPasswordPage from "@/pages/admin-forgot-password";
 import AdminResetPasswordPage from "@/pages/admin-reset-password";
+import EmployerInquiryPage from "@/pages/employer-inquiry";
 import ProfilePage from "@/pages/profile-page";
 import PostJobPage from "@/pages/post-job";
 import PostManagerPage from "@/pages/post-manager";
@@ -98,6 +99,7 @@ function Router() {
       <Route path="/employer-register" component={EmployerRegisterPage} />
       <Route path="/hire-talent" component={HireTalentPage} />
       <Route path="/vacancy-form" component={VacancyFormPage} />
+      <Route path="/employer-inquiry" component={EmployerInquiryPage} />
       <Route path="/admin" component={AdminPage} />
       <AdminProtectedRoute path="/admin-dashboard" component={AdminDashboardPage} />
       <AdminProtectedRoute path="/create-blog" component={CreateBlogPage} />

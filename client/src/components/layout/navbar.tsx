@@ -131,7 +131,7 @@ export default function Navbar() {
         { name: "About Us", href: "/about-us" },
         { name: "Hire Talent", href: "/hire-talent" },
         { name: "Vacancy Form", href: "/vacancy-form" },
-        { name: "Inquiry Form", href: "/contact-us?type=inquiry" },
+        { name: "Inquiry Form", href: "/employer-inquiry" },
         { name: "Blogs", href: "/blogs" },
         { name: "Contact Us", href: "/contact-us" },
       ];
