@@ -22,7 +22,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, User, LogOut, ChevronDown, Briefcase, ShieldCheck, Building2 } from "lucide-react";
+import { Menu, User, LogOut, ChevronDown, Briefcase, ShieldCheck, Building2, FileText } from "lucide-react";
 import expertLogo from "../../assets/er-logo-icon.png";
 import NotificationsPopover from "@/components/common/notifications";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -142,6 +142,7 @@ export default function Navbar() {
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
         { name: "Post Manager", href: "/post-manager" },
+        { name: "Blog Manager", href: "/create-blog" },
         { name: "Post Job", href: "/post-job" },
         { 
           name: "Solutions", 
@@ -261,6 +262,12 @@ export default function Navbar() {
                           <DropdownMenuItem>
                             <Briefcase className="mr-2 h-4 w-4" />
                             <span>Post Manager</span>
+                          </DropdownMenuItem>
+                        </ScrollLink>
+                        <ScrollLink href="/create-blog" className="w-full">
+                          <DropdownMenuItem>
+                            <FileText className="mr-2 h-4 w-4" />
+                            <span>Blog Manager</span>
                           </DropdownMenuItem>
                         </ScrollLink>
                         <ScrollLink href="/post-job" className="w-full">
@@ -465,7 +472,7 @@ export default function Navbar() {
                               }}
                             >
                               <Briefcase className="mr-2 h-4 w-4" />
-                              Create Blog
+                              Blog Manager
                             </div>
                             <div 
                               className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
