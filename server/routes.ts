@@ -2290,15 +2290,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const inquiryUser = await storage.getUserByEmail(inquiry.email);
         if (inquiryUser) {
+          console.log(`Creating notification for user ID ${inquiryUser.id} with email ${inquiry.email}`);
           await storage.createNotification({
             userId: inquiryUser.id,
             message: `We've replied to your ${inquiry.inquiryType === "business" ? "business" : "general"} inquiry. Check your email.`,
-            read: false,
-            createdAt: new Date(),
+            type: "inquiry_reply",
+            entityId: parseInt(id),
           });
+          console.log(`Successfully created notification for user ID ${inquiryUser.id}`);
+        } else {
+          console.log(`User with email ${inquiry.email} not found for notification`);
         }
       } catch (err) {
-        console.log("Could not create notification for inquiry reply:", err);
+        console.error("Could not create notification for inquiry reply:", err);
         // Continue with the operation even if notification creation fails
       }
       
