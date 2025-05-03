@@ -99,7 +99,6 @@ export default function BlogManagerPage() {
       toast({
         title: "Blog post deleted",
         description: "The blog post has been successfully deleted.",
-        variant: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/blog-posts"] });
       setIsDeleteDialogOpen(false);
@@ -123,7 +122,6 @@ export default function BlogManagerPage() {
       toast({
         title: "Status updated",
         description: "Blog post status has been updated.",
-        variant: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/blog-posts"] });
     },
@@ -340,11 +338,11 @@ export default function BlogManagerPage() {
                         <span className="text-gray-400">No category</span>
                       )}
                     </TableCell>
-                    <TableCell>{formatDate(post.publishDate)}</TableCell>
+                    <TableCell>{formatDate(post.publishDate ? post.publishDate.toString() : null)}</TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
                         <Switch
-                          checked={post.published}
+                          checked={post.published || false}
                           onCheckedChange={() => handleTogglePublished(post)}
                           disabled={togglePublishMutation.isPending}
                           id={`publish-switch-${post.id}`}

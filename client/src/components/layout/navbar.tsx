@@ -264,7 +264,7 @@ export default function Navbar() {
                             <span>Post Manager</span>
                           </DropdownMenuItem>
                         </ScrollLink>
-                        <ScrollLink href="/create-blog" className="w-full">
+                        <ScrollLink href="/blog-manager" className="w-full">
                           <DropdownMenuItem>
                             <FileText className="mr-2 h-4 w-4" />
                             <span>Blog Manager</span>
@@ -468,7 +468,7 @@ export default function Navbar() {
                               onClick={() => {
                                 setIsMobileMenuOpen(false);
                                 window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/create-blog", 100);
+                                setTimeout(() => window.location.href = "/blog-manager", 100);
                               }}
                             >
                               <Briefcase className="mr-2 h-4 w-4" />
