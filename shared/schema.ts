@@ -295,6 +295,24 @@ export const insertBlogPostSchema = createInsertSchema(blogPosts)
     content: z.string().min(10, "Content must be at least 10 characters"),
   });
 
+// Notifications table for admin alerts
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id), // Admin user who should receive the notification
+  message: text("message").notNull(),
+  type: text("type").notNull(), // 'vacancy', 'inquiry', 'message'
+  read: boolean("read").default(false),
+  entityId: integer("entity_id"), // ID of the related entity (vacancy ID, inquiry ID, etc.)
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Create insert schema for notifications
+export const insertNotificationSchema = createInsertSchema(notifications).omit({
+  id: true,
+  read: true,
+  createdAt: true,
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type JobSeeker = typeof jobSeekers.$inferSelect;
@@ -307,6 +325,7 @@ export type InvitationCode = typeof invitationCodes.$inferSelect;
 export type Vacancy = typeof vacancies.$inferSelect;
 export type StaffingInquiry = typeof staffingInquiries.$inferSelect;
 export type BlogPost = typeof blogPosts.$inferSelect;
+export type Notification = typeof notifications.$inferSelect;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertJobSeeker = z.infer<typeof insertJobSeekerSchema>;
@@ -319,6 +338,7 @@ export type InsertInvitationCode = z.infer<typeof insertInvitationCodeSchema>;
 export type InsertVacancy = z.infer<typeof insertVacancySchema>;
 export type InsertStaffingInquiry = z.infer<typeof insertStaffingInquirySchema>;
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
+export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 
 export type JobSeekerRegister = z.infer<typeof jobSeekerRegisterSchema>;
 export type EmployerRegister = z.infer<typeof employerRegisterSchema>;

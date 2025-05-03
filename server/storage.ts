@@ -9,7 +9,8 @@ import {
   invitationCodes, InvitationCode, InsertInvitationCode,
   vacancies, Vacancy, InsertVacancy,
   staffingInquiries, StaffingInquiry, InsertStaffingInquiry,
-  blogPosts, BlogPost, InsertBlogPost
+  blogPosts, BlogPost, InsertBlogPost,
+  notifications, Notification, InsertNotification
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";

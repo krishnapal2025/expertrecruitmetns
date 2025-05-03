@@ -135,7 +135,7 @@ function AdminDashboard() {
     enabled: !!user && user.userType === "admin"
   });
   
-  // Fetch vacancies
+  // Fetch vacancies with shorter refresh interval for real-time updates
   const { data: vacancies, isLoading: vacanciesLoading } = useQuery({
     queryKey: ["/api/admin/vacancies"],
     queryFn: async () => {
@@ -143,10 +143,12 @@ function AdminDashboard() {
       if (!res.ok) throw new Error("Failed to fetch vacancies");
       return await res.json();
     },
-    enabled: !!user && user.userType === "admin"
+    enabled: !!user && user.userType === "admin",
+    refetchInterval: 5000, // Refetch every 5 seconds to show new submissions quickly
+    refetchOnWindowFocus: true
   });
   
-  // Fetch inquiries
+  // Fetch inquiries with shorter refresh interval for real-time updates
   const { data: inquiries, isLoading: inquiriesLoading } = useQuery({
     queryKey: ["/api/staffing-inquiries"],
     queryFn: async () => {
@@ -154,7 +156,9 @@ function AdminDashboard() {
       if (!res.ok) throw new Error("Failed to fetch inquiries");
       return await res.json();
     },
-    enabled: !!user && user.userType === "admin"
+    enabled: !!user && user.userType === "admin",
+    refetchInterval: 5000, // Refetch every 5 seconds to show new submissions quickly
+    refetchOnWindowFocus: true
   });
   
   // Blog posts query removed as requested
