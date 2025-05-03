@@ -364,6 +364,8 @@ function AdminDashboard() {
                   <h3 className="text-sm font-medium">Status</h3>
                   <Badge variant={
                     selectedVacancy.status === "open" 
+                      ? "default"
+                      : selectedVacancy.status === "pending" 
                       ? "default" 
                       : selectedVacancy.status === "closed" 
                       ? "secondary" 
@@ -603,9 +605,9 @@ function AdminDashboard() {
                 <div className="text-xs text-muted-foreground mt-1">
                   {!vacanciesLoading && vacancies?.length > 0 && (
                     <>
-                      Pending: {vacancies?.filter((v: any) => v.status === "pending").length || 0} | 
-                      Approved: {vacancies?.filter((v: any) => v.status === "approved").length || 0} | 
-                      Rejected: {vacancies?.filter((v: any) => v.status === "rejected").length || 0}
+                      Pending: {vacancies?.filter((v: any) => !v.status || v.status === "pending").length || 0} | 
+                      Open: {vacancies?.filter((v: any) => v.status === "open").length || 0} | 
+                      Closed: {vacancies?.filter((v: any) => v.status === "closed").length || 0}
                     </>
                   )}
                 </div>
@@ -993,6 +995,7 @@ function AdminDashboard() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">All Statuses</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
                           <SelectItem value="open">Open</SelectItem>
                           <SelectItem value="closed">Closed</SelectItem>
                           <SelectItem value="lost">Lost</SelectItem>
@@ -1039,6 +1042,8 @@ function AdminDashboard() {
                               <TableCell>
                                 <Badge variant={
                                   vacancy.status === "open" 
+                                    ? "default" 
+                                    : vacancy.status === "pending" 
                                     ? "default" 
                                     : vacancy.status === "closed" 
                                     ? "secondary" 

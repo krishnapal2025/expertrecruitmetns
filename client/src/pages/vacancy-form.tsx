@@ -124,6 +124,7 @@ export default function VacancyFormPage() {
         applicationDeadline: data.applicationDeadline.toISOString(),
         
         // Mapping from form field names to backend field names
+        positionName: data.jobTitle, // Add position name field for admin dashboard compatibility
         experienceRequired: data.experienceLevel,
         skillsRequired: data.requiredSkills,
         requirements: data.employmentType + " - " + data.salaryRange,
