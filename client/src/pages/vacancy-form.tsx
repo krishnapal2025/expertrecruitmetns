@@ -55,6 +55,7 @@ const vacancyFormSchema = z.object({
   location: z.string().min(2, { message: "Location is required" }),
   industry: z.string().min(2, { message: "Industry is required" }),
   employmentType: z.string().min(1, { message: "Please select an employment type" }),
+  currency: z.string().min(1, { message: "Please select a currency" }),
   salaryRange: z.string().optional(),
   requiredSkills: z.string().min(5, { message: "Please list the required skills" }),
   experienceLevel: z.string().min(1, { message: "Please select experience level" }),
@@ -106,6 +107,7 @@ export default function VacancyFormPage() {
       location: "",
       industry: "",
       employmentType: "",
+      currency: "AED", // Default to UAE currency
       salaryRange: "",
       requiredSkills: "",
       experienceLevel: "",
@@ -206,18 +208,139 @@ export default function VacancyFormPage() {
     "Executive (10+ years)"
   ];
 
-  // Salary ranges
-  const salaryRanges = [
-    "Competitive",
-    "Less than AED 5,000/month",
-    "AED 5,000 - 10,000/month",
-    "AED 10,000 - 15,000/month",
-    "AED 15,000 - 20,000/month", 
-    "AED 20,000 - 30,000/month",
-    "AED 30,000 - 50,000/month",
-    "Above AED 50,000/month",
-    "Negotiable"
+  // Currency options
+  const currencies = [
+    { code: "AED", name: "UAE Dirham (AED)", country: "United Arab Emirates" },
+    { code: "INR", name: "Indian Rupee (INR)", country: "India" },
+    { code: "USD", name: "US Dollar (USD)", country: "United States" },
+    { code: "GBP", name: "British Pound (GBP)", country: "United Kingdom" },
+    { code: "EUR", name: "Euro (EUR)", country: "European Union" },
+    { code: "SAR", name: "Saudi Riyal (SAR)", country: "Saudi Arabia" },
+    { code: "QAR", name: "Qatari Riyal (QAR)", country: "Qatar" },
+    { code: "KWD", name: "Kuwaiti Dinar (KWD)", country: "Kuwait" },
+    { code: "SGD", name: "Singapore Dollar (SGD)", country: "Singapore" }
   ];
+
+  // Get the selected currency
+  const selectedCurrency = form.watch("currency") || "AED";
+
+  // Salary ranges based on currency
+  const getSalaryRanges = (currencyCode: string) => {
+    switch(currencyCode) {
+      case "AED":
+        return [
+          "Competitive",
+          "Less than AED 5,000/month",
+          "AED 5,000 - 10,000/month",
+          "AED 10,000 - 15,000/month",
+          "AED 15,000 - 20,000/month", 
+          "AED 20,000 - 30,000/month",
+          "AED 30,000 - 50,000/month",
+          "Above AED 50,000/month",
+          "Negotiable"
+        ];
+      case "INR":
+        return [
+          "Competitive",
+          "Less than INR 50,000/month",
+          "INR 50,000 - 100,000/month",
+          "INR 100,000 - 200,000/month",
+          "INR 200,000 - 300,000/month", 
+          "INR 300,000 - 500,000/month",
+          "Above INR 500,000/month",
+          "Negotiable"
+        ];
+      case "USD":
+        return [
+          "Competitive",
+          "Less than USD 3,000/month",
+          "USD 3,000 - 5,000/month",
+          "USD 5,000 - 8,000/month",
+          "USD 8,000 - 12,000/month", 
+          "USD 12,000 - 18,000/month",
+          "Above USD 18,000/month",
+          "Negotiable"
+        ];
+      case "GBP":
+        return [
+          "Competitive",
+          "Less than GBP 2,500/month",
+          "GBP 2,500 - 4,000/month",
+          "GBP 4,000 - 6,000/month",
+          "GBP 6,000 - 9,000/month", 
+          "GBP 9,000 - 15,000/month",
+          "Above GBP 15,000/month",
+          "Negotiable"
+        ];
+      case "EUR":
+        return [
+          "Competitive",
+          "Less than EUR 3,000/month",
+          "EUR 3,000 - 5,000/month",
+          "EUR 5,000 - 7,000/month",
+          "EUR 7,000 - 10,000/month", 
+          "EUR 10,000 - 15,000/month",
+          "Above EUR 15,000/month",
+          "Negotiable"
+        ];
+      case "SAR":
+        return [
+          "Competitive",
+          "Less than SAR 5,000/month",
+          "SAR 5,000 - 10,000/month",
+          "SAR 10,000 - 15,000/month",
+          "SAR 15,000 - 25,000/month", 
+          "SAR 25,000 - 40,000/month",
+          "Above SAR 40,000/month",
+          "Negotiable"
+        ];
+      case "QAR":
+        return [
+          "Competitive",
+          "Less than QAR 5,000/month",
+          "QAR 5,000 - 10,000/month",
+          "QAR 10,000 - 15,000/month",
+          "QAR 15,000 - 25,000/month", 
+          "QAR 25,000 - 40,000/month",
+          "Above QAR 40,000/month",
+          "Negotiable"
+        ];
+      case "KWD":
+        return [
+          "Competitive",
+          "Less than KWD 1,000/month",
+          "KWD 1,000 - 2,000/month",
+          "KWD 2,000 - 3,000/month",
+          "KWD 3,000 - 5,000/month", 
+          "KWD 5,000 - 8,000/month",
+          "Above KWD 8,000/month",
+          "Negotiable"
+        ];
+      case "SGD":
+        return [
+          "Competitive",
+          "Less than SGD 3,000/month",
+          "SGD 3,000 - 5,000/month",
+          "SGD 5,000 - 8,000/month",
+          "SGD 8,000 - 12,000/month", 
+          "SGD 12,000 - 18,000/month",
+          "Above SGD 18,000/month",
+          "Negotiable"
+        ];
+      default:
+        return [
+          "Competitive",
+          "Entry Level",
+          "Mid Level",
+          "Senior Level",
+          "Executive Level",
+          "Negotiable"
+        ];
+    }
+  };
+
+  // Get salary ranges based on selected currency
+  const salaryRanges = getSalaryRanges(selectedCurrency);
 
   return (
     <>
