@@ -191,7 +191,7 @@ export default function EmployerRegisterPage() {
                                 defaultValue={field.value}
                               >
                                 <FormControl>
-                                  <SelectTrigger className="h-9">
+                                  <SelectTrigger className="h-10">
                                     <SelectValue placeholder="Select company type" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -221,7 +221,7 @@ export default function EmployerRegisterPage() {
                                 defaultValue={field.value}
                               >
                                 <FormControl>
-                                  <SelectTrigger className="h-9">
+                                  <SelectTrigger className="h-10">
                                     <SelectValue placeholder="Select country" />
                                   </SelectTrigger>
                                 </FormControl>
