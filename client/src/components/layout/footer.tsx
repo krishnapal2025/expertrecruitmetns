@@ -273,7 +273,7 @@ export default function Footer() {
                     type="email" 
                     placeholder="Enter your email"
                     required
-                    className="bg-gray-700 border-gray-600 text-white rounded-r-none w-full placeholder:text-gray-500 placeholder:text-sm focus:ring-1 focus:ring-primary focus:border-primary focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none"
+                    className="bg-gray-700 border-gray-600 text-white rounded-r-none max-w-[170px] md:max-w-none md:w-full placeholder:text-gray-500 placeholder:text-sm focus:ring-1 focus:ring-primary focus:border-primary focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none"
                   />
                   <Button 
                     type="submit" 
