@@ -43,17 +43,6 @@ export default function ContactUsPage() {
   const [isInquiryForm, setIsInquiryForm] = useState(false);
   const [location] = useLocation();
 
-  // Parse URL parameters to check if this is an inquiry form
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const type = params.get('type');
-    if (type === 'inquiry') {
-      setIsInquiryForm(true);
-      // Auto-set subject for employer inquiry forms
-      form.setValue('subject', 'Employer Inquiry');
-    }
-  }, [location, form]);
-
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -64,6 +53,17 @@ export default function ContactUsPage() {
       message: "",
     },
   });
+
+  // Parse URL parameters to check if this is an inquiry form
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+    if (type === 'inquiry') {
+      setIsInquiryForm(true);
+      // Auto-set subject for employer inquiry forms
+      form.setValue('subject', 'Employer Inquiry');
+    }
+  }, [location, form]);
 
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
@@ -446,7 +446,9 @@ export default function ContactUsPage() {
               }
             }}
           >
-            Have a question or inquiry? Fill out the form below and our team will get back to you as soon as possible.
+            {isInquiryForm 
+              ? 'Submit your employer inquiry and our expert recruitment team will contact you promptly to discuss your hiring needs and solutions.'
+              : 'Have a question or inquiry? Fill out the form below and our team will get back to you as soon as possible.'}
           </motion.p>
         </motion.div>
 
@@ -466,7 +468,9 @@ export default function ContactUsPage() {
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
                   <Mail className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Send Us a Message</h3>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {isInquiryForm ? 'Submit Your Employer Inquiry' : 'Send Us a Message'}
+                </h3>
               </div>
               
               <Form {...form}>
@@ -539,7 +543,9 @@ export default function ContactUsPage() {
                         <FormLabel className="text-gray-700 dark:text-gray-300">Message</FormLabel>
                         <FormControl>
                           <Textarea 
-                            placeholder="Please tell us how we can help you..."
+                            placeholder={isInquiryForm 
+                              ? "Please describe your company's hiring needs, positions you're looking to fill, and any specific requirements..." 
+                              : "Please tell us how we can help you..."}
                             className="min-h-[150px] rounded-md"
                             {...field} 
                           />
@@ -562,7 +568,7 @@ export default function ContactUsPage() {
                     ) : (
                       <>
                         <Send className="mr-2 h-5 w-5" />
-                        Send Message
+                        {isInquiryForm ? 'Submit Inquiry' : 'Send Message'}
                       </>
                     )}
                   </Button>
