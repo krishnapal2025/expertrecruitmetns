@@ -16,7 +16,6 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -43,6 +42,7 @@ import {
   Send,
   Eye,
   BarChart2,
+  FileText as FileTextIcon,
   MessageSquare,
   PlusCircle,
   Download,
@@ -156,7 +156,16 @@ function AdminDashboard() {
     enabled: !!user && user.userType === "admin"
   });
   
-  // Blog posts section removed
+  // Fetch blog posts
+  const { data: blogPosts, isLoading: blogPostsLoading } = useQuery({
+    queryKey: ["/api/blog-posts"],
+    queryFn: async () => {
+      const res = await fetch("/api/blog-posts");
+      if (!res.ok) throw new Error("Failed to fetch blog posts");
+      return await res.json();
+    },
+    enabled: !!user && user.userType === "admin"
+  });
   
   // Helper function for formatting dates
   const formatDate = (date: string | Date | null) => {
@@ -196,7 +205,63 @@ function AdminDashboard() {
     },
   });
   
-  // Blog-related mutations removed
+  // Blog post mutations
+  const deleteBlogPostMutation = useMutation({
+    mutationFn: async (postId: number) => {
+      const res = await apiRequest("DELETE", `/api/blog-posts/${postId}`);
+      if (!res.ok) {
+        // Try to parse error as JSON, but handle cases where it's not JSON
+        try {
+          const error = await res.json();
+          throw new Error(error.message || "Failed to delete blog post");
+        } catch (e) {
+          throw new Error("Failed to delete blog post");
+        }
+      }
+      // Return success even if there's no content (204 response)
+      return true;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Blog post deleted",
+        description: "The blog post has been deleted successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/blog-posts"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to delete blog post",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  const toggleBlogPostPublishMutation = useMutation({
+    mutationFn: async ({ postId, published }: { postId: number, published: boolean }) => {
+      const res = await apiRequest("PATCH", `/api/blog-posts/${postId}`, { published });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || `Failed to ${published ? 'publish' : 'unpublish'} blog post`);
+      }
+      return await res.json();
+    },
+    onSuccess: (data, variables) => {
+      const { published } = variables;
+      toast({
+        title: published ? "Blog post published" : "Blog post unpublished",
+        description: `The blog post has been ${published ? 'published' : 'unpublished'} successfully.`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/blog-posts"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Action failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
   
   // Vacancy assignment mutation
   const assignVacancyMutation = useMutation({
@@ -512,7 +577,7 @@ function AdminDashboard() {
       </div>
       
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-8">
+        <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-8">
           <TabsTrigger value="dashboard">
             <BarChart2 className="mr-2 h-4 w-4" />
             Dashboard
@@ -528,6 +593,10 @@ function AdminDashboard() {
           <TabsTrigger value="messages">
             <MessageSquare className="mr-2 h-4 w-4" />
             Messages
+          </TabsTrigger>
+          <TabsTrigger value="posts">
+            <FileTextIcon className="mr-2 h-4 w-4" />
+            Blogs
           </TabsTrigger>
           <TabsTrigger value="content">
             <FileText className="mr-2 h-4 w-4" />
@@ -1485,66 +1554,249 @@ function AdminDashboard() {
           </Card>
         </TabsContent>
         
+        {/* Posts Panel */}
+        <TabsContent value="posts" className="space-y-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                <div>
+                  <CardTitle>Article Manager</CardTitle>
+                  <CardDescription>
+                    Create and manage blog posts and articles
+                  </CardDescription>
+                </div>
+                
+                <Button onClick={() => navigate("/create-blog")} className="shrink-0">
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Create New Article
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {blogPostsLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : !blogPosts || blogPosts.length === 0 ? (
+                <div className="flex justify-center py-10 border rounded-md bg-muted/20">
+                  <div className="text-center">
+                    <FileTextIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-medium mb-2">No blog posts yet</h3>
+                    <p className="text-sm text-muted-foreground mb-4 max-w-md">
+                      Create your first blog post to share insights with your audience
+                    </p>
+                    <Button 
+                      onClick={() => navigate("/create-blog")}
+                      size="sm"
+                    >
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      Create Post
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <ScrollArea className="h-[600px]">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {blogPosts
+                        .sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+                        .map((post: any) => (
+                          <TableRow key={post.id}>
+                            <TableCell className="font-medium">
+                              {post.title || "Untitled"}
+                              {post.subtitle && (
+                                <p className="text-xs text-muted-foreground truncate max-w-[250px]">
+                                  {post.subtitle}
+                                </p>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              {post.published ? (
+                                <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-200 border-green-200">
+                                  Published
+                                </Badge>
+                              ) : (
+                                <Badge variant="secondary" className="bg-amber-100 text-amber-800 hover:bg-amber-200">
+                                  Draft
+                                </Badge>
+                              )}
+                            </TableCell>
+                            <TableCell>{post.category || "Uncategorized"}</TableCell>
+                            <TableCell>{formatDate(post.createdAt)}</TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => {
+                                    // Open in a new tab to ensure it's properly loaded
+                                    window.open(`/article/${post.slug}`, '_blank');
+                                  }}
+                                >
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  View
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => navigate(`/edit-blog/${post.id}`)}
+                                >
+                                  <Pencil className="h-4 w-4 mr-1" />
+                                  Edit
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-100" 
+                                  onClick={() => {
+                                    if (window.confirm("Are you sure you want to delete this blog post? This action cannot be undone.")) {
+                                      deleteBlogPostMutation.mutate(post.id);
+                                    }
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4 mr-1" />
+                                  Delete
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
         
         {/* Content Panel */}
         <TabsContent value="content" className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Content Management</CardTitle>
-              <CardDescription>
-                Manage website content and settings
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="bg-muted/30 p-6 rounded-lg border">
-                  <h3 className="font-medium text-lg mb-2">Blog Management</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Create and manage blog posts for the website
-                  </p>
-                  
-                  <Button 
-                    onClick={() => navigate("/create-blog")} 
-                    className="w-full mb-4"
-                  >
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Create New Blog Post
-                  </Button>
+            <CardHeader className="pb-2">
+              <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                <div>
+                  <CardTitle>Blog Management</CardTitle>
+                  <CardDescription>
+                    Create and manage blog posts
+                  </CardDescription>
                 </div>
                 
-                <div className="bg-muted/30 p-6 rounded-lg border">
-                  <h3 className="font-medium text-lg mb-2">Website Content Settings</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Configure site-wide content options and visibility settings
-                  </p>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="testimonials-visibility" className="font-medium">Testimonials Visibility</Label>
-                        <p className="text-xs text-muted-foreground">Show or hide testimonials on the homepage</p>
-                      </div>
-                      <Switch id="testimonials-visibility" checked={true} />
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="featured-jobs" className="font-medium">Featured Jobs</Label>
-                        <p className="text-xs text-muted-foreground">Display featured job positions on the homepage</p>
-                      </div>
-                      <Switch id="featured-jobs" checked={true} />
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="newsletter-signup" className="font-medium">Newsletter Signup</Label>
-                        <p className="text-xs text-muted-foreground">Allow users to subscribe to the newsletter</p>
-                      </div>
-                      <Switch id="newsletter-signup" checked={true} />
-                    </div>
+                <Button onClick={() => navigate("/create-blog")} className="shrink-0">
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Create New Blog Post
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {blogPostsLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : !blogPosts || blogPosts.length === 0 ? (
+                <div className="flex justify-center py-10 border rounded-md bg-muted/20">
+                  <div className="text-center">
+                    <FileText className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground font-medium">No blog posts yet</p>
+                    <p className="text-sm text-muted-foreground/70 mb-6 max-w-md">
+                      Add engaging content to your website with blog posts about recruitment, career advice, and industry trends
+                    </p>
+                    <Button onClick={() => navigate("/create-blog")} className="w-full md:w-auto">
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      Create Your First Blog Post
+                    </Button>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="overflow-hidden">
+                  <ScrollArea className="h-[600px]">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Title</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Created</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {blogPosts
+                          .sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+                          .map((post: any) => (
+                            <TableRow key={post.id}>
+                              <TableCell className="font-medium">
+                                {post.title || "Untitled"}
+                                {post.subtitle && (
+                                  <p className="text-xs text-muted-foreground truncate max-w-[250px]">
+                                    {post.subtitle}
+                                  </p>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {post.published ? (
+                                  <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-200 border-green-200">
+                                    Published
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="secondary" className="bg-amber-100 text-amber-800 hover:bg-amber-200">
+                                    Draft
+                                  </Badge>
+                                )}
+                              </TableCell>
+                              <TableCell>{post.category || "Uncategorized"}</TableCell>
+                              <TableCell>{formatDate(post.createdAt)}</TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex items-center justify-end gap-2">
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    onClick={() => {
+                                      // Open in a new tab to ensure it's properly loaded
+                                      window.open(`/article/${post.slug}`, '_blank');
+                                    }}
+                                  >
+                                    <Eye className="h-4 w-4 mr-1" />
+                                    View
+                                  </Button>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    onClick={() => navigate(`/edit-blog/${post.id}`)}
+                                  >
+                                    <FileText className="h-4 w-4 mr-1" />
+                                    Edit
+                                  </Button>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                    onClick={() => {
+                                      if (window.confirm("Are you sure you want to delete this blog post? This action cannot be undone.")) {
+                                        deleteBlogPostMutation.mutate(post.id);
+                                      }
+                                    }}
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-1" />
+                                    Delete
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </ScrollArea>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

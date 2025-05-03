@@ -22,7 +22,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, User, LogOut, ChevronDown, Briefcase, ShieldCheck, Building2, FileText } from "lucide-react";
+import { Menu, User, LogOut, ChevronDown, Briefcase, ShieldCheck, Building2 } from "lucide-react";
 import expertLogo from "../../assets/er-logo-icon.png";
 import NotificationsPopover from "@/components/common/notifications";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -143,15 +143,6 @@ export default function Navbar() {
         { name: "About Us", href: "/about-us" },
         { name: "Post Manager", href: "/post-manager" },
         { name: "Post Job", href: "/post-job" },
-        { 
-          name: "Blog Management", 
-          href: "#",
-          isDropdown: true,
-          dropdownItems: [
-            { name: "Create Blog Post", href: "/create-blog" },
-            { name: "Manage Blog Posts", href: "/admin-dashboard?tab=content" },
-          ]
-        },
         { 
           name: "Solutions", 
           href: "#",
@@ -276,20 +267,6 @@ export default function Navbar() {
                           <DropdownMenuItem>
                             <Briefcase className="mr-2 h-4 w-4" />
                             <span>Post Job</span>
-                          </DropdownMenuItem>
-                        </ScrollLink>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuLabel>Blog Management</DropdownMenuLabel>
-                        <ScrollLink href="/create-blog" className="w-full">
-                          <DropdownMenuItem>
-                            <FileText className="mr-2 h-4 w-4" />
-                            <span>Create Blog Post</span>
-                          </DropdownMenuItem>
-                        </ScrollLink>
-                        <ScrollLink href="/admin-dashboard?tab=content" className="w-full">
-                          <DropdownMenuItem>
-                            <FileText className="mr-2 h-4 w-4" />
-                            <span>Manage Blog Posts</span>
                           </DropdownMenuItem>
                         </ScrollLink>
                       </>
@@ -479,9 +456,6 @@ export default function Navbar() {
                               <Briefcase className="mr-2 h-4 w-4" />
                               Post Job
                             </div>
-                            <div className="px-4 py-2 mt-3 font-semibold text-sm text-gray-700">
-                              Blog Management
-                            </div>
                             <div 
                               className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
                               onClick={() => {
@@ -490,19 +464,8 @@ export default function Navbar() {
                                 setTimeout(() => window.location.href = "/create-blog", 100);
                               }}
                             >
-                              <FileText className="mr-2 h-4 w-4" />
-                              Create Blog Post
-                            </div>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/admin-dashboard?tab=content", 100);
-                              }}
-                            >
-                              <FileText className="mr-2 h-4 w-4" />
-                              Manage Blog Posts
+                              <Briefcase className="mr-2 h-4 w-4" />
+                              Create Blog
                             </div>
                             <div 
                               className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
