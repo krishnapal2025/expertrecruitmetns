@@ -288,7 +288,7 @@ export default function Footer() {
               </form>
             </div>
             
-            <div className="flex flex-col h-full justify-start pl-8">
+            <div className="flex flex-col h-full justify-start md:pl-8">
               <h3 className="text-lg font-bold mb-3">Follow Us</h3>
               <div className="flex flex-col space-y-4">
                 <div className="flex space-x-4">
