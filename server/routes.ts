@@ -1322,7 +1322,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get notifications for a user
-  app.get("/api/realtime/notifications", (req, res) => {
+  app.get("/api/realtime/notifications", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "You must be logged in to get notifications" });
@@ -1333,16 +1333,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const userId = req.user.id;
 
-      // Get unread notifications for this user that are newer than the provided ID
-      const userNotifications = realtimeStore.notifications.filter(
-        notification => notification.userId === userId && notification.id > sinceId
-      );
+      // Get all notifications for this user
+      const allNotifications = await storage.getNotifications(userId, 50);
+      
+      // Filter to just the new ones since last check
+      const newNotifications = allNotifications.filter(notification => notification.id > sinceId);
+      
+      // Get the highest ID from the notifications
+      const lastId = newNotifications.length > 0
+        ? Math.max(...newNotifications.map(n => n.id))
+        : (allNotifications.length > 0 ? allNotifications[0]?.id : 0);
 
       res.json({
-        notifications: userNotifications,
-        lastId: userNotifications.length > 0
-          ? Math.max(...userNotifications.map(n => n.id))
-          : sinceId
+        notifications: newNotifications,
+        lastId: lastId,
+        unreadCount: await storage.getUnreadNotificationCount(userId)
       });
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -1351,7 +1356,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Mark notifications as read
-  app.post("/api/realtime/notifications/read", (req, res) => {
+  app.post("/api/realtime/notifications/read", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "You must be logged in to update notifications" });
@@ -1364,20 +1369,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid notification IDs" });
       }
 
-      // Mark notifications as read
-      ids.forEach(id => {
-        const notification = realtimeStore.notifications.find(
-          n => n.id === id && n.userId === userId
-        );
+      // Mark each notification as read
+      const updatePromises = ids.map(id => storage.markNotificationAsRead(id));
+      await Promise.all(updatePromises);
 
-        if (notification) {
-          notification.read = true;
-        }
+      // Return updated unread count
+      const unreadCount = await storage.getUnreadNotificationCount(userId);
+
+      res.json({ 
+        success: true,
+        unreadCount
       });
-
-      res.json({ success: true });
     } catch (error) {
       console.error("Error marking notifications as read:", error);
+      res.status(500).json({ message: "Failed to update notifications" });
+    }
+  });
+  
+  // Mark all notifications as read for the current user
+  app.post("/api/realtime/notifications/read-all", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to update notifications" });
+      }
+
+      const userId = req.user.id;
+      
+      // Mark all user's notifications as read
+      const success = await storage.markAllNotificationsAsRead(userId);
+      
+      if (!success) {
+        return res.status(500).json({ message: "Failed to mark all notifications as read" });
+      }
+
+      res.json({ 
+        success: true,
+        unreadCount: 0 // All notifications are read, so count is 0
+      });
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error);
       res.status(500).json({ message: "Failed to update notifications" });
     }
   });
