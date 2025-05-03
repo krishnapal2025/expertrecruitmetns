@@ -233,7 +233,28 @@ const CreateBlogPage = () => {
   });
 
   const onSubmit = (data: BlogFormValues) => {
-    createBlogMutation.mutate(data);
+    console.log("Form submitted with data:", data);
+    
+    // Make sure content is being populated
+    if (!data.content || data.content.trim().length < 100) {
+      toast({
+        title: "Content too short",
+        description: "Please add more content to your blog post (minimum 100 characters)",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Convert tags string to array
+    const submissionData = {
+      ...data,
+      tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : undefined,
+      // Generate a slug if one doesn't exist
+      slug: data.slug || data.title.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-')
+    };
+    
+    console.log("Submitting data:", submissionData);
+    createBlogMutation.mutate(submissionData);
   };
 
   const addSection = (type: 'paragraph' | 'header' | 'image') => {
@@ -249,25 +270,25 @@ const CreateBlogPage = () => {
   };
 
   const updateSection = (index: number, content: string) => {
+    console.log(`Updating section ${index} with content length: ${content.length}`);
+    
     const newSections = [...contentSections];
     newSections[index].content = content;
     setContentSections(newSections);
     
-    // Update the form content field with compiled content
-    const compiledContent = newSections
-      .map(section => {
-        if (section.type === 'header') {
-          return `## ${section.content}\n\n`;
-        } else if (section.type === 'paragraph') {
-          return `${section.content}\n`;
-        } else if (section.type === 'image') {
-          return `![image](${section.content})\n\n`;
-        }
-        return '';
-      })
+    // Just store the HTML content directly
+    const allContent = newSections
+      .map(section => section.content)
       .join('');
     
-    form.setValue('content', compiledContent);
+    console.log(`Total content length: ${allContent.length}`);
+    
+    // This triggers validation and updates the form
+    form.setValue('content', allContent, { 
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true
+    });
   };
 
   const updateSectionFormat = (index: number, formatKey: string, formatValue: string) => {
@@ -1039,9 +1060,21 @@ const CreateBlogPage = () => {
                     control={form.control}
                     name="content"
                     render={({ field }) => (
-                      <FormItem className="hidden">
+                      <FormItem>
+                        <FormLabel>Content</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          {/* Visible for debugging */}
+                          <div className="space-y-2">
+                            <Textarea 
+                              {...field} 
+                              className="font-mono text-xs h-20"
+                              placeholder="Content will be populated from the editor sections above"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              This field is automatically populated from the editor sections above. 
+                              You don't need to edit it directly.
+                            </p>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
