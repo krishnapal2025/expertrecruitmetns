@@ -1864,6 +1864,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch vacancies" });
     }
   });
+  
+  // Delete vacancy (admin only)
+  app.delete("/api/admin/vacancies/:id", async (req, res) => {
+    try {
+      // Check if user is authenticated and is an admin
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = req.user;
+      
+      // Check userType directly
+      if (user.userType !== "admin") {
+        return res.status(403).json({ message: "Only administrators can delete vacancies" });
+      }
+
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid vacancy ID" });
+      }
+
+      // Check if vacancy exists
+      const vacancy = await storage.getVacancy(id);
+      if (!vacancy) {
+        return res.status(404).json({ message: "Vacancy not found" });
+      }
+
+      const success = await storage.deleteVacancy(id);
+      if (success) {
+        res.json({ message: "Vacancy deleted successfully" });
+      } else {
+        res.status(500).json({ message: "Failed to delete vacancy" });
+      }
+    } catch (error) {
+      console.error("Error deleting vacancy:", error);
+      res.status(500).json({ message: "Error deleting vacancy" });
+    }
+  });
 
   // Update vacancy status (admin only)
   app.patch("/api/admin/vacancies/:id/status", async (req, res) => {

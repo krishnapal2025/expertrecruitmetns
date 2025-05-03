@@ -1633,6 +1633,14 @@ export class MemStorage implements IStorage {
     return updatedVacancy;
   }
   
+  async deleteVacancy(id: number): Promise<boolean> {
+    if (!this.vacancies.has(id)) {
+      return false;
+    }
+    
+    return this.vacancies.delete(id);
+  }
+  
   // Staffing Inquiry methods
   async getStaffingInquiry(id: number): Promise<StaffingInquiry | undefined> {
     return this.staffingInquiries.get(id);
