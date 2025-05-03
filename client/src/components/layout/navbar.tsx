@@ -143,7 +143,6 @@ export default function Navbar() {
         { name: "About Us", href: "/about-us" },
         { name: "Post Manager", href: "/post-manager" },
         { name: "Blog Manager", href: "/blog-manager" },
-        { name: "Post Job", href: "/post-job" },
         { 
           name: "Solutions", 
           href: "#",
@@ -268,12 +267,6 @@ export default function Navbar() {
                           <DropdownMenuItem>
                             <FileText className="mr-2 h-4 w-4" />
                             <span>Blog Manager</span>
-                          </DropdownMenuItem>
-                        </ScrollLink>
-                        <ScrollLink href="/post-job" className="w-full">
-                          <DropdownMenuItem>
-                            <Briefcase className="mr-2 h-4 w-4" />
-                            <span>Post Job</span>
                           </DropdownMenuItem>
                         </ScrollLink>
                       </>
@@ -452,17 +445,7 @@ export default function Navbar() {
                               <Briefcase className="mr-2 h-4 w-4" />
                               Post Manager
                             </div>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/post-job", 100);
-                              }}
-                            >
-                              <Briefcase className="mr-2 h-4 w-4" />
-                              Post Job
-                            </div>
+
                             <div 
                               className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
                               onClick={() => {

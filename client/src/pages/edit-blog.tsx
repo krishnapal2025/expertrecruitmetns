@@ -238,7 +238,7 @@ export default function EditBlogPage() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Career Insights">Career Insights</SelectItem>
-                        <SelectItem value="Executive Recruitment">Executive Recruitment</SelectItem>
+                        <SelectItem value="Expert Recruitments">Executive Recruitment</SelectItem>
                         <SelectItem value="Industry Trends">Industry Trends</SelectItem>
                         <SelectItem value="Job Search Tips">Job Search Tips</SelectItem>
                         <SelectItem value="Leadership">Leadership</SelectItem>
