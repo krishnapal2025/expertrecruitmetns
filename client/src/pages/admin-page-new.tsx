@@ -1498,6 +1498,21 @@ function AdminDashboard() {
             <CardContent>
               <div className="space-y-4">
                 <div className="bg-muted/30 p-6 rounded-lg border">
+                  <h3 className="font-medium text-lg mb-2">Blog Management</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Create and manage blog posts for the website
+                  </p>
+                  
+                  <Button 
+                    onClick={() => navigate("/create-blog")} 
+                    className="w-full mb-4"
+                  >
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Create New Blog Post
+                  </Button>
+                </div>
+                
+                <div className="bg-muted/30 p-6 rounded-lg border">
                   <h3 className="font-medium text-lg mb-2">Website Content Settings</h3>
                   <p className="text-sm text-muted-foreground mb-4">
                     Configure site-wide content options and visibility settings
