@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { 
@@ -41,7 +42,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format } from "date-fns";
-import { CalendarIcon, Briefcase, CheckCircle, User, Building, MapPin, CreditCard, Clock, ChevronRight, FileText } from "lucide-react";
+import { CalendarIcon, Briefcase, CheckCircle, User, Building, MapPin, CreditCard, Clock, ChevronRight, FileText, X } from "lucide-react";
 import { Link } from "wouter";
 
 // Create a schema for form validation
@@ -71,6 +72,7 @@ export default function VacancyFormPage() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSkillsDialogOpen, setIsSkillsDialogOpen] = useState(false);
 
   // Animation variants
   const containerVariants = {
@@ -219,6 +221,24 @@ export default function VacancyFormPage() {
     { code: "QAR", name: "Qatari Riyal (QAR)", country: "Qatar" },
     { code: "KWD", name: "Kuwaiti Dinar (KWD)", country: "Kuwait" },
     { code: "SGD", name: "Singapore Dollar (SGD)", country: "Singapore" }
+  ];
+
+  // Common required skills by industry/field
+  const commonSkills = [
+    // Technical/IT skills
+    "JavaScript", "React", "Node.js", "Python", "Java", "SQL", "AWS", "Azure", "Git", 
+    "TypeScript", "Docker", "Kubernetes", "DevOps", "CI/CD", "REST API", "GraphQL",
+    // Business/Finance/Management
+    "Financial Analysis", "Project Management", "Team Leadership", "Strategic Planning",
+    "Budgeting", "CRM", "Market Research", "Data Analysis", "Microsoft Excel", "PowerPoint",
+    "SAP", "ERP Systems", "Risk Management", "Financial Reporting", "Accounting",
+    // Marketing/Communications
+    "Digital Marketing", "SEO", "Content Writing", "Social Media Management", 
+    "Google Analytics", "Adobe Creative Suite", "Email Marketing", "Public Relations",
+    // General
+    "Communication Skills", "Problem Solving", "Critical Thinking", "Time Management",
+    "Teamwork", "Customer Service", "Negotiation", "Attention to Detail", 
+    "English Proficiency", "Arabic Proficiency", "Hindi Proficiency", "Adaptability"
   ];
 
   // Get the selected currency
@@ -723,22 +743,195 @@ export default function VacancyFormPage() {
                           <FormField
                             control={form.control}
                             name="requiredSkills"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Required Skills*</FormLabel>
-                                <FormControl>
-                                  <Textarea 
-                                    placeholder="List the technical skills, qualifications, and competencies required for this role" 
-                                    className="min-h-[100px]" 
-                                    {...field} 
-                                  />
-                                </FormControl>
-                                <FormDescription>
-                                  Separate different skills with commas
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            render={({ field }) => {
+                              // Parse current value into array to handle selections
+                              const currentSkills = field.value ? field.value.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+                              // Handle skill selection toggle
+                              const toggleSkill = (skill: string) => {
+                                if (currentSkills.includes(skill)) {
+                                  const updatedSkills = currentSkills.filter(s => s !== skill);
+                                  field.onChange(updatedSkills.join(', '));
+                                } else {
+                                  const updatedSkills = [...currentSkills, skill];
+                                  field.onChange(updatedSkills.join(', '));
+                                }
+                              };
+
+                              return (
+                                <FormItem>
+                                  <FormLabel>Required Skills*</FormLabel>
+                                  
+                                  {/* Common skills section */}
+                                  <div className="mb-3">
+                                    <p className="text-sm font-medium mb-2">Select from common skills:</p>
+                                    <div className="flex flex-wrap gap-2 mb-3">
+                                      {commonSkills.slice(0, 24).map((skill) => (
+                                        <Badge
+                                          key={skill}
+                                          variant={currentSkills.includes(skill) ? "default" : "outline"}
+                                          className={`cursor-pointer ${
+                                            currentSkills.includes(skill) 
+                                              ? "bg-[#5372f1] hover:bg-[#4060e0]" 
+                                              : "hover:bg-gray-100"
+                                          }`}
+                                          onClick={() => toggleSkill(skill)}
+                                        >
+                                          {skill}
+                                          {currentSkills.includes(skill) && (
+                                            <span className="ml-1">✓</span>
+                                          )}
+                                        </Badge>
+                                      ))}
+                                      <Badge 
+                                        variant="outline" 
+                                        className="cursor-pointer hover:bg-gray-100 font-semibold"
+                                        onClick={() => setIsSkillsDialogOpen(true)}
+                                      >
+                                        + More skills
+                                      </Badge>
+                                    </div>
+                                  </div>
+
+                                  {/* Skills selection modal */}
+                                  {isSkillsDialogOpen && (
+                                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                                      <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full p-6 max-h-[80vh] overflow-auto">
+                                        <div className="flex justify-between items-center mb-4">
+                                          <h3 className="text-lg font-semibold">Select Required Skills</h3>
+                                          <Button 
+                                            type="button" 
+                                            variant="ghost" 
+                                            size="sm"
+                                            onClick={() => setIsSkillsDialogOpen(false)}
+                                          >
+                                            <X className="h-4 w-4" />
+                                          </Button>
+                                        </div>
+                                        
+                                        <div className="overflow-y-auto max-h-[60vh]">
+                                          <div className="mb-4">
+                                            <h4 className="text-sm font-medium mb-2 text-gray-500">Technical/IT Skills</h4>
+                                            <div className="flex flex-wrap gap-2 mb-3">
+                                              {commonSkills.slice(0, 16).map((skill) => (
+                                                <Badge
+                                                  key={skill}
+                                                  variant={currentSkills.includes(skill) ? "default" : "outline"}
+                                                  className={`cursor-pointer ${
+                                                    currentSkills.includes(skill) 
+                                                      ? "bg-[#5372f1] hover:bg-[#4060e0]" 
+                                                      : "hover:bg-gray-100"
+                                                  }`}
+                                                  onClick={() => toggleSkill(skill)}
+                                                >
+                                                  {skill}
+                                                  {currentSkills.includes(skill) && (
+                                                    <span className="ml-1">✓</span>
+                                                  )}
+                                                </Badge>
+                                              ))}
+                                            </div>
+                                          </div>
+                                          
+                                          <div className="mb-4">
+                                            <h4 className="text-sm font-medium mb-2 text-gray-500">Business/Finance/Management</h4>
+                                            <div className="flex flex-wrap gap-2 mb-3">
+                                              {commonSkills.slice(16, 31).map((skill) => (
+                                                <Badge
+                                                  key={skill}
+                                                  variant={currentSkills.includes(skill) ? "default" : "outline"}
+                                                  className={`cursor-pointer ${
+                                                    currentSkills.includes(skill) 
+                                                      ? "bg-[#5372f1] hover:bg-[#4060e0]" 
+                                                      : "hover:bg-gray-100"
+                                                  }`}
+                                                  onClick={() => toggleSkill(skill)}
+                                                >
+                                                  {skill}
+                                                  {currentSkills.includes(skill) && (
+                                                    <span className="ml-1">✓</span>
+                                                  )}
+                                                </Badge>
+                                              ))}
+                                            </div>
+                                          </div>
+                                          
+                                          <div className="mb-4">
+                                            <h4 className="text-sm font-medium mb-2 text-gray-500">Marketing/Communications</h4>
+                                            <div className="flex flex-wrap gap-2 mb-3">
+                                              {commonSkills.slice(31, 39).map((skill) => (
+                                                <Badge
+                                                  key={skill}
+                                                  variant={currentSkills.includes(skill) ? "default" : "outline"}
+                                                  className={`cursor-pointer ${
+                                                    currentSkills.includes(skill) 
+                                                      ? "bg-[#5372f1] hover:bg-[#4060e0]" 
+                                                      : "hover:bg-gray-100"
+                                                  }`}
+                                                  onClick={() => toggleSkill(skill)}
+                                                >
+                                                  {skill}
+                                                  {currentSkills.includes(skill) && (
+                                                    <span className="ml-1">✓</span>
+                                                  )}
+                                                </Badge>
+                                              ))}
+                                            </div>
+                                          </div>
+                                          
+                                          <div className="mb-4">
+                                            <h4 className="text-sm font-medium mb-2 text-gray-500">General Skills</h4>
+                                            <div className="flex flex-wrap gap-2">
+                                              {commonSkills.slice(39).map((skill) => (
+                                                <Badge
+                                                  key={skill}
+                                                  variant={currentSkills.includes(skill) ? "default" : "outline"}
+                                                  className={`cursor-pointer ${
+                                                    currentSkills.includes(skill) 
+                                                      ? "bg-[#5372f1] hover:bg-[#4060e0]" 
+                                                      : "hover:bg-gray-100"
+                                                  }`}
+                                                  onClick={() => toggleSkill(skill)}
+                                                >
+                                                  {skill}
+                                                  {currentSkills.includes(skill) && (
+                                                    <span className="ml-1">✓</span>
+                                                  )}
+                                                </Badge>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        
+                                        <div className="mt-4 flex justify-end gap-2">
+                                          <Button 
+                                            type="button" 
+                                            variant="outline"
+                                            onClick={() => setIsSkillsDialogOpen(false)}
+                                          >
+                                            Close
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                  
+                                  {/* Manual input textarea for skills */}
+                                  <FormControl>
+                                    <Textarea 
+                                      placeholder="Add or edit skills manually (separate skills with commas)" 
+                                      className="min-h-[100px]" 
+                                      value={field.value}
+                                      onChange={field.onChange}
+                                    />
+                                  </FormControl>
+                                  <FormDescription>
+                                    Select skills from the list above or manually type and separate with commas
+                                  </FormDescription>
+                                  <FormMessage />
+                                </FormItem>
+                              );
+                            }}
                           />
                           <FormField
                             control={form.control}
