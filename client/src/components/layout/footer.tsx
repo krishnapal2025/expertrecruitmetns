@@ -329,7 +329,8 @@ export default function Footer() {
                 <img 
                   src={qrCodeImage} 
                   alt="Scan QR Code" 
-                  className="w-24 h-24 mx-auto bg-white p-1 rounded"
+                  className="w-24 h-24 bg-white p-1 rounded"
+                  style={{ marginLeft: 0 }}
                 />
               </div>
             </div>
