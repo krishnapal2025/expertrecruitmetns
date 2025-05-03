@@ -131,7 +131,7 @@ export default function Navbar() {
         { name: "About Us", href: "/about-us" },
         { name: "Hire Talent", href: "/hire-talent" },
         { name: "Vacancy Form", href: "/vacancy-form" },
-        { name: "Inquiry Form", href: "/employer-inquiry" },
+        { name: "Inquiry Form", href: "/contact-us?type=inquiry" },
         { name: "Blogs", href: "/blogs" },
         { name: "Contact Us", href: "/contact-us" },
       ];
@@ -249,22 +249,7 @@ export default function Navbar() {
                         </DropdownMenuItem>
                       </ScrollLink>
                     )}
-                    {currentUser.user.userType === "employer" && (
-                      <>
-                        <ScrollLink href="/vacancy-form" className="w-full">
-                          <DropdownMenuItem>
-                            <FileText className="mr-2 h-4 w-4" />
-                            <span>Submit Vacancy</span>
-                          </DropdownMenuItem>
-                        </ScrollLink>
-                        <ScrollLink href="/employer-inquiry" className="w-full">
-                          <DropdownMenuItem>
-                            <Building2 className="mr-2 h-4 w-4" />
-                            <span>Employer Inquiry</span>
-                          </DropdownMenuItem>
-                        </ScrollLink>
-                      </>
-                    )}
+                    {/* Employer-specific menu items removed */}
                     {currentUser.user.userType === "admin" && (
                       <>
                         <ScrollLink href="/admin" className="w-full">
@@ -433,46 +418,9 @@ export default function Navbar() {
                           Profile
                         </div>
                         
-                        {currentUser.user.userType === "jobseeker" && (
-                          <div 
-                            className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                            onClick={() => {
-                              setIsMobileMenuOpen(false);
-                              window.scrollTo(0, 0);
-                              setTimeout(() => window.location.href = "/resources/create-resume", 100);
-                            }}
-                          >
-                            <Briefcase className="mr-2 h-4 w-4" />
-                            Create Resume
-                          </div>
-                        )}
+                        {/* Job seeker mobile menu items removed as requested */}
                         
-                        {currentUser.user.userType === "employer" && (
-                          <>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/vacancy-form", 100);
-                              }}
-                            >
-                              <FileText className="mr-2 h-4 w-4" />
-                              Submit Vacancy
-                            </div>
-                            <div 
-                              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center cursor-pointer"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                window.scrollTo(0, 0);
-                                setTimeout(() => window.location.href = "/employer-inquiry", 100);
-                              }}
-                            >
-                              <Building2 className="mr-2 h-4 w-4" />
-                              Employer Inquiry
-                            </div>
-                          </>
-                        )}
+                        {/* Employer-specific menu items removed as requested */}
                         
                         {currentUser.user.userType === "admin" && (
                           <>
