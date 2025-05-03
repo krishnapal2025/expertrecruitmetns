@@ -347,8 +347,8 @@ export default function EmployerRegisterPage() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Talent Acquisition</h3>
-                    <p className="text-base text-primary-foreground/90">Access a pool of qualified candidates across UAE & GCC</p>
+                    <h3 className="font-semibold text-md">Talent Acquisition</h3>
+                    <p className="text-sm text-primary-foreground/90">Access a pool of qualified candidates across UAE & GCC</p>
                   </div>
                 </div>
                 
@@ -359,8 +359,8 @@ export default function EmployerRegisterPage() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Simplified Hiring</h3>
-                    <p className="text-base text-primary-foreground/90">Post jobs, screen applicants, and conduct interviews all in one place</p>
+                    <h3 className="font-semibold text-md">Simplified Hiring</h3>
+                    <p className="text-sm text-primary-foreground/90">Post jobs, screen applicants, and conduct interviews all in one place</p>
                   </div>
                 </div>
                 
@@ -371,19 +371,19 @@ export default function EmployerRegisterPage() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Recruitment Analytics</h3>
-                    <p className="text-base text-primary-foreground/90">Track recruitment metrics and optimize your hiring process</p>
+                    <h3 className="font-semibold text-md">Recruitment Analytics</h3>
+                    <p className="text-sm text-primary-foreground/90">Track recruitment metrics and optimize your hiring process</p>
                   </div>
                 </div>
               </div>
               
-              <div className="mt-auto pt-6">
+              <div className="mt-auto pt-4">
                 <div className="bg-white/10 rounded-lg p-3 border border-white/20">
-                  <h3 className="font-semibold text-lg mb-1">Join Today and Get:</h3>
-                  <p className="text-base text-primary-foreground/90 mb-2">
+                  <h3 className="font-semibold text-md mb-1">Join Today and Get:</h3>
+                  <p className="text-sm text-primary-foreground/90 mb-1">
                     Access to Dubai & UAE's top talent pool for your hiring needs
                   </p>
-                  <p className="text-sm text-primary-foreground/70">
+                  <p className="text-xs text-primary-foreground/70">
                     By joining, you agree to our terms of service and privacy policy
                   </p>
                 </div>
