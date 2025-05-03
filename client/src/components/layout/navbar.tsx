@@ -273,7 +273,7 @@ export default function Navbar() {
                       </>
                     )}
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
+                    <DropdownMenuItem onClick={handleLogout} className="text-gray-600 hover:text-gray-800 hover:bg-gray-100">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>
@@ -407,14 +407,14 @@ export default function Navbar() {
                           </div>
                         </div>
                         
-                        {/* Logout button placed at the very top for maximum visibility */}
+                        {/* Minimalistic logout button for all account types */}
                         <div className="px-4 py-2 mb-3">
+                          <div className="border-t border-gray-100 my-1 pt-1"></div>
                           <button
                             onClick={handleLogout}
-                            className="w-full py-3 rounded-md bg-red-100 hover:bg-red-200 flex items-center justify-center font-semibold text-red-600 shadow-sm border-2 border-red-300"
-                            style={{ fontSize: '1.05rem' }}
+                            className="w-full py-2 rounded-md flex items-center text-gray-600 hover:text-gray-800 hover:bg-gray-100"
                           >
-                            <LogOut className="mr-2 h-5 w-5" />
+                            <LogOut className="mr-2 h-4 w-4" />
                             Log out
                           </button>
                         </div>
