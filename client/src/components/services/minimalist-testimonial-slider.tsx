@@ -133,7 +133,7 @@ export default function MinimalistTestimonialSlider() {
       </div>
       
       {/* Progress bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-100">
+      <div className="h-1 bg-gray-100 mt-6 mb-2">
         <motion.div 
           className="h-full bg-primary"
           initial={{ width: "0%" }}
@@ -144,20 +144,36 @@ export default function MinimalistTestimonialSlider() {
       </div>
       
       {/* Navigation */}
-      <div className="absolute bottom-8 right-8 flex space-x-2">
+      <div className="flex justify-between mt-8 px-8">
         <button
           onClick={() => setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)}
-          className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 transition-colors"
+          className="w-12 h-12 rounded-full border border-primary/20 bg-white shadow-sm flex items-center justify-center text-primary hover:bg-primary/5 transition-colors"
           aria-label="Previous testimonial"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-6 w-6" />
         </button>
+        
+        <div className="flex items-center space-x-2">
+          {testimonials.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveIndex(index)}
+              className={`w-3 h-3 rounded-full transition-all ${
+                activeIndex === index 
+                  ? "bg-primary w-6" 
+                  : "bg-gray-200 hover:bg-gray-300"
+              }`}
+              aria-label={`Go to testimonial ${index + 1}`}
+            />
+          ))}
+        </div>
+        
         <button
           onClick={() => setActiveIndex((prev) => (prev + 1) % testimonials.length)}
-          className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 transition-colors"
+          className="w-12 h-12 rounded-full border border-primary/20 bg-white shadow-sm flex items-center justify-center text-primary hover:bg-primary/5 transition-colors"
           aria-label="Next testimonial"
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-6 w-6" />
         </button>
       </div>
     </div>
