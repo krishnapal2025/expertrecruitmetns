@@ -1848,6 +1848,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         submittedAt: new Date()
       });
       
+      // Create notifications for all admin users about the new vacancy form
+      const adminUsers = (await storage.getAllUsers()).filter(u => u.userType === "admin");
+      
+      // Create a notification for each admin
+      if (adminUsers.length > 0) {
+        const notificationPromises = adminUsers.map(admin => {
+          return storage.createNotification({
+            userId: admin.id,
+            message: `New vacancy form submitted by ${validatedData.contactName} from ${validatedData.companyName}`,
+            type: "vacancy_form",
+            entityId: vacancy.id
+          });
+        });
+        
+        await Promise.all(notificationPromises);
+        console.log(`Created ${adminUsers.length} notifications for new vacancy submission`);
+      }
+      
       res.status(201).json({ 
         success: true, 
         message: "Vacancy form submitted successfully", 
@@ -2150,6 +2168,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `);
         
         console.log("Direct SQL insert result:", result);
+        
+        // Create notifications for all admin users
+        const adminUsers = (await storage.getAllUsers()).filter(u => u.userType === "admin");
+        
+        if (adminUsers.length > 0) {
+          // Get the inquiry ID from the result
+          const inquiryId = result[0].id;
+          
+          const notificationPromises = adminUsers.map(admin => {
+            return storage.createNotification({
+              userId: admin.id,
+              message: `New staffing inquiry from ${req.body.name} - ${req.body.inquiryType} inquiry`,
+              type: "staffing_inquiry",
+              entityId: inquiryId
+            });
+          });
+          
+          await Promise.all(notificationPromises);
+          console.log(`Created ${adminUsers.length} notifications for new staffing inquiry`);
+        }
+        
         res.status(201).json({ success: true, message: "Inquiry submitted successfully" });
       } catch (dbError) {
         console.error("Database error:", dbError);
