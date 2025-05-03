@@ -129,7 +129,7 @@ export default function EmployerRegisterPage() {
                             <FormItem className="space-y-1">
                               <FormLabel className="text-sm">Company Name</FormLabel>
                               <FormControl>
-                                <Input placeholder="Company Ltd." {...field} className="h-9" />
+                                <Input placeholder="Company Ltd." {...field} className="h-10" />
                               </FormControl>
                               <FormMessage className="text-xs" />
                             </FormItem>
@@ -143,7 +143,7 @@ export default function EmployerRegisterPage() {
                             <FormItem className="space-y-1">
                               <FormLabel className="text-sm">Website</FormLabel>
                               <FormControl>
-                                <Input placeholder="https://www.example.com" {...field} className="h-9" />
+                                <Input placeholder="https://www.example.com" {...field} className="h-10" />
                               </FormControl>
                               <FormMessage className="text-xs" />
                             </FormItem>
@@ -163,7 +163,7 @@ export default function EmployerRegisterPage() {
                                 defaultValue={field.value}
                               >
                                 <FormControl>
-                                  <SelectTrigger className="h-9">
+                                  <SelectTrigger className="h-10">
                                     <SelectValue placeholder="Select industry" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -249,7 +249,7 @@ export default function EmployerRegisterPage() {
                                   type="tel"
                                   placeholder={selectedEmployerCountryCode ? `${selectedEmployerCountryCode} phone number` : "Enter your phone number"} 
                                   {...field} 
-                                  className="h-9"
+                                  className="h-10"
                                 />
                               </FormControl>
                               <FormMessage className="text-xs" />
@@ -268,7 +268,7 @@ export default function EmployerRegisterPage() {
                             <FormItem className="space-y-1">
                               <FormLabel className="text-sm">Email Address</FormLabel>
                               <FormControl>
-                                <Input placeholder="email@example.com" {...field} className="h-9" />
+                                <Input placeholder="email@example.com" {...field} className="h-10" />
                               </FormControl>
                               <FormMessage className="text-xs" />
                             </FormItem>
@@ -282,7 +282,7 @@ export default function EmployerRegisterPage() {
                             <FormItem className="space-y-1">
                               <FormLabel className="text-sm">Password</FormLabel>
                               <FormControl>
-                                <Input type="password" placeholder="••••••••" {...field} className="h-9" />
+                                <Input type="password" placeholder="••••••••" {...field} className="h-10" />
                               </FormControl>
                               <FormMessage className="text-xs" />
                             </FormItem>
@@ -296,7 +296,7 @@ export default function EmployerRegisterPage() {
                             <FormItem className="space-y-1">
                               <FormLabel className="text-sm">Confirm Password</FormLabel>
                               <FormControl>
-                                <Input type="password" placeholder="••••••••" {...field} className="h-9" />
+                                <Input type="password" placeholder="••••••••" {...field} className="h-10" />
                               </FormControl>
                               <FormMessage className="text-xs" />
                             </FormItem>
