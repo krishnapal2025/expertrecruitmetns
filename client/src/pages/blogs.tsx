@@ -179,16 +179,9 @@ export default function BlogsPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
               <h2 className="text-2xl font-bold flex items-center">
                 <BookOpen className="mr-2 h-6 w-6 text-primary" />
-                Latest Articles from Our Team
+                Latest Articles
               </h2>
-              <Button 
-                variant="outline" 
-                className="mt-2 sm:mt-0"
-                onClick={() => setLocation("/team-articles")}
-              >
-                View All Team Articles
-                <ChevronRight className="ml-1 h-4 w-4" />
-              </Button>
+              {/* "View All Team Articles" button removed */}
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

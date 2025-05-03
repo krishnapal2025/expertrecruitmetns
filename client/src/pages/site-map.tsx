@@ -81,7 +81,6 @@ export default function SiteMap() {
       icon: <BookOpen className="h-5 w-5 text-primary mr-2" />,
       links: [
         { name: "Blog Articles", url: "/blogs" },
-        { name: "Expert Team Articles", url: "/team-articles" },
         { name: "Career Opportunities", url: "/careers" },
         { name: "Industry Insights", url: "/blogs" },
       ],

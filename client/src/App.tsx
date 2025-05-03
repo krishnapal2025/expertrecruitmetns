@@ -85,7 +85,7 @@ function Router() {
       <Route path="/terms-conditions" component={TermsConditionsPage} />
       <Route path="/site-map" component={SiteMapPage} />
       <Route path="/blogs" component={BlogsPage} />
-      {/* Route to team-articles removed */}
+
       <Route path="/article/:id">
         {params => <ArticlePage />}
       </Route>
