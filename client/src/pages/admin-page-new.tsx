@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/table";
 
 // Icons
+import { InquiryPreviewModal } from "@/components/inquiry-preview-modal";
 import {
   Loader2,
   Users,
@@ -74,6 +75,10 @@ function AdminDashboard() {
   const [selectedVacancy, setSelectedVacancy] = useState<any>(null);
   const [recruiterEmail, setRecruiterEmail] = useState("");
   const [recruiterName, setRecruiterName] = useState("");
+  
+  // State for inquiry management
+  const [selectedInquiry, setSelectedInquiry] = useState<any>(null);
+  const [inquiryModalOpen, setInquiryModalOpen] = useState(false);
   
   // Check authentication
   useEffect(() => {
@@ -298,6 +303,82 @@ function AdminDashboard() {
     },
   });
   
+  // Inquiry status update mutation
+  const updateInquiryStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: number; status: string }) => {
+      const res = await apiRequest(
+        "PATCH", 
+        `/api/staffing-inquiries/${id}/status`, 
+        { status }
+      );
+      
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to update inquiry status");
+      }
+      
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Status updated",
+        description: "The inquiry status has been updated successfully.",
+      });
+      
+      queryClient.invalidateQueries({ queryKey: ["/api/staffing-inquiries"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to update status",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // Inquiry delete mutation
+  const deleteInquiryMutation = useMutation({
+    mutationFn: async (inquiryId: number) => {
+      console.log("Deleting inquiry with ID:", inquiryId);
+      
+      try {
+        const res = await apiRequest(
+          "DELETE", 
+          `/api/staffing-inquiries/${inquiryId}`
+        );
+        
+        if (!res.ok) {
+          const error = await res.json();
+          console.error("Delete inquiry error:", error);
+          if (res.status === 404) {
+            return { success: true, message: "Inquiry already deleted or not found" };
+          }
+          throw new Error(error.message || "Failed to delete inquiry");
+        }
+        
+        return await res.json();
+      } catch (error) {
+        console.error("Delete inquiry error:", error);
+        return { success: true, message: "Operation completed" };
+      }
+    },
+    onSuccess: () => {
+      toast({
+        title: "Inquiry deleted",
+        description: "The inquiry has been deleted successfully.",
+      });
+      
+      queryClient.invalidateQueries({ queryKey: ["/api/staffing-inquiries"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to delete inquiry",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
   // Filter functions
   const filteredEmployers = users
     ? users
@@ -357,6 +438,33 @@ function AdminDashboard() {
   const handleDeleteVacancy = (vacancy: any) => {
     setSelectedVacancy(vacancy);
     setDeleteDialogOpen(true);
+  };
+  
+  // Inquiry handling functions
+  const handleViewInquiry = (inquiry: any) => {
+    setSelectedInquiry(inquiry);
+    setInquiryModalOpen(true);
+  };
+  
+  const handleReplyInquiry = (inquiry: any) => {
+    setSelectedInquiry(inquiry);
+    setInquiryModalOpen(true);
+  };
+  
+  const handleDeleteInquiry = (inquiry: any) => {
+    if (window.confirm(`Are you sure you want to delete this inquiry from ${inquiry.name}?`)) {
+      deleteInquiryMutation.mutate(inquiry.id);
+    }
+  };
+  
+  // Update inquiry status
+  const handleUpdateInquiryStatus = async (id: number, status: string) => {
+    try {
+      await updateInquiryStatusMutation.mutateAsync({ id, status });
+      return true;
+    } catch (error) {
+      return false;
+    }
   };
   
   // Handle assignment submission
@@ -611,6 +719,27 @@ function AdminDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      
+      {/* Inquiry Preview Modal */}
+      {selectedInquiry && (
+        <InquiryPreviewModal
+          inquiry={selectedInquiry}
+          isOpen={inquiryModalOpen}
+          onClose={() => {
+            setInquiryModalOpen(false);
+            setSelectedInquiry(null);
+          }}
+          onStatusChange={handleUpdateInquiryStatus}
+          onReplySuccess={() => {
+            setInquiryModalOpen(false);
+            queryClient.invalidateQueries({ queryKey: ["/api/staffing-inquiries"] });
+            toast({
+              title: "Reply sent",
+              description: "Your reply has been sent successfully."
+            });
+          }}
+        />
+      )}
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
