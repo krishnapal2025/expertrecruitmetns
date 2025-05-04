@@ -29,14 +29,22 @@ export async function comparePasswords(supplied: string, stored: string) {
 }
 
 export function setupAuth(app: Express) {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const isFlyIo = process.env.FLY_APP_NAME !== undefined;
+  
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || "robert-half-job-portal-secret",
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      secure: isProduction, // Use secure cookies in production
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days for longer sessions
+      sameSite: isFlyIo ? 'lax' : undefined // Important for Fly.io compatibility
     },
+    // These settings help with session persistence on Fly.io
+    proxy: isFlyIo
   };
 
   app.set("trust proxy", 1);
