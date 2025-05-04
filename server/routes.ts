@@ -869,6 +869,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch applications" });
     }
   });
+  
+  // Get a specific application by ID
+  app.get("/api/applications/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to access application details" });
+      }
+      
+      const applicationId = parseInt(req.params.id);
+      if (isNaN(applicationId)) {
+        return res.status(400).json({ message: "Invalid application ID" });
+      }
+      
+      const user = req.user;
+      const application = await storage.getApplication(applicationId);
+      
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      
+      // Check authorization:
+      // 1. Admin can view any application
+      // 2. Job seeker can view their own application
+      // 3. Employer can view applications for their jobs
+      let authorized = false;
+      
+      if (user.userType === "admin") {
+        authorized = true;
+      } else if (user.userType === "jobseeker") {
+        // Get the job seeker profile
+        const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+        if (jobSeeker && jobSeeker.id === application.jobSeekerId) {
+          authorized = true;
+        }
+      } else if (user.userType === "employer") {
+        // Get the employer profile
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (employer) {
+          // Get the job to check if it belongs to this employer
+          const job = await storage.getJob(application.jobId);
+          if (job && job.employerId === employer.id) {
+            authorized = true;
+          }
+        }
+      }
+      
+      if (!authorized) {
+        return res.status(403).json({ message: "You are not authorized to view this application" });
+      }
+      
+      // Get job and job seeker details
+      const job = await storage.getJob(application.jobId);
+      const jobSeeker = await storage.getJobSeeker(application.jobSeekerId);
+      
+      // Return comprehensive application data
+      res.json({
+        ...application,
+        job,
+        jobSeeker,
+        jobTitle: job?.title || 'Unknown',
+        jobLocation: job?.location || 'Unknown',
+        jobType: job?.jobType || 'Unknown',
+        companyName: job?.company || 'Unknown'
+      });
+    } catch (error) {
+      console.error("Error fetching application details:", error);
+      res.status(500).json({ message: "Failed to fetch application details" });
+    }
+  });
 
   // Get applications by job ID - Used by employers to view applications for a specific job
   app.get("/api/applications/job/:jobId", async (req, res) => {
@@ -1141,6 +1210,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updatedApplication = await storage.updateApplicationStatus(applicationId, status);
 
       if (updatedApplication) {
+        // Get job and jobseeker details for the notification
+        const job = await storage.getJob(application.jobId);
+        const jobSeeker = await storage.getJobSeeker(application.jobSeekerId);
+        
+        if (job && jobSeeker) {
+          // Get the job seeker user
+          const jobSeekerUser = await storage.getUserById(jobSeeker.userId);
+          
+          if (jobSeekerUser) {
+            // Create a notification for the job seeker
+            const statusMessages = {
+              viewed: "Your application has been viewed",
+              shortlisted: "Congratulations! You have been shortlisted",
+              interviewed: "You have been selected for an interview",
+              rejected: "Your application was not selected at this time"
+            };
+            
+            const statusMessage = statusMessages[status as keyof typeof statusMessages] || 
+                                  `Your application status has been updated to: ${status}`;
+            
+            realtimeStore.notifications.push({
+              id: realtimeStore.notificationId++,
+              userId: jobSeekerUser.id,
+              message: `${statusMessage} for the ${job.title} position at ${job.company}`,
+              type: "application_status",
+              read: false,
+              entityId: application.id,
+              createdAt: new Date()
+            });
+          }
+        }
+        
         res.status(200).json(updatedApplication);
       } else {
         res.status(500).json({ message: "Failed to update application status" });
