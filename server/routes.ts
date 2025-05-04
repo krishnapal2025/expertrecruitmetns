@@ -25,6 +25,7 @@ import { hashPassword } from "./auth";
 import { generateResetToken, sendPasswordResetEmail, sendVacancyAssignmentEmail, sendInquiryReply } from "./email-service";
 import { seedJobs } from "./seed-jobs";
 import { generateResumePDF, resumeDataSchema, bufferToStream, ResumeData } from "./pdf-service";
+import { handleCvDownload } from "./cv-service";
 
 // Add ResumeData type to session
 declare module "express-session" {
@@ -1202,6 +1203,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting application:", error);
       res.status(500).json({ message: "An error occurred while deleting the application" });
+    }
+  });
+
+  // Download the original CV for a job application
+  app.get("/api/applications/:id/download-cv", async (req, res) => {
+    try {
+      // Use the dedicated service to handle the CV download
+      await handleCvDownload(req, res, storage);
+    } catch (error) {
+      console.error("Error downloading CV:", error);
+      res.status(500).json({ message: "Failed to download CV" });
     }
   });
 
