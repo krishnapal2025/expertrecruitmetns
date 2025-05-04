@@ -50,7 +50,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Run a basic database check
       const dbStatus = db ? "connected" : "disconnected";
-      
+
       // Respond with comprehensive system information
       res.json({
         status: "ok",
@@ -58,8 +58,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         environment: process.env.NODE_ENV || 'development',
         application: config.app.name,
         version: config.app.version,
-        platform: process.env.FLY_APP_NAME ? "fly.io" : 
-                 (process.env.REPL_ID || process.env.REPL_SLUG) ? "replit" : 
+        platform: process.env.FLY_APP_NAME ? "fly.io" :
+                 (process.env.REPL_ID || process.env.REPL_SLUG) ? "replit" :
                  "other",
         database: dbStatus,
         features: {
@@ -70,28 +70,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Health check failed:", error);
-      res.status(500).json({ 
-        status: "error", 
+      res.status(500).json({
+        status: "error",
         message: "System health check failed",
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV || 'development'
       });
     }
   });
-  
+
   // Set up authentication routes
   setupAuth(app);
 
   // Seed jobs data
-  await seedJobs();
-  
+  // await seedJobs();
+
   // Resume PDF endpoints
   // Combined endpoint that handles both forms and API JSON
   app.post("/api/generate-resume-pdf", async (req, res) => {
     try {
       let resumeData: ResumeData;
       let filename = 'resume.pdf';
-      
+
       // Check if this is form data or JSON API call
       if (req.body.resumeData) {
         // This is from the form submission
@@ -107,24 +107,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         // This is a direct API call with JSON body
         resumeData = resumeDataSchema.parse(req.body);
-        
+
         // Store in session for future use
         if (req.session) {
           req.session.resumeData = resumeData;
         }
-        
+
         // Use name from resume data for filename if not specified
         const safeFirstName = resumeData.personalInfo.firstName.replace(/[^a-zA-Z0-9]/g, '_');
         const safeLastName = resumeData.personalInfo.lastName.replace(/[^a-zA-Z0-9]/g, '_');
         filename = `Resume_${safeFirstName}_${safeLastName}.pdf`;
       }
-      
+
       // Generate PDF
       const pdfBuffer = await generateResumePDF(resumeData);
-      
+
       // Make sure filename is safe
       const safeFilename = filename.replace(/[^a-zA-Z0-9_\-\.]/g, '_');
-      
+
       // Set comprehensive security headers for PDF download
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Length', pdfBuffer.length);
@@ -134,12 +134,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('X-Frame-Options', 'DENY');
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
       res.setHeader('Pragma', 'no-cache');
-      
+
       // Send the PDF buffer as stream to avoid memory issues
       bufferToStream(pdfBuffer).pipe(res);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      
+
       // Different error responses based on content type expected
       const accepts = req.headers.accept || '';
       if (accepts.includes('application/json')) {
@@ -160,32 +160,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     }
   });
-  
+
   // GET endpoint for browser's native download functionality (as fallback)
   app.get("/api/download-resume-pdf", async (req, res) => {
     try {
       const { filename } = req.query;
-      
+
       // Use the filename parameter if provided, otherwise use default
-      const safeFilename = filename ? 
-        String(filename).replace(/[^a-zA-Z0-9_\-\.]/g, '_') : 
+      const safeFilename = filename ?
+        String(filename).replace(/[^a-zA-Z0-9_\-\.]/g, '_') :
         'resume.pdf';
-      
+
       // Check if we have resume data in the session
       if (!req.session || !req.session.resumeData) {
         // For download managers, don't return HTML error - return an empty PDF
-        if (req.headers['user-agent']?.toLowerCase().includes('download') || 
+        if (req.headers['user-agent']?.toLowerCase().includes('download') ||
             req.headers['user-agent']?.toLowerCase().includes('manager')) {
-          
+
           // Create a minimal empty PDF
           const pdfBuffer = Buffer.from('%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Count 0/Kids[]>>endobj 3 0 obj<</Producer(Resume Generator)>>endobj xref 0 4 0000000000 65535 f 0000000010 00000 n 0000000053 00000 n 0000000100 00000 n trailer<</Size 4/Root 1 0 R/Info 3 0 R>>startxref 150 %%EOF', 'utf-8');
-          
+
           res.setHeader('Content-Type', 'application/pdf');
           res.setHeader('Content-Length', pdfBuffer.length);
-          res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"`); 
+          res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"`);
           return res.end(pdfBuffer);
         }
-        
+
         // For browsers, return friendly HTML error
         return res.status(400).send(`
           <html>
@@ -198,30 +198,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
           </html>
         `);
       }
-      
+
       // Get resume data from session
       const resumeData = req.session.resumeData;
-      
+
       // Generate PDF
       const pdfBuffer = await generateResumePDF(resumeData);
-      
+
       // Set comprehensive security headers for PDF download
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Length', pdfBuffer.length);
       res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"`);
       res.setHeader('X-Content-Type-Options', 'nosniff');
-      
+
       // For download managers, don't set some headers that might cause issues
-      if (!req.headers['user-agent']?.toLowerCase().includes('download') && 
+      if (!req.headers['user-agent']?.toLowerCase().includes('download') &&
           !req.headers['user-agent']?.toLowerCase().includes('manager')) {
         res.setHeader('Content-Security-Policy', "default-src 'none'");
         res.setHeader('X-Frame-Options', 'DENY');
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
         res.setHeader('Pragma', 'no-cache');
       }
-      
+
       // For download managers that don't handle streams well, send the buffer all at once
-      if (req.headers['user-agent']?.toLowerCase().includes('download') || 
+      if (req.headers['user-agent']?.toLowerCase().includes('download') ||
           req.headers['user-agent']?.toLowerCase().includes('manager')) {
         return res.end(pdfBuffer);
       } else {
@@ -230,20 +230,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       console.error('Error generating PDF for download:', error);
-      
+
       // Check if this is a download manager
-      if (req.headers['user-agent']?.toLowerCase().includes('download') || 
+      if (req.headers['user-agent']?.toLowerCase().includes('download') ||
           req.headers['user-agent']?.toLowerCase().includes('manager')) {
-          
+
         // Just return a minimal empty PDF to avoid error popups
         const pdfBuffer = Buffer.from('%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Count 0/Kids[]>>endobj 3 0 obj<</Producer(Resume Generator)>>endobj xref 0 4 0000000000 65535 f 0000000010 00000 n 0000000053 00000 n 0000000100 00000 n trailer<</Size 4/Root 1 0 R/Info 3 0 R>>startxref 150 %%EOF', 'utf-8');
-        
+
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Length', pdfBuffer.length);
         res.setHeader('Content-Disposition', `attachment; filename="${req.query.filename || 'resume.pdf'}"`);
         return res.end(pdfBuffer);
       }
-      
+
       // For browsers, return HTML error
       res.status(500).send(`
         <html>
@@ -501,61 +501,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (isNaN(jobSeekerId)) {
         return res.status(400).json({ message: "Invalid job seeker ID" });
       }
-      
+
       // Check if request is authenticated
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "You must be logged in to access this resource" });
       }
-      
+
       // Only allow admin, the job seeker themselves, or employers to view resumes
       const user = req.user;
       const jobSeeker = await storage.getJobSeeker(jobSeekerId);
-      
+
       if (!jobSeeker) {
         return res.status(404).json({ message: "Job seeker not found" });
       }
-      
+
       // Check if the current user is the job seeker, an admin, or an employer
-      const isAuthorized = 
-        user.userType === "admin" || 
-        (user.userType === "jobseeker" && jobSeeker.userId === user.id) || 
+      const isAuthorized =
+        user.userType === "admin" ||
+        (user.userType === "jobseeker" && jobSeeker.userId === user.id) ||
         user.userType === "employer";
-      
+
       if (!isAuthorized) {
         return res.status(403).json({ message: "You are not authorized to view this resume" });
       }
-      
+
       // If job seeker has an actual CV uploaded, check if we should serve that
       if (jobSeeker.cvPath && req.query.original === 'true') {
         try {
           // Attempt to serve the original CV file if it exists
           const fs = require('fs');
           const path = require('path');
-          
+
           // Ensure the path is within our uploads directory (security check)
           const uploadsDir = path.resolve('./uploads');
           const cvPath = path.resolve(jobSeeker.cvPath);
-          
+
           if (!cvPath.startsWith(uploadsDir)) {
             throw new Error('Invalid file path');
           }
-          
+
           if (fs.existsSync(cvPath)) {
             // Extract original filename from path or use a default
             const originalFilename = path.basename(cvPath);
-            
+
             // Determine content type based on file extension
             const ext = path.extname(cvPath).toLowerCase();
             let contentType = 'application/octet-stream'; // Default
-            
+
             if (ext === '.pdf') contentType = 'application/pdf';
             else if (ext === '.doc') contentType = 'application/msword';
             else if (ext === '.docx') contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-            
+
             // Set headers
             res.setHeader('Content-Type', contentType);
             res.setHeader('Content-Disposition', `attachment; filename="${jobSeeker.firstName}_${jobSeeker.lastName}${ext}"`);
-            
+
             // Stream the file
             const fileStream = fs.createReadStream(cvPath);
             fileStream.pipe(res);
@@ -566,15 +566,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Continue to fallback PDF generation if file cannot be served
         }
       }
-      
+
       // Generate a PDF resume if the job seeker has profile data
       // Get the user details to extract email and other contact info
       const jobSeekerUser = await storage.getUserById(jobSeeker.userId);
-      
+
       if (!jobSeekerUser) {
         return res.status(404).json({ message: "Job seeker user not found" });
       }
-      
+
       // Create resume data
       const resumeData = {
         personalInfo: {
@@ -601,10 +601,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         languages: [],
         certifications: []
       };
-      
+
       // Generate the PDF
       const pdfBuffer = await generateResumePDF(resumeData);
-      
+
       // Send the PDF
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `inline; filename="resume_${jobSeeker.firstName}_${jobSeeker.lastName}.pdf"`);
@@ -686,7 +686,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertJobSchema.parse(req.body);
 
       let employerId;
-      
+
       // If user is an employer, use their employer ID
       if (user.userType === "employer") {
         const employer = await storage.getEmployerByUserId(user.id);
@@ -697,17 +697,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         // For admin users, use the selected employer ID from the request
         const selectedEmployerId = req.body.selectedEmployerId;
-        
+
         if (!selectedEmployerId) {
           return res.status(400).json({ message: "Admin must select an employer when posting a job" });
         }
-        
+
         // Verify the employer exists
         const employer = await storage.getEmployer(selectedEmployerId);
         if (!employer) {
           return res.status(404).json({ message: "Selected employer not found" });
         }
-        
+
         employerId = selectedEmployerId;
       }
 
@@ -813,7 +813,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
       }
-      
+
       // Create a notification for admin users
       const adminUsers = await storage.getAdminUsers();
       for (const adminUser of adminUsers) {
@@ -865,7 +865,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json(applicationsWithJobs);
       } else if (user.userType === "employer" || user.userType === "admin") {
         let jobs = [];
-        
+
         if (user.userType === "employer") {
           // Get employer profile
           const employer = await storage.getEmployerByUserId(user.id);
@@ -912,32 +912,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch applications" });
     }
   });
-  
+
   // Get a specific application by ID
   app.get("/api/applications/:id", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "You must be logged in to access application details" });
       }
-      
+
       const applicationId = parseInt(req.params.id);
       if (isNaN(applicationId)) {
         return res.status(400).json({ message: "Invalid application ID" });
       }
-      
+
       const user = req.user;
       const application = await storage.getApplication(applicationId);
-      
+
       if (!application) {
         return res.status(404).json({ message: "Application not found" });
       }
-      
+
       // Check authorization:
       // 1. Admin can view any application
       // 2. Job seeker can view their own application
       // 3. Employer can view applications for their jobs
       let authorized = false;
-      
+
       if (user.userType === "admin") {
         authorized = true;
       } else if (user.userType === "jobseeker") {
@@ -957,15 +957,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
       }
-      
+
       if (!authorized) {
         return res.status(403).json({ message: "You are not authorized to view this application" });
       }
-      
+
       // Get job and job seeker details
       const job = await storage.getJob(application.jobId);
       const jobSeeker = await storage.getJobSeeker(application.jobSeekerId);
-      
+
       // Return comprehensive application data
       res.json({
         ...application,
@@ -1056,7 +1056,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // For job seekers, get their own applications
       // For admins, get all applications for all job seekers
       let applications = [];
-      
+
       if (user.userType === "jobseeker") {
         // Get the job seeker profile
         const jobSeeker = await storage.getJobSeekerByUserId(user.id);
@@ -1114,7 +1114,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // For job seekers, get their own applications
       // For admins, get all applications for all job seekers
       let applications = [];
-      
+
       if (user.userType === "jobseeker") {
         // Get the job seeker profile
         const jobSeeker = await storage.getJobSeekerByUserId(user.id);
@@ -1267,11 +1267,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Get job and jobseeker details for the notification
         const job = await storage.getJob(application.jobId);
         const jobSeeker = await storage.getJobSeeker(application.jobSeekerId);
-        
+
         if (job && jobSeeker) {
           // Get the job seeker user
           const jobSeekerUser = await storage.getUserById(jobSeeker.userId);
-          
+
           if (jobSeekerUser) {
             // Create a notification for the job seeker
             const statusMessages = {
@@ -1280,10 +1280,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
               interviewed: "You have been selected for an interview",
               rejected: "Your application was not selected at this time"
             };
-            
-            const statusMessage = statusMessages[status as keyof typeof statusMessages] || 
+
+            const statusMessage = statusMessages[status as keyof typeof statusMessages] ||
                                   `Your application status has been updated to: ${status}`;
-            
+
             // Create a notification in the database instead of just in memory
             await storage.createNotification({
               userId: jobSeekerUser.id,
@@ -1291,11 +1291,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
               type: "application_status",
               entityId: application.id
             });
-            
+
             console.log(`Created application status notification for user ${jobSeekerUser.id}`);
           }
         }
-        
+
         res.status(200).json(updatedApplication);
       } else {
         res.status(500).json({ message: "Failed to update application status" });
@@ -1360,7 +1360,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       let jobs = [];
-      
+
       if (user.userType === "employer") {
         // Get employer profile
         const employer = await storage.getEmployerByUserId(user.id);
@@ -1423,7 +1423,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertJobSchema.parse(req.body);
 
       let employerId = job.employerId;
-      
+
       // If user is an employer, use their employer ID
       if (user.userType === "employer") {
         const employer = await storage.getEmployerByUserId(user.id);
@@ -1491,7 +1491,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // First, get all applications for this job
       const applications = await storage.getApplicationsByJobId(jobId);
-      
+
       // Delete all applications associated with this job
       if (applications.length > 0) {
         try {
@@ -1503,7 +1503,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(500).json({ message: "Failed to delete associated applications" });
         }
       }
-      
+
       // Now delete the job
       const success = await storage.deleteJob(jobId);
       if (!success) {
@@ -1560,7 +1560,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (user.userType === "employer" || user.userType === "admin") {
         // Get employer profile for employers
         let employerJobs = [];
-        
+
         if (user.userType === "employer") {
           const employer = await storage.getEmployerByUserId(user.id);
           if (!employer) {
@@ -1617,21 +1617,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const userId = req.user.id;
       const userType = req.user.userType;
-      
+
       console.log(`Fetching notifications for user ID ${userId} (${userType}), since notification ID ${sinceId}`);
 
       // Get all notifications for this user
       const allNotifications = await storage.getNotifications(userId, 50);
       console.log(`Retrieved ${allNotifications.length} total notifications for user ID ${userId}`);
-      
+
       if (allNotifications.length > 0) {
         console.log(`Sample notification:`, JSON.stringify(allNotifications[0]));
       }
-      
+
       // Filter to just the new ones since last check
       const newNotifications = allNotifications.filter(notification => notification.id > sinceId);
       console.log(`Found ${newNotifications.length} new notifications since ID ${sinceId}`);
-      
+
       // Get the highest ID from the notifications
       const lastId = newNotifications.length > 0
         ? Math.max(...newNotifications.map(n => n.id))
@@ -1673,7 +1673,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Return updated unread count
       const unreadCount = await storage.getUnreadNotificationCount(userId);
 
-      res.json({ 
+      res.json({
         success: true,
         unreadCount
       });
@@ -1682,7 +1682,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to update notifications" });
     }
   });
-  
+
   // Mark all notifications as read for the current user
   app.post("/api/realtime/notifications/read-all", async (req, res) => {
     try {
@@ -1691,15 +1691,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const userId = req.user.id;
-      
+
       // Mark all user's notifications as read
       const success = await storage.markAllNotificationsAsRead(userId);
-      
+
       if (!success) {
         return res.status(500).json({ message: "Failed to mark all notifications as read" });
       }
 
-      res.json({ 
+      res.json({
         success: true,
         unreadCount: 0 // All notifications are read, so count is 0
       });
@@ -2137,17 +2137,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Validate the vacancy data
       const validatedData = insertVacancySchema.parse(req.body);
-      
+
       // Set status to "pending" and submitted timestamp
       const vacancy = await storage.createVacancy({
         ...validatedData,
         status: "pending",
         submittedAt: new Date()
       });
-      
+
       // Create notifications for all admin users about the new vacancy form
       const adminUsers = (await storage.getAllUsers()).filter(u => u.userType === "admin");
-      
+
       // Create a notification for each admin
       if (adminUsers.length > 0) {
         const notificationPromises = adminUsers.map(admin => {
@@ -2158,31 +2158,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
             entityId: vacancy.id
           });
         });
-        
+
         await Promise.all(notificationPromises);
         console.log(`Created ${adminUsers.length} notifications for new vacancy submission`);
       }
-      
-      res.status(201).json({ 
-        success: true, 
-        message: "Vacancy form submitted successfully", 
-        vacancy 
+
+      res.status(201).json({
+        success: true,
+        message: "Vacancy form submitted successfully",
+        vacancy
       });
     } catch (error) {
       console.error("Error submitting vacancy form:", error);
-      
+
       if (error instanceof ZodError) {
         const validationError = fromZodError(error);
-        return res.status(400).json({ 
+        return res.status(400).json({
           success: false,
-          message: "Validation error", 
-          errors: validationError.details 
+          message: "Validation error",
+          errors: validationError.details
         });
       }
-      
-      res.status(500).json({ 
+
+      res.status(500).json({
         success: false,
-        message: "Failed to submit vacancy form" 
+        message: "Failed to submit vacancy form"
       });
     }
   });
@@ -2196,7 +2196,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      
+
       // Check userType directly
       if (user.userType !== "admin") {
         return res.status(403).json({ message: "Only administrators can access vacancies" });
@@ -2209,7 +2209,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch vacancies" });
     }
   });
-  
+
   // Delete vacancy (admin only)
   app.delete("/api/admin/vacancies/:id", async (req, res) => {
     try {
@@ -2219,7 +2219,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      
+
       // Check userType directly
       if (user.userType !== "admin") {
         return res.status(403).json({ message: "Only administrators can delete vacancies" });
@@ -2270,7 +2270,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const vacancy = await storage.getVacancy(parseInt(id));
-      
+
       if (!vacancy) {
         return res.status(404).json({ message: "Vacancy not found" });
       }
@@ -2282,7 +2282,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to update vacancy status" });
     }
   });
-  
+
   // Assign vacancy to recruiter (admin only)
   app.patch("/api/admin/vacancies/:id/assign", async (req, res) => {
     try {
@@ -2297,62 +2297,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Validate required fields
       if (!recruiterEmail || !recruiterName) {
-        return res.status(400).json({ 
-          success: false, 
-          message: "Recruiter email and name are required" 
+        return res.status(400).json({
+          success: false,
+          message: "Recruiter email and name are required"
         });
       }
 
       // Validate email format
       if (!recruiterEmail.includes('@')) {
-        return res.status(400).json({ 
-          success: false, 
-          message: "Invalid email format" 
+        return res.status(400).json({
+          success: false,
+          message: "Invalid email format"
         });
       }
 
       // Check userType directly
       if (user.userType !== "admin") {
-        return res.status(403).json({ 
-          success: false, 
-          message: "Only administrators can assign vacancies" 
+        return res.status(403).json({
+          success: false,
+          message: "Only administrators can assign vacancies"
         });
       }
 
       const vacancy = await storage.getVacancy(parseInt(id));
-      
+
       if (!vacancy) {
-        return res.status(404).json({ 
-          success: false, 
-          message: "Vacancy not found" 
+        return res.status(404).json({
+          success: false,
+          message: "Vacancy not found"
         });
       }
 
       // Assign the vacancy to the recruiter
       console.log(`Calling assignVacancyToRecruiter with id=${id}, email=${recruiterEmail}, name=${recruiterName}`);
       console.log(`Method exists: ${typeof storage.assignVacancyToRecruiter === 'function' ? "YES" : "NO"}`);
-      
+
       let updatedVacancy;
       try {
         updatedVacancy = await storage.assignVacancyToRecruiter(
-          parseInt(id), 
-          recruiterEmail, 
+          parseInt(id),
+          recruiterEmail,
           recruiterName
         );
-        
+
         console.log("Assignment result:", updatedVacancy ? "success" : "failed");
-        
+
         if (!updatedVacancy) {
-          return res.status(500).json({ 
-            success: false, 
-            message: "Failed to assign vacancy" 
+          return res.status(500).json({
+            success: false,
+            message: "Failed to assign vacancy"
           });
         }
       } catch (assignError) {
         console.error("Assignment function error:", assignError);
-        return res.status(500).json({ 
-          success: false, 
-          message: "Error during vacancy assignment process" 
+        return res.status(500).json({
+          success: false,
+          message: "Error during vacancy assignment process"
         });
       }
 
@@ -2365,16 +2365,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         origin
       );
 
-      res.json({ 
-        success: true, 
+      res.json({
+        success: true,
         vacancy: updatedVacancy,
         emailStatus: emailResult
       });
     } catch (error) {
       console.error("Error assigning vacancy to recruiter:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         success: false,
-        message: "Failed to assign vacancy to recruiter" 
+        message: "Failed to assign vacancy to recruiter"
       });
     }
   });
@@ -2384,24 +2384,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/staffing-inquiries", async (req, res) => {
     try {
       console.log("Received request for staffing inquiries");
-      
+
       const user = req.user as Express.User;
       if (!user || user.userType !== "admin") {
         console.log("User not authorized:", req.user ? req.user.userType : 'not authenticated');
         return res.status(403).json({ message: "Unauthorized" });
       }
-      
+
       console.log("Fetching staffing inquiries from storage...");
       const inquiries = await storage.getStaffingInquiries();
       console.log("Retrieved inquiries:", inquiries ? inquiries.length : 0);
-      
+
       // Always return an array, even if empty
       res.json(inquiries || []);
     } catch (error) {
       console.error("Error getting staffing inquiries:", error);
-      res.status(500).json({ 
-        message: "Failed to get staffing inquiries", 
-        error: error instanceof Error ? error.message : String(error) 
+      res.status(500).json({
+        message: "Failed to get staffing inquiries",
+        error: error instanceof Error ? error.message : String(error)
       });
     }
   });
@@ -2411,17 +2411,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const user = req.user as Express.User;
-      
+
       if (!user || user.userType !== "admin") {
         return res.status(403).json({ message: "Unauthorized" });
       }
-      
+
       const inquiry = await storage.getStaffingInquiry(parseInt(id));
-      
+
       if (!inquiry) {
         return res.status(404).json({ message: "Staffing inquiry not found" });
       }
-      
+
       res.json(inquiry);
     } catch (error) {
       console.error("Error getting staffing inquiry:", error);
@@ -2444,39 +2444,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/staffing-inquiries", async (req, res) => {
     try {
       console.log("Received staffing inquiry request:", req.body);
-      
+
       // Skip validation for testing - just use direct SQL
       try {
         // Direct database insert using SQL - Using literal values instead of parameters
         const result = await db.execute(`
-          INSERT INTO staffing_inquiries 
-            (name, email, phone, company, inquirytype, message, marketing, status, submittedat) 
-          VALUES 
-            ('${req.body.name}', 
-             '${req.body.email}', 
-             ${req.body.phone ? `'${req.body.phone}'` : 'NULL'}, 
-             ${req.body.company ? `'${req.body.company}'` : 'NULL'}, 
-             '${req.body.inquiryType}', 
-             '${req.body.message}', 
+          INSERT INTO staffing_inquiries
+            (name, email, phone, company, inquirytype, message, marketing, status, submittedat)
+          VALUES
+            ('${req.body.name}',
+             '${req.body.email}',
+             ${req.body.phone ? `'${req.body.phone}'` : 'NULL'},
+             ${req.body.company ? `'${req.body.company}'` : 'NULL'},
+             '${req.body.inquiryType}',
+             '${req.body.message}',
              ${req.body.marketing ? 'TRUE' : 'FALSE'},
              'new',
              NOW())
           RETURNING *
         `);
-        
+
         console.log("Direct SQL insert result:", result);
-        
+
         // Create notifications for all admin users
         const adminUsers = (await storage.getAllUsers()).filter(u => u.userType === "admin");
-        
+
         if (adminUsers.length > 0) {
           // Get the inquiry ID from the result
           const inquiryId = result[0].id;
-          
+
           const notificationPromises = adminUsers.map(admin => {
             // Customize notification message based on inquiry type
             let notificationMessage = "";
-            
+
             if (req.body.inquiryType === "business") {
               notificationMessage = `New business inquiry from ${req.body.name} - Employer inquiry`;
             } else if (req.body.inquiryType === "general") {
@@ -2484,7 +2484,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             } else {
               notificationMessage = `New ${req.body.inquiryType} inquiry from ${req.body.name}`;
             }
-            
+
             return storage.createNotification({
               userId: admin.id,
               message: notificationMessage,
@@ -2492,11 +2492,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
               entityId: inquiryId
             });
           });
-          
+
           await Promise.all(notificationPromises);
           console.log(`Created ${adminUsers.length} notifications for new staffing inquiry`);
         }
-        
+
         res.status(201).json({ success: true, message: "Inquiry submitted successfully" });
       } catch (dbError) {
         console.error("Database error:", dbError);
@@ -2514,21 +2514,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       const { status } = req.body;
       const user = req.user as Express.User;
-      
+
       if (!user || user.userType !== "admin") {
         return res.status(403).json({ message: "Unauthorized" });
       }
-      
+
       if (!status || !["new", "contacted", "in_progress", "completed", "cancelled"].includes(status)) {
         return res.status(400).json({ message: "Invalid status" });
       }
-      
+
       const inquiry = await storage.getStaffingInquiry(parseInt(id));
-      
+
       if (!inquiry) {
         return res.status(404).json({ message: "Staffing inquiry not found" });
       }
-      
+
       const updatedInquiry = await storage.updateStaffingInquiryStatus(parseInt(id), status);
       res.json(updatedInquiry);
     } catch (error) {
@@ -2536,35 +2536,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to update staffing inquiry status" });
     }
   });
-  
+
   // Reply to a staffing inquiry (admin only)
   app.post("/api/staffing-inquiries/:id/reply", async (req, res) => {
     try {
       const { id } = req.params;
       const { subject, message } = req.body;
       const user = req.user as Express.User;
-      
+
       // Authorization check
       if (!user || user.userType !== "admin") {
         return res.status(403).json({ message: "Unauthorized" });
       }
-      
+
       // Input validation
       if (!message) {
         return res.status(400).json({ message: "Message is required" });
       }
-      
+
       // Get the inquiry details
       const inquiry = await storage.getStaffingInquiry(parseInt(id));
-      
+
       if (!inquiry) {
         return res.status(404).json({ message: "Staffing inquiry not found" });
       }
-      
+
       // Get the admin info
       const admin = await storage.getAdmin(user.id);
       const adminName = admin ? `${admin.firstName} ${admin.lastName}` : "Administrator";
-      
+
       // Send the email reply
       const emailResult = await sendInquiryReply(
         inquiry.email,
@@ -2573,31 +2573,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message,
         adminName
       );
-      
+
       if (!emailResult.success) {
         return res.status(500).json({ message: "Failed to send reply email" });
       }
-      
+
       // Update the inquiry status to 'contacted' if it was 'new'
       if (inquiry.status === 'new' || !inquiry.status) {
         await storage.updateStaffingInquiryStatus(parseInt(id), 'contacted');
       }
-      
+
       // Create a notification for the user if we can find them
       try {
         // Find the associated user by email
         console.log(`Looking for user with email: ${inquiry.email}`);
         const inquiryUser = await storage.getUserByEmail(inquiry.email);
-        
+
         if (inquiryUser) {
           console.log(`Found user: ID=${inquiryUser.id}, Type=${inquiryUser.userType}, Email=${inquiryUser.email}`);
-          
+
           // Double check that this is a valid user that can receive notifications
           if (!inquiryUser.id) {
             console.error("Invalid user object, missing ID:", inquiryUser);
             throw new Error("Invalid user object for notification creation");
           }
-          
+
           // Create notification with complete required fields
           const notificationData = {
             userId: inquiryUser.id,
@@ -2606,18 +2606,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
             type: "inquiry_reply",
             entityId: parseInt(id),
           };
-          
+
           console.log("Creating notification with data:", JSON.stringify(notificationData));
-          
+
           // Create the notification
           const notification = await storage.createNotification(notificationData);
-          
+
           if (!notification || !notification.id) {
             throw new Error("Failed to create notification - invalid response from storage");
           }
-          
+
           console.log(`Successfully created notification: ID=${notification.id} for user ${inquiryUser.id} (${inquiryUser.userType})`);
-          
+
           // Also write to stdout to see in logs
           process.stdout.write(`[NOTIFICATION CREATED] userId=${inquiryUser.id}, userType=${inquiryUser.userType}, id=${notification.id}, type=${notificationData.type}\n`);
         } else {
@@ -2628,9 +2628,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error(err instanceof Error ? err.stack : String(err));
         // Continue with the operation even if notification creation fails
       }
-      
-      res.json({ 
-        success: true, 
+
+      res.json({
+        success: true,
         message: "Reply sent successfully",
         previewUrl: emailResult.previewUrl
       });
@@ -2641,13 +2641,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Blog Post API Endpoints
-  
+
   // Get all blog posts (public endpoint)
   app.get("/api/blog-posts", async (req, res) => {
     try {
       // Optional query parameters for filtering
       const { category, tag, authorId, published, limit } = req.query;
-      
+
       // Get all blog posts with optional filters
       const posts = await storage.getBlogPosts({
         category: category ? String(category) : undefined,
@@ -2656,38 +2656,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         published: published === 'true' ? true : published === 'false' ? false : undefined,
         limit: limit ? parseInt(String(limit)) : undefined
       });
-      
+
       // If requesting only published posts and not logged in as admin, filter them
       if (!req.isAuthenticated() || req.user.userType !== "admin") {
         const publicPosts = posts.filter(post => post.published);
         return res.json(publicPosts);
       }
-      
+
       res.json(posts);
     } catch (error) {
       console.error("Error fetching blog posts:", error);
       res.status(500).json({ message: "Failed to fetch blog posts" });
     }
   });
-  
+
   // Get blog post by slug (for friendly URLs) - THIS MUST COME BEFORE THE :id ROUTE
   app.get("/api/blog-posts/slug/:slug", async (req, res) => {
     try {
       const { slug } = req.params;
       console.log(`Fetching blog post by slug: ${slug}`);
       const post = await storage.getBlogPostBySlug(slug);
-      
+
       if (!post) {
         console.log(`Blog post with slug '${slug}' not found`);
         return res.status(404).json({ message: "Blog post not found" });
       }
-      
+
       // If post is not published and user is not admin, don't allow access
       if (!post.published && (!req.isAuthenticated() || req.user.userType !== "admin")) {
         console.log(`Blog post with slug '${slug}' is not published and user is not admin`);
         return res.status(404).json({ message: "Blog post not found" });
       }
-      
+
       console.log(`Successfully found blog post with slug '${slug}'`);
       res.json(post);
     } catch (error) {
@@ -2695,25 +2695,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch blog post" });
     }
   });
-  
+
   // Get blog post by ID
   app.get("/api/blog-posts/:id", async (req, res) => {
     try {
       const { id } = req.params;
       console.log(`Fetching blog post by ID: ${id}`);
       const post = await storage.getBlogPost(parseInt(id));
-      
+
       if (!post) {
         console.log(`Blog post with ID ${id} not found`);
         return res.status(404).json({ message: "Blog post not found" });
       }
-      
+
       // If post is not published and user is not admin, don't allow access
       if (!post.published && (!req.isAuthenticated() || req.user.userType !== "admin")) {
         console.log(`Blog post with ID ${id} is not published and user is not admin`);
         return res.status(404).json({ message: "Blog post not found" });
       }
-      
+
       console.log(`Successfully found blog post with ID ${id}`);
       res.json(post);
     } catch (error) {
@@ -2721,19 +2721,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch blog post" });
     }
   });
-  
+
   // Create a new blog post (admin only)
   app.post("/api/blog-posts", async (req, res) => {
     if (!req.isAuthenticated() || req.user.userType !== "admin") {
       return res.status(403).json({ message: "Unauthorized: Admin access required" });
     }
-    
+
     try {
       console.log("Received blog post data:", req.body);
-      
+
       // Process incoming data
       let processedData = { ...req.body };
-      
+
       // Generate slug if not provided
       if (!processedData.slug) {
         processedData.slug = processedData.title
@@ -2743,40 +2743,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
           .trim();
       }
-      
+
       // Set default values for optional fields
       processedData.readTime = processedData.readTime || "5 min read";
       processedData.published = processedData.published === false ? false : true;
-      
+
       // If excerpt is not provided, create one from content
       if (!processedData.excerpt && processedData.content) {
         // Strip HTML tags and limit to 150 chars
         const plainText = processedData.content.replace(/<[^>]*>/g, '');
         processedData.excerpt = plainText.substring(0, 150) + (plainText.length > 150 ? '...' : '');
       }
-      
+
       // Handle tags - ensure it's an array
       if (typeof processedData.tags === 'string') {
         processedData.tags = processedData.tags.split(',').map(tag => tag.trim());
       }
-      
+
       // Now validate with Zod schema
       const postData = insertBlogPostSchema.parse(processedData);
-      
+
       // Set author ID to current user
       postData.authorId = req.user.id;
-      
+
       // Get admin info for author reference
       const admin = await storage.getAdminByUserId(req.user.id);
       if (!admin) {
         return res.status(404).json({ message: "Admin profile not found" });
       }
-      
+
       // Add admin as author if not specified
       if (!postData.authorId) {
         postData.authorId = admin.id;
       }
-      
+
       // Create the blog post
       const newPost = await storage.createBlogPost(postData);
       res.status(201).json(newPost);
@@ -2785,59 +2785,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const validationError = fromZodError(error);
         return res.status(400).json({ message: validationError.message });
       }
-      
+
       console.error("Error creating blog post:", error);
       res.status(500).json({ message: "Failed to create blog post" });
     }
   });
-  
+
   // Update an existing blog post (admin only)
   app.patch("/api/blog-posts/:id", async (req, res) => {
     if (!req.isAuthenticated() || req.user.userType !== "admin") {
       return res.status(403).json({ message: "Unauthorized: Admin access required" });
     }
-    
+
     try {
       const { id } = req.params;
       const post = await storage.getBlogPost(parseInt(id));
-      
+
       if (!post) {
         return res.status(404).json({ message: "Blog post not found" });
       }
-      
+
       // Update the blog post
       const updatedPost = await storage.updateBlogPost(parseInt(id), req.body);
-      
+
       if (!updatedPost) {
         return res.status(404).json({ message: "Blog post not found" });
       }
-      
+
       res.json(updatedPost);
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromZodError(error);
         return res.status(400).json({ message: validationError.message });
       }
-      
+
       console.error("Error updating blog post:", error);
       res.status(500).json({ message: "Failed to update blog post" });
     }
   });
-  
+
   // Delete a blog post (admin only)
   app.delete("/api/blog-posts/:id", async (req, res) => {
     if (!req.isAuthenticated() || req.user.userType !== "admin") {
       return res.status(403).json({ message: "Unauthorized: Admin access required" });
     }
-    
+
     try {
       const { id } = req.params;
       const deleted = await storage.deleteBlogPost(parseInt(id));
-      
+
       if (!deleted) {
         return res.status(404).json({ message: "Blog post not found" });
       }
-      
+
       res.status(204).end();
     } catch (error) {
       console.error("Error deleting blog post:", error);
