@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import express, { type Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
@@ -84,6 +84,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Set up authentication routes
   setupAuth(app);
+  
+  // Serve the uploads directory for uploaded files
+  app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+  
+  // Image upload endpoint for blog posts (admin only)
+  app.post("/api/upload/blog-image", (req, res) => {
+    if (!req.isAuthenticated() || req.user.userType !== "admin") {
+      return res.status(403).json({ message: "Unauthorized: Admin access required" });
+    }
+    
+    uploadBlogImage(req, res, function(err) {
+      if (err) {
+        // Error handled by the middleware
+        return;
+      }
+      
+      if (!req.file) {
+        return res.status(400).json({ message: "No image uploaded" });
+      }
+      
+      // Generate URL path for the uploaded file
+      const imagePath = getUploadedFilePath(req.file.filename, 'blog-image');
+      
+      // Return success with file information
+      res.status(200).json({
+        success: true,
+        message: "Image uploaded successfully",
+        file: {
+          filename: req.file.filename,
+          originalname: req.file.originalname,
+          mimetype: req.file.mimetype,
+          size: req.file.size,
+          path: imagePath
+        }
+      });
+    });
+  });
 
   // Seed jobs data
   // await seedJobs();

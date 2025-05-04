@@ -18,10 +18,10 @@ if (!fs.existsSync(blogUploadsDir)) {
 
 // Configure storage for blog images
 const blogImageStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) {
     cb(null, blogUploadsDir);
   },
-  filename: function (req, file, cb) {
+  filename: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
     // Generate a unique filename with original extension
     const uniqueId = uuidv4();
     const extension = path.extname(file.originalname);
@@ -53,7 +53,7 @@ export const uploadBlogImage = (req: Request, res: Response, next: NextFunction)
   // Use .single for a single file upload with field name 'image'
   const upload = blogImageUpload.single("image");
 
-  upload(req, res, function (err) {
+  upload(req, res, function (err: any) {
     if (err instanceof multer.MulterError) {
       // A Multer error occurred when uploading
       console.error("Multer error:", err.message);

@@ -48,7 +48,12 @@ const blogPostSchema = z.object({
   subtitle: z.string().max(150, "Subtitle must be less than 150 characters").optional(),
   slug: z.string().max(100, "Slug must be less than 100 characters").optional(),
   content: z.string().min(10, "Content must be at least 10 characters"),
-  bannerImage: z.string().url("Please enter a valid image URL").optional(),
+  // Allow either a valid URL or an empty string for bannerImage
+  bannerImage: z.string()
+    .refine(val => val === '' || val.startsWith('http'), {
+      message: "Please enter a valid image URL or upload an image",
+    })
+    .optional(),
   published: z.boolean().default(true),
   category: z.string().min(1, "Please select a category"),
   // Tags are entered as a comma-separated string in the form
