@@ -29,30 +29,15 @@ const connectionConfig: postgres.Options<{}> = {
 
   // Connection timeout
   connect_timeout: config.database.poolConfig.connectionTimeout,
-  
+
   // Increase timeout values for more reliable connections on Fly.io
   timeout: config.ENV.IS_FLY_IO ? 30 : undefined,
-  
+
   // Enable prepared statements for better performance
   prepare: true,
-  
+
   // Set keep-alive settings, especially important for Fly.io deployments
   keep_alive: 30, // Keep alive time in seconds
-  
-  // PostgreSQL-specific socket settings to prevent disconnects
-  connection: {
-    application_name: "expert_recruitments_app",
-    // Slightly increase TCP keepalive values to prevent disconnections
-    keepalives: 1,
-    keepalives_idle: 30,
-    keepalives_interval: 10,
-    keepalives_count: 3
-  },
-
-  // SSL configuration based on environment
-  ssl: config.database.ssl.enabled ? {
-    rejectUnauthorized: config.database.ssl.rejectUnauthorized
-  } : undefined,
 };
 
 console.log(`Database SSL config: ${config.ENV.IS_PRODUCTION ? 'Production' : 'Development'} mode with SSL ${config.database.ssl.enabled ? 'enabled' : 'disabled'}`);
