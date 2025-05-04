@@ -179,6 +179,29 @@ function AdminDashboard() {
     refetchOnWindowFocus: true
   });
   
+  // Update application status
+  const updateApplicationStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: number; status: string }) => {
+      const res = await apiRequest("PATCH", `/api/applications/${id}/status`, { status });
+      if (!res.ok) throw new Error("Failed to update application status");
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/applications"] });
+      toast({
+        title: "Status updated",
+        description: "Application status has been updated",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to update status",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+  
   // Blog posts query removed as requested
   
   // Helper function for formatting dates
@@ -784,6 +807,10 @@ function AdminDashboard() {
           <TabsTrigger value="posts">
             <FileTextIcon className="mr-2 h-4 w-4" />
             Blogs
+          </TabsTrigger>
+          <TabsTrigger value="resumes">
+            <FileText className="mr-2 h-4 w-4" />
+            Resumes
           </TabsTrigger>
         </TabsList>
         
@@ -1634,15 +1661,40 @@ function AdminDashboard() {
                               <TableCell>{application.job?.company || 'Unknown Company'}</TableCell>
                               <TableCell>{formatDate(application.appliedDate)}</TableCell>
                               <TableCell>
-                                <Badge variant={
-                                  application.status === "shortlisted" 
-                                    ? "default" 
-                                    : application.status === "viewed" 
-                                    ? "secondary" 
-                                    : "outline"
-                                }>
-                                  {application.status || "new"}
-                                </Badge>
+                                <Select 
+                                  defaultValue={application.status || "new"}
+                                  onValueChange={(value) => {
+                                    updateApplicationStatusMutation.mutate({
+                                      id: application.id,
+                                      status: value
+                                    });
+                                  }}
+                                >
+                                  <SelectTrigger className="w-[120px]">
+                                    <SelectValue>
+                                      <Badge variant={
+                                        application.status === "shortlisted" 
+                                          ? "default" 
+                                          : application.status === "interviewed" 
+                                          ? "secondary"
+                                          : application.status === "rejected"
+                                          ? "destructive"
+                                          : application.status === "viewed" 
+                                          ? "outline" 
+                                          : "outline"
+                                      }>
+                                        {application.status || "new"}
+                                      </Badge>
+                                    </SelectValue>
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="new">New</SelectItem>
+                                    <SelectItem value="viewed">Viewed</SelectItem>
+                                    <SelectItem value="shortlisted">Shortlisted</SelectItem>
+                                    <SelectItem value="interviewed">Interviewed</SelectItem>
+                                    <SelectItem value="rejected">Rejected</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </TableCell>
                               <TableCell className="text-right">
                                 <div className="flex justify-end gap-1">
