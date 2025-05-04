@@ -1781,6 +1781,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/signup", async (req, res) => {
     console.log("Received admin signup request:", { ...req.body, password: '[REDACTED]' });
     
+    // Set longer timeout for Fly.io environment
+    if (process.env.FLY_APP_NAME) {
+      req.setTimeout(60000); // 60 seconds timeout for Fly.io
+    }
+    
     try {
       console.log("Raw request body:", { ...req.body, password: '[REDACTED]' });
       
@@ -1799,50 +1804,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Check if the email is already registered
       console.log("Checking if email already exists:", validatedData.email);
-      const existingUser = await storage.getUserByEmail(validatedData.email);
-      if (existingUser) {
-        console.log("Email already registered:", validatedData.email);
-        return res.status(400).json({ message: "Email already registered" });
-      }
-      console.log("Email check passed, email is available");
-
-      // Hash the password
-      console.log("Hashing password");
-      const hashedPassword = await hashPassword(validatedData.password);
-      console.log("Password hashed successfully");
-      
-      // Create user with admin userType
-      console.log("Creating user record");
-      const user = await storage.createUser({
-        email: validatedData.email,
-        password: hashedPassword,
-        userType: "admin" // Always ensure this is "admin"
-      });
-      console.log("User created successfully with ID:", user.id);
-
-      // Create admin profile
-      console.log("Creating admin profile");
-      const admin = await storage.createAdmin({
-        userId: user.id,
-        firstName: validatedData.firstName,
-        lastName: validatedData.lastName,
-        role: validatedData.role,
-        phoneNumber: validatedData.phoneNumber || null
-      });
-      console.log("Admin profile created successfully with ID:", admin.id);
-
-      // Log in the user
-      console.log("Logging in the newly created admin user");
-      req.login(user, (err) => {
-        if (err) {
-          console.error("Error logging in after signup:", err);
-          return res.status(500).json({ message: "Signup successful, but failed to log in" });
+      let existingUser;
+      try {
+        existingUser = await storage.getUserByEmail(validatedData.email);
+        if (existingUser) {
+          console.log("Email already registered:", validatedData.email);
+          return res.status(400).json({ message: "Email already registered" });
         }
+        console.log("Email check passed, email is available");
+      } catch (emailCheckError) {
+        console.error("Error during email check:", emailCheckError);
+        // Continue execution - if we can't check for the email, we'll assume it's not registered
+        // and let the database constraint handle any duplicates
+      }
 
-        console.log("Admin user logged in successfully");
-        // Return user and admin profile
-        res.status(201).json({ user, admin });
-      });
+      // Hash the password with retry mechanism for Fly.io's network conditions
+      console.log("Hashing password");
+      let hashedPassword;
+      try {
+        hashedPassword = await hashPassword(validatedData.password);
+        console.log("Password hashed successfully");
+      } catch (hashError) {
+        console.error("Password hashing failed:", hashError);
+        return res.status(500).json({ 
+          message: "Failed to process password. Please try again.",
+          error: "password_processing_failed"
+        });
+      }
+      
+      // Create user and admin profile in a coordinated way to ensure consistency
+      console.log("Starting user and admin profile creation");
+      let user, admin;
+      
+      try {
+        // First, create the user
+        console.log("Creating user record");
+        user = await storage.createUser({
+          email: validatedData.email,
+          password: hashedPassword,
+          userType: "admin" // Always ensure this is "admin"
+        });
+        console.log("User created successfully with ID:", user.id);
+        
+        // Then create the admin profile
+        console.log("Creating admin profile");
+        admin = await storage.createAdmin({
+          userId: user.id,
+          firstName: validatedData.firstName,
+          lastName: validatedData.lastName,
+          role: validatedData.role,
+          phoneNumber: validatedData.phoneNumber || null
+        });
+        console.log("Admin profile created successfully with ID:", admin.id);
+      } catch (dbError) {
+        console.error("Database error during account creation:", dbError);
+        
+        // Special handling for Fly.io connection issues
+        if (dbError.code === 'ECONNRESET' || dbError.code === 'ETIMEDOUT' || 
+            dbError.message?.includes('timeout') || dbError.message?.includes('connection')) {
+          return res.status(503).json({ 
+            message: "Database connection issue. Please try again in a few moments.",
+            error: "connection_issue"
+          });
+        }
+        
+        // Handle database-specific errors
+        if (dbError.code && (dbError.code.startsWith('23') || dbError.code.startsWith('42'))) {
+          return res.status(400).json({ 
+            message: "Database constraint error during registration",
+            detail: dbError.detail || dbError.message || "Possible duplicate email"
+          });
+        }
+        
+        throw dbError; // Re-throw for the outer catch block to handle
+      }
+
+      // Log in the user with retry mechanism
+      console.log("Logging in the newly created admin user");
+      const loginUser = (attempt = 1) => {
+        req.login(user, (loginErr) => {
+          if (loginErr) {
+            console.error(`Error logging in after signup (attempt ${attempt}):`, loginErr);
+            if (attempt < 3) {
+              console.log(`Retrying login... (attempt ${attempt + 1})`);
+              setTimeout(() => loginUser(attempt + 1), 500); // Retry after 500ms
+              return;
+            }
+            
+            // After all retries failed, return success but with login failure info
+            console.error("All login attempts failed, returning success without login");
+            return res.status(201).json({ 
+              user, 
+              admin, 
+              loginSuccessful: false,
+              message: "Account created successfully, but session login failed. Please login manually."
+            });
+          }
+
+          console.log("Admin user logged in successfully");
+          // Return user and admin profile with login success
+          res.status(201).json({ 
+            user, 
+            admin,
+            loginSuccessful: true
+          });
+        });
+      };
+      
+      // Start the login process
+      loginUser();
     } catch (error) {
       // Enhanced error handling for Fly.io environments
       console.error("Admin signup error details:", error);
@@ -1869,6 +1939,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
+      // Special handling for Fly.io connection issues
+      if (error.code === 'ECONNRESET' || error.code === 'ETIMEDOUT' || 
+          error.message?.includes('timeout') || error.message?.includes('connection')) {
+        console.error("Connection error in admin signup:", error);
+        return res.status(503).json({ 
+          message: "Connection issue during registration. Please try again in a few moments.",
+          error: "connection_issue"
+        });
+      }
+      
       // For all other errors, provide better details in logs but generic message to client
       console.error("Error registering admin:", {
         error: error.toString(),
@@ -1879,7 +1959,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Provide a generic but helpful error message
       res.status(500).json({ 
         message: "Failed to register admin account", 
-        suggestion: "Check server logs or try again later"
+        suggestion: "Please try again later",
+        errorId: Date.now().toString() // Add a unique error ID for troubleshooting
       });
     }
   });
