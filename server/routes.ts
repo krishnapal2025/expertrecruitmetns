@@ -1844,6 +1844,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.status(201).json({ user, admin });
       });
     } catch (error) {
+      // Enhanced error handling for Fly.io environments
+      console.error("Admin signup error details:", error);
+      
       if (error instanceof ZodError) {
         const validationError = fromZodError(error);
         console.error("Validation error in admin signup:", validationError);
@@ -1852,9 +1855,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
           validationErrors: validationError.errors 
         });
       }
-
-      console.error("Error registering admin:", error);
-      res.status(500).json({ message: "Failed to register admin account" });
+      
+      // Handle database-specific errors
+      if (error.code && (error.code.startsWith('23') || error.code.startsWith('42'))) {
+        // Database constraint violation (23xxx) or syntax error (42xxx)
+        console.error("Database error during admin signup:", {
+          code: error.code,
+          detail: error.detail || 'No details available'
+        });
+        return res.status(400).json({ 
+          message: "Database error during registration",
+          detail: error.detail || error.message || "Check database logs for details"
+        });
+      }
+      
+      // For all other errors, provide better details in logs but generic message to client
+      console.error("Error registering admin:", {
+        error: error.toString(),
+        stack: error.stack,
+        message: error.message
+      });
+      
+      // Provide a generic but helpful error message
+      res.status(500).json({ 
+        message: "Failed to register admin account", 
+        suggestion: "Check server logs or try again later"
+      });
     }
   });
 
@@ -1907,13 +1933,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.status(201).json({ user, admin });
       });
     } catch (error) {
+      // Enhanced error handling for Fly.io environments
+      console.error("Admin registration error details:", error);
+      
       if (error instanceof ZodError) {
         const validationError = fromZodError(error);
-        return res.status(400).json({ message: validationError.message });
+        console.error("Validation error in admin registration:", validationError);
+        return res.status(400).json({ 
+          message: validationError.message,
+          validationErrors: validationError.errors 
+        });
       }
-
-      console.error("Error registering admin:", error);
-      res.status(500).json({ message: "Failed to register admin account" });
+      
+      // Handle database-specific errors
+      if (error.code && (error.code.startsWith('23') || error.code.startsWith('42'))) {
+        // Database constraint violation (23xxx) or syntax error (42xxx)
+        console.error("Database error during admin registration:", {
+          code: error.code,
+          detail: error.detail || 'No details available'
+        });
+        return res.status(400).json({ 
+          message: "Database error during registration",
+          detail: error.detail || error.message || "Check database logs for details"
+        });
+      }
+      
+      // For all other errors, provide better details in logs but generic message to client
+      console.error("Error registering admin:", {
+        error: error.toString(),
+        stack: error.stack,
+        message: error.message
+      });
+      
+      // Provide a generic but helpful error message
+      res.status(500).json({ 
+        message: "Failed to register admin account", 
+        suggestion: "Check server logs or try again later"
+      });
     }
   });
 
