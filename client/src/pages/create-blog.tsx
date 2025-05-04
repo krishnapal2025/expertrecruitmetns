@@ -214,30 +214,41 @@ const CreateBlogPage = () => {
       // Convert tags from string to array for the API
       const tagsArray = data.tags ? data.tags.split(',').map(tag => tag.trim()) : [];
       
-      // Create API-compatible data structure
+      // Create API-compatible data structure, ensuring all required fields are present
       const postData = {
         title: data.title,
-        subtitle: data.subtitle,
+        subtitle: data.subtitle || null,
         content: data.content,
-        bannerImage: data.bannerImage,
-        category: data.category,
-        excerpt: data.excerpt,
-        readTime: data.readTime,
-        metaDescription: data.metaDescription,
-        slug: data.slug,
-        published: data.published,
+        bannerImage: data.bannerImage || null,
+        category: data.category || "Uncategorized", // Default category
+        excerpt: data.excerpt || null,
+        readTime: data.readTime || "5 min read",
+        metaDescription: data.metaDescription || null,
+        slug: data.slug || null, // Server will generate if null
+        published: data.published !== undefined ? data.published : true, // Default to published
         tags: tagsArray, // Pass as array to the API
       };
 
-      console.log("Submitting blog post:", postData);
+      console.log("Submitting blog post with data:", postData);
+      console.log("Content length:", postData.content?.length || 0);
+      console.log("Authentication status:", !!localStorage.getItem("isLoggedIn")); // Check auth state
       
-      const response = await apiRequest("POST", "/api/blog-posts", postData);
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("API Error:", errorData);
-        throw new Error(errorData.message || "Failed to create blog post");
+      try {
+        // Make the API request with credentials
+        const response = await apiRequest("POST", "/api/blog-posts", postData);
+        console.log("API response status:", response.status);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("API Error:", errorData);
+          throw new Error(errorData.message || "Failed to create blog post");
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error("API request failed:", error);
+        throw error;
       }
-      return await response.json();
     },
     onSuccess: (data) => {
       // Invalidate the blog posts query cache so the updated list shows immediately
