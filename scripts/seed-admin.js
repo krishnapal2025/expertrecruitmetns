@@ -21,15 +21,27 @@ async function seedAdmin() {
   try {
     const client = await pool.connect();
     
-    // Admin credentials
-    const email = 'admin@expertrecruitments.com';
-    const password = 'admin@ER2025';
+    // Admin credentials (using environment variables for security)
+    // Get admin email from environment variable
+    const email = process.env.ADMIN_EMAIL;
+    if (!email) {
+      console.log('⚠️ ADMIN_EMAIL environment variable not set.');
+      console.log('Please configure the ADMIN_EMAIL environment variable.');
+      process.exit(1);
+    }
+    // Get admin password from environment variable
+    const password = process.env.ADMIN_PASSWORD;
+    if (!password) {
+      console.log('⚠️ ADMIN_PASSWORD environment variable not set.');
+      console.log('Please configure the ADMIN_PASSWORD environment variable.');
+      process.exit(1);
+    }
     
     // Option 1: Generate a fresh hash (recommended for maximum security)
     const hashedPassword = await hashPassword(password);
     
-    // Option 2: Use the known working hash (recommended for consistency)
-    // const hashedPassword = '61c89d0b42798317712f856e4aa1f962bb8478407f25cc0896800918d8fdc00f743aa2dc4e78b98aaff5da7b2e7c537a1c9b9caee081a299e23de8744389331e.e27fe3584d0ec6f368a2625ed63a7c71';
+    // Option 2: Use a pre-defined hash (not recommended for security)
+    // const hashedPassword = '[REDACTED]'; // Hash removed for security
     
     console.log('Checking if admin exists...');
     
@@ -70,13 +82,25 @@ async function seedAdmin() {
       console.log('Creating admin profile...');
       await client.query(
         'INSERT INTO admins (user_id, first_name, last_name, role, phone_number) VALUES ($1, $2, $3, $4, $5)',
-        [userId, 'Admin', 'User', 'super_admin', '+1234567890']
+        [
+          userId, 
+          process.env.ADMIN_FIRST_NAME || 'Admin', 
+          process.env.ADMIN_LAST_NAME || 'User', 
+          'super_admin', 
+          process.env.ADMIN_PHONE || 'Please set phone number'
+        ]
       );
     }
     
     console.log('✅ Admin setup complete!');
-    console.log(`Email: ${email}`);
-    console.log(`Password: ${password}`);
+    console.log('Admin user created or updated successfully.');
+    console.log('Required environment variables:');
+    console.log('  - ADMIN_EMAIL: Admin email address');
+    console.log('  - ADMIN_PASSWORD: Admin password');
+    console.log('Optional environment variables:');
+    console.log('  - ADMIN_FIRST_NAME: Admin first name');
+    console.log('  - ADMIN_LAST_NAME: Admin last name');
+    console.log('  - ADMIN_PHONE: Admin phone number');
     
     client.release();
   } catch (error) {

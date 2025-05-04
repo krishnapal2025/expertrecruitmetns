@@ -67,7 +67,7 @@ export const sendPasswordResetEmail = async (
         
         // Set up email options
         const mailOptions = {
-          from: '"Expert Recruitments" <admin@expertrecruitments.com>',
+          from: process.env.EMAIL_FROM || '"Expert Recruitments" <noreply@example.com>',
           to: user.email,
           subject: 'Password Reset - Expert Recruitments',
           text: `
@@ -151,7 +151,7 @@ export const sendPasswordResetEmail = async (
     
     // Set up email data
     const mailOptions = {
-      from: '"Expert Recruitments" <admin@expertrecruitments.com>',
+      from: process.env.EMAIL_FROM || '"Expert Recruitments" <noreply@example.com>',
       to: user.email,
       subject: 'Password Reset - Expert Recruitments',
       text: `
@@ -243,7 +243,7 @@ export const sendInquiryReply = async (
         
         // Set up email options
         const mailOptions = {
-          from: '"Expert Recruitments" <info@expertrecruitments.com>',
+          from: process.env.EMAIL_FROM || '"Expert Recruitments" <noreply@example.com>',
           to: `"${recipientName}" <${recipientEmail}>`,
           subject: subject,
           html: `
@@ -327,7 +327,7 @@ export const sendVacancyAssignmentEmail = async (
         
         // Set up and send the test email
         const mailOptions = {
-          from: '"Expert Recruitments" <admin@expertrecruitments.com>',
+          from: process.env.EMAIL_FROM || '"Expert Recruitments" <noreply@example.com>',
           to: recruiterEmail,
           subject: `New Vacancy Assignment: ${vacancy.jobTitle} at ${vacancy.companyName}`,
           text: `
@@ -450,7 +450,7 @@ export const sendVacancyAssignmentEmail = async (
     
     // Set up email data
     const mailOptions = {
-      from: '"Expert Recruitments" <admin@expertrecruitments.com>',
+      from: process.env.EMAIL_FROM || '"Expert Recruitments" <noreply@example.com>',
       to: recruiterEmail,
       subject: `New Vacancy Assignment: ${vacancy.jobTitle} at ${vacancy.companyName}`,
       text: `

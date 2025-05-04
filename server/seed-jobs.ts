@@ -30,7 +30,7 @@ async function seedJobs() {
           // Create demo user for employer
           user = await storage.createUser({
             email: 'demo@employer.com',
-            password: '$2b$10$vCeMRZ.hpIyEvHe1qqrVTuGsXSHEjvkS48zNvGnR5WBR4hFKU3Nru', // hashed 'password123'
+            password: await hashPassword(process.env.DEMO_EMPLOYER_PASSWORD || 'changeme'),
             userType: 'employer'
           });
           console.log('Created demo user for employer');

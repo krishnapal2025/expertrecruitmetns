@@ -1,11 +1,11 @@
 # Expert Recruitments Admin Credentials
 
 ## Default Admin Account
-- **Email:** admin@expertrecruitments.com
-- **Password:** admin@ER2025
+- **Email:** [REDACTED]
+- **Password:** [REDACTED]
 
 ## Hash Information (For Technical Reference)
-- **Current Password Hash:** 61c89d0b42798317712f856e4aa1f962bb8478407f25cc0896800918d8fdc00f743aa2dc4e78b98aaff5da7b2e7c537a1c9b9caee081a299e23de8744389331e.e27fe3584d0ec6f368a2625ed63a7c71
+- **Current Password Hash:** [REDACTED]
 
 ## Using These Credentials
 

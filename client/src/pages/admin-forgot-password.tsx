@@ -128,7 +128,7 @@ export default function AdminForgotPassword() {
                         <FormItem>
                           <FormLabel>Email Address</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="admin@expertrecruitments.com" {...field} />
+                            <Input type="email" placeholder="Enter admin email address" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
