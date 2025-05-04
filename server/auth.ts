@@ -40,8 +40,9 @@ export function setupAuth(app: Express) {
     cookie: {
       secure: isProduction, // Use secure cookies in production
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days for longer sessions
-      sameSite: isFlyIo ? 'lax' : undefined // Important for Fly.io compatibility
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days for longer sessions
+      sameSite: isFlyIo ? 'none' : 'lax', // Critical fix for Fly.io
+      domain: isFlyIo ? process.env.COOKIE_DOMAIN : undefined // Set domain in production
     },
     // These settings help with session persistence on Fly.io
     proxy: isFlyIo
