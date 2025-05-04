@@ -1230,15 +1230,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const statusMessage = statusMessages[status as keyof typeof statusMessages] || 
                                   `Your application status has been updated to: ${status}`;
             
-            realtimeStore.notifications.push({
-              id: realtimeStore.notificationId++,
+            // Create a notification in the database instead of just in memory
+            await storage.createNotification({
               userId: jobSeekerUser.id,
               message: `${statusMessage} for the ${job.title} position at ${job.company}`,
               type: "application_status",
-              read: false,
-              entityId: application.id,
-              createdAt: new Date()
+              entityId: application.id
             });
+            
+            console.log(`Created application status notification for user ${jobSeekerUser.id}`);
           }
         }
         
