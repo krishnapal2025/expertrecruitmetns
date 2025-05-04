@@ -267,6 +267,10 @@ const CreateBlogPage = () => {
   const onSubmit = (data: BlogFormValues) => {
     console.log("Form submitted with data:", data);
     
+    // Debug the form state
+    console.log("Form state:", form.formState);
+    console.log("Form errors:", form.formState.errors);
+    
     // Make sure content is being populated
     if (!data.content || data.content.trim().length < 100) {
       toast({
@@ -274,6 +278,7 @@ const CreateBlogPage = () => {
         description: "Please add more content to your blog post (minimum 100 characters)",
         variant: "destructive",
       });
+      console.error("Content validation failed:", data.content ? data.content.length : 0, "characters");
       return;
     }
     
@@ -290,7 +295,34 @@ const CreateBlogPage = () => {
     };
     
     console.log("Submitting data:", submissionData);
-    createBlogMutation.mutate(submissionData);
+    console.log("Content length:", submissionData.content.length);
+    
+    // Explicitly checking required fields
+    if (!submissionData.title) {
+      console.error("Missing required field: title");
+      toast({
+        title: "Missing title",
+        description: "Please provide a title for your blog post",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!submissionData.category) {
+      console.error("Missing required field: category");
+      toast({
+        title: "Missing category",
+        description: "Please select a category for your blog post",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    try {
+      createBlogMutation.mutate(submissionData);
+    } catch (error) {
+      console.error("Error triggering mutation:", error);
+    }
   };
 
   const addSection = (type: 'paragraph' | 'header' | 'image') => {
