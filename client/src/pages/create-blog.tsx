@@ -145,9 +145,15 @@ const CreateBlogPage = () => {
     
     let previewContent = '';
     
+    // Title always appears first in the preview/published blog
+    if (title) {
+      previewContent += `<h1 class="text-3xl font-${titleFormatting.fontWeight} font-${titleFormatting.fontStyle} text-${titleFormatting.fontSize} text-${titleFormatting.alignment} text-${titleFormatting.color} mb-4">${title}</h1>`;
+    }
+    
+    // Banner image appears after the title
     if (bannerImage) {
       previewContent += `
-      <div class="w-full overflow-hidden rounded-t-lg">
+      <div class="w-full overflow-hidden rounded-lg mb-4">
         <div class="relative w-full" style="padding-top: 56.25%"> <!-- 16:9 aspect ratio -->
           <img 
             src="${bannerImage}" 
@@ -157,10 +163,6 @@ const CreateBlogPage = () => {
           />
         </div>
       </div>`;
-    }
-    
-    if (title) {
-      previewContent += `<h1 class="text-3xl font-${titleFormatting.fontWeight} font-${titleFormatting.fontStyle} text-${titleFormatting.fontSize} text-${titleFormatting.alignment} text-${titleFormatting.color} mt-6 mb-2">${title}</h1>`;
     }
     
     if (subtitle) {
