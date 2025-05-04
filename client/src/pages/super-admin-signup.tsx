@@ -187,43 +187,6 @@ export default function SuperAdminSignupPage() {
           </CardHeader>
           
           <CardContent className="pt-6 pb-4">
-            {/* Show connection status warning for Fly.io */}
-            {registerMutation.isPending && registerMutation.variables && (
-              <div className="rounded-md bg-yellow-50 p-4 mb-4 border border-yellow-200">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <Loader2 className="h-5 w-5 text-yellow-600 animate-spin" />
-                  </div>
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-yellow-800">Registration in progress</h3>
-                    <div className="mt-2 text-sm text-yellow-700">
-                      <p>Your account is being created. This may take a moment...</p>
-                      <p className="mt-1 text-xs">If the process takes longer than expected, we'll automatically retry.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {/* Show special error message for database connection issues */}
-            {registerMutation.isError && 
-              (registerMutation.error?.message?.includes("503") || 
-               registerMutation.error?.message?.includes("connection") || 
-               registerMutation.error?.message?.includes("timeout")) && (
-              <div className="rounded-md bg-amber-50 p-4 mb-4 border border-amber-200">
-                <div className="flex">
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-amber-800">Database Connection Issue</h3>
-                    <div className="mt-2 text-sm text-amber-700">
-                      <p>We're experiencing connection issues with our database.</p>
-                      <p className="mt-1">This is common in cloud deployments when the database is warming up.</p>
-                      <p className="mt-1 font-medium">Please try again in a few moments.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
