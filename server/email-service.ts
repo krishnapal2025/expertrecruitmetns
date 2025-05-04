@@ -115,8 +115,7 @@ export const sendPasswordResetEmail = async (
         
         return {
           success: true,
-          previewUrl: resetUrl, // Return the reset URL directly for development
-          emailPreviewUrl: previewUrl // Additionally provide the Ethereal preview URL
+          previewUrl: previewUrl || resetUrl // Return the preview URL or reset URL as fallback
         };
       } catch (error) {
         console.error('Error creating test email:', error);
@@ -145,7 +144,7 @@ export const sendPasswordResetEmail = async (
       // In production without credentials, we'll log but won't actually try to send
       return {
         success: true,
-        message: "Email service not configured, but reset token was generated successfully"
+        previewUrl: resetUrl // Use the reset URL as the preview URL
       };
     }
     
@@ -270,7 +269,7 @@ export const sendInquiryReply = async (
         
         return {
           success: true,
-          previewUrl: nodemailer.getTestMessageUrl(info)
+          previewUrl: nodemailer.getTestMessageUrl(info) || ''
         };
       } catch (mailError) {
         console.error('Error sending inquiry reply email:', mailError);
@@ -418,11 +417,11 @@ export const sendVacancyAssignmentEmail = async (
           success: true,
           message: `Development mode - Email preview available at: ${previewUrl}`
         };
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error creating test email:', error);
         return {
           success: false,
-          message: `Failed to create test email: ${error.message}`
+          message: `Failed to create test email: ${error?.message || 'Unknown error'}`
         };
       }
     }

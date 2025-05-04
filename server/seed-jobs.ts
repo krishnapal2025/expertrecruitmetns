@@ -1,5 +1,6 @@
 import { storage } from './storage';
 import { InsertJob, InsertUser, InsertEmployer } from '@shared/schema';
+import { hashPassword } from './auth';
 
 // Create mock jobs for all categories
 async function seedJobs() {
@@ -473,19 +474,16 @@ async function seedJobs() {
   ];
 
   // Helper function to create a complete job from partial data
+  // Add default values for missing required properties in jobs
   const createCompleteJob = (job: Partial<InsertJob>): InsertJob => {
     const now = new Date();
     const deadline = new Date();
     deadline.setDate(now.getDate() + 30);
 
     // Extract company name from title if not provided
-    let company = job.company;
-    if (!company && job.title?.includes("at ")) {
-      const parts = job.title.split(" at ");
-      if (parts.length >= 2) {
-        company = parts[1];
-      }
-    }
+    const companyName = job.company || (job.title?.includes("at ") 
+      ? job.title.split(" at ")[1] 
+      : "Demo Recruiting Company");
 
     // Build default requirements and benefits from description
     const description = job.description || "";
@@ -532,7 +530,7 @@ async function seedJobs() {
     return {
       employerId: employerId,
       title: job.title || "Untitled Position",
-      company: company || "Demo Recruiting Company",
+      company: companyName,
       description: job.description || "No description provided",
       requirements: requirements || "Please contact employer for detailed requirements",
       benefits: benefits || "Please contact employer for detailed benefits information",
