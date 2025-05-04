@@ -39,12 +39,23 @@ primary_region = 'sin'
     soft_limit = 500
 
   [[http_service.checks]]
-    interval = "10s"
-    timeout = "2s"
-    grace_period = "5s"
+    interval = "15s"
+    timeout = "5s"
+    grace_period = "30s"
     method = "GET"
     path = "/health"
     protocol = "http"
+
+[http_service.tls]
+  # Enhance TLS settings
+  minimum_version = "TLSv1.2"
+  key_type = "P256"
+  
+# Configure specific network settings  
+[[services.tcp_checks]]
+  interval = "15s"
+  timeout = "5s"
+  grace_period = "30s"
 
 # VM resource configuration
 [[vm]]

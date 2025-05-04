@@ -3,6 +3,7 @@ import postgres from 'postgres';
 import * as schema from "@shared/schema";
 import { type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import config from './config';
+import { ENV } from './config';
 
 // Export type for use in other files
 export type DatabaseInstance = PostgresJsDatabase<typeof schema>;
@@ -18,16 +19,6 @@ console.log(`Using PostgreSQL connection in ${config.ENV.NODE_ENV} environment`)
 
 // Modify the connection string to ensure SSL mode is properly set
 let connectionString = config.database.url;
-if (config.database.ssl.enabled && !connectionString.includes('sslmode=')) {
-  // If URL has parameters already, add sslmode as another parameter
-  if (connectionString.includes('?')) {
-    connectionString += '&sslmode=require';
-  } else {
-    // Otherwise, add it as the first parameter
-    connectionString += '?sslmode=require';
-  }
-  console.log("Added sslmode=require to database connection string");
-}
 
 // Configure PostgreSQL client with optimal settings from environment config
 const connectionConfig: postgres.Options<{}> = {
@@ -40,8 +31,24 @@ const connectionConfig: postgres.Options<{}> = {
   // Connection timeout
   connect_timeout: config.database.poolConfig.connectionTimeout,
   
+  // Increase timeout values for more reliable connections on Fly.io
+  timeout: config.ENV.IS_FLY_IO ? 30 : undefined,
+  
   // Enable prepared statements for better performance
   prepare: true,
+  
+  // Set keep-alive settings, especially important for Fly.io deployments
+  keep_alive: 30, // Keep alive time in seconds
+  
+  // PostgreSQL-specific socket settings to prevent disconnects
+  connection: {
+    application_name: "expert_recruitments_app",
+    // Slightly increase TCP keepalive values to prevent disconnections
+    keepalives: 1,
+    keepalives_idle: 30,
+    keepalives_interval: 10,
+    keepalives_count: 3
+  },
 
   // SSL configuration based on environment
   ssl: config.database.ssl.enabled ? {

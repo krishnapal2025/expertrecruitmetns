@@ -17,9 +17,11 @@ const flyConfig = {
     },
     poolConfig: {
       ...productionConfig.database.poolConfig,
-      // Fly.io recommends specific PostgreSQL pooling settings
-      max: 5,
-      idleTimeout: 10
+      // Fly.io optimized PostgreSQL pooling settings
+      max: 3, // Reduce max connections to avoid overwhelming the database
+      idleTimeout: 30, // Increase idle timeout to reduce connection cycling
+      connectionTimeout: 30, // Increase connection timeout for slower networks
+      acquireConnectionTimeout: 10000 // Wait longer for connection acquisition
     }
   },
   
