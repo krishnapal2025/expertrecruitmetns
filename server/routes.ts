@@ -27,6 +27,8 @@ import { generateResetToken, sendPasswordResetEmail, sendVacancyAssignmentEmail,
 import { seedJobs } from "./seed-jobs";
 import { generateResumePDF, resumeDataSchema, bufferToStream, ResumeData } from "./pdf-service";
 import { handleCvDownload } from "./cv-service";
+import { uploadBlogImage, getUploadedFilePath } from "./upload-service";
+import path from "path";
 
 // Add ResumeData type to session
 declare module "express-session" {
