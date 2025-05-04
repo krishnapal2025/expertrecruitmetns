@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Bell, BellOff } from "lucide-react";
+import { Bell, BellOff, MessageSquare, Briefcase, FileCheck, Mail, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Popover,
@@ -17,23 +17,42 @@ export function NotificationItem({ notification, onMarkRead }: { notification: N
   // Format the createdAt date as a relative time (e.g., "5 minutes ago")
   const createdAtDate = new Date(notification.createdAt);
   const timeAgo = formatDistanceToNow(createdAtDate, { addSuffix: true });
+  
+  // Determine which icon to display based on notification type
+  const getNotificationIcon = () => {
+    switch (notification.type) {
+      case 'inquiry_reply':
+        return <MessageSquare className="h-4 w-4 text-blue-500" />;
+      case 'application_status':
+        return <FileCheck className="h-4 w-4 text-green-500" />;
+      case 'staffing_inquiry':
+        return <Mail className="h-4 w-4 text-purple-500" />;
+      default:
+        return <AlertCircle className="h-4 w-4 text-gray-500" />;
+    }
+  };
 
   return (
     <div className={`p-4 border-b ${!notification.read ? 'bg-muted/50' : ''}`}>
       <div className="flex justify-between items-start mb-2">
-        <p className="font-medium text-sm">{notification.message}</p>
+        <div className="flex items-start gap-2">
+          <div className="mt-0.5">
+            {getNotificationIcon()}
+          </div>
+          <p className="font-medium text-sm">{notification.message}</p>
+        </div>
         {!notification.read && (
           <Button 
             variant="ghost" 
             size="sm"
-            className="h-6 px-2"
+            className="h-6 px-2 ml-2 shrink-0"
             onClick={() => onMarkRead(notification.id)}
           >
             Mark Read
           </Button>
         )}
       </div>
-      <p className="text-xs text-muted-foreground">{timeAgo}</p>
+      <p className="text-xs text-muted-foreground ml-6">{timeAgo}</p>
     </div>
   );
 }
@@ -157,8 +176,18 @@ export default function NotificationsPopover() {
           // Show a toast for each new notification if the popover is closed
           if (!open && newNotifications.length > 0) {
             newNotifications.forEach(notification => {
+              // Get appropriate title based on notification type
+              let title = "New Notification";
+              if (notification.type === 'inquiry_reply') {
+                title = "Inquiry Reply";
+              } else if (notification.type === 'application_status') {
+                title = "Application Update";
+              } else if (notification.type === 'staffing_inquiry') {
+                title = "New Inquiry";
+              }
+              
               toast({
-                title: notification.type === 'inquiry_reply' ? "Inquiry Reply" : "New Notification",
+                title: title,
                 description: notification.message,
               });
             });

@@ -295,14 +295,14 @@ export const insertBlogPostSchema = createInsertSchema(blogPosts)
     content: z.string().min(10, "Content must be at least 10 characters"),
   });
 
-// Notifications table for admin alerts
+// Notifications table for all user types
 export const notifications = pgTable("notifications", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id), // Admin user who should receive the notification
+  userId: integer("user_id").references(() => users.id), // User who should receive the notification
   message: text("message").notNull(),
-  type: text("type").notNull(), // 'vacancy', 'inquiry', 'message'
+  type: text("type").notNull(), // 'application_status', 'inquiry_reply', 'staffing_inquiry', etc.
   read: boolean("read").default(false),
-  entityId: integer("entity_id"), // ID of the related entity (vacancy ID, inquiry ID, etc.)
+  entityId: integer("entity_id"), // ID of the related entity (application ID, inquiry ID, etc.)
   createdAt: timestamp("created_at").defaultNow(),
 });
 
