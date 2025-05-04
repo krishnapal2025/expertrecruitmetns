@@ -282,6 +282,13 @@ const CreateBlogPage = () => {
     console.log("Form state:", form.formState);
     console.log("Form errors:", form.formState.errors);
     
+    // Make sure we have the most up-to-date content from sections
+    const allContent = contentSections.map(section => section.content).join('');
+    if (allContent.length > 0) {
+      data.content = allContent;
+      form.setValue('content', allContent, { shouldValidate: true });
+    }
+    
     // Make sure content is being populated
     if (!data.content || data.content.trim().length < 100) {
       toast({
@@ -296,17 +303,25 @@ const CreateBlogPage = () => {
     // Generate slug if one doesn't exist
     const slug = data.slug || data.title.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-');
     
-    // Pass the form data directly - the mutation function will handle the tags conversion
-    // Don't convert tags to array here; it will be done in the mutation function
+    // Create complete submission data with defaults for required fields
     const submissionData = {
       ...data,
-      slug,
+      title: data.title.trim(),
+      content: data.content,
+      slug: slug,
+      category: data.category || "Industry Insights", // Default category
       readTime: data.readTime || "5 min read",
       excerpt: data.excerpt || data.content.replace(/<[^>]*>/g, '').substring(0, 150) + "...",
+      published: data.published !== undefined ? data.published : true, // Default to published
+      bannerImage: data.bannerImage || null,
+      tags: data.tags || "",
+      subtitle: data.subtitle || null,
+      metaDescription: data.metaDescription || null
     };
     
-    console.log("Submitting data:", submissionData);
+    console.log("Submitting complete data:", submissionData);
     console.log("Content length:", submissionData.content.length);
+    console.log("Authentication status:", localStorage.getItem("isLoggedIn") ? "Logged in" : "Not logged in");
     
     // Explicitly checking required fields
     if (!submissionData.title) {
@@ -330,9 +345,21 @@ const CreateBlogPage = () => {
     }
     
     try {
+      // Call the mutation with the complete data
       createBlogMutation.mutate(submissionData);
+      
+      // Show temporary success message while waiting for mutation
+      toast({
+        title: "Processing blog post",
+        description: "Your blog post is being saved...",
+      });
     } catch (error) {
       console.error("Error triggering mutation:", error);
+      toast({
+        title: "Submission error",
+        description: "There was a problem submitting your blog post. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -1329,7 +1356,27 @@ const CreateBlogPage = () => {
                     <Button variant="outline" type="button" onClick={() => navigate("/admin-dashboard")}>
                       Cancel
                     </Button>
-                    <Button type="submit" disabled={createBlogMutation.isPending}>
+                    <Button 
+                      type="submit" 
+                      disabled={createBlogMutation.isPending} 
+                      className="bg-primary hover:bg-primary/90 text-white"
+                      onClick={() => {
+                        console.log("Submit button clicked");
+                        // Double-check form validation status
+                        if (!form.formState.isValid) {
+                          console.log("Form is invalid:", form.formState.errors);
+                          return;
+                        }
+                        
+                        // Manually trigger form submission if needed
+                        if (!form.getValues('content')) {
+                          form.setValue('content', 
+                            contentSections.map(section => section.content).join(''), 
+                            { shouldValidate: true }
+                          );
+                        }
+                      }}
+                    >
                       {createBlogMutation.isPending ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />

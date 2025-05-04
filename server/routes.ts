@@ -2848,15 +2848,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Create a new blog post (admin only)
   app.post("/api/blog-posts", async (req, res) => {
-    if (!req.isAuthenticated() || req.user.userType !== "admin") {
-      return res.status(403).json({ message: "Unauthorized: Admin access required" });
-    }
-
     try {
+      // Check authentication
+      if (!req.isAuthenticated()) {
+        console.log("Unauthorized attempt to create blog post: Not authenticated");
+        return res.status(403).json({ message: "Unauthorized: Please log in" });
+      }
+      
+      if (req.user.userType !== "admin") {
+        console.log(`Unauthorized attempt to create blog post by user type: ${req.user.userType}`);
+        return res.status(403).json({ message: "Unauthorized: Admin access required" });
+      }
+
+      console.log("Processing blog post submission from:", req.user.email);
       console.log("Received blog post data:", req.body);
 
       // Process incoming data
       let processedData = { ...req.body };
+      
+      // Validate required fields
+      if (!processedData.title || !processedData.content) {
+        console.log("Missing required fields:", {
+          hasTitle: !!processedData.title,
+          hasContent: !!processedData.content
+        });
+        return res.status(400).json({ 
+          message: "Missing required fields", 
+          details: {
+            title: !processedData.title ? "Title is required" : null,
+            content: !processedData.content ? "Content is required" : null
+          }
+        });
+      }
 
       // Generate slug if not provided
       if (!processedData.slug) {
@@ -2866,11 +2889,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .replace(/\s+/g, '-') // Replace spaces with hyphens
           .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
           .trim();
+        
+        console.log("Generated slug:", processedData.slug);
       }
 
       // Set default values for optional fields
       processedData.readTime = processedData.readTime || "5 min read";
       processedData.published = processedData.published === false ? false : true;
+      processedData.publishDate = new Date();
 
       // If excerpt is not provided, create one from content
       if (!processedData.excerpt && processedData.content) {
