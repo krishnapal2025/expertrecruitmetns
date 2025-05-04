@@ -737,13 +737,115 @@ const CreateBlogPage = () => {
                     name="bannerImage"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Banner Image URL</FormLabel>
+                        <FormLabel>Banner Image</FormLabel>
                         <FormControl>
-                          <div className="space-y-1">
-                            <Input
-                              placeholder="https://example.com/image.jpg"
-                              {...field}
-                            />
+                          <div className="space-y-3">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="text-sm font-medium mb-1 block">Enter URL</label>
+                                <Input
+                                  placeholder="https://example.com/image.jpg"
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  onBlur={field.onBlur}
+                                />
+                              </div>
+                              <div>
+                                <label className="text-sm font-medium mb-1 block">Or Upload Image</label>
+                                <div 
+                                  className="border-2 border-dashed rounded-md p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-50 transition-colors"
+                                  onClick={() => {
+                                    const fileInput = document.getElementById('blog-banner-upload') as HTMLInputElement;
+                                    if (fileInput) fileInput.click();
+                                  }}
+                                >
+                                  <input 
+                                    type="file" 
+                                    id="blog-banner-upload" 
+                                    className="hidden" 
+                                    accept="image/jpeg,image/png,image/gif,image/webp"
+                                    onChange={async (e) => {
+                                      if (!e.target.files?.[0]) return;
+                                      
+                                      const file = e.target.files[0];
+                                      if (file.size > 5 * 1024 * 1024) {
+                                        toast({
+                                          title: "File too large",
+                                          description: "Image must be less than 5MB",
+                                          variant: "destructive",
+                                        });
+                                        return;
+                                      }
+                                      
+                                      // Create form data for upload
+                                      const formData = new FormData();
+                                      formData.append('image', file);
+                                      
+                                      setIsUploading(true);
+                                      setUploadProgress(10); // Start progress
+                                      
+                                      try {
+                                        // Call the upload API
+                                        const response = await fetch('/api/upload/blog-image', {
+                                          method: 'POST',
+                                          body: formData,
+                                          credentials: 'include',
+                                        });
+                                        
+                                        setUploadProgress(75); // Update progress
+                                        
+                                        if (!response.ok) {
+                                          const errorData = await response.json();
+                                          throw new Error(errorData.message || 'Upload failed');
+                                        }
+                                        
+                                        const data = await response.json();
+                                        setUploadProgress(100); // Complete progress
+                                        
+                                        // Update the form field with the uploaded image URL
+                                        field.onChange(data.file.path);
+                                        
+                                        toast({
+                                          title: "Upload successful",
+                                          description: "Image uploaded successfully",
+                                        });
+                                      } catch (error) {
+                                        console.error('Error uploading image:', error);
+                                        toast({
+                                          title: "Upload failed",
+                                          description: error instanceof Error ? error.message : 'Image upload failed',
+                                          variant: "destructive",
+                                        });
+                                      } finally {
+                                        setTimeout(() => {
+                                          setIsUploading(false);
+                                          setUploadProgress(0);
+                                        }, 500);
+                                      }
+                                    }}
+                                  />
+                                  
+                                  {isUploading ? (
+                                    <div className="flex flex-col items-center gap-2">
+                                      <Loader2 className="h-8 w-8 text-primary animate-spin" />
+                                      <div className="text-sm text-gray-600">Uploading... {uploadProgress}%</div>
+                                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div 
+                                          className="h-full bg-primary rounded-full" 
+                                          style={{ width: `${uploadProgress}%` }}
+                                        />
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="flex flex-col items-center gap-2">
+                                      <Upload className="h-8 w-8 text-gray-400" />
+                                      <div className="text-sm text-gray-500">Click to upload image</div>
+                                      <div className="text-xs text-gray-400">PNG, JPG, GIF, WEBP up to 5MB</div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
                             <p className="text-xs text-muted-foreground">
                               Banner images will be displayed in 16:9 aspect ratio
                             </p>
