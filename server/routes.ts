@@ -493,6 +493,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Endpoint to view job seeker's CV
+  app.get("/api/jobseekers/:id/cv", async (req, res) => {
+    try {
+      const jobSeekerId = parseInt(req.params.id);
+      if (isNaN(jobSeekerId)) {
+        return res.status(400).json({ message: "Invalid job seeker ID" });
+      }
+      
+      // Check if request is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to access this resource" });
+      }
+      
+      // Only allow admin, the job seeker themselves, or employers to view resumes
+      const user = req.user;
+      const jobSeeker = await storage.getJobSeeker(jobSeekerId);
+      
+      if (!jobSeeker) {
+        return res.status(404).json({ message: "Job seeker not found" });
+      }
+      
+      // Check if the current user is the job seeker, an admin, or an employer
+      const isAuthorized = 
+        user.userType === "admin" || 
+        (user.userType === "jobseeker" && jobSeeker.userId === user.id) || 
+        user.userType === "employer";
+      
+      if (!isAuthorized) {
+        return res.status(403).json({ message: "You are not authorized to view this resume" });
+      }
+      
+      // Generate a PDF resume if the job seeker has profile data
+      // Get the user details to extract email and other contact info
+      const jobSeekerUser = await storage.getUserById(jobSeeker.userId);
+      
+      if (!jobSeekerUser) {
+        return res.status(404).json({ message: "Job seeker user not found" });
+      }
+      
+      // Create resume data
+      const resumeData = {
+        personalInfo: {
+          firstName: jobSeeker.firstName,
+          lastName: jobSeeker.lastName,
+          email: jobSeekerUser.email,
+          phone: jobSeeker.phoneNumber || "",
+          address: jobSeeker.country || "",
+          title: "Job Seeker"
+        },
+        summary: "Professional seeking opportunities in the job market.",
+        experience: [
+          {
+            title: "Job Seeker",
+            company: "Looking for opportunities",
+            location: jobSeeker.country || "",
+            startDate: "Present",
+            endDate: "Present",
+            description: "Actively seeking new career opportunities."
+          }
+        ],
+        education: [],
+        skills: [],
+        languages: [],
+        certifications: []
+      };
+      
+      // Generate the PDF
+      const pdfBuffer = await generateResumePDF(resumeData);
+      
+      // Send the PDF
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `inline; filename="resume_${jobSeeker.firstName}_${jobSeeker.lastName}.pdf"`);
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error("Error generating CV:", error);
+      res.status(500).json({ message: "Failed to generate CV" });
+    }
+  });
+
 
   // Get all job listings with optional filters
   app.get("/api/jobs", async (req, res) => {
@@ -690,6 +769,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
             createdAt: new Date()
           });
         }
+      }
+      
+      // Create a notification for admin users
+      const adminUsers = await storage.getAdminUsers();
+      for (const adminUser of adminUsers) {
+        realtimeStore.notifications.push({
+          id: realtimeStore.notificationId++,
+          userId: adminUser.userId,
+          message: `New resume received: ${jobSeeker.firstName} ${jobSeeker.lastName} applied for ${job.title}`,
+          type: "resume_received",
+          read: false,
+          entityId: application.id,
+          createdAt: new Date()
+        });
       }
 
       res.status(201).json(application);

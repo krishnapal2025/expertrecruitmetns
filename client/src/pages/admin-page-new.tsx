@@ -166,6 +166,19 @@ function AdminDashboard() {
     refetchOnWindowFocus: true
   });
   
+  // Fetch applications/resumes from job seekers
+  const { data: applications, isLoading: applicationsLoading } = useQuery({
+    queryKey: ["/api/applications"],
+    queryFn: async () => {
+      const res = await fetch("/api/applications");
+      if (!res.ok) throw new Error("Failed to fetch applications");
+      return await res.json();
+    },
+    enabled: !!user && user.userType === "admin",
+    refetchInterval: 5000, // Refetch every 5 seconds to show new submissions quickly
+    refetchOnWindowFocus: true
+  });
+  
   // Blog posts query removed as requested
   
   // Helper function for formatting dates
@@ -1584,13 +1597,85 @@ function AdminDashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-10 border rounded-md bg-muted/20">
-                    <FileText className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground font-medium">No resumes found</p>
-                    <p className="text-sm text-muted-foreground/70 mt-1">
-                      Submitted resumes will appear here
-                    </p>
-                  </div>
+                  {applicationsLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                  ) : !applications || applications.length === 0 ? (
+                    <div className="text-center py-10 border rounded-md bg-muted/20">
+                      <FileText className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground font-medium">No resumes found</p>
+                      <p className="text-sm text-muted-foreground/70 mt-1">
+                        Submitted resumes will appear here
+                      </p>
+                    </div>
+                  ) : (
+                    <ScrollArea className="h-[500px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Job Position</TableHead>
+                            <TableHead>Company</TableHead>
+                            <TableHead>Applied Date</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {applications.map((application: any) => (
+                            <TableRow key={application.id}>
+                              <TableCell className="font-medium">
+                                {application.jobSeeker ? 
+                                  `${application.jobSeeker.firstName} ${application.jobSeeker.lastName}` 
+                                  : 'Unknown Applicant'}
+                              </TableCell>
+                              <TableCell>{application.job?.title || 'Unknown Position'}</TableCell>
+                              <TableCell>{application.job?.company || 'Unknown Company'}</TableCell>
+                              <TableCell>{formatDate(application.appliedDate)}</TableCell>
+                              <TableCell>
+                                <Badge variant={
+                                  application.status === "shortlisted" 
+                                    ? "default" 
+                                    : application.status === "viewed" 
+                                    ? "secondary" 
+                                    : "outline"
+                                }>
+                                  {application.status || "new"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-1">
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => window.open(`/api/jobseekers/${application.jobSeekerId}/cv`, '_blank')}
+                                    title="View CV"
+                                  >
+                                    <FileText className="h-4 w-4" />
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => {
+                                      // View application details - can be implemented later
+                                      toast({
+                                        title: "View Application",
+                                        description: `Viewing application from ${application.jobSeeker?.firstName} ${application.jobSeeker?.lastName} for ${application.job?.title}`,
+                                      });
+                                    }}
+                                    title="View Application"
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
