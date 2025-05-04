@@ -44,6 +44,7 @@ export interface IStorage {
   getAllUsers(): Promise<User[]>;
   getUserByEmployerId(employerId: number): Promise<User | undefined>;
   getUserByJobSeekerId(jobSeekerId: number): Promise<User | undefined>;
+  getUserById(id: number): Promise<User | undefined>;
   updateUserPassword(userId: number, password: string): Promise<User | undefined>;
 
   // JobSeeker methods
@@ -91,6 +92,7 @@ export interface IStorage {
   // Admin methods
   getAdmin(id: number): Promise<Admin | undefined>;
   getAdminByUserId(userId: number): Promise<Admin | undefined>;
+  getAdminUsers(): Promise<Admin[]>;
   createAdmin(admin: InsertAdmin): Promise<Admin>;
   updateAdminLastLogin(id: number): Promise<Admin>;
   updateAdminRecoveryEmail(id: number, recoveryEmail: string): Promise<Admin>;
@@ -199,6 +201,11 @@ export class DatabaseStorage implements IStorage {
     if (!jobSeeker) return undefined;
 
     return this.getUser(jobSeeker.userId);
+  }
+  
+  // Alias for getUser - used by CV endpoint
+  async getUserById(id: number): Promise<User | undefined> {
+    return this.getUser(id);
   }
 
   // JobSeeker methods
@@ -536,6 +543,11 @@ export class DatabaseStorage implements IStorage {
   async getAdminByUserId(userId: number): Promise<Admin | undefined> {
     const [admin] = await db.select().from(admins).where(eq(admins.userId, userId));
     return admin;
+  }
+  
+  // Get all admin users
+  async getAdminUsers(): Promise<Admin[]> {
+    return await db.select().from(admins);
   }
 
   async createAdmin(insertAdmin: InsertAdmin): Promise<Admin> {
