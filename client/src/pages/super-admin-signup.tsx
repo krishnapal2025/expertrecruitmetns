@@ -34,90 +34,35 @@ export default function SuperAdminSignupPage() {
     }
   }, [user, navigate]);
 
-  // Register admin with retry mechanism for Fly.io deployments
+  // Register admin
   const registerMutation = useMutation({
     mutationFn: async (data: FormValues) => {
       console.log("Submitting form data:", data); // Log the data being sent
-      
-      // Implement retry logic for 503 errors (often seen in Fly.io)
-      const maxRetries = 3;
-      let retryCount = 0;
-      let lastError: any = null;
-      
-      while (retryCount < maxRetries) {
-        try {
-          // Wait before retrying (increasing delay for each retry)
-          if (retryCount > 0) {
-            console.log(`Retry attempt ${retryCount} of ${maxRetries}...`);
-            await new Promise(resolve => setTimeout(resolve, retryCount * 1000));
-          }
-          
-          const res = await apiRequest("POST", "/api/admin/signup", data);
-          console.log("Response status:", res.status); // Log the response status
-          
-          if (!res.ok) {
-            const errorData = await res.json().catch(() => ({ 
-              message: "Unknown error occurred", 
-              status: res.status,
-              statusText: res.statusText
-            }));
-            
-            console.error("Error response:", errorData);
-            
-            // If this is a 503 error (service unavailable), we will retry
-            if (res.status === 503) {
-              console.log("Received 503 error - database connection issue. Will retry...");
-              lastError = new Error(errorData.message || "Database connection issue. Retrying...");
-              retryCount++;
-              continue;
-            }
-            
-            // For other errors, throw immediately
-            throw new Error(errorData.message || `Registration failed (${res.status})`);
-          }
-          
-          const responseData = await res.json().catch(() => ({ message: "Failed to parse response" }));
-          console.log("Success response:", responseData);
-          return responseData;
-        } catch (err: any) {
-          console.error(`Registration error (attempt ${retryCount + 1}):`, err);
-          
-          // If this is a network error (often in Fly.io), retry
-          if (err.message?.includes('network') || err.message?.includes('connection') || 
-              err.message?.includes('timeout') || err.message?.includes('503')) {
-            console.log("Network-related error detected. Will retry...");
-            lastError = err;
-            retryCount++;
-          } else {
-            // For other errors, throw immediately  
-            throw err;
-          }
+      try {
+        const res = await apiRequest("POST", "/api/admin/signup", data);
+        console.log("Response status:", res.status); // Log the response status
+        
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ message: "Unknown error occurred" }));
+          console.error("Error response:", errorData);
+          throw new Error(errorData.message || "Registration failed");
         }
+        
+        const responseData = await res.json().catch(() => ({ message: "Failed to parse response" }));
+        console.log("Success response:", responseData);
+        return responseData;
+      } catch (err) {
+        console.error("Registration error:", err);
+        throw err;
       }
-      
-      // If we've exhausted all retries, throw the last error
-      throw lastError || new Error("Registration failed after multiple attempts");
     },
     onSuccess: (data) => {
       console.log("Registration successful:", data);
-      
-      // Handle the special case where account is created but login failed
-      if (data.loginSuccessful === false) {
-        toast({
-          title: "Account created successfully",
-          description: "Your super admin account has been created, but automatic login failed. Please login manually.",
-          variant: "default",
-        });
-        navigate("/admin-login");
-        return;
-      }
-      
       toast({
         title: "Registration successful",
         description: "Your super admin account has been created.",
         variant: "default",
       });
-      
       if (data.user) {
         queryClient.setQueryData(["/api/user"], data.user);
       } else {
@@ -127,20 +72,9 @@ export default function SuperAdminSignupPage() {
     },
     onError: (error: Error) => {
       console.error("Mutation error:", error);
-      
-      // Provide more specific error messages
-      let errorMessage = error.message || "Could not create the super admin account.";
-      
-      // Customize message for common issues
-      if (error.message?.includes("503") || error.message?.includes("connection")) {
-        errorMessage = "Database connection issue. Please try again in a few moments.";
-      } else if (error.message?.includes("already registered")) {
-        errorMessage = "This email is already registered. Please use a different email or login.";
-      }
-      
       toast({
         title: "Registration failed",
-        description: errorMessage,
+        description: error.message || "Could not create the super admin account. Please try again.",
         variant: "destructive",
       });
     },
