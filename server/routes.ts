@@ -41,21 +41,40 @@ const realtimeStore = {
   notificationId: 1
 };
 
+import config from './config';
+
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Health check endpoint for Fly.io
+  // Health check endpoint for Fly.io and other deployment platforms
   app.get("/health", (req, res) => {
     try {
-      // Respond with basic system information
+      // Run a basic database check
+      const dbStatus = db ? "connected" : "disconnected";
+      
+      // Respond with comprehensive system information
       res.json({
         status: "ok",
         timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV || "development",
-        application: "Expert Recruitments",
-        version: process.env.npm_package_version || "1.0.0"
+        environment: process.env.NODE_ENV || 'development',
+        application: config.app.name,
+        version: config.app.version,
+        platform: process.env.FLY_APP_NAME ? "fly.io" : 
+                 (process.env.REPL_ID || process.env.REPL_SLUG) ? "replit" : 
+                 "other",
+        database: dbStatus,
+        features: {
+          emailEnabled: config.email.enabled,
+          jobSeedingEnabled: config.features.seedJobs,
+          debugMode: config.features.debugMode
+        }
       });
     } catch (error) {
       console.error("Health check failed:", error);
-      res.status(500).json({ status: "error", message: "System health check failed" });
+      res.status(500).json({ 
+        status: "error", 
+        message: "System health check failed",
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development'
+      });
     }
   });
   

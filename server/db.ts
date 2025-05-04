@@ -2,25 +2,22 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from "@shared/schema";
 import { type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import config from './config';
 
 // Export type for use in other files
 export type DatabaseInstance = PostgresJsDatabase<typeof schema>;
 
-if (!process.env.DATABASE_URL) {
+if (!config.database.url) {
   throw new Error(
     "DATABASE_URL must be set. Did you forget to provision a database?",
   );
 }
 
 // Setup for PostgreSQL connection
-console.log("Using PostgreSQL connection");
+console.log(`Using PostgreSQL connection in ${process.env.NODE_ENV || 'development'} environment`);
 
-// Parse the connection string to determine environment (local vs fly.io)
-const isProduction = process.env.NODE_ENV === 'production';
-const isFlyIo = process.env.FLY_APP_NAME !== undefined;
-
-// Ensure the connection string has sslmode=require if it's not already present
-let connectionString = process.env.DATABASE_URL;
+// Modify the connection string to ensure SSL mode is properly set
+let connectionString = config.database.url;
 if (!connectionString.includes('sslmode=')) {
   // If URL has parameters already, add sslmode as another parameter
   if (connectionString.includes('?')) {
@@ -32,29 +29,27 @@ if (!connectionString.includes('sslmode=')) {
   console.log("Added sslmode=require to database connection string");
 }
 
-// Configure PostgreSQL client with optimal settings for different environments
+// Configure PostgreSQL client with optimal settings for reliability
 const connectionConfig: postgres.Options<{}> = {
   // Max connections in the pool
-  max: isProduction ? 10 : 3,
+  max: config.database.poolConfig.max,
   
   // Idle timeout for connections
-  idle_timeout: 20,
+  idle_timeout: config.database.poolConfig.idleTimeout,
   
   // Connection timeout
-  connect_timeout: 10,
+  connect_timeout: config.database.poolConfig.connectionTimeout,
   
   // Enable prepared statements for better performance
   prepare: true,
 
-  // Force SSL for all environments (development and production)
+  // SSL configuration - always require SSL but allow self-signed certs
   ssl: {
-    // In production with Fly.io, allow self-signed certificates
-    // In development, require valid certificates
-    rejectUnauthorized: isProduction ? !isFlyIo : true
+    rejectUnauthorized: false
   },
 };
 
-console.log(`SSL config: ${isProduction ? 'Production' : 'Development'} mode with SSL enabled`);
+console.log(`Database SSL config: ${process.env.NODE_ENV === 'production' ? 'Production' : 'Development'} mode with SSL enabled`);
 
 // Create the database client with the updated connection string
 const client = postgres(connectionString, connectionConfig);

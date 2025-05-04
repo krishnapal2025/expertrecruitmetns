@@ -8,6 +8,14 @@ import { fileURLToPath } from 'url';
 import { db } from "server/db";
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { stderr } from "process";
+import config from './config';
+
+// Display startup environment information
+console.log(`Starting Expert Recruitments in ${process.env.NODE_ENV || 'development'} environment`);
+console.log(`Server port: ${config.app.port}`);
+console.log(`Environment: ${process.env.NODE_ENV === 'production' ? 'Production' : 'Development'}`);
+if (process.env.FLY_APP_NAME) console.log('Detected Fly.io hosting platform');
+if (process.env.REPL_ID || process.env.REPL_SLUG) console.log('Detected Replit hosting platform');
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const execAsync = promisify(exec);
@@ -78,15 +86,14 @@ app.use((req, res, next) => {
       serveStatic(app);
     }
 
-    // ALWAYS serve the app on port 5000
-    // this serves both the API and the client.
-    // It is the only port that is not firewalled.
-    const port = 5000;
+    // Serve the app on configured port
+    // This serves both the API and the client
+    const port = config.app.port;
     server.listen({
       port,
       host: "0.0.0.0"
     }, () => {
-      log(`serving on port ${port}`);
+      log(`serving on port ${port} in ${process.env.NODE_ENV || 'development'} environment`);
     });
   } catch (error) {
     log("Error during server startup:", error instanceof Error ? error.message : String(error));
