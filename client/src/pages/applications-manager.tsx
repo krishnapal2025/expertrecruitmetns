@@ -359,7 +359,11 @@ export default function ApplicationsManagerPage() {
                                     <Button 
                                       variant="outline" 
                                       size="sm"
-                                      onClick={(e) => e.stopPropagation()}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        // Open actual CV file in new tab
+                                        window.open(`/api/applications/${application.id}/download-cv`, '_blank');
+                                      }}
                                     >
                                       <DownloadCloud className="h-4 w-4 mr-2" />
                                       Download

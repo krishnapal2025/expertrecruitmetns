@@ -524,6 +524,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "You are not authorized to view this resume" });
       }
       
+      // If job seeker has an actual CV uploaded, check if we should serve that
+      if (jobSeeker.cvPath && req.query.original === 'true') {
+        try {
+          // Attempt to serve the original CV file if it exists
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Ensure the path is within our uploads directory (security check)
+          const uploadsDir = path.resolve('./uploads');
+          const cvPath = path.resolve(jobSeeker.cvPath);
+          
+          if (!cvPath.startsWith(uploadsDir)) {
+            throw new Error('Invalid file path');
+          }
+          
+          if (fs.existsSync(cvPath)) {
+            // Extract original filename from path or use a default
+            const originalFilename = path.basename(cvPath);
+            
+            // Determine content type based on file extension
+            const ext = path.extname(cvPath).toLowerCase();
+            let contentType = 'application/octet-stream'; // Default
+            
+            if (ext === '.pdf') contentType = 'application/pdf';
+            else if (ext === '.doc') contentType = 'application/msword';
+            else if (ext === '.docx') contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+            
+            // Set headers
+            res.setHeader('Content-Type', contentType);
+            res.setHeader('Content-Disposition', `attachment; filename="${jobSeeker.firstName}_${jobSeeker.lastName}${ext}"`);
+            
+            // Stream the file
+            const fileStream = fs.createReadStream(cvPath);
+            fileStream.pipe(res);
+            return;
+          }
+        } catch (fileError) {
+          console.error('Error serving original CV file:', fileError);
+          // Continue to fallback PDF generation if file cannot be served
+        }
+      }
+      
       // Generate a PDF resume if the job seeker has profile data
       // Get the user details to extract email and other contact info
       const jobSeekerUser = await storage.getUserById(jobSeeker.userId);
