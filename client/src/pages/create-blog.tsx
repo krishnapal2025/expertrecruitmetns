@@ -82,6 +82,7 @@ const CreateBlogPage = () => {
       size?: string;
       weight?: string;
       style?: string;
+      fontSize?: string; // Added fontSize property for the numerical input
     };
   };
 
@@ -181,7 +182,11 @@ const CreateBlogPage = () => {
         
         previewContent += `<h2 class="font-semibold my-4 text-${headerColor} text-${alignment}" style="font-size: ${fontSize};">${section.content}</h2>`;
       } else if (section.type === 'paragraph' && section.content) {
-        previewContent += `<div class="my-4">${section.content}</div>`;
+        // Get the formatting options for paragraphs
+        const fontSize = section.format?.fontSize || "16px"; // Default font size if not set
+        const alignment = section.format?.alignment || "left"; // Default alignment if not set
+        
+        previewContent += `<div class="my-4 text-${alignment}" style="font-size: ${fontSize};">${section.content}</div>`;
       } else if (section.type === 'image' && section.content) {
         previewContent += `
           <div class="my-6">
