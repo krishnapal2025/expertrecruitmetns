@@ -224,11 +224,11 @@ export class DatabaseStorage implements IStorage {
     return jobSeeker;
   }
 
-  async updateJobSeeker(id: number, updateData: Partial<JobSeeker>): Promise<JobSeeker> {
+  async updateJobSeeker(updatedJobSeeker: JobSeeker): Promise<JobSeeker> {
     const [jobSeeker] = await db
       .update(jobSeekers)
-      .set(updateData)
-      .where(eq(jobSeekers.id, id))
+      .set(updatedJobSeeker)
+      .where(eq(jobSeekers.id, updatedJobSeeker.id))
       .returning();
     return jobSeeker;
   }

@@ -194,7 +194,6 @@ export default function JobApplicationPage() {
           relocation: data.relocation,
           referenceContacts: data.referenceContacts,
           hasCvFile: !!cvFileName,
-          originalFileName: cvFileName,
           hasAdditionalDocuments: !!additionalFileName,
         }
       });

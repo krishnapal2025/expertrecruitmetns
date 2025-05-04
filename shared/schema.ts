@@ -22,7 +22,6 @@ export const jobSeekers = pgTable("job_seekers", {
   country: text("country").notNull(),
   phoneNumber: text("phone_number").notNull(),
   cvPath: text("cv_path"),
-  cvFileName: text("cv_file_name"), // Store original filename
 });
 
 // Employer profile table

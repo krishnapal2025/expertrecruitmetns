@@ -524,6 +524,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "You are not authorized to view this resume" });
       }
       
+      // Generate a PDF resume if the job seeker has profile data
       // Get the user details to extract email and other contact info
       const jobSeekerUser = await storage.getUserById(jobSeeker.userId);
       
@@ -531,37 +532,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Job seeker user not found" });
       }
       
-      // Check if the job seeker has uploaded a CV file
-      if (jobSeeker.cvPath) {
-        try {
-          // Get the file from storage (assuming it's stored in the filesystem)
-          const fs = require('fs');
-          const path = require('path');
-          
-          // Get the file path
-          const filePath = path.resolve(jobSeeker.cvPath);
-          
-          // Use the original filename if available, otherwise create a default name
-          const fileName = jobSeeker.cvFileName || `resume_${jobSeeker.firstName}_${jobSeeker.lastName}.pdf`;
-          
-          // Check if file exists
-          if (fs.existsSync(filePath)) {
-            // Set headers for PDF download
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
-            
-            // Stream the file
-            const fileStream = fs.createReadStream(filePath);
-            fileStream.pipe(res);
-            return;
-          }
-        } catch (fileError) {
-          console.error("Error reading CV file:", fileError);
-          // Continue to generate fallback PDF if file read fails
-        }
-      }
-      
-      // Fallback: Generate a PDF resume if no file is available
+      // Create resume data
       const resumeData = {
         personalInfo: {
           firstName: jobSeeker.firstName,
@@ -593,7 +564,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Send the PDF
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename="resume_${jobSeeker.firstName}_${jobSeeker.lastName}.pdf"`);
+      res.setHeader('Content-Disposition', `inline; filename="resume_${jobSeeker.firstName}_${jobSeeker.lastName}.pdf"`);
       res.send(pdfBuffer);
     } catch (error) {
       console.error("Error generating CV:", error);
@@ -771,18 +742,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Validate application data
-      const { coverLetter, additionalData } = req.body;
-      
-      // Handle CV file if it was uploaded
-      if (additionalData && additionalData.hasCvFile && additionalData.originalFileName) {
-        // In a real production environment, the file would be uploaded to a storage location
-        // For now, just store the uploaded filename in the jobSeeker profile
-        await storage.updateJobSeeker(jobSeeker.id, {
-          cvFileName: additionalData.originalFileName
-        });
-        
-        console.log(`Updated CV file name for job seeker ${jobSeeker.id} to ${additionalData.originalFileName}`);
-      }
+      const { coverLetter } = req.body;
 
       // Create the application
       const application = await storage.createApplication({

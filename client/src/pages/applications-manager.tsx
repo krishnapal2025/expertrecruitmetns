@@ -353,16 +353,13 @@ export default function ApplicationsManagerPage() {
                                     <div className="flex items-center">
                                       <FileText className="h-5 w-5 text-primary mr-2" />
                                       <span className="text-gray-700">
-                                        {application.jobSeeker.cvFileName || `${application.jobSeeker.firstName}_${application.jobSeeker.lastName}_Resume.pdf`}
+                                        {application.jobSeeker.firstName}_{application.jobSeeker.lastName}_Resume.pdf
                                       </span>
                                     </div>
                                     <Button 
                                       variant="outline" 
                                       size="sm"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        window.open(`/api/jobseekers/${application.jobSeekerId}/cv`, '_blank');
-                                      }}
+                                      onClick={(e) => e.stopPropagation()}
                                     >
                                       <DownloadCloud className="h-4 w-4 mr-2" />
                                       Download
