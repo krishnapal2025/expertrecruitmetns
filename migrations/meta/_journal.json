@@ -8,6 +8,13 @@
       "when": 1745696875204,
       "tag": "0000_hesitant_loki",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1746392733151,
+      "tag": "0001_graceful_payback",
+      "breakpoints": true
     }
   ]
 }
