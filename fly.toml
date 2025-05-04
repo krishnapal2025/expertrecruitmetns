@@ -7,22 +7,6 @@ app = 'erproject'
 primary_region = 'sin'
 
 [build]
-  # Use the Dockerfile in the project root
-  dockerfile = "Dockerfile"
-
-[deploy]
-  # Strategy for deploying to fly.io
-  strategy = "immediate"
-  # Release command runs once on the initial VM to start the app  
-  release_command = "npm run db:push"
-
-[env]
-  # Set production mode for Node.js
-  NODE_ENV = "production"
-  # Port for the Express server to listen on
-  PORT = "5000"
-  # Serve static files
-  SERVE_STATIC = "true"
 
 [http_service]
   internal_port = 5000
@@ -31,34 +15,9 @@ primary_region = 'sin'
   auto_start_machines = true
   min_machines_running = 0
   processes = ['app']
-  
-  # Set up health checks
-  [http_service.concurrency]
-    type = "connections"
-    hard_limit = 550
-    soft_limit = 500
 
-  [[http_service.checks]]
-    interval = "10s"
-    timeout = "2s"
-    grace_period = "5s"
-    method = "GET"
-    path = "/health"
-    protocol = "http"
-
-# VM resource configuration
 [[vm]]
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
   memory_mb = 1024
-
-# Database configuration - uncomment and adjust when deploying
-# 
-# [mounts]
-#   source="erproject_data"
-#   destination="/data"
-#
-# [metrics]
-#   port = 9091
-#   path = "/metrics"
