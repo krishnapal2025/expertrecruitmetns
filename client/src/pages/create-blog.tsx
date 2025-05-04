@@ -100,6 +100,7 @@ const CreateBlogPage = () => {
     fontStyle: 'normal',
     fontWeight: 'bold',
     fontSize: '2xl',
+    customFontSize: '24px',
     alignment: 'left',
     color: 'primary'
   });
@@ -109,6 +110,7 @@ const CreateBlogPage = () => {
     fontStyle: 'normal',
     fontWeight: 'medium',
     fontSize: 'lg',
+    customFontSize: '18px',
     alignment: 'left',
     color: 'gray-600'
   });
@@ -147,7 +149,7 @@ const CreateBlogPage = () => {
     
     // Title always appears first in the preview/published blog
     if (title) {
-      previewContent += `<h1 class="text-3xl font-${titleFormatting.fontWeight} font-${titleFormatting.fontStyle} text-${titleFormatting.fontSize} text-${titleFormatting.alignment} text-${titleFormatting.color} mb-4">${title}</h1>`;
+      previewContent += `<h1 class="font-${titleFormatting.fontWeight} font-${titleFormatting.fontStyle} text-${titleFormatting.alignment} text-${titleFormatting.color} mb-4" style="font-size: ${titleFormatting.customFontSize};">${title}</h1>`;
     }
     
     // Banner image appears after the title
