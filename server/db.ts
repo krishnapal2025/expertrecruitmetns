@@ -14,11 +14,11 @@ if (!config.database.url) {
 }
 
 // Setup for PostgreSQL connection
-console.log(`Using PostgreSQL connection in ${process.env.NODE_ENV || 'development'} environment`);
+console.log(`Using PostgreSQL connection in ${config.ENV.NODE_ENV} environment`);
 
 // Modify the connection string to ensure SSL mode is properly set
 let connectionString = config.database.url;
-if (!connectionString.includes('sslmode=')) {
+if (config.database.ssl.enabled && !connectionString.includes('sslmode=')) {
   // If URL has parameters already, add sslmode as another parameter
   if (connectionString.includes('?')) {
     connectionString += '&sslmode=require';
@@ -29,7 +29,7 @@ if (!connectionString.includes('sslmode=')) {
   console.log("Added sslmode=require to database connection string");
 }
 
-// Configure PostgreSQL client with optimal settings for reliability
+// Configure PostgreSQL client with optimal settings from environment config
 const connectionConfig: postgres.Options<{}> = {
   // Max connections in the pool
   max: config.database.poolConfig.max,
@@ -43,13 +43,13 @@ const connectionConfig: postgres.Options<{}> = {
   // Enable prepared statements for better performance
   prepare: true,
 
-  // SSL configuration - always require SSL but allow self-signed certs
-  ssl: {
-    rejectUnauthorized: false
-  },
+  // SSL configuration based on environment
+  ssl: config.database.ssl.enabled ? {
+    rejectUnauthorized: config.database.ssl.rejectUnauthorized
+  } : undefined,
 };
 
-console.log(`Database SSL config: ${process.env.NODE_ENV === 'production' ? 'Production' : 'Development'} mode with SSL enabled`);
+console.log(`Database SSL config: ${config.ENV.IS_PRODUCTION ? 'Production' : 'Development'} mode with SSL ${config.database.ssl.enabled ? 'enabled' : 'disabled'}`);
 
 // Create the database client with the updated connection string
 const client = postgres(connectionString, connectionConfig);

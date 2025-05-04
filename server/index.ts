@@ -11,11 +11,11 @@ import { stderr } from "process";
 import config from './config';
 
 // Display startup environment information
-console.log(`Starting Expert Recruitments in ${process.env.NODE_ENV || 'development'} environment`);
+console.log(`Starting Expert Recruitments in ${config.ENV.NODE_ENV} environment`);
 console.log(`Server port: ${config.app.port}`);
-console.log(`Environment: ${process.env.NODE_ENV === 'production' ? 'Production' : 'Development'}`);
-if (process.env.FLY_APP_NAME) console.log('Detected Fly.io hosting platform');
-if (process.env.REPL_ID || process.env.REPL_SLUG) console.log('Detected Replit hosting platform');
+console.log(`Environment: ${config.ENV.IS_PRODUCTION ? 'Production' : 'Development'}`);
+if (config.ENV.IS_FLY_IO) console.log('Detected Fly.io hosting platform');
+if (config.ENV.IS_REPLIT) console.log('Detected Replit hosting platform');
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const execAsync = promisify(exec);
@@ -80,7 +80,7 @@ app.use((req, res, next) => {
     // importantly only setup vite in development and after
     // setting up all the other routes so the catch-all route
     // doesn't interfere with the other routes
-    if (app.get("env") === "development") {
+    if (config.ENV.IS_DEVELOPMENT) {
       await setupVite(app, server);
     } else {
       serveStatic(app);
@@ -93,7 +93,7 @@ app.use((req, res, next) => {
       port,
       host: "0.0.0.0"
     }, () => {
-      log(`serving on port ${port} in ${process.env.NODE_ENV || 'development'} environment`);
+      log(`serving on port ${port} in ${config.ENV.NODE_ENV} environment`);
     });
   } catch (error) {
     log("Error during server startup:", error instanceof Error ? error.message : String(error));
