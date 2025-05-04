@@ -42,6 +42,23 @@ const realtimeStore = {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check endpoint for Fly.io
+  app.get("/health", (req, res) => {
+    try {
+      // Respond with basic system information
+      res.json({
+        status: "ok",
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || "development",
+        application: "Expert Recruitments",
+        version: process.env.npm_package_version || "1.0.0"
+      });
+    } catch (error) {
+      console.error("Health check failed:", error);
+      res.status(500).json({ status: "error", message: "System health check failed" });
+    }
+  });
+  
   // Set up authentication routes
   setupAuth(app);
 
