@@ -215,6 +215,12 @@ export const insertStaffingInquirySchema = createInsertSchema(staffingInquiries)
 
 // Registration schemas
 export const jobSeekerRegisterSchema = insertUserSchema.extend({
+  // Update email validation to be more permissive
+  email: z.string().email("Please enter a valid email")
+    .refine(email => {
+      // Accept any valid email format without domain restrictions
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }, "Please enter a valid email address"),
   firstName: z.string().min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   gender: z.enum(["male", "female", "other"], {
@@ -233,6 +239,12 @@ export const jobSeekerRegisterSchema = insertUserSchema.extend({
 });
 
 export const employerRegisterSchema = insertUserSchema.extend({
+  // Update email validation to be more permissive
+  email: z.string().email("Please enter a valid email")
+    .refine(email => {
+      // Accept any valid email format without domain restrictions
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }, "Please enter a valid email address"),
   companyName: z.string().min(2, "Company name must be at least 2 characters"),
   industry: z.string().min(2, "Please select an industry"),
   companyType: z.string().min(2, "Please select a company type"),
@@ -247,6 +259,12 @@ export const employerRegisterSchema = insertUserSchema.extend({
 
 // Admin registration schema with invitation code
 export const adminRegisterSchema = insertUserSchema.extend({
+  // Update email validation to be more permissive
+  email: z.string().email("Please enter a valid email")
+    .refine(email => {
+      // Accept any valid email format without domain restrictions
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }, "Please enter a valid email address"),
   firstName: z.string().min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   role: z.enum(["super_admin", "admin", "content_manager"], {
@@ -260,9 +278,38 @@ export const adminRegisterSchema = insertUserSchema.extend({
   path: ["confirmPassword"],
 });
 
+// Admin signup schema (without invitation code)
+export const adminSignupSchema = z.object({
+  // Use a more permissive email validator that accepts various business domains
+  email: z.string().email("Please enter a valid email")
+    .refine(email => {
+      // This is a basic email format validator that accepts any valid email
+      // We're intentionally not restricting by domain to allow business emails
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }, "Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  firstName: z.string().min(2, "First name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+  role: z.enum(["super_admin", "admin", "content_manager"], {
+    invalid_type_error: "Please select a valid role",
+  }),
+  phoneNumber: z.string().min(5, "Please enter a valid phone number").optional(),
+  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
+  // Remove userType from the validation schema
+  // It will be added by the server instead
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
+
 // Login schema
 export const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email"),
+  // More permissive email validator for business emails
+  email: z.string().email("Please enter a valid email")
+    .refine(email => {
+      // Accept any valid email format without domain restrictions
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }, "Please enter a valid email address"),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -343,4 +390,5 @@ export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 export type JobSeekerRegister = z.infer<typeof jobSeekerRegisterSchema>;
 export type EmployerRegister = z.infer<typeof employerRegisterSchema>;
 export type AdminRegister = z.infer<typeof adminRegisterSchema>;
+export type AdminSignup = z.infer<typeof adminSignupSchema>;
 export type LoginCredentials = z.infer<typeof loginSchema>;

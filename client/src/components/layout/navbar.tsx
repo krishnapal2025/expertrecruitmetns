@@ -98,8 +98,8 @@ export default function Navbar() {
       },
     ];
     
-    // If no user, return default links
-    if (!currentUser) {
+    // If no user or user data is not available yet, return default links
+    if (!currentUser || !currentUser.user) {
       return defaultLinks;
     }
     
@@ -125,7 +125,7 @@ export default function Navbar() {
     }
     
     // Employer specific links - show Home, About Us, Hire Talent, Blogs, Contact Us, but NOT Find Jobs
-    if (currentUser.user.userType === "employer") {
+    if (currentUser.user && currentUser.user.userType === "employer") {
       return [
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
@@ -137,7 +137,7 @@ export default function Navbar() {
     }
     
     // Admin specific links
-    if (currentUser.user.userType === "admin") {
+    if (currentUser.user && currentUser.user.userType === "admin") {
       return [
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
@@ -240,7 +240,7 @@ export default function Navbar() {
                         <span>Profile</span>
                       </DropdownMenuItem>
                     </ScrollLink>
-                    {currentUser.user.userType === "jobseeker" && (
+                    {currentUser.user && currentUser.user.userType === "jobseeker" && (
                       <ScrollLink href="/resources/create-resume" className="w-full">
                         <DropdownMenuItem>
                           <Briefcase className="mr-2 h-4 w-4" />
@@ -249,7 +249,7 @@ export default function Navbar() {
                       </ScrollLink>
                     )}
                     {/* Employer-specific menu items removed */}
-                    {currentUser.user.userType === "admin" && (
+                    {currentUser.user && currentUser.user.userType === "admin" && (
                       <>
                         <ScrollLink href="/admin" className="w-full">
                           <DropdownMenuItem>
@@ -395,14 +395,14 @@ export default function Navbar() {
                       <>
                         <div className="px-4 py-2 mb-2">
                           <div className="font-medium">
-                            {currentUser.user.userType === "jobseeker" && 'firstName' in currentUser.profile
+                            {currentUser.user && currentUser.profile && currentUser.user.userType === "jobseeker" && 'firstName' in currentUser.profile
                               ? `${currentUser.profile.firstName} ${currentUser.profile.lastName}`
-                              : currentUser.user.userType === "employer" && 'companyName' in currentUser.profile
+                              : currentUser.user && currentUser.profile && currentUser.user.userType === "employer" && 'companyName' in currentUser.profile
                               ? currentUser.profile.companyName
-                              : currentUser.user.email}
+                              : currentUser.user ? currentUser.user.email : 'User'}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {currentUser.user.email}
+                            {currentUser.user ? currentUser.user.email : ''}
                           </div>
                         </div>
                         
@@ -434,7 +434,7 @@ export default function Navbar() {
                         
                         {/* Employer-specific menu items removed as requested */}
                         
-                        {currentUser.user.userType === "admin" && (
+                        {currentUser.user && currentUser.user.userType === "admin" && (
                           <>
                             <div 
                               className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer"

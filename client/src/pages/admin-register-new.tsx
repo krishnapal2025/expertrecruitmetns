@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { adminRegisterSchema } from "@shared/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -97,9 +97,10 @@ function AdminRegisterPage() {
       password: "",
       firstName: "",
       lastName: "",
-      role: "",
+      role: "admin",
       phoneNumber: "",
       invitationCode: "",
+      confirmPassword: "",
     },
   });
 
@@ -125,6 +126,14 @@ function AdminRegisterPage() {
       invitationCode,
     });
   };
+
+  // When verification is successful, update the form with verified email and code
+  useEffect(() => {
+    if (invitationVerified) {
+      form.setValue("email", email);
+      form.setValue("invitationCode", invitationCode);
+    }
+  }, [invitationVerified, email, invitationCode, form]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -226,12 +235,33 @@ function AdminRegisterPage() {
 
                 <FormField
                   control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="••••••••" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="role"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Role</FormLabel>
                       <FormControl>
-                        <Input placeholder="Administrator" {...field} />
+                        <select
+                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          {...field}
+                        >
+                          <option value="admin">Administrator</option>
+                          <option value="super_admin">Super Administrator</option>
+                          <option value="content_manager">Content Manager</option>
+                        </select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

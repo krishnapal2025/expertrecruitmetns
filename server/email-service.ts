@@ -537,18 +537,18 @@ export const sendVacancyAssignmentEmail = async (
         success: true,
         message: `Vacancy assignment email sent to ${recruiterEmail}`
       };
-    } catch (mailError) {
+    } catch (mailError: any) {
       console.error('Error sending email:', mailError);
       return { 
         success: false,
-        message: `Failed to send email to ${recruiterEmail}: ${mailError.message}`
+        message: `Failed to send email to ${recruiterEmail}: ${mailError?.message || 'Unknown error'}`
       };
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in sendVacancyAssignmentEmail:', error);
     return { 
       success: false,
-      message: `Error processing email: ${error.message}`
+      message: `Error processing email: ${error?.message || 'Unknown error'}`
     };
   }
 };

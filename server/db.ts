@@ -19,15 +19,14 @@ console.log(`Using PostgreSQL connection in ${config.ENV.NODE_ENV} environment`)
 
 // Modify the connection string to ensure SSL mode is properly set
 let connectionString = config.database.url;
-
 // Configure PostgreSQL client with optimal settings from environment config
 const connectionConfig: postgres.Options<{}> = {
   // Max connections in the pool
   max: config.database.poolConfig.max,
-  
+
   // Idle timeout for connections
   idle_timeout: config.database.poolConfig.idleTimeout,
-  
+
   // Connection timeout
   connect_timeout: config.database.poolConfig.connectionTimeout,
   

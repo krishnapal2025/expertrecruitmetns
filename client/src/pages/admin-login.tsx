@@ -160,7 +160,10 @@ export default function AdminLoginPage() {
                 )}
               />
 
-              <div className="flex justify-end">
+              <div className="flex justify-between">
+                <Link href="/admin-register" className="text-sm text-primary hover:underline">
+                  Create an account
+                </Link>
                 <Link href="/admin/forgot-password" className="text-sm text-primary hover:underline">
                   Forgot password?
                 </Link>

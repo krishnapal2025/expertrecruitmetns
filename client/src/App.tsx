@@ -29,7 +29,9 @@ import BlogManagerPage from "@/pages/blog-manager";
 
 import AdminPage from "@/pages/admin-page";
 import AdminDashboardPage from "@/pages/admin-page-new";
-import AdminRegisterPage from "@/pages/admin-register";
+import AdminRegisterPage from "@/pages/admin-register-new";
+import AdminSignupPage from "@/pages/admin-signup-new";
+import SuperAdminSignupPage from "@/pages/super-admin-signup";
 import AdminLoginPage from "@/pages/admin-login";
 import AdminForgotPasswordPage from "@/pages/admin-forgot-password";
 import AdminResetPasswordPage from "@/pages/admin-reset-password";
@@ -106,6 +108,8 @@ function Router() {
         {params => <AdminProtectedRoute path={`/edit-blog/${params.id}`} component={EditBlogPage} />}
       </Route>
       <Route path="/admin-register" component={AdminRegisterPage} />
+      <Route path="/admin-signup" component={AdminSignupPage} />
+      <Route path="/super-admin-signup" component={SuperAdminSignupPage} />
       <Route path="/admin-login" component={AdminLoginPage} />
       <Route path="/admin/forgot-password" component={AdminForgotPasswordPage} />
       <Route path="/admin/reset-password" component={AdminResetPasswordPage} />
