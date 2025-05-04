@@ -172,31 +172,20 @@ export default function JobDetailsPage({ id }: { id: string }) {
                 </Button>
               ) : (
                 <>
-                  {hasApplied ? (
+                  {hasApplied && (
                     <Button variant="outline" size="sm" className="bg-green-800/20" disabled>
                       <CheckCircle className="h-4 w-4 mr-2" />
                       Applied
                     </Button>
-                  ) : (
-                    <Button variant="secondary" size="sm" onClick={handleApplyClick}>
-                      Apply Now
-                    </Button>
                   )}
-                  <Button variant="outline" size="sm" className="bg-white/10">
-                    <BookmarkPlus className="h-4 w-4 mr-2" />
-                    Save
-                  </Button>
-                  <Button variant="outline" size="sm" className="bg-white/10">
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Share
-                  </Button>
                 </>
               )}
             </div>
+
           </div>
         </div>
       </div>
-
+  
       <div className="container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-3 gap-8">
           {/* Main Content */}

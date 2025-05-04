@@ -734,20 +734,17 @@ export default function JobApplicationPage() {
                                     </li>
                                     <li className="flex items-start">
                                       <span className="bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5">2</span>
-                                      <span>If your profile matches their requirements, you'll be contacted for an interview</span>
+                                      <span>If your profile matches their requirements, you'll be contacted via mail</span>
                                     </li>
                                     <li className="flex items-start">
                                       <span className="bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5">3</span>
-                                      <span>You can track the status of your application in your profile</span>
+                                      <span>You can track the status of your application through your notifications and emails. </span>
                                     </li>
                                   </ol>
                                 </CardContent>
                               </Card>
                               
                               <div className="flex justify-center space-x-4">
-                                <Button variant="outline" onClick={() => navigate("/applied-jobs")}>
-                                  View My Applications
-                                </Button>
                                 <Button onClick={() => navigate("/job-board")}>
                                   Browse More Jobs
                                 </Button>
