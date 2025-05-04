@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useForm } from "react-hook-form";
@@ -7,7 +7,7 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Loader2, Image as ImageIcon, Trash2, AlignLeft, AlignCenter, AlignRight, Bold, Italic, List, ListOrdered, FileEdit } from "lucide-react";
+import { Loader2, Image as ImageIcon, Trash2, AlignLeft, AlignCenter, AlignRight, Bold, Italic, List, ListOrdered, FileEdit, Upload, X, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -69,6 +69,10 @@ const CreateBlogPage = () => {
   const [location, navigate] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
+  
+  // State for file upload
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   type ContentSection = {
     type: 'paragraph' | 'header' | 'image';
     content: string;
