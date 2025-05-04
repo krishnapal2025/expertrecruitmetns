@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -30,14 +30,16 @@ export default function AdminLoginPage() {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   
-  // If already logged in, redirect to appropriate page
-  if (user) {
-    if (user.userType === "admin") {
-      setLocation("/admin");
-    } else {
-      setLocation("/");
+  // Handle redirect if already logged in using useEffect
+  useEffect(() => {
+    if (user) {
+      if (user.userType === "admin") {
+        setLocation("/admin");
+      } else {
+        setLocation("/");
+      }
     }
-  }
+  }, [user, setLocation]);
   
   // Initialize form
   const form = useForm<FormValues>({
