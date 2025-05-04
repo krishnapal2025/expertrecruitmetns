@@ -168,15 +168,18 @@ const CreateBlogPage = () => {
     }
     
     if (subtitle) {
-      previewContent += `<p class="text-xl font-${subtitleFormatting.fontWeight} font-${subtitleFormatting.fontStyle} text-${subtitleFormatting.fontSize} text-${subtitleFormatting.alignment} text-${subtitleFormatting.color} mb-6">${subtitle}</p>`;
+      previewContent += `<p class="font-${subtitleFormatting.fontWeight} font-${subtitleFormatting.fontStyle} text-${subtitleFormatting.alignment} text-${subtitleFormatting.color} mb-6" style="font-size: ${subtitleFormatting.customFontSize};">${subtitle}</p>`;
     }
     
     previewContent += '<div class="prose max-w-none">';
     contentSections.forEach(section => {
       if (section.type === 'header' && section.content) {
-        // Get the selected header color if it exists in the section's format state
+        // Get the selected header color and other formatting options
         const headerColor = section.format?.color || "slate-900"; // Default color if not set
-        previewContent += `<h2 class="text-xl font-semibold my-4 text-${headerColor}">${section.content}</h2>`;
+        const alignment = section.format?.alignment || "left"; // Default alignment if not set
+        const fontSize = section.format?.fontSize || "24px"; // Default font size if not set
+        
+        previewContent += `<h2 class="font-semibold my-4 text-${headerColor} text-${alignment}" style="font-size: ${fontSize};">${section.content}</h2>`;
       } else if (section.type === 'paragraph' && section.content) {
         previewContent += `<div class="my-4">${section.content}</div>`;
       } else if (section.type === 'image' && section.content) {
@@ -415,22 +418,22 @@ const CreateBlogPage = () => {
                               </div>
                               
                               <div>
-                                <h4 className="text-sm font-medium mb-1">Font Size</h4>
-                                <Select 
-                                  defaultValue={titleFormatting.fontSize}
-                                  onValueChange={(value) => setTitleFormatting({...titleFormatting, fontSize: value})}
-                                >
-                                  <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Font Size" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="lg">Large</SelectItem>
-                                    <SelectItem value="xl">Extra Large</SelectItem>
-                                    <SelectItem value="2xl">2XL</SelectItem>
-                                    <SelectItem value="3xl">3XL</SelectItem>
-                                    <SelectItem value="4xl">4XL</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                <h4 className="text-sm font-medium mb-1">Font Size (px)</h4>
+                                <div className="flex items-center">
+                                  <Input 
+                                    type="number" 
+                                    min="12" 
+                                    max="72" 
+                                    defaultValue="24" 
+                                    className="w-24"
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      const fontSize = parseInt(value) ? `${value}px` : '24px';
+                                      setTitleFormatting({...titleFormatting, customFontSize: fontSize});
+                                    }}
+                                  />
+                                  <span className="ml-2">px</span>
+                                </div>
                               </div>
                               
                               <div>
@@ -575,21 +578,22 @@ const CreateBlogPage = () => {
                               </div>
                               
                               <div>
-                                <h4 className="text-sm font-medium mb-1">Font Size</h4>
-                                <Select 
-                                  defaultValue={subtitleFormatting.fontSize}
-                                  onValueChange={(value) => setSubtitleFormatting({...subtitleFormatting, fontSize: value})}
-                                >
-                                  <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Font Size" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="base">Normal</SelectItem>
-                                    <SelectItem value="lg">Large</SelectItem>
-                                    <SelectItem value="xl">Extra Large</SelectItem>
-                                    <SelectItem value="2xl">2XL</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                <h4 className="text-sm font-medium mb-1">Font Size (px)</h4>
+                                <div className="flex items-center">
+                                  <Input 
+                                    type="number" 
+                                    min="12" 
+                                    max="50" 
+                                    defaultValue="18" 
+                                    className="w-24"
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      const fontSize = parseInt(value) ? `${value}px` : '18px';
+                                      setSubtitleFormatting({...subtitleFormatting, customFontSize: fontSize});
+                                    }}
+                                  />
+                                  <span className="ml-2">px</span>
+                                </div>
                               </div>
                               
                               <div>
@@ -949,21 +953,22 @@ const CreateBlogPage = () => {
                               </div>
                               
                               <div className="flex flex-wrap gap-2 mt-2">
-                                <h4 className="text-sm font-medium w-full mb-1">Font Size</h4>
-                                <Select
-                                  onValueChange={(value) => console.log('Font size changed:', value)}
-                                  defaultValue="normal"
-                                >
-                                  <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Font Size" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="small">Small</SelectItem>
-                                    <SelectItem value="normal">Normal</SelectItem>
-                                    <SelectItem value="large">Large</SelectItem>
-                                    <SelectItem value="xl">Extra Large</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                <h4 className="text-sm font-medium w-full mb-1">Font Size (px)</h4>
+                                <div className="flex items-center">
+                                  <Input 
+                                    type="number" 
+                                    min="12" 
+                                    max="36" 
+                                    defaultValue="16" 
+                                    className="w-24"
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      const fontSize = parseInt(value) ? `${value}px` : '16px';
+                                      updateSectionFormat(index, 'fontSize', fontSize);
+                                    }}
+                                  />
+                                  <span className="ml-2">px</span>
+                                </div>
                               </div>
                             </div>
                             
@@ -982,7 +987,7 @@ const CreateBlogPage = () => {
                                   ['clean']
                                 ]
                               }}
-                              className="min-h-[150px]"
+                              className="min-h-[300px]"
                             />
                           </div>
                         )}
@@ -991,22 +996,22 @@ const CreateBlogPage = () => {
                           <div>
                             <div className="mb-2">
                               <div className="flex flex-wrap gap-2 mb-2">
-                                <h4 className="text-sm font-medium w-full mb-1">Heading Style</h4>
-                                <Select
-                                  onValueChange={(value) => console.log('Header style changed:', value)}
-                                  defaultValue="h2"
-                                >
-                                  <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Heading Size" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="h1">Heading 1 (Largest)</SelectItem>
-                                    <SelectItem value="h2">Heading 2</SelectItem>
-                                    <SelectItem value="h3">Heading 3</SelectItem>
-                                    <SelectItem value="h4">Heading 4</SelectItem>
-                                    <SelectItem value="h5">Heading 5 (Smallest)</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                <h4 className="text-sm font-medium w-full mb-1">Heading Size (px)</h4>
+                                <div className="flex items-center">
+                                  <Input 
+                                    type="number" 
+                                    min="16" 
+                                    max="48" 
+                                    defaultValue="24" 
+                                    className="w-24"
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      const fontSize = parseInt(value) ? `${value}px` : '24px';
+                                      updateSectionFormat(index, 'fontSize', fontSize);
+                                    }}
+                                  />
+                                  <span className="ml-2">px</span>
+                                </div>
                               </div>
                               
                               <div className="flex flex-wrap gap-2">
