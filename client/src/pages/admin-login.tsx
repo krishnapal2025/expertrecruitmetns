@@ -30,33 +30,36 @@ export default function AdminLoginPage() {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   
-  // Check if this page was opened in a new tab (with newTab query parameter)
+  // Check URL parameters
   const urlParams = new URLSearchParams(window.location.search);
+  const sessionType = urlParams.get('sessionType');
   const newTabParam = urlParams.get('newTab');
   
-  // Check if this is a new tab session via URL parameter or other indicators
-  const isOpenedInNewTab = newTabParam === 'true' || 
-                          window.opener !== null || 
-                          document.referrer.includes('/admin-login') || 
-                          sessionStorage.getItem('adminLoginNewTab') === 'true';
+  // Determine if this is an admin-specific session
+  const isAdminSession = sessionType === 'admin' || 
+                         newTabParam === 'true' || 
+                         window.opener !== null || 
+                         document.referrer.includes('/admin-login') || 
+                         sessionStorage.getItem('adminLoginNewTab') === 'true';
   
-  // Mark this as a new tab admin login session and remove the query parameter
+  // Set up the admin session if needed
   useEffect(() => {
-    if (isOpenedInNewTab) {
+    if (isAdminSession) {
       // Store this information in sessionStorage for the duration of this tab's session
       sessionStorage.setItem('adminLoginNewTab', 'true');
       
-      // Clean up the URL if it has the newTab parameter
-      if (newTabParam === 'true') {
-        const url = new URL(window.location.href);
+      // Clean up the URL parameters
+      const url = new URL(window.location.href);
+      if (url.searchParams.has('sessionType') || url.searchParams.has('newTab')) {
+        url.searchParams.delete('sessionType');
         url.searchParams.delete('newTab');
         window.history.replaceState({}, document.title, url.toString());
       }
     }
-  }, [isOpenedInNewTab, newTabParam]);
+  }, [isAdminSession]);
   
   // Only redirect if not opened as a separate session
-  if (user && !isOpenedInNewTab) {
+  if (user && !isAdminSession) {
     if (user.userType === "admin") {
       setLocation("/admin");
     } else {
