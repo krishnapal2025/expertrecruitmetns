@@ -15,6 +15,8 @@ import { IndiaFlag, UAEFlag, USAFlag } from "@/components/flags";
 import { motion } from "framer-motion";
 import OptimizedHeroBackground from "@/components/hero/optimized-hero-background";
 import contactHeroBg from "../assets/images/contact-hero-bg.jpg";
+import contactHeroBgSmall from "../assets/optimized/images/contact-hero-bg-sm.webp";
+import contactHeroBgMedium from "../assets/optimized/images/contact-hero-bg-md.webp";
 import { useAuth } from "@/hooks/use-auth";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -159,9 +161,12 @@ export default function ContactUsPage() {
         {/* Optimized Background Image */}
         <OptimizedHeroBackground 
           imageSrc={contactHeroBg}
+          smallImageSrc={contactHeroBgSmall}
+          mediumImageSrc={contactHeroBgMedium}
           alt="Contact us banner"
           brightness={0.85}
           overlayOpacity={0.65}
+          priority={true}
         />
         
         {/* Accent lines */}
