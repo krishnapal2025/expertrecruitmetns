@@ -68,13 +68,13 @@ export default function Navbar() {
   const getUserInitials = () => {
     if (!currentUser) return "U";
     
-    if (currentUser.user.userType === "jobseeker" && 'firstName' in currentUser.profile) {
+    if (currentUser?.user?.userType === "jobseeker" && currentUser?.profile && 'firstName' in currentUser.profile) {
       return `${currentUser.profile.firstName.charAt(0)}${currentUser.profile.lastName.charAt(0)}`;
-    } else if (currentUser.user.userType === "employer" && 'companyName' in currentUser.profile) {
+    } else if (currentUser?.user?.userType === "employer" && currentUser?.profile && 'companyName' in currentUser.profile) {
       return currentUser.profile.companyName.charAt(0);
     }
     
-    return currentUser.user.email.charAt(0).toUpperCase();
+    return currentUser?.user?.email.charAt(0).toUpperCase() || "U";
   };
 
   // Define navigation links based on user type
@@ -100,12 +100,12 @@ export default function Navbar() {
     ];
     
     // If no user or user data is not available yet, return default links
-    if (!currentUser || !currentUser.user) {
+    if (!currentUser || !currentUser?.user) {
       return defaultLinks;
     }
     
     // Job seeker specific links - show Home, About Us, Find Jobs, Resources, and Contact Us
-    if (currentUser.user.userType === "jobseeker") {
+    if (currentUser?.user?.userType === "jobseeker") {
       return [
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
@@ -126,7 +126,7 @@ export default function Navbar() {
     }
     
     // Employer specific links - show Home, About Us, Hire Talent, Blogs, Contact Us, but NOT Find Jobs
-    if (currentUser.user && currentUser.user.userType === "employer") {
+    if (currentUser?.user?.userType === "employer") {
       return [
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
@@ -138,7 +138,7 @@ export default function Navbar() {
     }
     
     // Admin specific links
-    if (currentUser.user && currentUser.user.userType === "admin") {
+    if (currentUser?.user?.userType === "admin") {
       return [
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
@@ -271,7 +271,7 @@ export default function Navbar() {
                         <span>Profile</span>
                       </DropdownMenuItem>
                     </ScrollLink>
-                    {currentUser.user && currentUser.user.userType === "jobseeker" && (
+                    {currentUser?.user?.userType === "jobseeker" && (
                       <ScrollLink href="/resources/create-resume" className="w-full">
                         <DropdownMenuItem>
                           <Briefcase className="mr-2 h-4 w-4" />
@@ -280,7 +280,7 @@ export default function Navbar() {
                       </ScrollLink>
                     )}
                     {/* Employer-specific menu items removed */}
-                    {currentUser.user && currentUser.user.userType === "admin" && (
+                    {currentUser?.user?.userType === "admin" && (
                       <>
                         <ScrollLink href="/admin" className="w-full">
                           <DropdownMenuItem>
@@ -410,10 +410,50 @@ export default function Navbar() {
                     ) : (
                       <div key={link.name}
                         className={`px-4 py-2 rounded-md cursor-pointer block ${location === link.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}
-                        onClick={() => {
-                          setIsMobileMenuOpen(false);
-                          window.scrollTo(0, 0);
-                          setTimeout(() => window.location.href = link.href, 100);
+                        onClick={(e) => {
+                          // Special handling for role-specific links
+                          if (link.name === "Hire Talent" || link.name === "Vacancy Form") {
+                            e.preventDefault();
+                            setIsMobileMenuOpen(false);
+                            
+                            // Use the role redirect logic for employer features
+                            if (!currentUser) {
+                              // Not logged in - go to employer registration
+                              setTimeout(() => window.location.href = "/employer-register", 100);
+                            } else if (currentUser?.user?.userType === "employer" || currentUser?.user?.userType === "admin") {
+                              // Employer or admin - go to the requested page
+                              setTimeout(() => window.location.href = link.href, 100);
+                            } else if (currentUser?.user?.userType === "jobseeker") {
+                              // Job seeker - show message and go to employer registration
+                              setTimeout(() => {
+                                window.location.href = "/employer-register";
+                              }, 100);
+                            }
+                          }
+                          else if (link.name === "Find Jobs") {
+                            e.preventDefault();
+                            setIsMobileMenuOpen(false);
+                            
+                            // Use the role redirect logic for job seeker features
+                            if (!currentUser) {
+                              // Not logged in - go to job seeker registration
+                              setTimeout(() => window.location.href = "/job-seeker-register", 100);
+                            } else if (currentUser?.user?.userType === "jobseeker" || currentUser?.user?.userType === "admin") {
+                              // Job seeker or admin - go to the requested page
+                              setTimeout(() => window.location.href = link.href, 100);
+                            } else if (currentUser?.user?.userType === "employer") {
+                              // Employer - show message and go to job seeker registration
+                              setTimeout(() => {
+                                window.location.href = "/job-seeker-register";
+                              }, 100);
+                            }
+                          }
+                          else {
+                            // Standard navigation for other links
+                            setIsMobileMenuOpen(false);
+                            window.scrollTo(0, 0);
+                            setTimeout(() => window.location.href = link.href, 100);
+                          }
                         }}
                       >
                         {link.name}
@@ -426,14 +466,14 @@ export default function Navbar() {
                       <>
                         <div className="px-4 py-2 mb-2">
                           <div className="font-medium">
-                            {currentUser.user && currentUser.profile && currentUser.user.userType === "jobseeker" && 'firstName' in currentUser.profile
+                            {currentUser?.user?.userType === "jobseeker" && currentUser?.profile && 'firstName' in currentUser.profile
                               ? `${currentUser.profile.firstName} ${currentUser.profile.lastName}`
-                              : currentUser.user && currentUser.profile && currentUser.user.userType === "employer" && 'companyName' in currentUser.profile
+                              : currentUser?.user?.userType === "employer" && currentUser?.profile && 'companyName' in currentUser.profile
                               ? currentUser.profile.companyName
-                              : currentUser.user ? currentUser.user.email : 'User'}
+                              : currentUser?.user ? currentUser.user.email : 'User'}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {currentUser.user ? currentUser.user.email : ''}
+                            {currentUser?.user ? currentUser.user.email : ''}
                           </div>
                         </div>
                         
@@ -465,7 +505,7 @@ export default function Navbar() {
                         
                         {/* Employer-specific menu items removed as requested */}
                         
-                        {currentUser.user && currentUser.user.userType === "admin" && (
+                        {currentUser?.user?.userType === "admin" && (
                           <>
                             <div 
                               className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer"
@@ -538,10 +578,20 @@ export default function Navbar() {
                               <Button 
                                 variant="default" 
                                 className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.preventDefault();
                                   setIsMobileMenuOpen(false);
-                                  window.scrollTo(0, 0);
-                                  setTimeout(() => window.location.href = "/employer-register", 100);
+                                  // Use the role redirect logic
+                                  if (!currentUser) {
+                                    // Not logged in - go to employer registration
+                                    setTimeout(() => window.location.href = "/employer-register", 100);
+                                  } else if (currentUser?.user?.userType === "employer") {
+                                    // Already an employer - stay on current page
+                                    window.scrollTo(0, 0);
+                                  } else if (currentUser?.user?.userType === "jobseeker") {
+                                    // Job seeker - go to employer registration
+                                    setTimeout(() => window.location.href = "/employer-register", 100);
+                                  }
                                 }}
                               >
                                 <Briefcase className="mr-2 h-5 w-5" />
@@ -550,10 +600,20 @@ export default function Navbar() {
                               <Button 
                                 variant="default" 
                                 className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.preventDefault();
                                   setIsMobileMenuOpen(false);
-                                  window.scrollTo(0, 0);
-                                  setTimeout(() => window.location.href = "/job-seeker-register", 100);
+                                  // Use the role redirect logic
+                                  if (!currentUser) {
+                                    // Not logged in - go to job seeker registration
+                                    setTimeout(() => window.location.href = "/job-seeker-register", 100);
+                                  } else if (currentUser?.user?.userType === "jobseeker") {
+                                    // Already a job seeker - stay on current page
+                                    window.scrollTo(0, 0);
+                                  } else if (currentUser?.user?.userType === "employer") {
+                                    // Employer - go to job seeker registration
+                                    setTimeout(() => window.location.href = "/job-seeker-register", 100);
+                                  }
                                 }}
                               >
                                 <User className="mr-2 h-5 w-5" />
