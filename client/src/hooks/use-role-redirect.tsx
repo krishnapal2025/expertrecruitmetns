@@ -30,13 +30,13 @@ export function useRoleRedirect() {
     }
 
     // Already an employer - go to the destination
-    if (currentUser.user.userType === "employer") {
+    if (currentUser?.user?.userType === "employer") {
       navigate(destinationPath);
       return;
     }
 
     // Job seeker trying to access employer features
-    if (currentUser.user.userType === "jobseeker") {
+    if (currentUser?.user?.userType === "jobseeker") {
       toast({
         title: "Employer Feature",
         description: "This feature is only available to employers. Would you like to register as an employer?",
@@ -58,7 +58,7 @@ export function useRoleRedirect() {
     }
 
     // Admin can access everything
-    if (currentUser.user.userType === "admin") {
+    if (currentUser?.user?.userType === "admin") {
       navigate(destinationPath);
       return;
     }
@@ -83,13 +83,19 @@ export function useRoleRedirect() {
     }
 
     // Already a job seeker - go to the destination
-    if (currentUser.user.userType === "jobseeker") {
-      navigate(destinationPath);
+    if (currentUser?.user?.userType === "jobseeker") {
+      // Special case: if a job seeker is clicking a job seeker signup button, stay on the same page
+      if (destinationPath === '/job-seeker-register') {
+        // Just scroll to top instead of navigating
+        window.scrollTo(0, 0);
+      } else {
+        navigate(destinationPath);
+      }
       return;
     }
 
     // Employer trying to access job seeker features
-    if (currentUser.user.userType === "employer") {
+    if (currentUser?.user?.userType === "employer") {
       toast({
         title: "Job Seeker Feature",
         description: "This feature is only available to job seekers. Would you like to register as a job seeker?",
@@ -111,7 +117,7 @@ export function useRoleRedirect() {
     }
 
     // Admin can access everything
-    if (currentUser.user.userType === "admin") {
+    if (currentUser?.user?.userType === "admin") {
       navigate(destinationPath);
       return;
     }
@@ -147,8 +153,14 @@ export function useRoleRedirect() {
       }
 
       // User has matching role - proceed to destination
-      if (currentUser.user.userType === userType) {
-        navigate(destinationPath);
+      if (currentUser?.user?.userType === userType) {
+        // Special case: if a job seeker is clicking a job seeker signup button, stay on the same page
+        if (userType === 'jobseeker' && destinationPath === '/job-seeker-register') {
+          // Just scroll to top instead of navigating
+          window.scrollTo(0, 0);
+        } else {
+          navigate(destinationPath);
+        }
         return;
       }
 
