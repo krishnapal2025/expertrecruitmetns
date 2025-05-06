@@ -16,7 +16,13 @@ export async function apiRequest(
   console.log(`API Request: ${method} ${url}`, data ? { data } : '');
   
   // Make sure credentials are always included
-  const headers: Record<string, string> = {};
+  const headers: Record<string, string> = {
+    // Prevent caching for critical operations (especially important for authentication)
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  };
+  
   if (data) {
     headers["Content-Type"] = "application/json";
   }
@@ -29,6 +35,31 @@ export async function apiRequest(
   };
   
   try {
+    // For POST requests, verify authentication state first
+    if (method === 'POST' && !url.includes('/api/login') && !url.includes('/api/register')) {
+      try {
+        console.log('Verifying authentication before POST request...');
+        const authCheck = await fetch('/api/user', { 
+          credentials: 'include',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        });
+        
+        if (!authCheck.ok || authCheck.status === 401) {
+          console.error('Authentication check failed before API request');
+          throw new Error('Your session has expired. Please refresh the page and login again.');
+        }
+        
+        console.log('Authentication confirmed before request');
+      } catch (authError) {
+        console.error('Auth verification error:', authError);
+        throw authError;
+      }
+    }
+    
     const res = await fetch(url, options);
     
     // Log the response status
@@ -36,7 +67,11 @@ export async function apiRequest(
     
     // Check for unauthorized status
     if (res.status === 401) {
-      console.error('Unauthorized request. User may not be logged in properly.');
+      console.error('Unauthorized request detected. Session may have expired.', {
+        method,
+        url,
+        status: res.status
+      });
     }
     
     await throwIfResNotOk(res);

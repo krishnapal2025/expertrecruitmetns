@@ -224,28 +224,53 @@ export default function PostJobPage() {
   // Create job mutation
   const createJobMutation = useMutation({
     mutationFn: async (data: JobPostFormValues) => {
-      // For admin users, use the selected employer ID
-      const payload = {
-        ...data,
-        // Convert applicationDeadline to string if it's a Date object
-        applicationDeadline: typeof data.applicationDeadline === 'object' 
-          ? (data.applicationDeadline as Date).toISOString().split('T')[0]
-          : data.applicationDeadline,
-        // If admin with selected employer, use selectedEmployerId
-        // Otherwise use the current user's profile ID (which is handled server-side)
-        ...(currentUser?.user.userType === "admin" && selectedEmployerId 
-          ? { selectedEmployerId } 
-          : {})
-      };
-      
-      console.log("Submitting job with payload:", payload);
-      
-      const res = await apiRequest("POST", "/api/jobs", payload);
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Failed to create job");
+      // Re-check authentication status before submission
+      // This helps ensure the session is still valid
+      try {
+        const userCheckRes = await fetch('/api/user', { 
+          credentials: 'include',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        });
+        
+        // If not authenticated, throw error to prevent job submission
+        if (!userCheckRes.ok || userCheckRes.status === 401) {
+          console.error("Authentication check failed before job submission");
+          throw new Error("Your session has expired. Please refresh the page and login again.");
+        }
+        
+        const user = await userCheckRes.json();
+        console.log("Authentication confirmed before job submission:", user);
+        
+        // For admin users, use the selected employer ID
+        const payload = {
+          ...data,
+          // Convert applicationDeadline to string if it's a Date object
+          applicationDeadline: typeof data.applicationDeadline === 'object' 
+            ? (data.applicationDeadline as Date).toISOString().split('T')[0]
+            : data.applicationDeadline,
+          // If admin with selected employer, use selectedEmployerId
+          // Otherwise use the current user's profile ID (which is handled server-side)
+          ...(user.user.userType === "admin" && selectedEmployerId 
+            ? { selectedEmployerId } 
+            : {})
+        };
+        
+        console.log("Submitting job with payload:", payload);
+        
+        const res = await apiRequest("POST", "/api/jobs", payload);
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || "Failed to create job");
+        }
+        return await res.json();
+      } catch (error) {
+        console.error("Error during job submission:", error);
+        throw error;
       }
-      return await res.json();
     },
     onSuccess: (data) => {
       toast({

@@ -716,10 +716,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("POST /api/jobs - Request payload:", req.body);
       console.log("POST /api/jobs - Authentication status:", req.isAuthenticated());
       console.log("POST /api/jobs - User:", req.user);
+      console.log("POST /api/jobs - Session:", req.session);
       
-      if (!req.isAuthenticated()) {
-        console.log("POST /api/jobs - Authentication failed");
-        return res.status(401).json({ message: "You must be logged in to post a job" });
+      // Enhanced authentication check
+      if (!req.isAuthenticated() || !req.user) {
+        console.log("POST /api/jobs - Authentication failed - No session or user");
+        return res.status(401).json({ message: "You must be logged in to post a job. Please refresh the page and try again." });
+      }
+      
+      // Verify that the user type is valid for posting jobs
+      if (req.user.userType !== "employer" && req.user.userType !== "admin") {
+        console.log("POST /api/jobs - User type not authorized:", req.user.userType);
+        return res.status(403).json({ message: "Only employers or admins can post jobs" });
       }
 
       const user = req.user;

@@ -32,9 +32,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     data: currentUser,
     error,
     isLoading,
+    refetch: refetchUser,
   } = useQuery<UserWithProfile | null, Error>({
     queryKey: ["/api/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
+    refetchOnWindowFocus: true, // Automatically check session on window focus
+    refetchOnMount: true, // Refetch when component mounts
+    staleTime: 60000, // Consider data stale after 1 minute
   });
 
   const loginMutation = useMutation({
