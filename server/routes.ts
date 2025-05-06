@@ -1750,6 +1750,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoints
+  
+  // Get admin user data endpoint - specifically for admin dashboard
+  app.get("/api/admin/user", async (req, res) => {
+    try {
+      // Check if the user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = req.user;
+      
+      // Check if user is an admin
+      if (user.userType !== "admin") {
+        return res.status(403).json({ 
+          message: "Access denied. This endpoint is for administrators only." 
+        });
+      }
+      
+      // Get admin profile
+      const admin = await storage.getAdminByUserId(user.id);
+      
+      if (!admin) {
+        return res.status(404).json({ message: "Admin profile not found" });
+      }
+      
+      // Return admin data without sensitive information
+      res.json({
+        id: user.id,
+        email: user.email,
+        userType: user.userType,
+        profile: {
+          id: admin.id,
+          firstName: admin.firstName,
+          lastName: admin.lastName,
+          role: admin.role,
+          lastLogin: admin.lastLogin
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching admin user data:", error);
+      res.status(500).json({ message: "Failed to fetch admin user data" });
+    }
+  });
 
   // Verify invitation code
   app.post("/api/admin/verify-invitation", async (req, res) => {
@@ -1956,36 +1999,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get the current admin's profile
-  app.get("/api/admin/user", async (req, res) => {
-    try {
-      // Check if user is authenticated
-      if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
-      const user = req.user;
-
-      if (user.userType !== "admin") {
-        return res.status(403).json({ message: "Only administrators can access this resource" });
-      }
-
-      // Get admin profile
-      const admin = await storage.getAdminByUserId(user.id);
-
-      if (!admin) {
-        return res.status(404).json({ message: "Admin profile not found" });
-      }
-
-      // Update last login time
-      await storage.updateAdminLastLogin(admin.id);
-
-      res.json(admin);
-    } catch (error) {
-      console.error("Error fetching admin profile:", error);
-      res.status(500).json({ message: "Failed to fetch admin profile" });
-    }
-  });
+  // Get admin profile endpoint has been updated
 
   // Get all invitation codes (admin only)
   app.get("/api/admin/invitation-codes", async (req, res) => {
