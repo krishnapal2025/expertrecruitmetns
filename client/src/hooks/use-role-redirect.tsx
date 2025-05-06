@@ -1,12 +1,13 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import React from "react";
 
 /**
  * A custom hook that handles role-specific redirections throughout the site
  * @returns Functions to handle various redirection scenarios
  */
-export function useRoleRedirect() {
+export const useRoleRedirect = () => {
   const { currentUser } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();

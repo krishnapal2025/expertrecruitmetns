@@ -18,14 +18,14 @@ interface RoleScrollLinkProps {
  * - If requiredUserType is specified, it will redirect users based on their role
  * - If requiredUserType is not specified, it behaves like a regular ScrollLink
  */
-export function RoleScrollLink({ 
+export const RoleScrollLink = ({ 
   href, 
   children, 
   className, 
   requiredUserType, 
   redirectPath, 
   onClick 
-}: RoleScrollLinkProps) {
+}: RoleScrollLinkProps) => {
   const scrollToTop = useScrollToTop();
   const [, setLocation] = useLocation();
   const { currentUser } = useAuth();
