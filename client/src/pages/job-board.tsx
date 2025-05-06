@@ -12,6 +12,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import OptimizedHeroBackground from "@/components/hero/optimized-hero-background";
 import jobBoardHeroImage from "../assets/job-board-hero.jpg";
+import jobBoardHeroSmallImage from "../assets/optimized/job-board-hero-sm.webp";
+import jobBoardHeroMediumImage from "../assets/optimized/job-board-hero-md.webp";
 
 const JOBS_PER_PAGE = 4;
 
@@ -192,9 +194,12 @@ export default function JobBoardPage() {
         {/* Optimized Background Image */}
         <OptimizedHeroBackground 
           imageSrc={jobBoardHeroImage}
+          smallImageSrc={jobBoardHeroSmallImage}
+          mediumImageSrc={jobBoardHeroMediumImage}
           alt="Office setting with job board"
           brightness={0.85}
           overlayOpacity={0.65}
+          priority={true}
         />
         
         {/* Accent lines */}

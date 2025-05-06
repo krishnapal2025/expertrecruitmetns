@@ -19,6 +19,8 @@ import {
 import OptimizedHeroBackground from "@/components/hero/optimized-hero-background";
 import ourApproachImage from "../assets/our-approach-image.webp";
 import aerialBusinessViewImage from "../assets/aerial-view-business-team.jpg";
+import aerialBusinessViewSmallImage from "../assets/optimized/aerial-view-business-team-sm.webp";
+import aerialBusinessViewMediumImage from "../assets/optimized/aerial-view-business-team-md.jpg";
 
 export default function AboutUsPage() {
   // Animation variants
@@ -75,9 +77,12 @@ export default function AboutUsPage() {
         {/* Optimized Background Image */}
         <OptimizedHeroBackground 
           imageSrc={aerialBusinessViewImage}
+          smallImageSrc={aerialBusinessViewSmallImage}
+          mediumImageSrc={aerialBusinessViewMediumImage}
           alt="Aerial view of business team"
           brightness={0.85}
           overlayOpacity={0.65}
+          priority={true}
         />
         
         {/* Accent lines */}
