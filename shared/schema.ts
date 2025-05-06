@@ -138,7 +138,7 @@ export const staffingInquiries = pgTable("staffing_inquiries", {
   email: text("email").notNull(), 
   phone: text("phone"),
   company: text("company"),
-  inquiry_type: text("inquiry_type").notNull()
+  inquiry_type: text("inquiry_type").notNull(),
   message: text("message").notNull(),
   marketing: boolean("marketing").default(false),
   status: text("status").default("new"), // 'new', 'reviewed', 'contacted', 'closed'
