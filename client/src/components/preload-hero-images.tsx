@@ -14,10 +14,10 @@ import jobBoardHeroSmall from "../assets/optimized/job-board-hero-sm.webp";
 import jobBoardHeroMedium from "../assets/optimized/job-board-hero-md.webp";
 import contactHeroSmall from "../assets/optimized/images/contact-hero-bg-sm.webp";
 import contactHeroMedium from "../assets/optimized/images/contact-hero-bg-md.webp";
-import hireTalentHeroSmall from "../assets/optimized/city-financial-district-glows-blue-twilight-generated-by-ai-sm.webp";
-import hireTalentHeroMedium from "../assets/optimized/city-financial-district-glows-blue-twilight-generated-by-ai-md.webp";
-import servicesHeroSmall from "../assets/optimized/business-people-shaking-hands-meeting-room-sm.webp";
-import servicesHeroMedium from "../assets/optimized/business-people-shaking-hands-meeting-room-md.webp";
+import hireTalentHeroSmall from "../assets/optimized/business-people-shaking-hands-meeting-room-sm.webp";
+import hireTalentHeroMedium from "../assets/optimized/business-people-shaking-hands-meeting-room-md.webp";
+import servicesHeroSmall from "../assets/optimized/modern-equipped-computer-lab-sm.webp";
+import servicesHeroMedium from "../assets/optimized/modern-equipped-computer-lab-md.webp";
 
 /**
  * A component that aggressively preloads all hero images to prevent gray backgrounds
@@ -102,16 +102,21 @@ export function PreloadHeroImages() {
       addPreloadLink(aboutUsHeroSmall, 'image/webp', 'About Us Hero Small'),
       addPreloadLink(contactHeroSmall, 'image/webp', 'Contact Hero Small'),
       addPreloadLink(hireTalentHeroSmall, 'image/webp', 'Hire Talent Hero Small'),
+      addPreloadLink(servicesHeroSmall, 'image/webp', 'Services Hero Small'),
       
       // Medium WebP versions
       addPreloadLink(jobBoardHeroMedium, 'image/webp', 'Job Board Hero Medium'),
       addPreloadLink(aboutUsHeroMedium, 'image/webp', 'About Us Hero Medium'),
       addPreloadLink(contactHeroMedium, 'image/webp', 'Contact Hero Medium'),
+      addPreloadLink(servicesHeroMedium, 'image/webp', 'Services Hero Medium'),
+      addPreloadLink(hireTalentHeroMedium, 'image/webp', 'Hire Talent Hero Medium'),
       
       // Original versions (optional - sometimes unnecessary if WebP loads fast enough)
       addPreloadLink(jobBoardHero, 'image/jpeg', 'Job Board Hero Original'),
       addPreloadLink(aboutUsHero, 'image/jpeg', 'About Us Hero Original'),
       addPreloadLink(contactHero, 'image/jpeg', 'Contact Hero Original'),
+      addPreloadLink(servicesHero, 'image/jpeg', 'Services Hero Original'),
+      addPreloadLink(hireTalentHero, 'image/jpeg', 'Hire Talent Hero Original'),
     ];
 
     // Cleanup function to remove links on unmount
