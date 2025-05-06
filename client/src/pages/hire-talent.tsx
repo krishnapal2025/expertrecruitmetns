@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { ArrowRight, ChevronDown, DollarSign, Shield, Users, Building2, UserPlus, Award, Target, Globe, CheckCircle2, Search, Briefcase } from "lucide-react";
 import { motion } from "framer-motion";
+import OptimizedHeroBackground from "@/components/hero/optimized-hero-background";
 import handshakeImage from "../assets/business-people-shaking-hands-meeting-room.jpg";
 
 export default function HireTalentPage() {
@@ -16,20 +17,13 @@ export default function HireTalentPage() {
 
       {/* Hero Section */}
       <div className="relative min-h-[90vh] overflow-hidden" id="hire-talent-hero-section">
-        {/* Background Image */}
-        <div className="absolute inset-0 bg-black/75 z-10"></div>
-        <div 
-          className="absolute inset-0 bg-center bg-cover" 
-          style={{ 
-            backgroundImage: `url(${handshakeImage})`,
-            backgroundPosition: 'center center',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            height: '100%',
-            width: '100%',
-            filter: 'brightness(0.85)'
-          }}
-        ></div>
+        {/* Optimized Background Image */}
+        <OptimizedHeroBackground 
+          imageSrc={handshakeImage}
+          alt="Business people in meeting"
+          brightness={0.85}
+          overlayOpacity={0.75}
+        />
         
         {/* Accent lines */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>

@@ -10,6 +10,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationNext, Paginati
 import { Search, Briefcase, ChevronDown, Loader2, Maximize2, Minimize2, Building2, MapPin, UserPlus, ArrowRight } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
+import OptimizedHeroBackground from "@/components/hero/optimized-hero-background";
 import jobBoardHeroImage from "../assets/job-board-hero.jpg";
 
 const JOBS_PER_PAGE = 4;
@@ -188,16 +189,13 @@ export default function JobBoardPage() {
 
       {/* Hero Section with Professional Background Image */}
       <div className="relative min-h-[90vh] overflow-hidden" id="job-board-hero-section">
-        {/* Background Image */}
-        <div className="absolute inset-0 bg-black/65 z-10"></div>
-        <div 
-          className="absolute inset-0 bg-center bg-cover" 
-          style={{ 
-            backgroundImage: `url(${jobBoardHeroImage})`,
-            backgroundPosition: 'center',
-            filter: 'brightness(0.85)'
-          }}
-        ></div>
+        {/* Optimized Background Image */}
+        <OptimizedHeroBackground 
+          imageSrc={jobBoardHeroImage}
+          alt="Office setting with job board"
+          brightness={0.85}
+          overlayOpacity={0.65}
+        />
         
         {/* Accent lines */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>

@@ -16,6 +16,7 @@ import {
   ChevronDown,
   MapPin
 } from "lucide-react";
+import OptimizedHeroBackground from "@/components/hero/optimized-hero-background";
 import ourApproachImage from "../assets/our-approach-image.webp";
 import aerialBusinessViewImage from "../assets/aerial-view-business-team.jpg";
 
