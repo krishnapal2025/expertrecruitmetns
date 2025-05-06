@@ -30,12 +30,13 @@ export default function AdminLoginPage() {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   
-  // Check URL parameters
+  // Check URL parameters for session isolation info
   const urlParams = new URLSearchParams(window.location.search);
   const sessionType = urlParams.get('sessionType');
-  const newTabParam = urlParams.get('newTab');
+  const newTabParam = urlParams.get('newTab'); // Keep for backward compatibility
   
   // Determine if this is an admin-specific session
+  // Priority: 1. sessionType param, 2. newTab param, 3. already stored session, 4. opened as new tab
   const isAdminSession = sessionType === 'admin' || 
                          newTabParam === 'true' || 
                          window.opener !== null || 
@@ -46,9 +47,10 @@ export default function AdminLoginPage() {
   useEffect(() => {
     if (isAdminSession) {
       // Store this information in sessionStorage for the duration of this tab's session
+      // This is crucial for maintaining separate admin sessions across tabs
       sessionStorage.setItem('adminLoginNewTab', 'true');
       
-      // Clean up the URL parameters
+      // Clean up the URL parameters while preserving history
       const url = new URL(window.location.href);
       if (url.searchParams.has('sessionType') || url.searchParams.has('newTab')) {
         url.searchParams.delete('sessionType');
@@ -112,9 +114,12 @@ export default function AdminLoginPage() {
       });
       
       // Always navigate to admin dashboard after successful login
-      const adminPath = '/admin';
+      // Add sessionType parameter to maintain session isolation across page reloads
+      const adminPath = sessionStorage.getItem('adminLoginNewTab') === 'true' 
+        ? '/admin?sessionType=admin' 
+        : '/admin';
       
-      // For new tabs, open admin in current tab to maintain isolation
+      // For isolation tabs, use direct location change to preserve session
       if (sessionStorage.getItem('adminLoginNewTab') === 'true') {
         // Replace current URL without affecting history
         window.location.href = adminPath;
