@@ -20,7 +20,7 @@ import OptimizedHeroBackground from "@/components/hero/optimized-hero-background
 import ourApproachImage from "../assets/our-approach-image.webp";
 import aerialBusinessViewImage from "../assets/aerial-view-business-team.jpg";
 import aerialBusinessViewSmallImage from "../assets/optimized/aerial-view-business-team-sm.webp";
-import aerialBusinessViewMediumImage from "../assets/optimized/aerial-view-business-team-md.jpg";
+import aerialBusinessViewMediumImage from "../assets/optimized/aerial-view-business-team-md.webp";
 
 export default function AboutUsPage() {
   // Animation variants
