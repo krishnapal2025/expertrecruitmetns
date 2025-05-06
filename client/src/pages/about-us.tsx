@@ -71,20 +71,13 @@ export default function AboutUsPage() {
 
       {/* Hero Section with Premium Executive Design */}
       <div className="relative min-h-[90vh] overflow-hidden" id="about-hero-section">
-        {/* Background Image */}
-        <div className="absolute inset-0 bg-black/65 z-10"></div>
-        <div 
-          className="absolute inset-0 bg-center bg-cover" 
-          style={{ 
-            backgroundImage: `url(${aerialBusinessViewImage})`,
-            backgroundPosition: 'center center',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            height: '100%',
-            width: '100%',
-            filter: 'brightness(0.85)'
-          }}
-        ></div>
+        {/* Optimized Background Image */}
+        <OptimizedHeroBackground 
+          imageSrc={aerialBusinessViewImage}
+          alt="Aerial view of business team"
+          brightness={0.85}
+          overlayOpacity={0.65}
+        />
         
         {/* Accent lines */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>
