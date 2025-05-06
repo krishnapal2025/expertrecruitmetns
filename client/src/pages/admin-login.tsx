@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -30,16 +30,30 @@ export default function AdminLoginPage() {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   
-  // Check if this page was opened with target="_blank" from another tab
-  // If so, we don't want to redirect even if the user is logged in elsewhere
-  const isOpenedInNewTab = window.opener !== null || 
+  // Check if this page was opened in a new tab (with newTab query parameter)
+  const urlParams = new URLSearchParams(window.location.search);
+  const newTabParam = urlParams.get('newTab');
+  
+  // Check if this is a new tab session via URL parameter or other indicators
+  const isOpenedInNewTab = newTabParam === 'true' || 
+                          window.opener !== null || 
                           document.referrer.includes('/admin-login') || 
                           sessionStorage.getItem('adminLoginNewTab') === 'true';
   
-  // Mark this as a new tab admin login session
-  if (!sessionStorage.getItem('adminLoginNewTab') && (window.opener !== null || document.referrer.includes('/admin-login'))) {
-    sessionStorage.setItem('adminLoginNewTab', 'true');
-  }
+  // Mark this as a new tab admin login session and remove the query parameter
+  useEffect(() => {
+    if (isOpenedInNewTab) {
+      // Store this information in sessionStorage for the duration of this tab's session
+      sessionStorage.setItem('adminLoginNewTab', 'true');
+      
+      // Clean up the URL if it has the newTab parameter
+      if (newTabParam === 'true') {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('newTab');
+        window.history.replaceState({}, document.title, url.toString());
+      }
+    }
+  }, [isOpenedInNewTab, newTabParam]);
   
   // Only redirect if not opened as a separate session
   if (user && !isOpenedInNewTab) {

@@ -195,25 +195,10 @@ export default function Footer() {
                 </li>
                 <li>
                   <a 
-                    href="/admin-login" 
+                    href="/admin-login?newTab=true" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="text-sm text-gray-400 hover:text-white transition-colors flex items-center"
-                    onClick={() => {
-                      // Set session storage flag when opening admin login in new tab
-                      const newTab = window.open('/admin-login', '_blank');
-                      if (newTab) {
-                        // Attempt to set flag in the new tab
-                        try {
-                          newTab.sessionStorage.setItem('adminLoginNewTab', 'true');
-                        } catch (e) {
-                          console.warn('Could not access sessionStorage in new tab');
-                          // This will usually fail due to cross-origin restrictions,
-                          // but the adminLoginPage will handle it internally
-                        }
-                      }
-                      return false; // Prevent default navigation since we're handling it
-                    }}
                   >
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
                     Admin
