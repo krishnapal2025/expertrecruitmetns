@@ -177,7 +177,7 @@ const experienceLevels = [
 ];
 
 export default function PostJobPage() {
-  const { currentUser } = useAuth();
+  const { currentUser, refetchUser } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isPreview, setIsPreview] = useState(false);
@@ -295,8 +295,34 @@ export default function PostJobPage() {
   });
   
   // Handle form submission
-  const onSubmit = (data: JobPostFormValues) => {
+  const onSubmit = async (data: JobPostFormValues) => {
     // Check if the user is authenticated
+    if (!currentUser) {
+      // Try to refresh the session before giving up
+      try {
+        console.log("Attempting to refresh user session before job submission");
+        const refreshedUser = await refetchUser();
+        if (!refreshedUser) {
+          toast({
+            title: "Authentication Required",
+            description: "You must be logged in to post a job.",
+            variant: "destructive",
+          });
+          return;
+        }
+        console.log("Successfully refreshed user session:", refreshedUser);
+      } catch (error) {
+        console.error("Failed to refresh user session:", error);
+        toast({
+          title: "Authentication Required",
+          description: "You must be logged in to post a job. Please refresh the page and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    // Re-check authentication after potential refresh
     if (!currentUser) {
       toast({
         title: "Authentication Required",
