@@ -2574,7 +2574,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Direct database insert using SQL - Using literal values instead of parameters
         const result = await db.execute(`
           INSERT INTO staffing_inquiries
-            (name, email, phone, company, inquirytype, message, marketing, status, submittedat)
+            (name, email, phone, company, inquiry_type, message, marketing, status, submittedat)
           VALUES
             ('${req.body.name}',
              '${req.body.email}',
