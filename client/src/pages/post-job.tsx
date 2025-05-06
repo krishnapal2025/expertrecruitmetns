@@ -271,6 +271,27 @@ export default function PostJobPage() {
   
   // Handle form submission
   const onSubmit = (data: JobPostFormValues) => {
+    // Check if the user is authenticated
+    if (!currentUser) {
+      toast({
+        title: "Authentication Required",
+        description: "You must be logged in to post a job.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if admin has selected an employer
+    if (currentUser.user.userType === "admin" && !selectedEmployerId) {
+      toast({
+        title: "Employer Selection Required",
+        description: "As an admin, you must select an employer when posting a job.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    console.log("Submitting job with user:", currentUser);
     createJobMutation.mutate(data);
   };
   

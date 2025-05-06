@@ -713,7 +713,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new job (requires employer or admin authentication)
   app.post("/api/jobs", async (req, res) => {
     try {
+      console.log("POST /api/jobs - Request payload:", req.body);
+      console.log("POST /api/jobs - Authentication status:", req.isAuthenticated());
+      console.log("POST /api/jobs - User:", req.user);
+      
       if (!req.isAuthenticated()) {
+        console.log("POST /api/jobs - Authentication failed");
         return res.status(401).json({ message: "You must be logged in to post a job" });
       }
 
