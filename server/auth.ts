@@ -359,20 +359,20 @@ export function setupAuth(app: Express) {
       return res.status(404).json({ message: "Admin profile not found" });
     }
     
-    // Return admin data with profile information
+    // Return admin data with profile information optimized for type safety
     res.json({
       user: {
         id: user.id,
         email: user.email,
-        username: user.username,
+        username: user.email, // Use email as username for type safety
         userType: user.userType
       },
       profile: {
         id: adminProfile.id,
-        firstName: adminProfile.firstName,
-        lastName: adminProfile.lastName,
+        firstName: adminProfile.firstName || "",
+        lastName: adminProfile.lastName || "",
         role: adminProfile.role,
-        lastLogin: adminProfile.lastLogin
+        lastLogin: adminProfile.lastLogin || new Date()
       }
     });
   });

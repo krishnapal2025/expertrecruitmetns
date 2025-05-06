@@ -195,7 +195,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <a 
-                    href="/admin-login?newTab=true" 
+                    href="/admin-login?sessionType=admin" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="text-sm text-gray-400 hover:text-white transition-colors flex items-center"
