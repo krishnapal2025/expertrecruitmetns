@@ -31,8 +31,8 @@ export const OptimizedHeroBackground: React.FC<OptimizedHeroBackgroundProps> = (
   const containerRef = useRef<HTMLDivElement>(null);
   
   // Generate a dominant color placeholder based on the image
-  // Using a light neutral gray as a default
-  const dominantColor = '#f5f5f5';
+  // Using pure white as a default
+  const dominantColor = '#ffffff';
   
   // Create a more sophisticated placeholder with color
   const colorPlaceholder = `data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='${dominantColor.replace('#', '%23')}'/%3E%3C/svg%3E`;
@@ -190,7 +190,7 @@ export const OptimizedHeroBackground: React.FC<OptimizedHeroBackgroundProps> = (
           backgroundColor: dominantColor,
           backgroundPosition: 'center center',
           backgroundSize: 'cover',
-          filter: 'blur(8px)',
+          filter: 'blur(0px)',
         }}
       ></div>
     </div>
