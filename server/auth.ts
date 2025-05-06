@@ -329,10 +329,51 @@ export function setupAuth(app: Express) {
     } else if (user.userType === "employer") {
       profile = await storage.getEmployerByUserId(user.id);
     } else if (user.userType === "admin") {
-      // For admin users, we don't need to fetch additional profile data
-      profile = { id: user.id, role: "admin" };
+      profile = await storage.getAdminByUserId(user.id);
+      // If admin profile not found, use minimal profile
+      if (!profile) {
+        profile = { id: user.id, role: "admin" };
+      }
     }
     
     res.json({ user, profile });
+  });
+
+  // Dedicated admin user route for separate admin sessions
+  app.get("/api/admin/user", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    const user = req.user;
+    
+    // Only allow admin users to access this endpoint
+    if (user.userType !== "admin") {
+      return res.status(403).json({ 
+        message: "Access denied. This endpoint is for administrators only." 
+      });
+    }
+    
+    // Get admin profile with full details
+    const adminProfile = await storage.getAdminByUserId(user.id);
+    
+    if (!adminProfile) {
+      return res.status(404).json({ message: "Admin profile not found" });
+    }
+    
+    // Return admin data with profile information
+    res.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        userType: user.userType
+      },
+      profile: {
+        id: adminProfile.id,
+        firstName: adminProfile.firstName,
+        lastName: adminProfile.lastName,
+        role: adminProfile.role,
+        lastLogin: adminProfile.lastLogin
+      }
+    });
   });
 }
