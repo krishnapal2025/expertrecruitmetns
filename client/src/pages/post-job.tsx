@@ -227,14 +227,24 @@ export default function PostJobPage() {
       // For admin users, use the selected employer ID
       const payload = {
         ...data,
+        // Convert applicationDeadline to string if it's a Date object
+        applicationDeadline: typeof data.applicationDeadline === 'object' 
+          ? (data.applicationDeadline as Date).toISOString().split('T')[0]
+          : data.applicationDeadline,
         // If admin with selected employer, use selectedEmployerId
-        // Otherwise use the current user's profile ID
+        // Otherwise use the current user's profile ID (which is handled server-side)
         ...(currentUser?.user.userType === "admin" && selectedEmployerId 
           ? { selectedEmployerId } 
-          : { employerId: currentUser?.profile.id })
+          : {})
       };
       
+      console.log("Submitting job with payload:", payload);
+      
       const res = await apiRequest("POST", "/api/jobs", payload);
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to create job");
+      }
       return await res.json();
     },
     onSuccess: (data) => {
