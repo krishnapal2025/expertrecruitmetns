@@ -6,6 +6,8 @@ import { ArrowRight, ChevronDown, DollarSign, Shield, Users, Building2, UserPlus
 import { motion } from "framer-motion";
 import OptimizedHeroBackground from "@/components/hero/optimized-hero-background";
 import handshakeImage from "../assets/business-people-shaking-hands-meeting-room.jpg";
+import handshakeImageSmall from "../assets/optimized/business-people-shaking-hands-meeting-room-sm.webp";
+import handshakeImageMedium from "../assets/optimized/business-people-shaking-hands-meeting-room-md.webp";
 
 export default function HireTalentPage() {
   return (
@@ -20,9 +22,12 @@ export default function HireTalentPage() {
         {/* Optimized Background Image */}
         <OptimizedHeroBackground 
           imageSrc={handshakeImage}
+          smallImageSrc={handshakeImageSmall}
+          mediumImageSrc={handshakeImageMedium}
           alt="Business people in meeting"
           brightness={0.85}
           overlayOpacity={0.75}
+          priority={true}
         />
         
         {/* Accent lines */}

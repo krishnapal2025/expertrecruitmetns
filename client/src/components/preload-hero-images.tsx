@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import aboutUsHero from "../assets/aerial-view-business-team.jpg";
 import jobBoardHero from "../assets/job-board-hero.jpg";
 import contactHero from "../assets/images/contact-hero-bg.jpg";
-import hireTalentHero from "../assets/city-financial-district-glows-blue-twilight-generated-by-ai.jpg";
-import servicesHero from "../assets/business-people-shaking-hands-meeting-room.jpg";
+import hireTalentHero from "../assets/business-people-shaking-hands-meeting-room.jpg";
+import servicesHero from "../assets/modern-equipped-computer-lab.jpg";
 
 // Import optimized WebP versions for faster initial loading
 import aboutUsHeroSmall from "../assets/optimized/aerial-view-business-team-sm.webp";
