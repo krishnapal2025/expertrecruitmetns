@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useScrollToTop } from "@/hooks/use-scroll-top";
 import { ScrollLink } from "@/components/ui/scroll-link";
+import { RoleScrollLink } from "@/components/ui/role-scroll-link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -208,6 +209,36 @@ export default function Navbar() {
                     </div>
                   </div>
                 </div>
+              ) : link.name === "Hire Talent" ? (
+                <RoleScrollLink 
+                  key={link.name}
+                  href={link.href}
+                  requiredUserType="employer"
+                  redirectPath="/employer-register"
+                  className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}
+                >
+                  {link.name}
+                </RoleScrollLink>
+              ) : link.name === "Find Jobs" ? (
+                <RoleScrollLink 
+                  key={link.name}
+                  href={link.href}
+                  requiredUserType="jobseeker"
+                  redirectPath="/job-seeker-register"
+                  className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}
+                >
+                  {link.name}
+                </RoleScrollLink>
+              ) : link.name === "Vacancy Form" ? (
+                <RoleScrollLink 
+                  key={link.name}
+                  href={link.href}
+                  requiredUserType="employer"
+                  redirectPath="/employer-register"
+                  className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}
+                >
+                  {link.name}
+                </RoleScrollLink>
               ) : (
                 <ScrollLink key={link.name} href={link.href} className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}>
                   {link.name}
@@ -304,18 +335,18 @@ export default function Navbar() {
                   <DropdownMenuContent align="end" className="w-56 p-2 border-2 border-[#5372f1] bg-white shadow-lg rounded-md">
                     <DropdownMenuLabel className="text-lg font-bold text-center text-[#5372f1]">Register as:</DropdownMenuLabel>
                     <DropdownMenuSeparator className="my-1" />
-                    <ScrollLink href="/employer-register" className="w-full">
+                    <RoleScrollLink href="/employer-register" requiredUserType="employer" className="w-full">
                       <DropdownMenuItem className="flex items-center py-3 px-4 rounded-md hover:bg-[#5372f1] hover:text-white cursor-pointer">
                         <Briefcase className="mr-2 h-5 w-5" />
                         <span className="text-base font-medium">Employer</span>
                       </DropdownMenuItem>
-                    </ScrollLink>
-                    <ScrollLink href="/job-seeker-register" className="w-full">
+                    </RoleScrollLink>
+                    <RoleScrollLink href="/job-seeker-register" requiredUserType="jobseeker" className="w-full">
                       <DropdownMenuItem className="flex items-center py-3 px-4 rounded-md hover:bg-[#5372f1] hover:text-white cursor-pointer">
                         <User className="mr-2 h-5 w-5" />
                         <span className="text-base font-medium">Job Seeker</span>
                       </DropdownMenuItem>
-                    </ScrollLink>
+                    </RoleScrollLink>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </>
