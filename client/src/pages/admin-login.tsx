@@ -30,8 +30,19 @@ export default function AdminLoginPage() {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   
-  // If already logged in, redirect to appropriate page
-  if (user) {
+  // Check if this page was opened with target="_blank" from another tab
+  // If so, we don't want to redirect even if the user is logged in elsewhere
+  const isOpenedInNewTab = window.opener !== null || 
+                          document.referrer.includes('/admin-login') || 
+                          sessionStorage.getItem('adminLoginNewTab') === 'true';
+  
+  // Mark this as a new tab admin login session
+  if (!sessionStorage.getItem('adminLoginNewTab') && (window.opener !== null || document.referrer.includes('/admin-login'))) {
+    sessionStorage.setItem('adminLoginNewTab', 'true');
+  }
+  
+  // Only redirect if not opened as a separate session
+  if (user && !isOpenedInNewTab) {
     if (user.userType === "admin") {
       setLocation("/admin");
     } else {
@@ -57,7 +68,9 @@ export default function AdminLoginPage() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        // Use credentials: 'include' to ensure cookies are sent
+        credentials: 'include'
       });
       
       const responseData = await response.json();
@@ -66,15 +79,32 @@ export default function AdminLoginPage() {
         throw new Error(responseData.message || 'Login failed');
       }
       
-      // Update the user data in React Query cache
-      queryClient.setQueryData(["/api/user"], responseData);
+      // When opened in a new tab, we want to isolate the admin session
+      // so we don't update the global React Query cache
+      if (sessionStorage.getItem('adminLoginNewTab') === 'true') {
+        // Store admin auth data in this tab's session only
+        sessionStorage.setItem('adminSession', JSON.stringify(responseData));
+      } else {
+        // Update the global user data in React Query cache
+        queryClient.setQueryData(["/api/user"], responseData);
+      }
       
       toast({
         title: "Login Successful",
         description: "Welcome to your admin dashboard.",
       });
       
-      setLocation("/admin");
+      // Always navigate to admin dashboard after successful login
+      const adminPath = '/admin';
+      
+      // For new tabs, open admin in current tab to maintain isolation
+      if (sessionStorage.getItem('adminLoginNewTab') === 'true') {
+        // Replace current URL without affecting history
+        window.location.href = adminPath;
+      } else {
+        // Normal navigation for regular flow
+        setLocation(adminPath);
+      }
     } catch (error) {
       toast({
         title: "Login Failed",
