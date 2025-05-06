@@ -3,6 +3,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // User table - common fields for both types of users
+
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
@@ -137,7 +138,7 @@ export const staffingInquiries = pgTable("staffing_inquiries", {
   email: text("email").notNull(), 
   phone: text("phone"),
   company: text("company"),
-  inquiryType: text("staffing_inquiries").notNull(),
+  inquiry_type: text("inquiry_type").notNull()
   message: text("message").notNull(),
   marketing: boolean("marketing").default(false),
   status: text("status").default("new"), // 'new', 'reviewed', 'contacted', 'closed'
