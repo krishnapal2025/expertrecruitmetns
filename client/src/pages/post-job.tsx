@@ -398,15 +398,104 @@ const commonSkills = {
   ]
 };
 
-// Common salary ranges (in USD)
-const salaryRanges = [
-  { label: "Entry Level", min: 30000, max: 50000 },
-  { label: "Junior", min: 50000, max: 80000 },
-  { label: "Mid-Level", min: 80000, max: 120000 },
-  { label: "Senior", min: 120000, max: 180000 },
-  { label: "Expert/Leadership", min: 180000, max: 250000 },
-  { label: "Executive", min: 250000, max: 500000 },
-];
+// Function to get location-specific salary ranges
+const getSalaryRangesByLocation = (location: string) => {
+  // Default ranges in USD
+  if (!location || location.includes("USA") || location.includes("United States")) {
+    return [
+      { label: "Entry Level", min: 30000, max: 50000 },
+      { label: "Junior", min: 50000, max: 80000 },
+      { label: "Mid-Level", min: 80000, max: 120000 },
+      { label: "Senior", min: 120000, max: 180000 },
+      { label: "Expert/Leadership", min: 180000, max: 250000 },
+      { label: "Executive", min: 250000, max: 500000 },
+    ];
+  }
+  
+  // Indian Rupee (INR) - converted to appropriate scales
+  else if (location.includes("India")) {
+    return [
+      { label: "Entry Level", min: 300000, max: 600000 },
+      { label: "Junior", min: 600000, max: 1200000 },
+      { label: "Mid-Level", min: 1200000, max: 2400000 },
+      { label: "Senior", min: 2400000, max: 4800000 },
+      { label: "Expert/Leadership", min: 4800000, max: 8000000 },
+      { label: "Executive", min: 8000000, max: 20000000 },
+    ];
+  }
+  
+  // UAE Dirham (AED)
+  else if (location.includes("UAE")) {
+    return [
+      { label: "Entry Level", min: 60000, max: 120000 },
+      { label: "Junior", min: 120000, max: 180000 },
+      { label: "Mid-Level", min: 180000, max: 300000 },
+      { label: "Senior", min: 300000, max: 480000 },
+      { label: "Expert/Leadership", min: 480000, max: 700000 },
+      { label: "Executive", min: 700000, max: 1500000 },
+    ];
+  }
+  
+  // British Pound (GBP)
+  else if (location.includes("UK")) {
+    return [
+      { label: "Entry Level", min: 25000, max: 35000 },
+      { label: "Junior", min: 35000, max: 50000 },
+      { label: "Mid-Level", min: 50000, max: 70000 },
+      { label: "Senior", min: 70000, max: 100000 },
+      { label: "Expert/Leadership", min: 100000, max: 150000 },
+      { label: "Executive", min: 150000, max: 350000 },
+    ];
+  }
+  
+  // Euro (EUR)
+  else if (location.includes("Europe") || location.includes("France") || location.includes("Germany")) {
+    return [
+      { label: "Entry Level", min: 30000, max: 45000 },
+      { label: "Junior", min: 45000, max: 60000 },
+      { label: "Mid-Level", min: 60000, max: 85000 },
+      { label: "Senior", min: 85000, max: 120000 },
+      { label: "Expert/Leadership", min: 120000, max: 180000 },
+      { label: "Executive", min: 180000, max: 350000 },
+    ];
+  }
+  
+  // Canadian Dollar (CAD)
+  else if (location.includes("Canada")) {
+    return [
+      { label: "Entry Level", min: 40000, max: 60000 },
+      { label: "Junior", min: 60000, max: 85000 },
+      { label: "Mid-Level", min: 85000, max: 120000 },
+      { label: "Senior", min: 120000, max: 160000 },
+      { label: "Expert/Leadership", min: 160000, max: 220000 },
+      { label: "Executive", min: 220000, max: 450000 },
+    ];
+  }
+  
+  // Australian Dollar (AUD)
+  else if (location.includes("Australia")) {
+    return [
+      { label: "Entry Level", min: 50000, max: 70000 },
+      { label: "Junior", min: 70000, max: 90000 },
+      { label: "Mid-Level", min: 90000, max: 120000 },
+      { label: "Senior", min: 120000, max: 160000 },
+      { label: "Expert/Leadership", min: 160000, max: 220000 },
+      { label: "Executive", min: 220000, max: 450000 },
+    ];
+  }
+  
+  // Default to USD for all other locations
+  else {
+    return [
+      { label: "Entry Level", min: 30000, max: 50000 },
+      { label: "Junior", min: 50000, max: 80000 },
+      { label: "Mid-Level", min: 80000, max: 120000 },
+      { label: "Senior", min: 120000, max: 180000 },
+      { label: "Expert/Leadership", min: 180000, max: 250000 },
+      { label: "Executive", min: 250000, max: 500000 },
+    ];
+  }
+};
 
 export default function PostJobPage() {
   const { currentUser, refetchUser } = useAuth();
@@ -1103,9 +1192,11 @@ export default function PostJobPage() {
                       
                       {/* Salary Range Presets */}
                       <div className="bg-slate-50 p-3 rounded-md border">
-                        <div className="text-sm font-medium mb-2">Salary Range Presets</div>
+                        <div className="text-sm font-medium mb-2">
+                          Salary Range Presets {formValues.location && `(${formValues.location})`}
+                        </div>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                          {salaryRanges.map((range, index) => (
+                          {getSalaryRangesByLocation(formValues.location || '').map((range, index) => (
                             <Button 
                               key={index}
                               type="button"
@@ -1114,12 +1205,12 @@ export default function PostJobPage() {
                               className="text-xs justify-start"
                               onClick={() => handleSalaryRangeSelect(range)}
                             >
-                              {range.label}: ${range.min.toLocaleString()} - ${range.max.toLocaleString()}
+                              {range.label}: {getCurrencySymbol(formValues.location || '')}{range.min.toLocaleString()} - {getCurrencySymbol(formValues.location || '')}{range.max.toLocaleString()}
                             </Button>
                           ))}
                         </div>
                         <p className="text-xs text-muted-foreground mt-2">
-                          Click on a preset to automatically fill the salary range
+                          Click on a preset to automatically fill the salary range based on {formValues.location ? formValues.location : "default"} salary standards
                         </p>
                       </div>
                     </CardContent>
