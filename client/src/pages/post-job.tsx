@@ -588,16 +588,9 @@ export default function PostJobPage() {
   };
   
   // Handle salary range selection
-  const handleSalaryRangeSelect = (range: {min: number, max: number, period?: string}) => {
-    // Ensure we're setting numeric values and handle any potential null cases
-    const minSalary = range.min || 0;
-    const maxSalary = range.max || 0;
-    
-    console.log(`Setting salary range: ${minSalary} - ${maxSalary}`);
-    
-    // Set the values in the form
-    form.setValue('minSalary', minSalary);
-    form.setValue('maxSalary', maxSalary);
+  const handleSalaryRangeSelect = (range: {min: number, max: number}) => {
+    form.setValue('minSalary', range.min);
+    form.setValue('maxSalary', range.max);
   };
   
   // Handle skill selection and update requirements field
@@ -661,28 +654,31 @@ export default function PostJobPage() {
         const user = await userCheckRes.json();
         console.log("Authentication confirmed before request");
         
+        // For admin users posting on behalf of a company, update the company name
+        if (user.user.userType === "admin" && companyName) {
+          // Update the company name from our input field
+          data.company = companyName;
+        }
+        
         // Create a clean job payload with explicit string/number handling and null safety
         // This ensures consistent data types are sent to the server and matches our schema validation
         const payload = {
           // Required fields with trimming
           title: data.title?.trim() || "",
-          company: user.user.userType === "admin" && companyName ? 
-            companyName.trim() : data.company?.trim() || "",
+          company: data.company?.trim() || "",
           location: data.location?.trim() || "",
           category: data.category?.trim() || "",
           jobType: data.jobType?.trim() || "",
           description: data.description?.trim() || "",
-          
-          // Additional fields - use empty strings to avoid null constraint errors
           requirements: data.requirements?.trim() || "",
           benefits: data.benefits?.trim() || "",
           experience: data.experience?.trim() || "",
           
-          // Numeric fields - ensure they are actual numbers and positive
-          minSalary: Math.max(0, isNaN(Number(data.minSalary)) ? 0 : Number(data.minSalary)),
-          maxSalary: Math.max(0, isNaN(Number(data.maxSalary)) ? 0 : Number(data.maxSalary)),
+          // Numeric fields with proper conversion and fallbacks
+          minSalary: isNaN(Number(data.minSalary)) ? 0 : Number(data.minSalary),
+          maxSalary: isNaN(Number(data.maxSalary)) ? 0 : Number(data.maxSalary),
           
-          // Email with validation 
+          // Email with validation
           contactEmail: data.contactEmail?.trim() || "",
           
           // Date field handling - ensure proper format
@@ -690,26 +686,14 @@ export default function PostJobPage() {
             ? (data.applicationDeadline as Date).toISOString().split('T')[0]
             : (data.applicationDeadline?.trim() || new Date().toISOString().split('T')[0]),
           
-          // Optional fields with null safety - we won't allow null values for now to prevent errors
-          specialization: data.specialization?.trim() || "",
+          // Optional fields with null safety
+          specialization: data.specialization?.trim() || null,
           
           // If we're admin posting on behalf of company, we don't need employerId
           employerId: currentUser?.user.userType === "employer" ? currentUser?.user.id : null
         };
         
         console.log("Submitting job with clean payload:", payload);
-        
-        // Double-check the main required fields to avoid server errors
-        const requiredFields = [
-          'title', 'company', 'location', 'category', 'jobType', 'description', 
-          'minSalary', 'maxSalary', 'contactEmail', 'applicationDeadline'
-        ];
-        
-        for (const field of requiredFields) {
-          if (!payload[field as keyof typeof payload]) {
-            throw new Error(`${field} is required but appears to be missing or empty`);
-          }
-        }
         
         const res = await apiRequest("POST", "/api/jobs", payload);
         if (!res.ok) {
@@ -725,16 +709,15 @@ export default function PostJobPage() {
     onSuccess: (data) => {
       toast({
         title: "Job Posted Successfully",
-        description: "Your job has been posted and is now visible in the Post Manager and Jobs Found sections.",
+        description: "Your job has been posted and is now visible in the Jobs Found section.",
       });
       
       // Invalidate all queries related to jobs to ensure immediate visibility
       queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/employer/jobs"] });
       queryClient.invalidateQueries({ queryKey: ["/api/realtime/jobs"] });
       
-      // Redirect to post manager instead of job board so admin can see and manage the new job
-      setLocation("/post-manager");
+      // Immediately redirect to job board to see the newly posted job
+      setLocation("/job-board");
     },
     onError: (error: Error) => {
       toast({
@@ -792,84 +775,9 @@ export default function PostJobPage() {
       });
       return;
     }
-    
-    // Perform client-side validation for required fields
-    const requiredFields = [
-      { field: 'title', label: 'Job Title' },
-      { field: 'company', label: 'Company Name' },
-      { field: 'location', label: 'Location' },
-      { field: 'category', label: 'Category' },
-      { field: 'jobType', label: 'Job Type' },
-      { field: 'description', label: 'Description' }
-    ];
-    
-    const missingFields = requiredFields.filter(
-      ({ field }) => !data[field as keyof JobPostFormValues]
-    );
-    
-    if (missingFields.length > 0) {
-      toast({
-        title: "Missing Required Fields",
-        description: `Please fill in the following required fields: ${missingFields.map(f => f.label).join(', ')}`,
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // Check numeric fields
-    if (isNaN(Number(data.minSalary)) || Number(data.minSalary) <= 0) {
-      toast({
-        title: "Invalid Minimum Salary",
-        description: "Please enter a valid minimum salary amount.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (isNaN(Number(data.maxSalary)) || Number(data.maxSalary) <= 0) {
-      toast({
-        title: "Invalid Maximum Salary",
-        description: "Please enter a valid maximum salary amount.",
-        variant: "destructive",
-      });
-      return;
-    }
 
-    console.log("Form submission data:", data);
     console.log("Submitting job with user:", currentUser);
-    
-    // Log exactly what we're sending to the server for debugging
-    const cleanData = {
-      // Required string fields with fallbacks
-      title: data.title?.trim() || "Untitled Job Post",
-      company: currentUser.user.userType === "admin" ? 
-        companyName.trim() : data.company?.trim() || "Company Name Required",
-      location: data.location?.trim() || "Location Not Specified",
-      category: data.category?.trim() || "General",
-      jobType: data.jobType?.trim() || "Full-time",
-      description: data.description?.trim() || "Description Not Provided",
-      requirements: data.requirements?.trim() || "Requirements Not Specified",
-      benefits: data.benefits?.trim() || "Benefits Not Specified",
-      contactEmail: data.contactEmail?.trim() || currentUser?.user.email || "contact@example.com",
-      experience: data.experience?.trim() || "Experience Not Specified",
-      
-      // Numeric fields with validation
-      minSalary: isNaN(Number(data.minSalary)) ? 0 : Number(data.minSalary),
-      maxSalary: isNaN(Number(data.maxSalary)) ? 0 : Number(data.maxSalary),
-      
-      // Date handling - ensure we have a valid date string
-      applicationDeadline: data.applicationDeadline || new Date().toISOString().split('T')[0],
-      
-      // Optional fields
-      specialization: data.specialization?.trim() || null,
-      
-      // Reference fields
-      employerId: currentUser?.user.userType === "employer" ? currentUser?.user.id : null
-    };
-    
-    console.log("Clean data to be sent to server:", cleanData);
-    // Use the cleanData instead of the raw form data for submission
-    createJobMutation.mutate(cleanData as JobPostFormValues);
+    createJobMutation.mutate(data);
   };
   
   // Get currency symbol based on selected location

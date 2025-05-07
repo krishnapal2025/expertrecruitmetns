@@ -788,33 +788,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Parsing and transforming job data with schema...");
       let validatedJobData;
       try {
-        // Pre-process the data to ensure all required fields have values
-        const processedData = {
-          ...req.body,
-          // Ensure all required string fields have values
-          title: req.body.title || "Untitled Position",
-          company: req.body.company || "Unknown Company",
-          description: req.body.description || "No description provided",
-          requirements: req.body.requirements || "No specific requirements",
-          benefits: req.body.benefits || "Contact for details",
-          category: req.body.category || "General",
-          location: req.body.location || "Remote",
-          jobType: req.body.jobType || "Full-time",
-          experience: req.body.experience || "Not specified",
-          contactEmail: req.body.contactEmail || "contact@expertrecruitments.com",
-          
-          // Ensure numeric fields are valid numbers
-          minSalary: isNaN(Number(req.body.minSalary)) ? 0 : Number(req.body.minSalary),
-          maxSalary: isNaN(Number(req.body.maxSalary)) ? 0 : Number(req.body.maxSalary),
-          
-          // Ensure date fields are valid dates
-          applicationDeadline: req.body.applicationDeadline ? new Date(req.body.applicationDeadline) : new Date()
-        };
-        
-        console.log("Pre-processed data:", JSON.stringify(processedData, null, 2));
-        
         // Parse through our schema which handles all transformations and validations
-        validatedJobData = insertJobSchema.parse(processedData);
+        validatedJobData = insertJobSchema.parse(req.body);
         console.log("Validation and transformation successful!");
       } catch (validationError) {
         console.error("Schema parsing failed:", validationError);
@@ -2663,26 +2638,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Received staffing inquiry request:", req.body);
 
+      // Skip validation for testing - just use direct SQL
       try {
-        // Using parameterized query to avoid SQL injection risks
-        const result = await db.execute({
-          text: `
-            INSERT INTO staffing_inquiries
-              (name, email, phone, company, inquiry_type, message, marketing, status, submittedat)
-            VALUES
-              ($1, $2, $3, $4, $5, $6, $7, 'new', NOW())
-            RETURNING *
-          `,
-          values: [
-            req.body.name,
-            req.body.email, 
-            req.body.phone || null,
-            req.body.company || null,
-            req.body.inquiry_type, // Using the correct field name
-            req.body.message,
-            req.body.marketing || false
-          ]
-        });
+        // Direct database insert using SQL - Using literal values instead of parameters
+        const result = await db.execute(`
+          INSERT INTO staffing_inquiries
+            (name, email, phone, company, inquiry_type, message, marketing, status, submittedat)
+          VALUES
+            ('${req.body.name}',
+             '${req.body.email}',
+             ${req.body.phone ? `'${req.body.phone}'` : 'NULL'},
+             ${req.body.company ? `'${req.body.company}'` : 'NULL'},
+             '${req.body.inquiryType}',
+             '${req.body.message}',
+             ${req.body.marketing ? 'TRUE' : 'FALSE'},
+             'new',
+             NOW())
+          RETURNING *
+        `);
 
         console.log("Direct SQL insert result:", result);
 
@@ -2697,12 +2670,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Customize notification message based on inquiry type
             let notificationMessage = "";
 
-            if (req.body.inquiry_type === "business") {
+            if (req.body.inquiryType === "business") {
               notificationMessage = `New business inquiry from ${req.body.name} - Employer inquiry`;
-            } else if (req.body.inquiry_type === "general") {
+            } else if (req.body.inquiryType === "general") {
               notificationMessage = `New general inquiry from ${req.body.name} - Job seeker inquiry`;
             } else {
-              notificationMessage = `New ${req.body.inquiry_type} inquiry from ${req.body.name}`;
+              notificationMessage = `New ${req.body.inquiryType} inquiry from ${req.body.name}`;
             }
 
             return storage.createNotification({
@@ -2821,7 +2794,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Create notification with complete required fields
           const notificationData = {
             userId: inquiryUser.id,
-            message: `We've replied to your ${inquiry.inquiry_type === "business" ? "business" : "general"} inquiry. Check your email.`,
+            message: `We've replied to your ${inquiry.inquiryType === "business" ? "business" : "general"} inquiry. Check your email.`,
             // Always include the type for proper routing
             type: "inquiry_reply",
             entityId: parseInt(id),

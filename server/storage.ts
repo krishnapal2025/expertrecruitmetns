@@ -351,11 +351,9 @@ export class DatabaseStorage implements IStorage {
         minSalary: isNaN(Number(insertJob.minSalary)) ? 0 : Number(insertJob.minSalary),
         maxSalary: isNaN(Number(insertJob.maxSalary)) ? 0 : Number(insertJob.maxSalary),
         
-        // Date handling - properly convert string dates to Date objects
-        applicationDeadline: insertJob.applicationDeadline 
-          ? (insertJob.applicationDeadline instanceof Date 
-              ? insertJob.applicationDeadline 
-              : new Date(insertJob.applicationDeadline))
+        // Date handling
+        applicationDeadline: insertJob.applicationDeadline instanceof Date 
+          ? insertJob.applicationDeadline 
           : new Date(),
                     
         // Boolean fields with defaults
