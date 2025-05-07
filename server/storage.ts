@@ -330,20 +330,50 @@ export class DatabaseStorage implements IStorage {
 
   async createJob(insertJob: InsertJob): Promise<Job> {
     try {
-      // Clean up the job data before insertion
+      console.log("Creating job with data:", JSON.stringify(insertJob, null, 2));
+      
+      // Deep copy and clean up the job data before insertion
       const jobData = { ...insertJob };
       
-      // If employerId is undefined, null, or invalid, remove it from the insertion data
-      if (jobData.employerId === undefined || jobData.employerId === null) {
+      // If employerId is undefined, null, 0, or invalid, remove it from the insertion data
+      if (!jobData.employerId || jobData.employerId <= 0) {
+        console.log("Removing invalid employerId:", jobData.employerId);
         delete jobData.employerId;
       }
+
+      // Make sure required date fields are properly formatted
+      if (jobData.applicationDeadline && typeof jobData.applicationDeadline === 'string') {
+        console.log("Converting applicationDeadline string to Date object");
+        jobData.applicationDeadline = new Date(jobData.applicationDeadline);
+      }
+      
+      // Ensure required fields have default values if missing
+      if (!jobData.minSalary) jobData.minSalary = 0;
+      if (!jobData.maxSalary) jobData.maxSalary = 0;
+      if (!jobData.experience) jobData.experience = "Not specified";
+      if (!jobData.category) jobData.category = "General";
+      if (!jobData.jobType) jobData.jobType = "Full-time";
+      if (!jobData.description) jobData.description = "No description provided";
+      if (!jobData.requirements) jobData.requirements = "Please contact for details";
+      if (!jobData.benefits) jobData.benefits = "Please contact for details";
+      
+      console.log("Inserting job with cleaned data:", JSON.stringify(jobData, null, 2));
       
       // Insert the job with properly formatted data
       const [job] = await db.insert(jobs).values(jobData).returning();
-      console.log("Job created successfully:", job.id);
+      console.log("Job created successfully, ID:", job.id);
       return job;
     } catch (error) {
       console.error("Error in createJob:", error);
+      console.error("Error details:", error instanceof Error ? error.message : String(error));
+      console.error("Error stack:", error instanceof Error ? error.stack : "No stack trace");
+      
+      // Rethrow with more informative message
+      if (error instanceof Error) {
+        const enhancedError = new Error(`Failed to create job: ${error.message}`);
+        enhancedError.stack = error.stack;
+        throw enhancedError;
+      }
       throw error;
     }
   }
