@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -419,6 +419,8 @@ export default function PostJobPage() {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const queryClient = useQueryClient();
   
+
+  
   // Fetch employers list for admin users to select from
   const { data: employers } = useQuery({
     queryKey: ['/api/employers'],
@@ -467,6 +469,14 @@ export default function PostJobPage() {
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
     form.setValue('category', category);
+    
+    // Reset selected skills when category changes
+    setSelectedSkills([]);
+    
+    // Clear requirements field if needed
+    if (form.getValues("requirements")) {
+      form.setValue("requirements", "");
+    }
   };
   
   // Handle job title selection
@@ -575,7 +585,6 @@ export default function PostJobPage() {
           
           // Optional fields with null safety
           specialization: data.specialization?.trim() || null,
-          salary: data.salary?.trim() || null,
           
           // If we're admin posting on behalf of company, we don't need employerId
           employerId: currentUser?.user.userType === "employer" ? currentUser?.user.id : null
