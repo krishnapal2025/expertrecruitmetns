@@ -1931,10 +1931,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Raw request body:", { ...req.body, password: '[REDACTED]' });
       
-      // Force set userType to "admin" regardless of what was sent
+      // Determine the userType based on the role field
+      const userType = req.body.role === "super_admin" ? "super_admin" : "admin";
+      
       const requestWithUserType = {
         ...req.body,
-        userType: "admin" // Always override this field
+        userType: userType // Set based on role
       };
       
       console.log("Modified request body:", { ...requestWithUserType, password: '[REDACTED]' });
@@ -1963,7 +1965,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.createUser({
         email: validatedData.email,
         password: hashedPassword,
-        userType: "admin" // Always ensure this is "admin"
+        userType: userType // Use the userType we determined earlier (admin or super_admin)
       });
       console.log("User created successfully with ID:", user.id);
 
@@ -2144,7 +2146,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUserByEmail(email);
 
       // Don't reveal if user exists or not for security reasons
-      if (!user || user.userType !== "admin") {
+      if (!user || (user.userType !== "admin" && user.userType !== "super_admin")) {
         console.log(`User not found or not an admin: ${email}`);
         return res.status(200).json({
           message: "If an account with that email exists, a password reset link has been sent"
@@ -2401,7 +2403,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user;
 
       // Check userType directly
-      if (user.userType !== "admin") {
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
         return res.status(403).json({ message: "Only administrators can access vacancies" });
       }
 
@@ -2424,7 +2426,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user;
 
       // Check userType directly
-      if (user.userType !== "admin") {
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
         return res.status(403).json({ message: "Only administrators can delete vacancies" });
       }
 
@@ -2468,7 +2470,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check userType directly
-      if (user.userType !== "admin") {
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
         return res.status(403).json({ message: "Only administrators can update vacancy status" });
       }
 
@@ -2515,7 +2517,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check userType directly
-      if (user.userType !== "admin") {
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
         return res.status(403).json({
           success: false,
           message: "Only administrators can assign vacancies"
@@ -2589,7 +2591,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Received request for staffing inquiries");
 
       const user = req.user as Express.User;
-      if (!user || user.userType !== "admin") {
+      if (!user || (user.userType !== "admin" && user.userType !== "super_admin")) {
         console.log("User not authorized:", req.user ? req.user.userType : 'not authenticated');
         return res.status(403).json({ message: "Unauthorized" });
       }
