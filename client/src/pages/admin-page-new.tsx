@@ -137,6 +137,23 @@ function AdminDashboard() {
     enabled: !!user && user.userType === "admin"
   });
   
+  // Fetch list of admin users with profiles
+  const { data: admins, isLoading: adminsLoading } = useQuery({
+    queryKey: ["/api/users/admins"],
+    queryFn: async () => {
+      // We can use the regular users API but filter for admin type users
+      const res = await fetch("/api/users?type=admin");
+      if (!res.ok) throw new Error("Failed to fetch admin list");
+      let adminUsers = await res.json();
+      
+      // Filter to include only admin users
+      adminUsers = adminUsers.filter((user: any) => user.userType === "admin");
+      
+      return adminUsers;
+    },
+    enabled: !!user && user.userType === "admin"
+  });
+  
   // Fetch jobs
   const { data: jobs, isLoading: jobsLoading } = useQuery({
     queryKey: ["/api/jobs"],
@@ -885,7 +902,7 @@ function AdminDashboard() {
       </div>
       
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-8">
+        <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-8">
           <TabsTrigger value="dashboard">
             <BarChart2 className="mr-2 h-4 w-4" />
             Dashboard
@@ -897,6 +914,10 @@ function AdminDashboard() {
           <TabsTrigger value="jobseekers">
             <Users className="mr-2 h-4 w-4" />
             Job Seekers
+          </TabsTrigger>
+          <TabsTrigger value="admins">
+            <ShieldCheck className="mr-2 h-4 w-4" />
+            Admins
           </TabsTrigger>
           <TabsTrigger value="messages">
             <MessageSquare className="mr-2 h-4 w-4" />
