@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -30,38 +30,8 @@ export default function AdminLoginPage() {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   
-  // Check URL parameters for session isolation info
-  const urlParams = new URLSearchParams(window.location.search);
-  const sessionType = urlParams.get('sessionType');
-  const newTabParam = urlParams.get('newTab'); // Keep for backward compatibility
-  
-  // Determine if this is an admin-specific session
-  // Priority: 1. sessionType param, 2. newTab param, 3. already stored session, 4. opened as new tab
-  const isAdminSession = sessionType === 'admin' || 
-                         newTabParam === 'true' || 
-                         window.opener !== null || 
-                         document.referrer.includes('/admin-login') || 
-                         sessionStorage.getItem('adminLoginNewTab') === 'true';
-  
-  // Set up the admin session if needed
-  useEffect(() => {
-    if (isAdminSession) {
-      // Store this information in sessionStorage for the duration of this tab's session
-      // This is crucial for maintaining separate admin sessions across tabs
-      sessionStorage.setItem('adminLoginNewTab', 'true');
-      
-      // Clean up the URL parameters while preserving history
-      const url = new URL(window.location.href);
-      if (url.searchParams.has('sessionType') || url.searchParams.has('newTab')) {
-        url.searchParams.delete('sessionType');
-        url.searchParams.delete('newTab');
-        window.history.replaceState({}, document.title, url.toString());
-      }
-    }
-  }, [isAdminSession]);
-  
-  // Only redirect if not opened as a separate session
-  if (user && !isAdminSession) {
+  // If already logged in, redirect to appropriate page
+  if (user) {
     if (user.userType === "admin") {
       setLocation("/admin");
     } else {
@@ -87,9 +57,7 @@ export default function AdminLoginPage() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data),
-        // Use credentials: 'include' to ensure cookies are sent
-        credentials: 'include'
+        body: JSON.stringify(data)
       });
       
       const responseData = await response.json();
@@ -98,35 +66,15 @@ export default function AdminLoginPage() {
         throw new Error(responseData.message || 'Login failed');
       }
       
-      // When opened in a new tab, we want to isolate the admin session
-      // so we don't update the global React Query cache
-      if (sessionStorage.getItem('adminLoginNewTab') === 'true') {
-        // Store admin auth data in this tab's session only
-        sessionStorage.setItem('adminSession', JSON.stringify(responseData));
-      } else {
-        // Update the global user data in React Query cache
-        queryClient.setQueryData(["/api/user"], responseData);
-      }
+      // Update the user data in React Query cache
+      queryClient.setQueryData(["/api/user"], responseData);
       
       toast({
         title: "Login Successful",
         description: "Welcome to your admin dashboard.",
       });
       
-      // Always navigate to admin dashboard after successful login
-      // Add sessionType parameter to maintain session isolation across page reloads
-      const adminPath = sessionStorage.getItem('adminLoginNewTab') === 'true' 
-        ? '/admin?sessionType=admin' 
-        : '/admin';
-      
-      // For isolation tabs, use direct location change to preserve session
-      if (sessionStorage.getItem('adminLoginNewTab') === 'true') {
-        // Replace current URL without affecting history
-        window.location.href = adminPath;
-      } else {
-        // Normal navigation for regular flow
-        setLocation(adminPath);
-      }
+      setLocation("/admin");
     } catch (error) {
       toast({
         title: "Login Failed",

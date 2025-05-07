@@ -5,7 +5,6 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { User, Job } from "@shared/schema";
-import AdminNav from "@/components/layout/admin-nav";
 
 // UI Components
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -937,8 +936,8 @@ function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {users?.filter((u: { userType: string }) => u.userType === "employer")
-                      .sort((a: { createdAt?: Date }, b: { createdAt?: Date }) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+                    {users?.filter(u => u.userType === "employer")
+                      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
                       .slice(0, 5)
                       .map((employer: any) => (
                         <div key={employer.id} className="flex justify-between items-center border-b pb-2">
@@ -949,19 +948,14 @@ function AdminDashboard() {
                           <Badge variant="outline">Employer</Badge>
                         </div>
                       ))}
-                    {users?.filter((u: { userType: string }) => u.userType === "employer").length === 0 && (
+                    {users?.filter(u => u.userType === "employer").length === 0 && (
                       <p className="text-muted-foreground text-sm text-center py-4">No employers registered yet</p>
                     )}
                   </div>
                 )}
               </CardContent>
               <CardFooter>
-                <Button variant="outline" size="sm" className="w-full" onClick={() => {
-                  const element = document.querySelector('[value="employers"]');
-                  if (element instanceof HTMLElement) {
-                    element.click();
-                  }
-                }}>
+                <Button variant="outline" size="sm" className="w-full" onClick={() => document.querySelector('[value="employers"]')?.click()}>
                   View All Employers
                 </Button>
               </CardFooter>
@@ -984,8 +978,8 @@ function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {users?.filter((u: { userType: string }) => u.userType === "jobseeker")
-                      .sort((a: { createdAt?: Date }, b: { createdAt?: Date }) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+                    {users?.filter(u => u.userType === "jobseeker")
+                      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
                       .slice(0, 5)
                       .map((seeker: any) => (
                         <div key={seeker.id} className="flex justify-between items-center border-b pb-2">
@@ -996,19 +990,14 @@ function AdminDashboard() {
                           <Badge variant="outline">Job Seeker</Badge>
                         </div>
                       ))}
-                    {users?.filter((u: { userType: string }) => u.userType === "jobseeker").length === 0 && (
+                    {users?.filter(u => u.userType === "jobseeker").length === 0 && (
                       <p className="text-muted-foreground text-sm text-center py-4">No job seekers registered yet</p>
                     )}
                   </div>
                 )}
               </CardContent>
               <CardFooter>
-                <Button variant="outline" size="sm" className="w-full" onClick={() => {
-                  const element = document.querySelector('[value="jobseekers"]');
-                  if (element instanceof HTMLElement) {
-                    element.click();
-                  }
-                }}>
+                <Button variant="outline" size="sm" className="w-full" onClick={() => document.querySelector('[value="jobseekers"]')?.click()}>
                   View All Job Seekers
                 </Button>
               </CardFooter>
