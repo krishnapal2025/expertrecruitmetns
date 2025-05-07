@@ -175,7 +175,23 @@ export const insertJobSchema = createInsertSchema(jobs)
       .min(1, "Application deadline is required")
       .transform((val) => new Date(val)),
     // Make employerId optional
-    employerId: z.number().optional()
+    employerId: z.number().optional(),
+    // Ensure required fields that might be missing have defaults or clear validation errors
+    title: z.string().min(2, "Job title is required"),
+    company: z.string().min(2, "Company name is required"),
+    description: z.string().min(10, "Job description is required"),
+    requirements: z.string().min(10, "Job requirements are required"),
+    benefits: z.string().min(10, "Job benefits are required"),
+    category: z.string().min(2, "Job category is required"),
+    location: z.string().min(2, "Job location is required"),
+    jobType: z.string().min(2, "Job type is required"),
+    experience: z.string().min(2, "Experience level is required"),
+    minSalary: z.coerce.number().min(0, "Minimum salary is required"),
+    maxSalary: z.coerce.number().min(0, "Maximum salary is required"),
+    contactEmail: z.string().email("A valid contact email is required"),
+    // Optional fields
+    specialization: z.string().optional(),
+    salary: z.string().optional()
   });
 
 export const insertApplicationSchema = createInsertSchema(applications).omit({
