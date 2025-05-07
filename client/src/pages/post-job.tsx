@@ -641,7 +641,7 @@ export default function PostJobPage() {
 
   // Create job mutation
   const createJobMutation = useMutation({
-    mutationFn: async (data: JobPostFormValues) => {
+    mutationFn: async (data: any) => {
       // Re-check authentication status before submission
       // This helps ensure the session is still valid
       try {
@@ -874,9 +874,9 @@ export default function PostJobPage() {
       description: data.description?.trim() || "",
       requirements: data.requirements?.trim() || "Job requirements not specified",
       benefits: data.benefits?.trim() || "Job benefits not specified",
-      // Properly format the deadline date to ISO string (YYYY-MM-DD)
+      // Convert Date object to string in YYYY-MM-DD format for server schema
       applicationDeadline: data.applicationDeadline instanceof Date
-        ? data.applicationDeadline.toISOString().split('T')[0]
+        ? data.applicationDeadline.toISOString().split('T')[0] // Format as YYYY-MM-DD
         : (data.applicationDeadline 
             ? new Date(data.applicationDeadline).toISOString().split('T')[0] 
             : new Date().toISOString().split('T')[0]),
