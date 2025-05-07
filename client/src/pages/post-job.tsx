@@ -566,6 +566,7 @@ export default function PostJobPage() {
       applicationDeadline: new Date(),
       contactEmail: currentUser?.user.email || "",
     },
+    mode: "onBlur", // Show errors after field loses focus
   });
   
   // Watch form values for preview
@@ -836,6 +837,14 @@ export default function PostJobPage() {
     );
     
     if (missingFields.length > 0) {
+      // Set errors for each missing field to highlight them in red
+      missingFields.forEach(({ field, label }) => {
+        form.setError(field as any, {
+          type: 'required',
+          message: `${label} is required`
+        });
+      });
+      
       toast({
         title: "Missing Required Fields",
         description: `Please fill in the following required fields: ${missingFields.map(f => f.label).join(', ')}`,
@@ -846,6 +855,10 @@ export default function PostJobPage() {
     
     // Check numeric fields
     if (isNaN(Number(data.minSalary)) || Number(data.minSalary) <= 0) {
+      form.setError('minSalary', {
+        type: 'min',
+        message: 'Minimum salary must be greater than 0'
+      });
       toast({
         title: "Invalid Minimum Salary",
         description: "Please enter a valid minimum salary amount.",
@@ -855,6 +868,10 @@ export default function PostJobPage() {
     }
     
     if (isNaN(Number(data.maxSalary)) || Number(data.maxSalary) <= 0) {
+      form.setError('maxSalary', {
+        type: 'min',
+        message: 'Maximum salary must be greater than 0'
+      });
       toast({
         title: "Invalid Maximum Salary",
         description: "Please enter a valid maximum salary amount.",
@@ -1076,6 +1093,7 @@ export default function PostJobPage() {
                             <FormControl>
                               <Input placeholder="e.g., Senior Frontend Developer" {...field} />
                             </FormControl>
+                            <FormMessage className="text-red-500" />
                             {selectedCategory && (
                               <div className="mt-2">
                                 <p className="text-sm text-muted-foreground mb-2">Suggested job titles for {selectedCategory}:</p>
@@ -1112,11 +1130,16 @@ export default function PostJobPage() {
                               const value = e.target.value;
                               setCompanyName(value);
                             }}
-                            className="w-full"
+                            className={`w-full ${!companyName.trim() ? 'border-red-500' : ''}`}
                           />
                           <p className="text-sm text-muted-foreground mt-1">
                             Enter the company name to post on their behalf
                           </p>
+                          {!companyName.trim() && (
+                            <p className="text-sm text-red-500 mt-1">
+                              Company name is required
+                            </p>
+                          )}
                         </div>
                       )}
                       
