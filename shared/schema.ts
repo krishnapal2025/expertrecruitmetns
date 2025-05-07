@@ -170,26 +170,23 @@ export const insertJobSchema = createInsertSchema(jobs)
     applicationCount: true,
   })
   .extend({
-    // Override the applicationDeadline field to accept both string and Date objects
-    applicationDeadline: z.union([
-      z.string()
-        .min(1, "Application deadline is required")
-        .transform((val) => {
-          try {
-            const date = new Date(val);
-            if (isNaN(date.getTime())) {
-              throw new Error("Invalid date format");
-            }
-            return date;
-          } catch (error) {
-            // Fallback to current date + 30 days if parsing fails
-            const date = new Date();
-            date.setDate(date.getDate() + 30);
-            return date;
+    // Override the applicationDeadline field to accept string (YYYY-MM-DD format)
+    applicationDeadline: z.string()
+      .min(1, "Application deadline is required")
+      .transform((val) => {
+        try {
+          const date = new Date(val);
+          if (isNaN(date.getTime())) {
+            throw new Error("Invalid date format");
           }
-        }),
-      z.date()
-    ]),
+          return date;
+        } catch (error) {
+          // Fallback to current date + 30 days if parsing fails
+          const date = new Date();
+          date.setDate(date.getDate() + 30);
+          return date;
+        }
+      }),
       
     // Make employerId optional
     employerId: z.number().optional().nullable(),
@@ -279,26 +276,10 @@ export const insertVacancySchema = createInsertSchema(vacancies).omit({
   status: true,
   submittedAt: true,
 }).extend({
-  // Override the applicationDeadline field to accept both string and Date objects
-  applicationDeadline: z.union([
-    z.string()
-      .min(1, "Application deadline is required")
-      .transform((val) => {
-        try {
-          const date = new Date(val);
-          if (isNaN(date.getTime())) {
-            throw new Error("Invalid date format");
-          }
-          return date;
-        } catch (error) {
-          // Fallback to current date + 30 days if parsing fails
-          const date = new Date();
-          date.setDate(date.getDate() + 30);
-          return date;
-        }
-      }),
-    z.date()
-  ])
+  // Override the applicationDeadline field to accept string
+  applicationDeadline: z.string()
+    .min(1, "Application deadline is required")
+    .transform((val) => new Date(val))
 });
 
 export const insertStaffingInquirySchema = createInsertSchema(staffingInquiries).omit({

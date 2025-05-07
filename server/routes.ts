@@ -807,12 +807,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           minSalary: isNaN(Number(req.body.minSalary)) ? 0 : Number(req.body.minSalary),
           maxSalary: isNaN(Number(req.body.maxSalary)) ? 0 : Number(req.body.maxSalary),
           
-          // Ensure applicationDeadline is a string, which will be validated by our schema
-          applicationDeadline: req.body.applicationDeadline ? 
-            req.body.applicationDeadline instanceof Date ? 
-              req.body.applicationDeadline.toISOString() : 
-              req.body.applicationDeadline : 
-            new Date().toISOString()
+          // Ensure date fields are valid dates
+          applicationDeadline: req.body.applicationDeadline ? new Date(req.body.applicationDeadline) : new Date()
         };
         
         console.log("Pre-processed data:", JSON.stringify(processedData, null, 2));
@@ -1548,13 +1544,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      // Allow both admin and super_admin to edit jobs
-      if (user.userType !== "admin" && user.userType !== "super_admin") {
-        return res.status(403).json({ message: "Only administrators can edit jobs" });
+      if (user.userType !== "admin") {
+        return res.status(403).json({ message: "Only admins can edit jobs" });
       }
-      
-      // Track if user is super_admin for enhanced permissions
-      const isSuperAdmin = user.userType === "super_admin";
 
       const jobId = parseInt(req.params.id);
       if (isNaN(jobId)) {
@@ -1614,13 +1606,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      // Allow both admin and super_admin to delete jobs
-      if (user.userType !== "admin" && user.userType !== "super_admin") {
-        return res.status(403).json({ message: "Only administrators can delete jobs" });
+      if (user.userType !== "admin") {
+        return res.status(403).json({ message: "Only admins can delete jobs" });
       }
-      
-      // Track if user is super_admin for enhanced permissions
-      const isSuperAdmin = user.userType === "super_admin";
 
       const jobId = parseInt(req.params.id);
       if (isNaN(jobId)) {
@@ -1703,11 +1691,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = req.user;
 
-      // Allow both admin and super_admin to access application updates
-      if (user.userType === "admin" || user.userType === "super_admin") {
-        // Track if this is a super_admin for future enhanced features
-        const isSuperAdmin = user.userType === "super_admin";
-        
+      if (user.userType === "admin") {
         // Get all jobs
         const employerJobs = await storage.getJobs();
 
@@ -1718,15 +1702,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const filteredApplications = jobApplications.filter(app => app.id > sinceId);
 
           newApplications = newApplications.concat(
-            filteredApplications.map(app => ({ 
-              ...app, 
-              job,
-              // Add special metadata for super_admin users
-              _metadata: isSuperAdmin ? {
-                priority: true,
-                fullAccess: true
-              } : undefined
-            }))
+            filteredApplications.map(app => ({ ...app, job }))
           );
         }
 
@@ -1738,11 +1714,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         res.json({
           applications: newApplications,
-          lastId: realtimeStore.lastApplicationId,
-          isSuperAdmin // Include flag to enable client-side special features
+          lastId: realtimeStore.lastApplicationId
         });
       } else {
-        res.status(403).json({ message: "Only administrator users can access this endpoint" });
+        res.status(403).json({ message: "Only admin users can access this endpoint" });
       }
     } catch (error) {
       console.error("Error fetching real-time application updates:", error);
@@ -1866,15 +1841,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = req.user;
       
-      // Check if user is an admin or super_admin
-      if (user.userType !== "admin" && user.userType !== "super_admin") {
+      // Check if user is an admin
+      if (user.userType !== "admin") {
         return res.status(403).json({ 
           message: "Access denied. This endpoint is for administrators only." 
         });
       }
-      
-      // Super admins are granted enhanced privileges
-      const isSuperAdmin = user.userType === "super_admin";
       
       // Get admin profile
       const admin = await storage.getAdminByUserId(user.id);
@@ -1884,7 +1856,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Return admin data without sensitive information
-      // Super admins get special privileges information
       res.json({
         id: user.id,
         email: user.email,
@@ -1893,16 +1864,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: admin.id,
           firstName: admin.firstName,
           lastName: admin.lastName,
-          role: isSuperAdmin ? "super_admin" : admin.role,
-          lastLogin: admin.lastLogin,
-          // Add special privileges for super admin
-          specialPrivileges: isSuperAdmin ? {
-            canOverrideRestrictions: true,
-            canAccessAllAreas: true,
-            canModifyAllContent: true,
-            canManageAllUsers: true,
-            canBypassApprovals: true
-          } : undefined
+          role: admin.role,
+          lastLogin: admin.lastLogin
         }
       });
     } catch (error) {
@@ -2054,85 +2017,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.error("Error registering admin:", error);
       res.status(500).json({ message: "Failed to register admin account" });
-    }
-  });
-  
-  // Super Admin direct signup with security key
-  app.post("/api/super-admin/signup", async (req, res) => {
-    console.log("Received super admin signup request");
-    
-    try {
-      // Validate the super admin security key first
-      const securityKey = req.body.securityKey;
-      
-      // This is a high-security key for creating the most privileged accounts
-      // In production, this would be stored securely, not hardcoded
-      const SUPER_ADMIN_KEY = process.env.SUPER_ADMIN_SECURITY_KEY || "expert_recruiter_super_admin_2025";
-      
-      if (!securityKey || securityKey !== SUPER_ADMIN_KEY) {
-        console.log("Invalid super admin security key");
-        return res.status(403).json({ 
-          message: "Invalid security key. Super administrator creation requires a valid security key." 
-        });
-      }
-      
-      // Force set userType to "super_admin" regardless of what was sent
-      const requestWithUserType = {
-        ...req.body,
-        userType: "super_admin", // Always override this field for super admin
-        role: "super_admin"      // Also set the role
-      };
-      
-      // Validate signup data - use admin schema without invitation code
-      const superAdminSchema = adminSignupSchema.omit({ 
-        invitationCode: true 
-      });
-      
-      const validatedData = superAdminSchema.parse(requestWithUserType);
-      
-      // Check if the email is already registered
-      const existingUser = await storage.getUserByEmail(validatedData.email);
-      if (existingUser) {
-        return res.status(400).json({ message: "Email already registered" });
-      }
-
-      // Hash the password
-      const hashedPassword = await hashPassword(validatedData.password);
-      
-      // Create user with super_admin userType
-      const user = await storage.createUser({
-        email: validatedData.email,
-        password: hashedPassword,
-        userType: "super_admin" // Set user type as super_admin
-      });
-
-      // Create admin profile with super_admin role
-      const admin = await storage.createAdmin({
-        userId: user.id,
-        firstName: validatedData.firstName,
-        lastName: validatedData.lastName,
-        role: "super_admin", // Set role as super_admin
-        phoneNumber: validatedData.phoneNumber || null
-      });
-
-      console.log(`Super admin account created successfully for: ${validatedData.email}`);
-      
-      // Return success but don't auto-login - require explicit login for super admins
-      res.status(201).json({ 
-        success: true,
-        message: "Super administrator account created successfully. Please log in to access your account."
-      });
-    } catch (error) {
-      if (error instanceof ZodError) {
-        const validationError = fromZodError(error);
-        return res.status(400).json({ 
-          message: validationError.message,
-          validationErrors: validationError.errors 
-        });
-      }
-
-      console.error("Error registering super admin:", error);
-      res.status(500).json({ message: "Failed to register super administrator account" });
     }
   });
 
