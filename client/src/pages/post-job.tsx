@@ -722,6 +722,7 @@ export default function PostJobPage() {
         return await res.json();
       } catch (error) {
         console.error("Error during job submission:", error);
+        console.error("Detailed error message:", JSON.stringify(error, null, 2));
         throw error;
       }
     },
@@ -860,7 +861,7 @@ export default function PostJobPage() {
       employerId: currentUser?.user.userType === "employer" ? currentUser?.user.id : null
     };
     
-    console.log("Clean data to be sent to server:", cleanData);
+    console.log("Clean data to be sent to server:", JSON.stringify(cleanData, null, 2));
     // Use the cleanData instead of the raw form data for submission
     createJobMutation.mutate(cleanData as JobPostFormValues);
   };
