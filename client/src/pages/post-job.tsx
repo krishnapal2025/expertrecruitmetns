@@ -857,8 +857,27 @@ export default function PostJobPage() {
       minSalary: isNaN(Number(data.minSalary)) ? 0 : Number(data.minSalary),
       maxSalary: isNaN(Number(data.maxSalary)) ? 0 : Number(data.maxSalary),
       
-      // Date handling - ensure we have a valid date string
-      applicationDeadline: data.applicationDeadline || new Date().toISOString().split('T')[0],
+      // Date handling - ensure we have a valid ISO date string
+      applicationDeadline: (() => {
+        try {
+          // If it's already a date string, ensure it's a valid one and in correct format
+          if (data.applicationDeadline) {
+            const date = new Date(data.applicationDeadline);
+            // Check if date is valid
+            if (!isNaN(date.getTime())) {
+              return date.toISOString().split('T')[0];
+            }
+          }
+          // Fallback to current date + 30 days
+          const date = new Date();
+          date.setDate(date.getDate() + 30);
+          return date.toISOString().split('T')[0];
+        } catch (error) {
+          console.error("Error formatting date:", error);
+          // Ultimate fallback
+          return new Date().toISOString().split('T')[0];
+        }
+      })(),
       
       // Optional fields
       specialization: data.specialization?.trim() || null,
