@@ -398,101 +398,115 @@ const commonSkills = {
   ]
 };
 
-// Function to get location-specific salary ranges
+// Function to get currency symbol based on location
+const getCurrencySymbol = (location: string): string => {
+  if (!location) return '$'; // Default USD
+  
+  if (location.includes("India")) return '₹'; // Indian Rupee
+  if (location.includes("UAE")) return 'د.إ'; // UAE Dirham
+  if (location.includes("UK")) return '£'; // British Pound
+  if (location.includes("Europe") || location.includes("France") || location.includes("Germany")) return '€'; // Euro
+  if (location.includes("Canada")) return 'C$'; // Canadian Dollar
+  if (location.includes("Australia")) return 'A$'; // Australian Dollar
+  
+  return '$'; // Default USD
+};
+
+// Function to get location-specific salary ranges (monthly figures)
 const getSalaryRangesByLocation = (location: string) => {
-  // Default ranges in USD
+  // Default ranges in USD (annual salaries)
   if (!location || location.includes("USA") || location.includes("United States")) {
     return [
-      { label: "Entry Level", min: 30000, max: 50000 },
-      { label: "Junior", min: 50000, max: 80000 },
-      { label: "Mid-Level", min: 80000, max: 120000 },
-      { label: "Senior", min: 120000, max: 180000 },
-      { label: "Expert/Leadership", min: 180000, max: 250000 },
-      { label: "Executive", min: 250000, max: 500000 },
+      { label: "Entry Level", min: 2500, max: 4200, period: "monthly" },
+      { label: "Junior", min: 4200, max: 6700, period: "monthly" },
+      { label: "Mid-Level", min: 6700, max: 10000, period: "monthly" },
+      { label: "Senior", min: 10000, max: 15000, period: "monthly" },
+      { label: "Expert/Leadership", min: 15000, max: 20800, period: "monthly" },
+      { label: "Executive", min: 20800, max: 41600, period: "monthly" },
     ];
   }
   
   // Indian Rupee (INR) - converted to appropriate scales
   else if (location.includes("India")) {
     return [
-      { label: "Entry Level", min: 300000, max: 600000 },
-      { label: "Junior", min: 600000, max: 1200000 },
-      { label: "Mid-Level", min: 1200000, max: 2400000 },
-      { label: "Senior", min: 2400000, max: 4800000 },
-      { label: "Expert/Leadership", min: 4800000, max: 8000000 },
-      { label: "Executive", min: 8000000, max: 20000000 },
+      { label: "Entry Level", min: 25000, max: 50000, period: "monthly" },
+      { label: "Junior", min: 50000, max: 100000, period: "monthly" },
+      { label: "Mid-Level", min: 100000, max: 200000, period: "monthly" },
+      { label: "Senior", min: 200000, max: 400000, period: "monthly" },
+      { label: "Expert/Leadership", min: 400000, max: 670000, period: "monthly" },
+      { label: "Executive", min: 670000, max: 1700000, period: "monthly" },
     ];
   }
   
   // UAE Dirham (AED)
   else if (location.includes("UAE")) {
     return [
-      { label: "Entry Level", min: 60000, max: 120000 },
-      { label: "Junior", min: 120000, max: 180000 },
-      { label: "Mid-Level", min: 180000, max: 300000 },
-      { label: "Senior", min: 300000, max: 480000 },
-      { label: "Expert/Leadership", min: 480000, max: 700000 },
-      { label: "Executive", min: 700000, max: 1500000 },
+      { label: "Entry Level", min: 5000, max: 10000, period: "monthly" },
+      { label: "Junior", min: 10000, max: 15000, period: "monthly" },
+      { label: "Mid-Level", min: 15000, max: 25000, period: "monthly" },
+      { label: "Senior", min: 25000, max: 40000, period: "monthly" },
+      { label: "Expert/Leadership", min: 40000, max: 58000, period: "monthly" },
+      { label: "Executive", min: 58000, max: 125000, period: "monthly" },
     ];
   }
   
   // British Pound (GBP)
   else if (location.includes("UK")) {
     return [
-      { label: "Entry Level", min: 25000, max: 35000 },
-      { label: "Junior", min: 35000, max: 50000 },
-      { label: "Mid-Level", min: 50000, max: 70000 },
-      { label: "Senior", min: 70000, max: 100000 },
-      { label: "Expert/Leadership", min: 100000, max: 150000 },
-      { label: "Executive", min: 150000, max: 350000 },
+      { label: "Entry Level", min: 2100, max: 2900, period: "monthly" },
+      { label: "Junior", min: 2900, max: 4200, period: "monthly" },
+      { label: "Mid-Level", min: 4200, max: 5800, period: "monthly" },
+      { label: "Senior", min: 5800, max: 8300, period: "monthly" },
+      { label: "Expert/Leadership", min: 8300, max: 12500, period: "monthly" },
+      { label: "Executive", min: 12500, max: 29000, period: "monthly" },
     ];
   }
   
   // Euro (EUR)
   else if (location.includes("Europe") || location.includes("France") || location.includes("Germany")) {
     return [
-      { label: "Entry Level", min: 30000, max: 45000 },
-      { label: "Junior", min: 45000, max: 60000 },
-      { label: "Mid-Level", min: 60000, max: 85000 },
-      { label: "Senior", min: 85000, max: 120000 },
-      { label: "Expert/Leadership", min: 120000, max: 180000 },
-      { label: "Executive", min: 180000, max: 350000 },
+      { label: "Entry Level", min: 2500, max: 3700, period: "monthly" },
+      { label: "Junior", min: 3700, max: 5000, period: "monthly" },
+      { label: "Mid-Level", min: 5000, max: 7100, period: "monthly" },
+      { label: "Senior", min: 7100, max: 10000, period: "monthly" },
+      { label: "Expert/Leadership", min: 10000, max: 15000, period: "monthly" },
+      { label: "Executive", min: 15000, max: 29000, period: "monthly" },
     ];
   }
   
   // Canadian Dollar (CAD)
   else if (location.includes("Canada")) {
     return [
-      { label: "Entry Level", min: 40000, max: 60000 },
-      { label: "Junior", min: 60000, max: 85000 },
-      { label: "Mid-Level", min: 85000, max: 120000 },
-      { label: "Senior", min: 120000, max: 160000 },
-      { label: "Expert/Leadership", min: 160000, max: 220000 },
-      { label: "Executive", min: 220000, max: 450000 },
+      { label: "Entry Level", min: 3300, max: 5000, period: "monthly" },
+      { label: "Junior", min: 5000, max: 7100, period: "monthly" },
+      { label: "Mid-Level", min: 7100, max: 10000, period: "monthly" },
+      { label: "Senior", min: 10000, max: 13300, period: "monthly" },
+      { label: "Expert/Leadership", min: 13300, max: 18300, period: "monthly" },
+      { label: "Executive", min: 18300, max: 37500, period: "monthly" },
     ];
   }
   
   // Australian Dollar (AUD)
   else if (location.includes("Australia")) {
     return [
-      { label: "Entry Level", min: 50000, max: 70000 },
-      { label: "Junior", min: 70000, max: 90000 },
-      { label: "Mid-Level", min: 90000, max: 120000 },
-      { label: "Senior", min: 120000, max: 160000 },
-      { label: "Expert/Leadership", min: 160000, max: 220000 },
-      { label: "Executive", min: 220000, max: 450000 },
+      { label: "Entry Level", min: 4200, max: 5800, period: "monthly" },
+      { label: "Junior", min: 5800, max: 7500, period: "monthly" },
+      { label: "Mid-Level", min: 7500, max: 10000, period: "monthly" },
+      { label: "Senior", min: 10000, max: 13300, period: "monthly" },
+      { label: "Expert/Leadership", min: 13300, max: 18300, period: "monthly" },
+      { label: "Executive", min: 18300, max: 37500, period: "monthly" },
     ];
   }
   
-  // Default to USD for all other locations
+  // Default to USD for all other locations (monthly salaries)
   else {
     return [
-      { label: "Entry Level", min: 30000, max: 50000 },
-      { label: "Junior", min: 50000, max: 80000 },
-      { label: "Mid-Level", min: 80000, max: 120000 },
-      { label: "Senior", min: 120000, max: 180000 },
-      { label: "Expert/Leadership", min: 180000, max: 250000 },
-      { label: "Executive", min: 250000, max: 500000 },
+      { label: "Entry Level", min: 2500, max: 4200, period: "monthly" },
+      { label: "Junior", min: 4200, max: 6700, period: "monthly" },
+      { label: "Mid-Level", min: 6700, max: 10000, period: "monthly" },
+      { label: "Senior", min: 10000, max: 15000, period: "monthly" },
+      { label: "Expert/Leadership", min: 15000, max: 20800, period: "monthly" },
+      { label: "Executive", min: 20800, max: 41600, period: "monthly" },
     ];
   }
 };
@@ -1205,12 +1219,12 @@ export default function PostJobPage() {
                               className="text-xs justify-start"
                               onClick={() => handleSalaryRangeSelect(range)}
                             >
-                              {range.label}: {getCurrencySymbol(formValues.location || '')}{range.min.toLocaleString()} - {getCurrencySymbol(formValues.location || '')}{range.max.toLocaleString()}
+                              {range.label}: {getCurrencySymbol(formValues.location || '')}{range.min.toLocaleString()} - {getCurrencySymbol(formValues.location || '')}{range.max.toLocaleString()} monthly
                             </Button>
                           ))}
                         </div>
                         <p className="text-xs text-muted-foreground mt-2">
-                          Click on a preset to automatically fill the salary range based on {formValues.location ? formValues.location : "default"} salary standards
+                          Click on a preset to automatically fill the monthly salary range based on {formValues.location ? formValues.location : "default"} salary standards
                         </p>
                       </div>
                     </CardContent>
