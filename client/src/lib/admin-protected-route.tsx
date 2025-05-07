@@ -135,35 +135,18 @@ export function AdminProtectedRoute({
   // Create a type for all possible user structures
   type AnyUser = RegularUser | AdminUser | null | undefined;
   
-  // Function to determine if a user is an admin or super_admin
+  // Function to determine if a user is an admin
   const isAdminUser = (user: AnyUser): boolean => {
     if (!user) return false;
     
     // Handle AdminUser structure (from session storage or admin-specific endpoint)
     if ('user' in user && user.user) {
-      return user.user.userType === "admin" || user.user.userType === "super_admin";
+      return user.user.userType === "admin";
     }
     
     // Handle RegularUser structure (from global auth)
     if ('userType' in user) {
-      return user.userType === "admin" || user.userType === "super_admin";
-    }
-    
-    return false;
-  };
-  
-  // Function to determine if a user is a super_admin with enhanced privileges
-  const isSuperAdminUser = (user: AnyUser): boolean => {
-    if (!user) return false;
-    
-    // Handle AdminUser structure (from session storage or admin-specific endpoint)
-    if ('user' in user && user.user) {
-      return user.user.userType === "super_admin";
-    }
-    
-    // Handle RegularUser structure (from global auth)
-    if ('userType' in user) {
-      return user.userType === "super_admin";
+      return user.userType === "admin";
     }
     
     return false;

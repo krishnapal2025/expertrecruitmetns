@@ -842,7 +842,7 @@ export default function PostJobPage() {
     const cleanData = {
       // Required string fields with fallbacks
       title: data.title?.trim() || "Untitled Job Post",
-      company: (currentUser.user.userType === "admin" || currentUser.user.userType === "super_admin") ? 
+      company: currentUser.user.userType === "admin" ? 
         companyName.trim() : data.company?.trim() || "Company Name Required",
       location: data.location?.trim() || "Location Not Specified",
       category: data.category?.trim() || "General",
@@ -857,27 +857,8 @@ export default function PostJobPage() {
       minSalary: isNaN(Number(data.minSalary)) ? 0 : Number(data.minSalary),
       maxSalary: isNaN(Number(data.maxSalary)) ? 0 : Number(data.maxSalary),
       
-      // Date handling - ensure we have a valid ISO date string
-      applicationDeadline: (() => {
-        try {
-          // If it's already a date string, ensure it's a valid one and in correct format
-          if (data.applicationDeadline) {
-            const date = new Date(data.applicationDeadline);
-            // Check if date is valid
-            if (!isNaN(date.getTime())) {
-              return date.toISOString().split('T')[0];
-            }
-          }
-          // Fallback to current date + 30 days
-          const date = new Date();
-          date.setDate(date.getDate() + 30);
-          return date.toISOString().split('T')[0];
-        } catch (error) {
-          console.error("Error formatting date:", error);
-          // Ultimate fallback
-          return new Date().toISOString().split('T')[0];
-        }
-      })(),
+      // Date handling - ensure we have a valid date string
+      applicationDeadline: data.applicationDeadline || new Date().toISOString().split('T')[0],
       
       // Optional fields
       specialization: data.specialization?.trim() || null,
@@ -928,11 +909,11 @@ export default function PostJobPage() {
               </Button>
             </AlertDescription>
           </Alert>
-        ) : (currentUser.user.userType !== "admin" && currentUser.user.userType !== "super_admin") ? (
+        ) : (currentUser.user.userType !== "admin") ? (
           <Alert className="mb-6">
             <AlertTitle>Admin Account Required</AlertTitle>
             <AlertDescription>
-              Only admin or super admin accounts can post jobs. Your current account does not have the necessary permissions.
+              Only admin accounts can post jobs. Your current account does not have the necessary permissions.
             </AlertDescription>
           </Alert>
         ) : (
@@ -1092,8 +1073,8 @@ export default function PostJobPage() {
                         )}
                       />
                       
-                      {/* Admin/SuperAdmin-only employer name input field */}
-                      {(currentUser?.user.userType === "admin" || currentUser?.user.userType === "super_admin") && (
+                      {/* Admin-only employer name input field */}
+                      {currentUser?.user.userType === "admin" && (
                         <div className="mb-4">
                           <FormLabel>Enter Employer Company Name</FormLabel>
                           <Input

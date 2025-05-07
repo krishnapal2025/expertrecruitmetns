@@ -1,121 +1,126 @@
-import { useState } from "react";
-import { useLocation } from "wouter";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect } from "react";
+import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/use-auth";
+import { adminSignupSchema, type AdminSignup } from "@shared/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { apiRequest } from "@/lib/queryClient";
-import { PasswordInput } from "@/components/ui/password-input";
-import { useAuth } from "@/hooks/use-auth";
+import { Input } from "@/components/ui/input";
+import { UserIcon, ShieldCheck } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
-// Super admin signup schema with enhanced validation
-const superAdminSignupSchema = z.object({
-  email: z.string()
-    .min(1, "Email is required")
-    .email("Invalid email format"),
-  password: z.string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  confirmPassword: z.string().min(1, "Please confirm your password"),
-  securityKey: z.string().min(1, "Super admin security key is required")
-})
-.refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
-
-type SuperAdminSignupFormValues = z.infer<typeof superAdminSignupSchema>;
+// Use the schema we defined in shared/schema.ts
+type FormValues = AdminSignup;
 
 export default function SuperAdminSignupPage() {
-  const [, setLocation] = useLocation();
-  const { user } = useAuth();
+  const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   // Redirect if already logged in
-  if (user) {
-    setLocation('/admin-dashboard');
-    return null;
-  }
-  
-  const form = useForm<SuperAdminSignupFormValues>({
-    resolver: zodResolver(superAdminSignupSchema),
+  useEffect(() => {
+    if (user) {
+      if (user.userType === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [user, navigate]);
+
+  // Register admin
+  const registerMutation = useMutation({
+    mutationFn: async (data: FormValues) => {
+      console.log("Submitting form data:", data); // Log the data being sent
+      try {
+        const res = await apiRequest("POST", "/api/admin/signup", data);
+        console.log("Response status:", res.status); // Log the response status
+        
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ message: "Unknown error occurred" }));
+          console.error("Error response:", errorData);
+          throw new Error(errorData.message || "Registration failed");
+        }
+        
+        const responseData = await res.json().catch(() => ({ message: "Failed to parse response" }));
+        console.log("Success response:", responseData);
+        return responseData;
+      } catch (err) {
+        console.error("Registration error:", err);
+        throw err;
+      }
+    },
+    onSuccess: (data) => {
+      console.log("Registration successful:", data);
+      toast({
+        title: "Registration successful",
+        description: "Your super admin account has been created.",
+        variant: "default",
+      });
+      if (data.user) {
+        queryClient.setQueryData(["/api/user"], data.user);
+      } else {
+        console.warn("User data missing from success response");
+      }
+      navigate("/admin");
+    },
+    onError: (error: Error) => {
+      console.error("Mutation error:", error);
+      toast({
+        title: "Registration failed",
+        description: error.message || "Could not create the super admin account. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(adminSignupSchema),
     defaultValues: {
       email: "",
       password: "",
       confirmPassword: "",
       firstName: "",
       lastName: "",
-      securityKey: ""
+      role: "super_admin", // Default to super_admin
+      phoneNumber: "+971 ",
     },
   });
-  
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function onSubmit(values: SuperAdminSignupFormValues) {
-    setIsSubmitting(true);
+  // Handle form submission
+  const onSubmit = (data: FormValues) => {
+    console.log("Form data validated:", data);
+    // Ensure role is set to super_admin
+    const formData: FormValues = {
+      ...data,
+      role: "super_admin" as const // Force the role to be super_admin with correct type
+    };
     
     try {
-      // Send data to super admin signup endpoint
-      const response = await apiRequest("POST", "/api/super-admin/signup", {
-        email: values.email,
-        password: values.password,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        securityKey: values.securityKey,
-        role: "super_admin", // Explicitly set the role
-        userType: "super_admin" // Set the user type
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Super admin registration failed");
-      }
-      
-      // Success - show message and redirect
-      toast({
-        title: "Super Administrator Created",
-        description: "Your super admin account has been created successfully. You can now login.",
-        variant: "default",
-      });
-      
-      // Redirect to login page
-      setLocation('/admin-login');
-      
+      registerMutation.mutate(formData);
     } catch (error) {
-      console.error("Super admin registration error:", error);
-      toast({
-        title: "Registration Failed",
-        description: error instanceof Error ? error.message : "An unknown error occurred",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
+      console.error("Error during mutation:", error);
     }
-  }
-  
+  };
+
   return (
-    <div className="flex min-h-screen bg-muted/20">
-      {/* Left side with form */}
-      <div className="flex-1 flex items-center justify-center p-6">
-        <Card className="w-full max-w-md">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Create Super Admin Account</CardTitle>
-            <CardDescription className="text-center">
-              Enter your details to create a super administrator account
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-lg">
+        <Card className="shadow-lg">
+          <CardHeader className="space-y-1 text-center bg-primary text-white rounded-t-lg">
+            <CardTitle className="text-2xl font-bold">Create Super Admin Account</CardTitle>
+            <CardDescription className="text-white/80">
+              Initial setup for Expert Recruitments platform administrator
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          
+          <CardContent className="pt-6 pb-4">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -124,40 +129,48 @@ export default function SuperAdminSignupPage() {
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>First Name</FormLabel>
+                        <FormLabel className="text-gray-700">First Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John" {...field} />
+                          <Input 
+                            placeholder="John" 
+                            className="border-gray-300 focus:border-primary"
+                            {...field} 
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  
                   <FormField
                     control={form.control}
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Last Name</FormLabel>
+                        <FormLabel className="text-gray-700">Last Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="Doe" {...field} />
+                          <Input 
+                            placeholder="Doe" 
+                            className="border-gray-300 focus:border-primary"
+                            {...field} 
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                
+
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className="text-gray-700">Email</FormLabel>
                       <FormControl>
                         <Input 
                           type="email" 
-                          placeholder="admin@company.com" 
+                          placeholder="your.email@example.com" 
+                          className="border-gray-300 focus:border-primary"
                           {...field} 
                         />
                       </FormControl>
@@ -165,112 +178,124 @@ export default function SuperAdminSignupPage() {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel className="text-gray-700">Password</FormLabel>
                       <FormControl>
-                        <PasswordInput placeholder="••••••••" {...field} />
+                        <Input 
+                          type="password" 
+                          placeholder="••••••••" 
+                          className="border-gray-300 focus:border-primary"
+                          {...field} 
+                        />
                       </FormControl>
-                      <FormDescription>
-                        Use a strong password with mixed characters, numbers, and symbols
+                      <FormDescription className="text-xs">
+                        Password must be at least 6 characters long
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
+                      <FormLabel className="text-gray-700">Confirm Password</FormLabel>
                       <FormControl>
-                        <PasswordInput placeholder="••••••••" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="securityKey"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Super Admin Security Key</FormLabel>
-                      <FormControl>
-                        <PasswordInput 
-                          placeholder="Enter security key" 
+                        <Input 
+                          type="password" 
+                          placeholder="••••••••" 
+                          className="border-gray-300 focus:border-primary"
                           {...field} 
                         />
                       </FormControl>
-                      <FormDescription>
-                        This is a high-security key for creating super administrator accounts
-                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="phoneNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700">Phone Number</FormLabel>
+                      <FormControl>
+                        <div className="flex">
+                          <select 
+                            className="w-1/3 rounded-l-md border border-gray-300 p-2 focus:border-primary focus:outline-none"
+                            onChange={(e) => {
+                              // Extract just the phone number part without the country code prefix
+                              const currentNumber = field.value ? field.value.replace(/^\+\d+\s/, '') : '';
+                              // Update with new country code
+                              field.onChange(`${e.target.value} ${currentNumber}`);
+                            }}
+                            value={field.value ? field.value.split(' ')[0] : '+971'}
+                          >
+                            <option value="+971">🇦🇪 +971 (UAE)</option>
+                            <option value="+91">🇮🇳 +91 (India)</option>
+                            <option value="+1">🇺🇸 +1 (US/Canada)</option>
+                            <option value="+44">🇬🇧 +44 (UK)</option>
+                            <option value="+966">🇸🇦 +966 (Saudi Arabia)</option>
+                            <option value="+65">🇸🇬 +65 (Singapore)</option>
+                            <option value="+61">🇦🇺 +61 (Australia)</option>
+                            <option value="+49">🇩🇪 +49 (Germany)</option>
+                            <option value="+33">🇫🇷 +33 (France)</option>
+                          </select>
+                          <Input 
+                            placeholder="555 123 4567" 
+                            className="w-2/3 rounded-l-none border-gray-300 focus:border-primary"
+                            onChange={(e) => {
+                              // Get the current country code from the field value
+                              const countryCode = field.value ? field.value.split(' ')[0] : '+971';
+                              // Combine country code with new phone number
+                              field.onChange(`${countryCode} ${e.target.value}`);
+                            }}
+                            value={(field.value ? field.value.replace(/^\+\d+\s/, '') : '') || ''}
+                          />
+                        </div>
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
-                  {isSubmitting ? "Creating Account..." : "Create Super Admin Account"}
+                <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 text-sm text-yellow-800 mt-2">
+                  <p><strong>Important:</strong> You are creating a Super Admin account with full administrative privileges.</p>
+                  <p className="mt-1">This account will have access to all platform features and user data.</p>
+                </div>
+                
+                <Button
+                  type="submit"
+                  className="w-full font-medium bg-primary hover:bg-primary/90 text-white transition-colors h-12"
+                  disabled={registerMutation.isPending}
+                >
+                  {registerMutation.isPending ? (
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  ) : (
+                    <ShieldCheck className="mr-2 h-5 w-5" />
+                  )}
+                  Create Super Admin Account
                 </Button>
               </form>
             </Form>
           </CardContent>
-          <CardFooter className="flex flex-col space-y-2">
-            <div className="text-center text-sm">
-              Already have an admin account?{" "}
-              <Button 
-                variant="link" 
-                className="p-0 h-auto text-primary" 
-                onClick={() => setLocation('/admin-login')}
-              >
-                Sign in
-              </Button>
-            </div>
+          
+          <CardFooter className="border-t pt-4 flex justify-center">
+            <p className="text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link href="/admin-login" className="text-primary font-medium hover:underline">
+                Sign in here
+              </Link>
+            </p>
           </CardFooter>
         </Card>
-      </div>
-      
-      {/* Right side with description */}
-      <div className="hidden lg:flex lg:flex-1 bg-primary text-primary-foreground">
-        <div className="flex flex-col justify-center p-12 max-w-xl mx-auto">
-          <h1 className="text-4xl font-bold mb-6">Super Administrator Access</h1>
-          <p className="text-lg mb-6">
-            Super administrators have enhanced privileges beyond regular admin accounts:
-          </p>
-          <ul className="space-y-4 text-lg">
-            <li className="flex items-start">
-              <span className="mr-2 text-xl">✓</span>
-              <span>Full unrestricted access to all system features and functions</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2 text-xl">✓</span>
-              <span>Ability to manage and override all regular administrator actions</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2 text-xl">✓</span>
-              <span>Complete control over user management and security settings</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2 text-xl">✓</span>
-              <span>Enhanced permissions for creating and managing other administrators</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2 text-xl">✓</span>
-              <span>Bypass approval processes and content restrictions</span>
-            </li>
-          </ul>
-          <div className="mt-8 text-lg italic">
-            Note: Super admin access should be limited to top-level management only
-          </div>
-        </div>
       </div>
     </div>
   );
