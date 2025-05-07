@@ -725,44 +725,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verify that the user type is valid for posting jobs
-      if (req.user.userType !== "employer" && req.user.userType !== "admin") {
+      if (req.user.userType !== "admin") {
         console.log("POST /api/jobs - User type not authorized:", req.user.userType);
-        return res.status(403).json({ message: "Only employers or admins can post jobs" });
+        return res.status(403).json({ message: "Only admins can post jobs" });
       }
 
       const user = req.user;
-      if (user.userType !== "employer" && user.userType !== "admin") {
-        return res.status(403).json({ message: "Only employers or admins can post jobs" });
+      if (user.userType !== "admin") {
+        return res.status(403).json({ message: "Only admins can post jobs" });
       }
 
       // Validate job data - the schema will handle date conversion
       const validatedData = insertJobSchema.parse(req.body);
 
-      let employerId;
+      // Admin users must select an employer ID
+      const selectedEmployerId = req.body.selectedEmployerId;
 
-      // If user is an employer, use their employer ID
-      if (user.userType === "employer") {
-        const employer = await storage.getEmployerByUserId(user.id);
-        if (!employer) {
-          return res.status(404).json({ message: "Employer profile not found" });
-        }
-        employerId = employer.id;
-      } else {
-        // For admin users, use the selected employer ID from the request
-        const selectedEmployerId = req.body.selectedEmployerId;
-
-        if (!selectedEmployerId) {
-          return res.status(400).json({ message: "Admin must select an employer when posting a job" });
-        }
-
-        // Verify the employer exists
-        const employer = await storage.getEmployer(selectedEmployerId);
-        if (!employer) {
-          return res.status(404).json({ message: "Selected employer not found" });
-        }
-
-        employerId = selectedEmployerId;
+      if (!selectedEmployerId) {
+        return res.status(400).json({ message: "Admin must select an employer when posting a job" });
       }
+
+      // Verify the employer exists
+      const employer = await storage.getEmployer(selectedEmployerId);
+      if (!employer) {
+        return res.status(404).json({ message: "Selected employer not found" });
+      }
+
+      const employerId = selectedEmployerId;
 
       // Create the job
       const job = await storage.createJob({
