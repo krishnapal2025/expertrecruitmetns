@@ -20,7 +20,9 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -68,104 +70,35 @@ type JobPostFormValues = z.infer<typeof jobPostSchema>;
 
 // Job categories
 const categories = [
-  "Technology",
-  "Finance",
+  "Technology & IT",
+  "Finance & Banking",
   "Healthcare",
   "Education",
-  "Marketing",
+  "Marketing & Advertising",
   "Engineering",
-  "Sales",
+  "Construction",
+  "Oil & Gas",
+  "Retail",
   "Hospitality",
-];
-
-// Specializations
-const specializations = [
-  // Technology
-  "Software Development",
-  "Data Science",
-  "UX/UI Design",
-  "DevOps Engineering",
-  "Cybersecurity",
-  "Cloud Computing",
-  "Artificial Intelligence",
-  "Machine Learning",
-  "Blockchain Development",
-  // Finance
-  "Investment Banking",
-  "Financial Analysis",
-  "Risk Management",
-  "Wealth Management",
-  "Tax Advisory",
-  "Corporate Finance",
-  // Healthcare
-  "Nursing",
-  "Pharmacy",
-  "Physical Therapy",
-  "Medical Research",
-  "Healthcare Administration",
-  // Marketing
-  "Digital Marketing",
-  "Brand Management",
-  "Content Marketing",
-  "Social Media Marketing",
-  "Market Research",
-  // Engineering
-  "Civil Engineering",
-  "Mechanical Engineering",
-  "Electrical Engineering",
-  // Education
-  "Teaching",
-  "Academic Research",
-  "Educational Administration",
-  // General
-  "Project Management",
-  "Customer Support",
+  "Legal",
   "Human Resources",
-  "Operations Management",
-];
-
-// Job locations
-const locations = [
-  // United States
-  "New York, NY",
-  "San Francisco, CA",
-  "Chicago, IL",
-  "Los Angeles, CA",
-  "Seattle, WA",
-  "Boston, MA",
-  "Austin, TX",
-  "Miami, FL",
-  "Denver, CO",
-  "Washington, DC",
-  // UAE
-  "Dubai, UAE",
-  "Abu Dhabi, UAE",
-  // India
-  "Mumbai, India",
-  "Delhi, India",
-  "Bangalore, India",
-  "Hyderabad, India",
-  "Chennai, India",
-  "Pune, India",
-  // Other International
-  "London, UK",
-  "Toronto, Canada",
-  "Sydney, Australia",
-  "Paris, France",
-  "Munich, Germany",
-  "Dublin, Ireland",
-  // Remote
-  "Remote",
+  "Administration",
+  "Sales",
+  "Transportation & Logistics",
+  "Manufacturing",
+  "Real Estate",
+  "Customer Service",
+  "Other"
 ];
 
 // Job types
 const jobTypes = [
-  "Full-time",
-  "Part-time",
+  "Full-Time",
+  "Part-Time",
   "Contract",
   "Temporary",
   "Internship",
-  "Remote",
+  "Remote"
 ];
 
 // Experience levels
@@ -175,221 +108,313 @@ const experienceLevels = [
   "Mid-Level (3-5 years)",
   "Senior (5-10 years)",
   "Expert (10+ years)",
+  "Executive"
+];
+
+// Locations
+const locations = [
+  "United Arab Emirates (UAE)",
+  "United States",
+  "United Kingdom",
+  "Canada",
+  "Australia",
+  "India",
+  "Saudi Arabia",
+  "Europe",
+  "Singapore",
+  "Remote"
+];
+
+// Specializations
+const specializations = [
+  // Technology
+  "Software Development",
+  "Web Development",
+  "Mobile Development",
+  "DevOps",
+  "Cloud Computing",
+  "Data Science",
+  "Artificial Intelligence",
+  "Machine Learning",
+  "Cybersecurity",
+  "Network Administration",
+  "Database Administration",
+  "UI/UX Design",
+  "Quality Assurance",
+  "Technical Support",
+  
+  // Finance
+  "Accounting",
+  "Banking",
+  "Investment",
+  "Financial Analysis",
+  "Risk Management",
+  "Insurance",
+  "Tax",
+  "Audit",
+  
+  // Healthcare
+  "Nursing",
+  "Physician",
+  "Dental",
+  "Pharmacy",
+  "Physical Therapy",
+  "Mental Health",
+  "Healthcare Administration",
+  
+  // Education
+  "Teaching",
+  "School Administration",
+  "Higher Education",
+  "Early Childhood Education",
+  "Special Education",
+  "Educational Technology",
+  
+  // Engineering
+  "Mechanical Engineering",
+  "Electrical Engineering",
+  "Civil Engineering",
+  "Chemical Engineering",
+  "Aerospace Engineering",
+  "Environmental Engineering",
+  
+  // Sales & Marketing
+  "Digital Marketing",
+  "Social Media",
+  "Content Creation",
+  "SEO",
+  "Sales Management",
+  "Advertising",
+  "Public Relations",
+  "Product Marketing",
+  
+  // Other
+  "General Management",
+  "Project Management",
+  "Business Analysis",
+  "Operations",
+  "Supply Chain",
+  "Logistics",
+  "Customer Success",
+  "Research & Development"
 ];
 
 // Common job titles by category
-const jobTitles = {
-  Technology: [
+const jobTitlesByCategory = {
+  "Technology & IT": [
     "Software Engineer",
+    "Full Stack Developer",
     "Frontend Developer",
     "Backend Developer",
-    "Full Stack Developer",
     "DevOps Engineer",
     "Data Scientist",
     "Machine Learning Engineer",
-    "UI/UX Designer",
-    "Product Manager",
-    "QA Engineer",
-    "Systems Administrator",
-    "IT Support Specialist",
     "Cloud Architect",
+    "Systems Administrator",
     "Network Engineer",
+    "IT Project Manager",
+    "Cybersecurity Analyst",
     "Database Administrator",
+    "QA Engineer",
+    "UI/UX Designer",
+    "Product Manager"
   ],
-  Finance: [
-    "Financial Analyst",
-    "Accountant",
-    "Financial Advisor",
-    "Investment Banker",
-    "Risk Analyst",
-    "Wealth Manager",
-    "Auditor",
-    "Credit Analyst",
-    "Tax Consultant",
-    "Fund Manager",
-  ],
-  Healthcare: [
+  "Healthcare": [
     "Registered Nurse",
     "Physician",
     "Medical Assistant",
     "Physical Therapist",
-    "Pharmacist",
+    "Nurse Practitioner",
     "Dental Hygienist",
-    "Healthcare Administrator",
-    "Occupational Therapist",
+    "Pharmacist",
     "Medical Technologist",
-    "Nutritionist",
+    "Healthcare Administrator",
+    "Occupational Therapist"
   ],
-  Education: [
+  "Finance & Banking": [
+    "Financial Analyst",
+    "Accountant",
+    "Investment Banker",
+    "Financial Advisor",
+    "Credit Analyst",
+    "Risk Manager",
+    "Compliance Officer",
+    "Auditor",
+    "Tax Consultant",
+    "Financial Controller"
+  ],
+  "Education": [
     "Teacher",
     "Professor",
-    "Curriculum Developer",
+    "School Principal",
     "School Counselor",
-    "Principal",
-    "Academic Advisor",
     "Special Education Teacher",
-    "Education Coordinator",
-    "Instructional Designer",
-    "Library Director",
+    "Education Administrator",
+    "Curriculum Developer",
+    "School Psychologist",
+    "Academic Advisor"
   ],
-  Marketing: [
+  "Engineering": [
+    "Mechanical Engineer",
+    "Civil Engineer",
+    "Electrical Engineer",
+    "Chemical Engineer",
+    "Structural Engineer",
+    "Aerospace Engineer",
+    "Petroleum Engineer",
+    "Environmental Engineer",
+    "Biomedical Engineer"
+  ],
+  "Marketing & Advertising": [
     "Marketing Manager",
     "Digital Marketing Specialist",
     "SEO Specialist",
-    "Content Strategist",
     "Social Media Manager",
+    "Content Strategist",
     "Brand Manager",
     "Public Relations Specialist",
     "Market Research Analyst",
-    "Email Marketing Specialist",
-    "Marketing Coordinator",
-  ],
-  Engineering: [
-    "Civil Engineer",
-    "Mechanical Engineer",
-    "Electrical Engineer",
-    "Chemical Engineer",
-    "Aerospace Engineer",
-    "Environmental Engineer",
-    "Structural Engineer",
-    "Petroleum Engineer",
-    "Industrial Engineer",
-    "Biomedical Engineer",
-  ],
-  Sales: [
-    "Sales Representative",
-    "Account Executive",
-    "Sales Manager",
-    "Business Development Manager",
-    "Sales Director",
-    "Inside Sales Representative",
-    "Outside Sales Representative",
-    "Sales Analyst",
-    "Sales Coordinator",
-    "Regional Sales Manager",
-  ],
-  Hospitality: [
-    "Hotel Manager",
-    "Chef",
-    "Restaurant Manager",
-    "Event Planner",
-    "Front Desk Manager",
-    "Food and Beverage Director",
-    "Concierge",
-    "Sous Chef",
-    "Hospitality Coordinator",
-    "Guest Relations Manager",
-  ],
-};
-
-// Common requirements by category
-const commonRequirements = {
-  Technology: [
-    "Bachelor's degree in Computer Science or related field",
-    "Experience with JavaScript, TypeScript, and React",
-    "Experience with NodeJS and Express",
-    "Experience with SQL and NoSQL databases",
-    "Strong problem-solving skills and attention to detail",
-    "Excellent communication and collaboration skills",
-    "Experience with cloud services (AWS, Azure, GCP)",
-    "Knowledge of CI/CD pipelines and DevOps practices",
-    "Experience with Agile development methodologies",
-    "Ability to work independently and as part of a team",
-  ],
-  Finance: [
-    "Bachelor's degree in Finance, Accounting, or related field",
-    "CPA, CFA, or other relevant certifications",
-    "Experience with financial analysis and reporting",
-    "Knowledge of accounting principles and practices",
-    "Experience with financial modeling and forecasting",
-    "Proficiency in Excel and financial software",
-    "Attention to detail and analytical thinking",
-    "Strong communication and presentation skills",
-    "Knowledge of regulatory requirements and compliance",
-    "Experience with budgeting and financial planning",
-  ],
-  Healthcare: [
-    "Degree in Nursing, Medicine, or relevant healthcare field",
-    "Current license or certification in relevant specialty",
-    "Experience in clinical or healthcare setting",
-    "Knowledge of medical terminology and procedures",
-    "Excellent patient care and communication skills",
-    "Ability to work in fast-paced environments",
-    "Experience with electronic health records (EHR) systems",
-    "Knowledge of healthcare regulations and compliance",
-    "Strong ethical standards and confidentiality",
-    "Ability to work flexible hours including nights and weekends",
-  ],
-  General: [
-    "Bachelor's degree in relevant field",
-    "Minimum of X years of experience in similar role",
-    "Strong communication and interpersonal skills",
-    "Ability to work independently and as part of a team",
-    "Excellent problem-solving and analytical skills",
-    "Proficiency in Microsoft Office suite",
-    "Strong attention to detail and organizational skills",
-    "Ability to work under pressure and meet deadlines",
-    "Excellent time management skills",
-    "Willingness to learn and adapt to new technologies",
+    "Media Planner"
   ]
 };
 
-// Salary ranges by experience level
-const salaryRanges = {
+// Common requirements by category
+const requirementsByCategory = {
+  "Technology & IT": [
+    "Bachelor's degree in Computer Science, Software Engineering, or related field",
+    "Proficiency in relevant programming languages (e.g., JavaScript, Python, Java, C#)",
+    "Experience with front-end and back-end frameworks",
+    "Understanding of software development lifecycle and best practices",
+    "Familiarity with database systems (SQL and NoSQL)",
+    "Experience with version control systems (Git)",
+    "Strong problem-solving and analytical skills",
+    "Knowledge of cloud services (AWS, Azure, GCP)",
+    "Excellent communication and teamwork abilities",
+    "Ability to work in an agile environment"
+  ],
+  "Finance & Banking": [
+    "Bachelor's degree in Finance, Accounting, Economics, or related field",
+    "Professional certification (CPA, CFA, or equivalent) preferred",
+    "Strong analytical and quantitative skills",
+    "Proficiency in financial modeling and analysis",
+    "Knowledge of financial regulations and compliance requirements",
+    "Experience with financial software and tools",
+    "Excellent attention to detail",
+    "Strong problem-solving abilities",
+    "Effective verbal and written communication skills",
+    "Ability to work under pressure and meet deadlines"
+  ],
+  "Healthcare": [
+    "Relevant degree in healthcare or medical field",
+    "Required certifications and licenses for the role",
+    "Understanding of medical terminology and procedures",
+    "Experience with healthcare systems and patient care",
+    "Knowledge of healthcare regulations and compliance standards",
+    "Strong interpersonal and communication skills",
+    "Ability to work in fast-paced environments",
+    "Compassion and empathy in patient interactions",
+    "Proficiency with relevant medical software",
+    "Commitment to patient confidentiality and privacy"
+  ],
+  "Engineering": [
+    "Bachelor's degree in relevant engineering discipline",
+    "Professional engineering license or certification (PE, PMP, etc.)",
+    "Experience with industry-specific software and tools",
+    "Knowledge of applicable codes, standards, and regulations",
+    "Strong analytical and problem-solving skills",
+    "Ability to read and interpret technical drawings and specifications",
+    "Experience with project management and coordination",
+    "Understanding of safety protocols and procedures",
+    "Excellent communication and teamwork skills",
+    "Attention to detail and quality control focus"
+  ],
+  "Marketing & Advertising": [
+    "Bachelor's degree in Marketing, Communications, Business, or related field",
+    "Experience with digital marketing platforms and tools",
+    "Knowledge of SEO, SEM, and social media marketing",
+    "Strong creative and strategic thinking skills",
+    "Excellent written and verbal communication abilities",
+    "Data analysis and performance measurement capabilities",
+    "Understanding of market research methodologies",
+    "Experience with CRM systems and marketing automation tools",
+    "Ability to manage multiple projects and meet deadlines",
+    "Strong presentation and client communication skills"
+  ],
+  "General": [
+    "Relevant degree in field of expertise",
+    "X+ years of experience in similar role",
+    "Strong communication and interpersonal skills",
+    "Excellent problem-solving abilities",
+    "Attention to detail and accuracy",
+    "Ability to work independently and in a team environment",
+    "Proficiency with relevant software tools",
+    "Strong organizational and time management skills",
+    "Adaptability and willingness to learn",
+    "Professional demeanor and work ethic"
+  ]
+};
+
+// Salary ranges by experience level and category
+const salaryRangesByExperience = {
   "Entry Level (0-1 years)": {
-    "Technology": { min: 40000, max: 65000 },
-    "Finance": { min: 45000, max: 70000 },
-    "Healthcare": { min: 35000, max: 60000 },
-    "Education": { min: 35000, max: 55000 },
-    "Marketing": { min: 38000, max: 60000 },
-    "Engineering": { min: 45000, max: 70000 },
-    "Sales": { min: 35000, max: 65000 },
-    "Hospitality": { min: 30000, max: 50000 },
-    "Default": { min: 35000, max: 60000 }
+    "Technology & IT": { min: 50000, max: 70000 },
+    "Finance & Banking": { min: 45000, max: 65000 },
+    "Healthcare": { min: 40000, max: 60000 },
+    "Engineering": { min: 55000, max: 75000 },
+    "Marketing & Advertising": { min: 40000, max: 60000 },
+    "Human Resources": { min: 40000, max: 55000 },
+    "Legal": { min: 45000, max: 65000 },
+    "Default": { min: 40000, max: 60000 }
   },
   "Junior (1-3 years)": {
-    "Technology": { min: 65000, max: 90000 },
-    "Finance": { min: 70000, max: 95000 },
-    "Healthcare": { min: 60000, max: 85000 },
-    "Education": { min: 55000, max: 75000 },
-    "Marketing": { min: 60000, max: 85000 },
-    "Engineering": { min: 70000, max: 95000 },
-    "Sales": { min: 65000, max: 90000 },
-    "Hospitality": { min: 50000, max: 70000 },
-    "Default": { min: 60000, max: 85000 }
+    "Technology & IT": { min: 70000, max: 90000 },
+    "Finance & Banking": { min: 65000, max: 85000 },
+    "Healthcare": { min: 60000, max: 80000 },
+    "Engineering": { min: 75000, max: 95000 },
+    "Marketing & Advertising": { min: 60000, max: 80000 },
+    "Human Resources": { min: 55000, max: 75000 },
+    "Legal": { min: 65000, max: 90000 },
+    "Default": { min: 60000, max: 80000 }
   },
   "Mid-Level (3-5 years)": {
-    "Technology": { min: 90000, max: 120000 },
-    "Finance": { min: 95000, max: 130000 },
-    "Healthcare": { min: 85000, max: 115000 },
-    "Education": { min: 75000, max: 95000 },
-    "Marketing": { min: 85000, max: 110000 },
-    "Engineering": { min: 95000, max: 130000 },
-    "Sales": { min: 90000, max: 120000 },
-    "Hospitality": { min: 70000, max: 95000 },
-    "Default": { min: 85000, max: 115000 }
+    "Technology & IT": { min: 90000, max: 120000 },
+    "Finance & Banking": { min: 85000, max: 110000 },
+    "Healthcare": { min: 80000, max: 100000 },
+    "Engineering": { min: 95000, max: 125000 },
+    "Marketing & Advertising": { min: 80000, max: 105000 },
+    "Human Resources": { min: 75000, max: 95000 },
+    "Legal": { min: 90000, max: 120000 },
+    "Default": { min: 80000, max: 105000 }
   },
   "Senior (5-10 years)": {
-    "Technology": { min: 120000, max: 160000 },
-    "Finance": { min: 130000, max: 180000 },
-    "Healthcare": { min: 115000, max: 150000 },
-    "Education": { min: 95000, max: 130000 },
-    "Marketing": { min: 110000, max: 150000 },
-    "Engineering": { min: 130000, max: 180000 },
-    "Sales": { min: 120000, max: 160000 },
-    "Hospitality": { min: 95000, max: 130000 },
-    "Default": { min: 115000, max: 160000 }
+    "Technology & IT": { min: 120000, max: 150000 },
+    "Finance & Banking": { min: 110000, max: 140000 },
+    "Healthcare": { min: 100000, max: 130000 },
+    "Engineering": { min: 125000, max: 160000 },
+    "Marketing & Advertising": { min: 105000, max: 135000 },
+    "Human Resources": { min: 95000, max: 125000 },
+    "Legal": { min: 120000, max: 160000 },
+    "Default": { min: 105000, max: 140000 }
   },
   "Expert (10+ years)": {
-    "Technology": { min: 160000, max: 250000 },
-    "Finance": { min: 180000, max: 300000 },
-    "Healthcare": { min: 150000, max: 250000 },
-    "Education": { min: 130000, max: 180000 },
-    "Marketing": { min: 150000, max: 200000 },
-    "Engineering": { min: 180000, max: 250000 },
-    "Sales": { min: 160000, max: 250000 },
-    "Hospitality": { min: 130000, max: 180000 },
-    "Default": { min: 160000, max: 240000 }
+    "Technology & IT": { min: 150000, max: 200000 },
+    "Finance & Banking": { min: 140000, max: 180000 },
+    "Healthcare": { min: 130000, max: 170000 },
+    "Engineering": { min: 160000, max: 210000 },
+    "Marketing & Advertising": { min: 135000, max: 175000 },
+    "Human Resources": { min: 125000, max: 160000 },
+    "Legal": { min: 160000, max: 220000 },
+    "Default": { min: 140000, max: 180000 }
+  },
+  "Executive": {
+    "Technology & IT": { min: 200000, max: 300000 },
+    "Finance & Banking": { min: 180000, max: 250000 },
+    "Healthcare": { min: 170000, max: 240000 },
+    "Engineering": { min: 210000, max: 280000 },
+    "Marketing & Advertising": { min: 175000, max: 230000 },
+    "Human Resources": { min: 160000, max: 210000 },
+    "Legal": { min: 220000, max: 300000 },
+    "Default": { min: 180000, max: 250000 }
   }
 };
 
@@ -453,7 +478,7 @@ export default function PostJobPage() {
       const category = selectedCategory;
       const experience = selectedExperience;
       
-      const ranges = salaryRanges[experience as keyof typeof salaryRanges];
+      const ranges = salaryRangesByExperience[experience as keyof typeof salaryRangesByExperience];
       if (ranges) {
         const categoryRanges = ranges[category as keyof typeof ranges] || ranges["Default"];
         if (categoryRanges) {
@@ -476,578 +501,329 @@ export default function PostJobPage() {
   
   // Function to suggest job titles based on selected category
   const suggestJobTitles = (selectedCategory: string) => {
-    return jobTitles[selectedCategory as keyof typeof jobTitles] || [];
+    return jobTitlesByCategory[selectedCategory as keyof typeof jobTitlesByCategory] || [];
   };
   
   // Function to load common requirements based on category
   const loadRequirements = (category: string) => {
-    const categoryKey = category as keyof typeof commonRequirements;
-    const requirementsList = commonRequirements[categoryKey] || commonRequirements.General;
+    const categoryKey = category as keyof typeof requirementsByCategory;
+    const requirementsList = requirementsByCategory[categoryKey] || requirementsByCategory.General;
     
     if (requirementsList && requirementsList.length > 0) {
-      const formattedRequirements = requirementsList.map(req => `• ${req}`).join('\n\n');
-      form.setValue('requirements', formattedRequirements);
+      const requirementsText = requirementsList.map(req => `• ${req}`).join('\n');
+      form.setValue('requirements', requirementsText);
       
       toast({
         title: "Requirements Loaded",
-        description: `Common requirements for ${category} roles have been added.`,
+        description: `Common requirements for ${category} jobs have been loaded.`,
       });
     }
   };
-
+  
   // Create job mutation
   const createJobMutation = useMutation({
     mutationFn: async (data: JobPostFormValues) => {
-      // Re-check authentication status before submission
-      // This helps ensure the session is still valid
-      try {
-        console.log("Verifying authentication before POST request...");
-        const userCheckRes = await fetch('/api/user', { 
-          credentials: 'include',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        });
-        
-        // If not authenticated, throw error to prevent job submission
-        if (!userCheckRes.ok || userCheckRes.status === 401) {
-          console.error("Authentication check failed before job submission");
-          throw new Error("Your session has expired. Please refresh the page and login again.");
-        }
-        
-        const user = await userCheckRes.json();
-        console.log("Authentication confirmed before request");
-        
-        // For admin users posting on behalf of a company, update the company name
-        if (user.user.userType === "admin" && companyName) {
-          // Update the company name from our input field
-          data.company = companyName;
-        }
-        
-        // Create a clean job payload with explicit string/number handling and null safety
-        // This ensures consistent data types are sent to the server and matches our schema validation
-        const payload = {
-          // Required fields with trimming
-          title: data.title?.trim() || "",
-          company: data.company?.trim() || "",
-          location: data.location?.trim() || "",
-          category: data.category?.trim() || "",
-          jobType: data.jobType?.trim() || "",
-          description: data.description?.trim() || "",
-          requirements: data.requirements?.trim() || "",
-          benefits: data.benefits?.trim() || "",
-          experience: data.experience?.trim() || "",
-          
-          // Numeric fields with proper conversion and fallbacks
-          minSalary: isNaN(Number(data.minSalary)) ? 0 : Number(data.minSalary),
-          maxSalary: isNaN(Number(data.maxSalary)) ? 0 : Number(data.maxSalary),
-          
-          // Email with validation
-          contactEmail: data.contactEmail?.trim() || "",
-          
-          // Date field handling - ensure proper format
-          applicationDeadline: typeof data.applicationDeadline === 'object' 
-            ? (data.applicationDeadline as Date).toISOString().split('T')[0]
-            : (data.applicationDeadline?.trim() || new Date().toISOString().split('T')[0]),
-          
-          // Optional fields with null safety
-          specialization: data.specialization?.trim() || null,
-          salary: data.salary?.trim() || null,
-          
-          // If we're admin posting on behalf of company, we don't need employerId
-          employerId: currentUser?.user.userType === "employer" ? currentUser?.user.id : null
-        };
-        
-        console.log("Submitting job with clean payload:", payload);
-        
-        const res = await apiRequest("POST", "/api/jobs", payload);
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || "Failed to create job");
-        }
-        return await res.json();
-      } catch (error) {
-        console.error("Error during job submission:", error);
-        throw error;
+      let payload = { ...data };
+      
+      // If admin is creating a job on behalf of an employer
+      if (currentUser?.user.userType === "admin" && companyName) {
+        payload.company = companyName;
       }
+      
+      const res = await apiRequest("POST", "/api/jobs", payload);
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to create job");
+      }
+      
+      return await res.json();
     },
     onSuccess: (data) => {
       toast({
-        title: "Job Posted Successfully",
-        description: "Your job has been posted and is now visible in the Jobs Found section.",
+        title: "Success",
+        description: "Job posted successfully",
       });
       
-      // Invalidate all queries related to jobs to ensure immediate visibility
-      queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/realtime/jobs"] });
-      
-      // Immediately redirect to job board to see the newly posted job
-      setLocation("/job-board");
+      queryClient.invalidateQueries({ queryKey: ['/api/jobs'] });
+      setLocation('/my-jobs');
     },
     onError: (error: Error) => {
       toast({
-        title: "Failed to Post Job",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
     },
   });
   
-  // Handle form submission
   const onSubmit = async (data: JobPostFormValues) => {
-    // Check if the user is authenticated
-    if (!currentUser) {
-      // Try to refresh the session before giving up
-      try {
-        console.log("Attempting to refresh user session before job submission");
-        const refreshedUser = await refetchUser();
-        if (!refreshedUser) {
-          toast({
-            title: "Authentication Required",
-            description: "You must be logged in to post a job.",
-            variant: "destructive",
-          });
-          return;
-        }
-        console.log("Successfully refreshed user session:", refreshedUser);
-      } catch (error) {
-        console.error("Failed to refresh user session:", error);
-        toast({
-          title: "Authentication Required",
-          description: "You must be logged in to post a job. Please refresh the page and try again.",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
-
-    // Re-check authentication after potential refresh
-    if (!currentUser) {
-      toast({
-        title: "Authentication Required",
-        description: "You must be logged in to post a job.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Check if admin has entered a company name
-    if (currentUser.user.userType === "admin" && !companyName.trim()) {
-      toast({
-        title: "Company Name Required",
-        description: "Please enter a company name before posting a job.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    console.log("Submitting job with user:", currentUser);
     createJobMutation.mutate(data);
   };
   
-  // Get currency symbol based on selected location
-  const getCurrencySymbol = (location: string): string => {
-    if (location.includes("India")) {
-      return "₹"; // Indian Rupee
-    } else if (location.includes("UAE")) {
-      return "AED "; // UAE Dirham
-    } else if (location.includes("UK")) {
-      return "£"; // British Pound
-    } else if (location.includes("Europe") || location.includes("France") || location.includes("Germany")) {
-      return "€"; // Euro
-    } else if (location.includes("Canada")) {
-      return "C$"; // Canadian Dollar
-    } else if (location.includes("Australia")) {
-      return "A$"; // Australian Dollar
-    } else {
-      return "$"; // Default to US Dollar
-    }
-  };
+  // If not authenticated or not authorized
+  if (!currentUser) {
+    return (
+      <div className="container max-w-5xl py-10">
+        <Alert>
+          <AlertTitle>Authentication Required</AlertTitle>
+          <AlertDescription>
+            You must be logged in as an employer or admin to post jobs.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
   
-  return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Post a Job</h1>
-        <p className="text-gray-600 mb-8">
-          Create a new job listing to find the perfect candidate for your position
-        </p>
+  if (currentUser.user.userType !== "employer" && currentUser.user.userType !== "admin") {
+    return (
+      <div className="container max-w-5xl py-10">
+        <Alert>
+          <AlertTitle>Unauthorized</AlertTitle>
+          <AlertDescription>
+            Only employers and administrators can post jobs.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+  
+  // Render job preview if preview is enabled
+  if (isPreview) {
+    return (
+      <div className="container max-w-4xl py-10">
+        <Button 
+          className="mb-4" 
+          variant="outline"
+          onClick={() => setIsPreview(false)}
+        >
+          Back to Editor
+        </Button>
         
-        {!currentUser ? (
-          <Alert className="mb-6">
-            <AlertTitle>Authentication Required</AlertTitle>
-            <AlertDescription>
-              You need to be logged in as an admin to post jobs. 
-              <Button variant="link" onClick={() => setLocation("/admin-login")}>
-                Sign in as admin
-              </Button>
-            </AlertDescription>
-          </Alert>
-        ) : (currentUser.user.userType !== "admin") ? (
-          <Alert className="mb-6">
-            <AlertTitle>Admin Account Required</AlertTitle>
-            <AlertDescription>
-              Only admin accounts can post jobs. Your current account does not have the necessary permissions.
-            </AlertDescription>
-          </Alert>
-        ) : (
-          <>
-            {/* Toggle between form and preview */}
-            <div className="flex mb-6 border-b pb-4">
-              <Button
-                variant={isPreview ? "outline" : "default"}
-                className="mr-2"
+        <Card className="mb-10">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-2xl">{formValues.title}</CardTitle>
+                <CardDescription className="text-lg">{formValues.company}</CardDescription>
+              </div>
+              <Button 
+                variant="outline" 
                 onClick={() => setIsPreview(false)}
               >
-                Edit Job
-              </Button>
-              <Button
-                variant={isPreview ? "default" : "outline"}
-                onClick={() => setIsPreview(true)}
-              >
-                Preview
+                Edit
               </Button>
             </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 opacity-70" />
+                <span>{formValues.location}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Briefcase className="h-4 w-4 opacity-70" />
+                <span>{formValues.jobType}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Building className="h-4 w-4 opacity-70" />
+                <span>{formValues.category}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 opacity-70" />
+                <span>{formValues.experience}</span>
+              </div>
+              <div className="flex items-center gap-2 col-span-2">
+                <DollarSign className="h-4 w-4 opacity-70" />
+                <span>${formValues.minSalary.toLocaleString()} - ${formValues.maxSalary.toLocaleString()} per year</span>
+              </div>
+            </div>
             
-            {isPreview ? (
-              // Job Preview
-              <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-medium mb-2">Description</h3>
+              <p className="whitespace-pre-wrap">{formValues.description}</p>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-medium mb-2">Requirements</h3>
+              <p className="whitespace-pre-wrap">{formValues.requirements}</p>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-medium mb-2">Benefits</h3>
+              <p className="whitespace-pre-wrap">{formValues.benefits}</p>
+            </div>
+            
+            <Separator />
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <h3 className="text-lg font-medium mb-2">Application Deadline</h3>
+                <p>{new Date(formValues.applicationDeadline).toLocaleDateString()}</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-medium mb-2">Contact Email</h3>
+                <p>{formValues.contactEmail}</p>
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <div className="flex justify-between w-full">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsPreview(false)}
+              >
+                Back to Editor
+              </Button>
+              <Button 
+                onClick={() => onSubmit(formValues)}
+                disabled={createJobMutation.isPending}
+              >
+                {createJobMutation.isPending ? "Posting..." : "Post Job"}
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+  
+  // Render post job form
+  return (
+    <div className="container max-w-5xl py-10">
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold mb-2">Post a Job</h1>
+        <p className="text-muted-foreground">
+          Fill out the form below to create a new job listing
+        </p>
+        
+        {currentUser?.user.userType === "admin" && (
+          <Alert className="mt-4">
+            <AlertTitle>Admin Mode</AlertTitle>
+            <AlertDescription>
+              You are posting a job as an administrator. You can enter any company name.
+            </AlertDescription>
+          </Alert>
+        )}
+      </div>
+      
+      <div className="space-y-8">
+        {createJobMutation.error && (
+          <Alert variant="destructive">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {createJobMutation.error.message}
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {!isPreview && (
+          <>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <Card>
                   <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-2xl font-bold">
-                          {formValues.title || "[Job Title]"}
-                        </CardTitle>
-                        <div className="flex items-center mt-2">
-                          <Building className="h-4 w-4 mr-1 text-gray-500" />
-                          <span className="text-gray-600">
-                            {formValues.company || "[Company Name]"}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <span className="inline-flex items-center bg-primary/10 text-primary rounded-full px-3 py-1 text-sm font-medium">
-                          {formValues.jobType || "Job Type"}
-                        </span>
-                      </div>
-                    </div>
+                    <CardTitle>Job Details</CardTitle>
+                    <CardDescription>
+                      Enter the basic information about the job position
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                      <div className="flex items-center">
-                        <MapPin className="h-4 w-4 mr-1" />
-                        {formValues.location || "Location"}
-                      </div>
-                      <div className="flex items-center">
-                        <Briefcase className="h-4 w-4 mr-1" />
-                        {formValues.category || "Category"}
-                      </div>
-                      <div className="flex items-center">
-                        <Clock className="h-4 w-4 mr-1" />
-                        {formValues.experience || "Experience Level"}
-                      </div>
-                      <div className="flex items-center">
-                        <DollarSign className="h-4 w-4 mr-1" />
-                        {formValues.location ? getCurrencySymbol(formValues.location) : "$"}
-                        {(formValues.minSalary > 0 ? formValues.minSalary.toLocaleString() : "Min")} - 
-                        {formValues.location ? getCurrencySymbol(formValues.location) : "$"}
-                        {(formValues.maxSalary > 0 ? formValues.maxSalary.toLocaleString() : "Max")} per year
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">Job Description</h3>
-                      <p className="whitespace-pre-line">
-                        {formValues.description || "Add a detailed description of the job responsibilities and expectations."}
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">Requirements</h3>
-                      <p className="whitespace-pre-line">
-                        {formValues.requirements || "List the skills, qualifications, and experience required for this position."}
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">Benefits</h3>
-                      <p className="whitespace-pre-line">
-                        {formValues.benefits || "Describe the benefits, perks, and advantages of working in this role."}
-                      </p>
-                    </div>
-                    
-                    <div className="rounded-lg bg-gray-50 p-4 border">
-                      <div className="font-medium mb-2">Application Information</div>
-                      <div className="text-sm">
-                        <p>
-                          <span className="font-medium">Deadline:</span> {formValues.applicationDeadline ? new Date(formValues.applicationDeadline).toLocaleDateString() : "Not specified"}
-                        </p>
-                        <p>
-                          <span className="font-medium">Contact:</span> {formValues.contactEmail || "Not specified"}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button 
-                      className="w-full" 
-                      onClick={() => {
-                        form.handleSubmit(onSubmit)();
-                      }}
-                      disabled={createJobMutation.isPending}
-                    >
-                      {createJobMutation.isPending ? "Posting..." : "Post Job Now"}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </div>
-            ) : (
-              // Job Post Form
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Job Details</CardTitle>
-                      <CardDescription>
-                        Enter the basic information about the job position
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="title"
-                        render={({ field }) => (
-                          <FormItem>
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex justify-between items-center">
                             <FormLabel>Job Title</FormLabel>
-                            <div className="flex gap-2 items-start">
-                              <div className="flex-1">
-                                <FormControl>
-                                  <Input placeholder="e.g., Senior Frontend Developer" {...field} />
-                                </FormControl>
-                              </div>
-                              {selectedCategory && (
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  size="sm"
-                                  className="mt-1"
-                                  onClick={() => {
-                                    const titles = suggestJobTitles(selectedCategory);
-                                    if (titles.length > 0) {
-                                      // Create a dropdown-like dialog to select from titles
-                                      const select = document.createElement('select');
-                                      select.style.position = 'fixed';
-                                      select.style.top = '-100px';
-                                      select.style.opacity = '0';
-                                      
-                                      titles.forEach(title => {
-                                        const option = document.createElement('option');
-                                        option.value = title;
-                                        option.text = title;
-                                        select.appendChild(option);
-                                      });
-                                      
-                                      document.body.appendChild(select);
-                                      select.size = Math.min(titles.length, 10);
-                                      select.focus();
-                                      
-                                      select.onchange = () => {
-                                        const selectedTitle = select.value;
-                                        form.setValue('title', selectedTitle);
-                                        document.body.removeChild(select);
-                                        
-                                        toast({
-                                          title: "Job Title Selected",
-                                          description: `You've selected "${selectedTitle}" as the job title.`,
-                                        });
-                                      };
-                                      
-                                      select.onblur = () => {
-                                        document.body.removeChild(select);
-                                      };
-                                    }
-                                  }}
-                                >
-                                  Suggest Titles
-                                </Button>
-                              )}
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      {/* Admin-only employer name input field */}
-                      {currentUser?.user.userType === "admin" && (
-                        <div className="mb-4">
-                          <FormLabel>Enter Employer Company Name</FormLabel>
-                          <Input
-                            type="text"
-                            placeholder="Enter company name"
-                            value={companyName || ''}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              setCompanyName(value);
-                            }}
-                            className="w-full"
-                          />
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Enter the company name to post on their behalf
-                          </p>
-                        </div>
+                            {selectedCategory && (
+                              <Select
+                                onValueChange={(value) => {
+                                  form.setValue('title', value);
+                                  toast({
+                                    title: "Job Title Selected",
+                                    description: `Selected "${value}" as the job title.`,
+                                  });
+                                }}
+                              >
+                                <SelectTrigger className="w-[180px]">
+                                  <SelectValue placeholder="Select title" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>Common Titles</SelectLabel>
+                                    {suggestJobTitles(selectedCategory).map((title) => (
+                                      <SelectItem key={title} value={title}>
+                                        {title}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            )}
+                          </div>
+                          <FormControl>
+                            <Input placeholder="e.g., Senior Frontend Developer" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                       )}
-                      
+                    />
+                    
+                    {/* Admin-only employer name input field */}
+                    {currentUser?.user.userType === "admin" && (
+                      <div className="mb-4">
+                        <FormLabel>Enter Employer Company Name</FormLabel>
+                        <Input
+                          type="text"
+                          placeholder="Enter company name"
+                          value={companyName || ''}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setCompanyName(value);
+                          }}
+                          className="w-full"
+                        />
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Enter the company name to post on their behalf
+                        </p>
+                      </div>
+                    )}
+                    
+                    <FormField
+                      control={form.control}
+                      name="company"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Company Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Your company name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
-                        name="company"
+                        name="location"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Company Name</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Your company name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="location"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Location</FormLabel>
-                              <Select 
-                                onValueChange={field.onChange} 
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select location" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {locations.map((location) => (
-                                    <SelectItem key={location} value={location}>
-                                      {location}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="category"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Job Category</FormLabel>
-                              <Select 
-                                onValueChange={field.onChange} 
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select category" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {categories.map((category) => (
-                                    <SelectItem key={category} value={category}>
-                                      {category}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="jobType"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Job Type</FormLabel>
-                              <Select 
-                                onValueChange={field.onChange} 
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select job type" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {jobTypes.map((type) => (
-                                    <SelectItem key={type} value={type}>
-                                      {type}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="experience"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Experience Level</FormLabel>
-                              <Select 
-                                onValueChange={field.onChange} 
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select experience level" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {experienceLevels.map((level) => (
-                                    <SelectItem key={level} value={level}>
-                                      {level}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      
-                      <FormField
-                        control={form.control}
-                        name="specialization"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Specialization (Optional)</FormLabel>
+                            <FormLabel>Location</FormLabel>
                             <Select 
                               onValueChange={field.onChange} 
                               defaultValue={field.value}
                             >
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select specialization" />
+                                  <SelectValue placeholder="Select location" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {specializations.map((specialization) => (
-                                  <SelectItem key={specialization} value={specialization}>
-                                    {specialization}
+                                {locations.map((location) => (
+                                  <SelectItem key={location} value={location}>
+                                    {location}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -1057,84 +833,134 @@ export default function PostJobPage() {
                         )}
                       />
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="minSalary"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Minimum Salary</FormLabel>
+                      <FormField
+                        control={form.control}
+                        name="category"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Job Category</FormLabel>
+                            <Select 
+                              onValueChange={field.onChange} 
+                              defaultValue={field.value}
+                            >
                               <FormControl>
-                                <Input 
-                                  type="number" 
-                                  placeholder="e.g., 50000"
-                                  min="0"
-                                  step="1000"
-                                  {...field}
-                                />
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
                               </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="maxSalary"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Maximum Salary</FormLabel>
+                              <SelectContent>
+                                {categories.map((category) => (
+                                  <SelectItem key={category} value={category}>
+                                    {category}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="jobType"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Job Type</FormLabel>
+                            <Select 
+                              onValueChange={field.onChange} 
+                              defaultValue={field.value}
+                            >
                               <FormControl>
-                                <Input 
-                                  type="number" 
-                                  placeholder="e.g., 80000"
-                                  min="0"
-                                  step="1000"
-                                  {...field}
-                                />
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select job type" />
+                                </SelectTrigger>
                               </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
+                              <SelectContent>
+                                {jobTypes.map((type) => (
+                                  <SelectItem key={type} value={type}>
+                                    {type}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                       
-                      {/* Salary range suggestion button */}
-                      {selectedCategory && selectedExperience && (
-                        <div className="flex justify-end mt-4">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="flex items-center gap-1"
-                            onClick={suggestSalaryRange}
+                      <FormField
+                        control={form.control}
+                        name="experience"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Experience Level</FormLabel>
+                            <Select 
+                              onValueChange={field.onChange} 
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select experience level" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {experienceLevels.map((level) => (
+                                  <SelectItem key={level} value={level}>
+                                    {level}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name="specialization"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Specialization (Optional)</FormLabel>
+                          <Select 
+                            onValueChange={field.onChange} 
+                            defaultValue={field.value}
                           >
-                            <DollarSign className="h-4 w-4" />
-                            Suggest Salary Range
-                          </Button>
-                        </div>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select specialization" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {specializations.map((specialization) => (
+                                <SelectItem key={specialization} value={specialization}>
+                                  {specialization}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
                       )}
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Job Description</CardTitle>
-                      <CardDescription>
-                        Provide details about the role, responsibilities, and benefits
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
+                    />
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
-                        name="description"
+                        name="minSalary"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Job Description</FormLabel>
+                            <FormLabel>Minimum Salary</FormLabel>
                             <FormControl>
-                              <Textarea 
-                                placeholder="Describe the role and responsibilities..."
-                                className="min-h-32"
+                              <Input 
+                                type="number" 
+                                placeholder="e.g., 50000"
+                                min="0"
+                                step="1000"
                                 {...field}
                               />
                             </FormControl>
@@ -1145,27 +971,16 @@ export default function PostJobPage() {
                       
                       <FormField
                         control={form.control}
-                        name="requirements"
+                        name="maxSalary"
                         render={({ field }) => (
                           <FormItem>
-                            <div className="flex justify-between items-center">
-                              <FormLabel>Requirements</FormLabel>
-                              {selectedCategory && (
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  size="sm"
-                                  className="flex items-center gap-1 text-xs"
-                                  onClick={() => loadRequirements(selectedCategory)}
-                                >
-                                  Load Common Requirements
-                                </Button>
-                              )}
-                            </div>
+                            <FormLabel>Maximum Salary</FormLabel>
                             <FormControl>
-                              <Textarea 
-                                placeholder="List the qualifications and skills required..."
-                                className="min-h-24"
+                              <Input 
+                                type="number" 
+                                placeholder="e.g., 80000"
+                                min="0"
+                                step="1000"
                                 {...field}
                               />
                             </FormControl>
@@ -1173,96 +988,168 @@ export default function PostJobPage() {
                           </FormItem>
                         )}
                       />
-                      
-                      <FormField
-                        control={form.control}
-                        name="benefits"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Benefits</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="List the benefits offered..."
-                                className="min-h-20"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Application Information</CardTitle>
-                      <CardDescription>
-                        Details for candidates to apply for this position
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="applicationDeadline"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Application Deadline</FormLabel>
-                              <FormControl>
-                                <Input 
-                                  type="date" 
-                                  {...field}
-                                  min={new Date().toISOString().split('T')[0]}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="contactEmail"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Contact Email</FormLabel>
-                              <FormControl>
-                                <Input 
-                                  type="email" 
-                                  placeholder="Contact email for applications"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                    </div>
+                    
+                    {selectedCategory && selectedExperience && (
+                      <div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={suggestSalaryRange}
+                          className="w-full"
+                        >
+                          Suggest Salary Range for {selectedCategory} - {selectedExperience}
+                        </Button>
                       </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <div className="flex justify-end space-x-2">
-                    <Button variant="outline" type="button" onClick={() => form.reset()}>
-                      Reset
-                    </Button>
-                    <Button 
-                      type="button" 
-                      onClick={() => setIsPreview(true)}
-                    >
-                      Preview
-                    </Button>
-                    <Button 
-                      type="submit"
-                      disabled={createJobMutation.isPending}
-                    >
-                      <Save className="mr-2 h-4 w-4" />
-                      {createJobMutation.isPending ? "Posting..." : "Post Job"}
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            )}
+                    )}
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Job Description</CardTitle>
+                    <CardDescription>
+                      Provide detailed information about the job
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Description</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Describe the job role, responsibilities, and other important details..."
+                              className="min-h-32"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="requirements"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex justify-between items-center">
+                            <FormLabel>Requirements</FormLabel>
+                            {selectedCategory && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="flex items-center gap-1 text-xs"
+                                onClick={() => loadRequirements(selectedCategory)}
+                              >
+                                Load Common Requirements
+                              </Button>
+                            )}
+                          </div>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="List the qualifications and skills required..."
+                              className="min-h-24"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="benefits"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Benefits</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="List the benefits offered..."
+                              className="min-h-20"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Application Information</CardTitle>
+                    <CardDescription>
+                      Details for candidates to apply for this position
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="applicationDeadline"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Application Deadline</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="date" 
+                                {...field}
+                                min={new Date().toISOString().split('T')[0]}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="contactEmail"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Contact Email</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="email" 
+                                placeholder="Contact email for applications"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <div className="flex justify-end space-x-2">
+                  <Button variant="outline" type="button" onClick={() => form.reset()}>
+                    Reset
+                  </Button>
+                  <Button 
+                    type="button" 
+                    onClick={() => setIsPreview(true)}
+                  >
+                    Preview
+                  </Button>
+                  <Button 
+                    type="submit"
+                    disabled={createJobMutation.isPending}
+                  >
+                    <Save className="mr-2 h-4 w-4" />
+                    {createJobMutation.isPending ? "Posting..." : "Post Job"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </>
         )}
       </div>
