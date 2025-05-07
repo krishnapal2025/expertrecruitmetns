@@ -274,8 +274,8 @@ export function setupAuth(app: Express) {
       if (err) return next(err);
       if (!user) return res.status(400).json({ message: info.message || "Invalid credentials" });
       
-      // Check if the user is an admin
-      if (user.userType !== "admin") {
+      // Check if the user is an admin or super_admin
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
         return res.status(403).json({ 
           message: "Access denied. This login is for administrators only." 
         });
@@ -328,11 +328,11 @@ export function setupAuth(app: Express) {
       profile = await storage.getJobSeekerByUserId(user.id);
     } else if (user.userType === "employer") {
       profile = await storage.getEmployerByUserId(user.id);
-    } else if (user.userType === "admin") {
+    } else if (user.userType === "admin" || user.userType === "super_admin") {
       profile = await storage.getAdminByUserId(user.id);
       // If admin profile not found, use minimal profile
       if (!profile) {
-        profile = { id: user.id, role: "admin" };
+        profile = { id: user.id, role: user.userType };
       }
     }
     
@@ -345,8 +345,8 @@ export function setupAuth(app: Express) {
     
     const user = req.user;
     
-    // Only allow admin users to access this endpoint
-    if (user.userType !== "admin") {
+    // Only allow admin or super_admin users to access this endpoint
+    if (user.userType !== "admin" && user.userType !== "super_admin") {
       return res.status(403).json({ 
         message: "Access denied. This endpoint is for administrators only." 
       });
