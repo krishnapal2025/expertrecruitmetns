@@ -38,15 +38,15 @@ export default function PostManagerPage() {
   const [, setLocation] = useLocation();
   const [jobToDelete, setJobToDelete] = useState<number | null>(null);
   
-  // Fetch employer's jobs
+  // Fetch jobs (admin only)
   const { data: jobs, isLoading } = useQuery<Job[]>({
-    queryKey: ["/api/employer/jobs"],
+    queryKey: ["/api/jobs"],
     queryFn: async () => {
-      const res = await apiRequest("GET", "/api/employer/jobs");
-      if (!res.ok) throw new Error("Failed to fetch your job listings");
+      const res = await apiRequest("GET", "/api/jobs");
+      if (!res.ok) throw new Error("Failed to fetch job listings");
       return await res.json();
     },
-    enabled: !!currentUser?.profile.id && currentUser?.user.userType === "employer",
+    enabled: !!currentUser?.profile.id && currentUser?.user.userType === "admin",
   });
   
   // Get active and closed jobs

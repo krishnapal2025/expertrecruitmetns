@@ -1382,33 +1382,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get jobs posted by current employer
+  // Get jobs (now admin only, maintains backward compatibility for client)
   app.get("/api/employer/jobs", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "You must be logged in to view your posted jobs" });
+        return res.status(401).json({ message: "You must be logged in to view jobs" });
       }
 
       const user = req.user;
-      if (user.userType !== "employer" && user.userType !== "admin") {
-        return res.status(403).json({ message: "Only employers or admins can access this endpoint" });
+      if (user.userType !== "admin") {
+        return res.status(403).json({ message: "Only admins can access this endpoint" });
       }
 
-      let jobs = [];
-
-      if (user.userType === "employer") {
-        // Get employer profile
-        const employer = await storage.getEmployerByUserId(user.id);
-        if (!employer) {
-          return res.status(404).json({ message: "Employer profile not found" });
-        }
-
-        // Get jobs posted by this employer
-        jobs = await storage.getJobsByEmployerId(employer.id);
-      } else if (user.userType === "admin") {
-        // Admin users get all jobs from all employers
-        jobs = await storage.getJobs();
-      }
+      // Admin users get all jobs from all employers
+      const jobs = await storage.getJobs();
 
       res.json(jobs);
     } catch (error) {
@@ -1560,7 +1547,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get real-time application updates for employers
+  // Get real-time application updates (admin only)
   app.get("/api/realtime/applications", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
@@ -1572,23 +1559,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = req.user;
 
-      if (user.userType === "employer" || user.userType === "admin") {
-        // Get employer profile for employers
-        let employerJobs = [];
-
-        if (user.userType === "employer") {
-          const employer = await storage.getEmployerByUserId(user.id);
-          if (!employer) {
-            return res.status(404).json({ message: "Employer profile not found" });
-          }
-
-          // Get all jobs for this employer
-          const jobs = await storage.getJobs();
-          employerJobs = jobs.filter(job => job.employerId === employer.id);
-        } else {
-          // For admin users, get all jobs
-          employerJobs = await storage.getJobs();
-        }
+      if (user.userType === "admin") {
+        // Get all jobs
+        const employerJobs = await storage.getJobs();
 
         // Get new applications for all jobs
         let newApplications: any[] = [];
@@ -1612,7 +1585,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastId: realtimeStore.lastApplicationId
         });
       } else {
-        res.status(403).json({ message: "Only employers or admins can access this endpoint" });
+        res.status(403).json({ message: "Only admin users can access this endpoint" });
       }
     } catch (error) {
       console.error("Error fetching real-time application updates:", error);

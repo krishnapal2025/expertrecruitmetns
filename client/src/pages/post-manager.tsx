@@ -38,8 +38,8 @@ export default function PostManagerPage() {
   const [, setLocation] = useLocation();
   const [jobToDelete, setJobToDelete] = useState<number | null>(null);
   
-  // Determine API endpoint based on user type
-  const endpoint = currentUser?.user.userType === "admin" ? "/api/jobs" : "/api/employer/jobs";
+  // Jobs endpoint (admin only)
+  const endpoint = "/api/jobs";
   
   // Fetch jobs
   const { data: jobs, isLoading } = useQuery<Job[]>({
@@ -49,7 +49,7 @@ export default function PostManagerPage() {
       if (!res.ok) throw new Error("Failed to fetch job listings");
       return await res.json();
     },
-    enabled: !!currentUser?.profile.id && (currentUser?.user.userType === "employer" || currentUser?.user.userType === "admin"),
+    enabled: !!currentUser?.profile.id && currentUser?.user.userType === "admin",
   });
   
   // Get active and closed jobs
@@ -311,17 +311,17 @@ export default function PostManagerPage() {
           <Alert className="mb-6">
             <AlertTitle>Authentication Required</AlertTitle>
             <AlertDescription>
-              You need to be logged in as an employer or admin to access the Post Manager.
-              <Button variant="link" onClick={() => setLocation("/auth")}>
-                Sign in or register
+              You need to be logged in as an admin to access the Post Manager.
+              <Button variant="link" onClick={() => setLocation("/admin-login")}>
+                Sign in as admin
               </Button>
             </AlertDescription>
           </Alert>
-        ) : (currentUser.user.userType !== "employer" && currentUser.user.userType !== "admin") ? (
+        ) : (currentUser.user.userType !== "admin") ? (
           <Alert className="mb-6">
-            <AlertTitle>Employer or Admin Account Required</AlertTitle>
+            <AlertTitle>Admin Account Required</AlertTitle>
             <AlertDescription>
-              Only employer or admin accounts can post and manage jobs. Your current account is registered as a job seeker.
+              Only admin accounts can post and manage jobs. Your current account does not have the necessary permissions.
             </AlertDescription>
           </Alert>
         ) : isLoading ? (
