@@ -332,32 +332,38 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log("Creating job with data:", JSON.stringify(insertJob, null, 2));
       
-      // Deep copy and clean up the job data before insertion
-      const jobData = { ...insertJob };
+      // Deep copy and create a clean job data object with all required fields
+      const jobData: Record<string, any> = {
+        // Required fields with fallbacks
+        title: insertJob.title || "Untitled Position",
+        company: insertJob.company || "Unknown Company",
+        description: insertJob.description || "No description provided",
+        requirements: insertJob.requirements || "Please contact for details",
+        benefits: insertJob.benefits || "Please contact for details",
+        category: insertJob.category || "General",
+        location: insertJob.location || "Unspecified",
+        jobType: insertJob.jobType || "Full-time",
+        experience: insertJob.experience || "Not specified",
+        minSalary: Number(insertJob.minSalary) || 0, 
+        maxSalary: Number(insertJob.maxSalary) || 0,
+        contactEmail: insertJob.contactEmail || "contact@expertrecruitments.com",
+        
+        // Date handling
+        applicationDeadline: insertJob.applicationDeadline instanceof Date ? 
+          insertJob.applicationDeadline : 
+          new Date(insertJob.applicationDeadline || new Date().setMonth(new Date().getMonth() + 1)),
+            
+        // Optional fields
+        specialization: insertJob.specialization || null,
+        salary: insertJob.salary || null,
+      };
       
-      // If employerId is undefined, null, 0, or invalid, remove it from the insertion data
-      if (!jobData.employerId || jobData.employerId <= 0) {
-        console.log("Removing invalid employerId:", jobData.employerId);
-        delete jobData.employerId;
+      // Only add employerId if it's valid
+      if (insertJob.employerId && Number(insertJob.employerId) > 0) {
+        jobData.employerId = Number(insertJob.employerId);
       }
-
-      // Make sure required date fields are properly formatted
-      if (jobData.applicationDeadline && typeof jobData.applicationDeadline === 'string') {
-        console.log("Converting applicationDeadline string to Date object");
-        jobData.applicationDeadline = new Date(jobData.applicationDeadline);
-      }
       
-      // Ensure required fields have default values if missing
-      if (!jobData.minSalary) jobData.minSalary = 0;
-      if (!jobData.maxSalary) jobData.maxSalary = 0;
-      if (!jobData.experience) jobData.experience = "Not specified";
-      if (!jobData.category) jobData.category = "General";
-      if (!jobData.jobType) jobData.jobType = "Full-time";
-      if (!jobData.description) jobData.description = "No description provided";
-      if (!jobData.requirements) jobData.requirements = "Please contact for details";
-      if (!jobData.benefits) jobData.benefits = "Please contact for details";
-      
-      console.log("Inserting job with cleaned data:", JSON.stringify(jobData, null, 2));
+      console.log("Inserting job with clean data:", JSON.stringify(jobData, null, 2));
       
       // Insert the job with properly formatted data
       const [job] = await db.insert(jobs).values(jobData).returning();
