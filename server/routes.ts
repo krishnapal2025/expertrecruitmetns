@@ -1826,8 +1826,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = req.user;
       
-      // Check if user is an admin
-      if (user.userType !== "admin") {
+      // Check if user is an admin or super_admin
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
         return res.status(403).json({ 
           message: "Access denied. This endpoint is for administrators only." 
         });
