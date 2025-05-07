@@ -710,7 +710,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create a new job (requires employer or admin authentication)
+  // Create a new job (requires admin authentication)
   app.post("/api/jobs", async (req, res) => {
     try {
       console.log("POST /api/jobs - Request payload:", req.body);
@@ -724,14 +724,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "You must be logged in to post a job. Please refresh the page and try again." });
       }
       
-      // Verify that the user type is valid for posting jobs
+      // Verify that the user is an admin
       if (req.user.userType !== "admin") {
         console.log("POST /api/jobs - User type not authorized:", req.user.userType);
-        return res.status(403).json({ message: "Only admins can post jobs" });
-      }
-
-      const user = req.user;
-      if (user.userType !== "admin") {
         return res.status(403).json({ message: "Only admins can post jobs" });
       }
 
@@ -1422,7 +1417,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Edit a job (requires employer or admin authentication)
+  // Edit a job (requires admin authentication only)
   app.put("/api/jobs/:id", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
@@ -1430,8 +1425,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "employer" && user.userType !== "admin") {
-        return res.status(403).json({ message: "Only employers or admins can edit jobs" });
+      if (user.userType !== "admin") {
+        return res.status(403).json({ message: "Only admins can edit jobs" });
       }
 
       const jobId = parseInt(req.params.id);
@@ -1445,30 +1440,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Job not found" });
       }
 
-      // For employers, verify ownership of the job
-      if (user.userType === "employer") {
-        const employer = await storage.getEmployerByUserId(user.id);
-        if (!employer) {
-          return res.status(404).json({ message: "Employer profile not found" });
-        }
-
-        // Check if job belongs to this employer
-        if (job.employerId !== employer.id) {
-          return res.status(403).json({ message: "You can only edit your own job listings" });
-        }
-      }
-      // Admin users can edit any job
-
       // Validate job data
       const validatedData = insertJobSchema.parse(req.body);
 
+      // Preserve the existing employer ID unless specifically changed in the request
       let employerId = job.employerId;
-
-      // If user is an employer, use their employer ID
-      if (user.userType === "employer") {
-        const employer = await storage.getEmployerByUserId(user.id);
-        if (employer) {
-          employerId = employer.id;
+      
+      // If admin is explicitly changing the employer
+      if (req.body.employerId) {
+        const newEmployerId = Number(req.body.employerId);
+        if (!isNaN(newEmployerId)) {
+          // Verify the new employer exists
+          const employer = await storage.getEmployer(newEmployerId);
+          if (!employer) {
+            return res.status(404).json({ message: "Selected employer not found" });
+          }
+          employerId = newEmployerId;
         }
       }
 
@@ -1492,7 +1479,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Delete a job (requires employer or admin authentication)
+  // Delete a job (requires admin authentication only)
   app.delete("/api/jobs/:id", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
@@ -1500,8 +1487,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "employer" && user.userType !== "admin") {
-        return res.status(403).json({ message: "Only employers or admins can delete jobs" });
+      if (user.userType !== "admin") {
+        return res.status(403).json({ message: "Only admins can delete jobs" });
       }
 
       const jobId = parseInt(req.params.id);
@@ -1515,18 +1502,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Job not found" });
       }
 
-      // For employers, verify ownership of the job
-      if (user.userType === "employer") {
-        const employer = await storage.getEmployerByUserId(user.id);
-        if (!employer) {
-          return res.status(404).json({ message: "Employer profile not found" });
-        }
-
-        // Check if job belongs to this employer
-        if (job.employerId !== employer.id) {
-          return res.status(403).json({ message: "You can only delete your own job listings" });
-        }
-      }
       // Admin users can delete any job
 
       // First, get all applications for this job
