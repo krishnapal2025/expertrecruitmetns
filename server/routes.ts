@@ -1548,9 +1548,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "admin") {
-        return res.status(403).json({ message: "Only admins can edit jobs" });
+      // Allow both admin and super_admin to edit jobs
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
+        return res.status(403).json({ message: "Only administrators can edit jobs" });
       }
+      
+      // Track if user is super_admin for enhanced permissions
+      const isSuperAdmin = user.userType === "super_admin";
 
       const jobId = parseInt(req.params.id);
       if (isNaN(jobId)) {
@@ -1610,9 +1614,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "admin") {
-        return res.status(403).json({ message: "Only admins can delete jobs" });
+      // Allow both admin and super_admin to delete jobs
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
+        return res.status(403).json({ message: "Only administrators can delete jobs" });
       }
+      
+      // Track if user is super_admin for enhanced permissions
+      const isSuperAdmin = user.userType === "super_admin";
 
       const jobId = parseInt(req.params.id);
       if (isNaN(jobId)) {
@@ -1695,7 +1703,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = req.user;
 
-      if (user.userType === "admin") {
+      // Allow both admin and super_admin to access application updates
+      if (user.userType === "admin" || user.userType === "super_admin") {
+        // Track if this is a super_admin for future enhanced features
+        const isSuperAdmin = user.userType === "super_admin";
+        
         // Get all jobs
         const employerJobs = await storage.getJobs();
 
@@ -1706,7 +1718,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const filteredApplications = jobApplications.filter(app => app.id > sinceId);
 
           newApplications = newApplications.concat(
-            filteredApplications.map(app => ({ ...app, job }))
+            filteredApplications.map(app => ({ 
+              ...app, 
+              job,
+              // Add special metadata for super_admin users
+              _metadata: isSuperAdmin ? {
+                priority: true,
+                fullAccess: true
+              } : undefined
+            }))
           );
         }
 
@@ -1718,10 +1738,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         res.json({
           applications: newApplications,
-          lastId: realtimeStore.lastApplicationId
+          lastId: realtimeStore.lastApplicationId,
+          isSuperAdmin // Include flag to enable client-side special features
         });
       } else {
-        res.status(403).json({ message: "Only admin users can access this endpoint" });
+        res.status(403).json({ message: "Only administrator users can access this endpoint" });
       }
     } catch (error) {
       console.error("Error fetching real-time application updates:", error);
@@ -1845,12 +1866,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = req.user;
       
-      // Check if user is an admin
-      if (user.userType !== "admin") {
+      // Check if user is an admin or super_admin
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
         return res.status(403).json({ 
           message: "Access denied. This endpoint is for administrators only." 
         });
       }
+      
+      // Super admins are granted enhanced privileges
+      const isSuperAdmin = user.userType === "super_admin";
       
       // Get admin profile
       const admin = await storage.getAdminByUserId(user.id);
@@ -1860,6 +1884,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Return admin data without sensitive information
+      // Super admins get special privileges information
       res.json({
         id: user.id,
         email: user.email,
@@ -1868,8 +1893,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: admin.id,
           firstName: admin.firstName,
           lastName: admin.lastName,
-          role: admin.role,
-          lastLogin: admin.lastLogin
+          role: isSuperAdmin ? "super_admin" : admin.role,
+          lastLogin: admin.lastLogin,
+          // Add special privileges for super admin
+          specialPrivileges: isSuperAdmin ? {
+            canOverrideRestrictions: true,
+            canAccessAllAreas: true,
+            canModifyAllContent: true,
+            canManageAllUsers: true,
+            canBypassApprovals: true
+          } : undefined
         }
       });
     } catch (error) {
