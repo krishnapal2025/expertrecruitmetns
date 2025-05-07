@@ -328,14 +328,11 @@ export function setupAuth(app: Express) {
       profile = await storage.getJobSeekerByUserId(user.id);
     } else if (user.userType === "employer") {
       profile = await storage.getEmployerByUserId(user.id);
-    } else if (user.userType === "admin" || user.userType === "super_admin") {
+    } else if (user.userType === "admin") {
       profile = await storage.getAdminByUserId(user.id);
       // If admin profile not found, use minimal profile
       if (!profile) {
-        profile = { 
-          id: user.id, 
-          role: user.userType === "super_admin" ? "super_admin" : "admin" 
-        };
+        profile = { id: user.id, role: "admin" };
       }
     }
     
@@ -348,15 +345,12 @@ export function setupAuth(app: Express) {
     
     const user = req.user;
     
-    // Allow both admin and super_admin users to access this endpoint
-    if (user.userType !== "admin" && user.userType !== "super_admin") {
+    // Only allow admin users to access this endpoint
+    if (user.userType !== "admin") {
       return res.status(403).json({ 
         message: "Access denied. This endpoint is for administrators only." 
       });
     }
-    
-    // Super admins get special privileges flag set
-    const isSuperAdmin = user.userType === "super_admin";
     
     // Get admin profile with full details
     const adminProfile = await storage.getAdminByUserId(user.id);
@@ -366,7 +360,6 @@ export function setupAuth(app: Express) {
     }
     
     // Return admin data with profile information optimized for type safety
-    // Super admins get special privileges indicator
     res.json({
       user: {
         id: user.id,
@@ -378,16 +371,8 @@ export function setupAuth(app: Express) {
         id: adminProfile.id,
         firstName: adminProfile.firstName || "",
         lastName: adminProfile.lastName || "",
-        role: isSuperAdmin ? "super_admin" : adminProfile.role,
-        lastLogin: adminProfile.lastLogin || new Date(),
-        // Add special privileges for super admin
-        specialPrivileges: isSuperAdmin ? {
-          canOverrideRestrictions: true,
-          canAccessAllAreas: true,
-          canModifyAllContent: true,
-          canManageAllUsers: true,
-          canBypassApprovals: true
-        } : undefined
+        role: adminProfile.role,
+        lastLogin: adminProfile.lastLogin || new Date()
       }
     });
   });
