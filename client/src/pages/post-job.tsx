@@ -725,16 +725,15 @@ export default function PostJobPage() {
     onSuccess: (data) => {
       toast({
         title: "Job Posted Successfully",
-        description: "Your job has been posted and is now visible in the Post Manager and Jobs Found sections.",
+        description: "Your job has been posted and is now visible in the Jobs Found section.",
       });
       
       // Invalidate all queries related to jobs to ensure immediate visibility
       queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/employer/jobs"] });
       queryClient.invalidateQueries({ queryKey: ["/api/realtime/jobs"] });
       
-      // Redirect to post manager instead of job board so admin can see and manage the new job
-      setLocation("/post-manager");
+      // Immediately redirect to job board to see the newly posted job
+      setLocation("/job-board");
     },
     onError: (error: Error) => {
       toast({
@@ -840,30 +839,21 @@ export default function PostJobPage() {
     
     // Log exactly what we're sending to the server for debugging
     const cleanData = {
-      // Required string fields with fallbacks
-      title: data.title?.trim() || "Untitled Job Post",
+      title: data.title?.trim() || "",
       company: currentUser.user.userType === "admin" ? 
-        companyName.trim() : data.company?.trim() || "Company Name Required",
-      location: data.location?.trim() || "Location Not Specified",
-      category: data.category?.trim() || "General",
-      jobType: data.jobType?.trim() || "Full-time",
-      description: data.description?.trim() || "Description Not Provided",
-      requirements: data.requirements?.trim() || "Requirements Not Specified",
-      benefits: data.benefits?.trim() || "Benefits Not Specified",
-      contactEmail: data.contactEmail?.trim() || currentUser?.user.email || "contact@example.com",
-      experience: data.experience?.trim() || "Experience Not Specified",
-      
-      // Numeric fields with validation
+        companyName.trim() : data.company?.trim() || "",
+      location: data.location?.trim() || "",
+      category: data.category?.trim() || "",
+      jobType: data.jobType?.trim() || "",
       minSalary: isNaN(Number(data.minSalary)) ? 0 : Number(data.minSalary),
       maxSalary: isNaN(Number(data.maxSalary)) ? 0 : Number(data.maxSalary),
-      
-      // Date handling - ensure we have a valid date string
+      description: data.description?.trim() || "",
+      requirements: data.requirements?.trim() || "",
+      benefits: data.benefits?.trim() || "",
       applicationDeadline: data.applicationDeadline || new Date().toISOString().split('T')[0],
-      
-      // Optional fields
+      contactEmail: data.contactEmail?.trim() || "",
+      experience: data.experience?.trim() || "",
       specialization: data.specialization?.trim() || null,
-      
-      // Reference fields
       employerId: currentUser?.user.userType === "employer" ? currentUser?.user.id : null
     };
     
