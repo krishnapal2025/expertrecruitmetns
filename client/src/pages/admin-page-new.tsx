@@ -26,6 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Icons
 import { InquiryPreviewModal } from "@/components/inquiry-preview-modal";
@@ -48,14 +49,15 @@ import {
   MessageSquare,
   PlusCircle,
   Download,
-  Search,
-  UserPlus,
-  Pencil,
-  MapPin,
   ShieldCheck,
   UserCircle,
+  UserPlus,
   Edit,
   LogOut,
+  UserX,
+  Search,
+  Pencil,
+  MapPin,
 } from "lucide-react";
 
 // Date utilities
@@ -452,7 +454,7 @@ function AdminDashboard() {
     },
     onSuccess: (data) => {
       // Store original admin ID in session storage for restoration later
-      sessionStorage.setItem('originalAdminId', user?.user?.id.toString() || '');
+      sessionStorage.setItem('originalAdminId', user?.id.toString() || '');
       sessionStorage.setItem('impersonatedAdminId', data.targetAdmin.id.toString());
       
       setIsImpersonating(true);
@@ -2072,6 +2074,156 @@ function AdminDashboard() {
                 </div>
               </div>
             </CardContent>
+          </Card>
+        </TabsContent>
+        
+        {/* Admin Management Tab */}
+        <TabsContent value="admins" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <ShieldCheck className="h-5 w-5 mr-2" />
+                Admin Management
+              </CardTitle>
+              <CardDescription>
+                Manage administrator accounts and permissions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {adminsLoading ? (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+                ) : admins && admins.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Last Login</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {admins.map((admin: any) => {
+                        // Check if current user is a super admin
+                        const isCurrentUserSuperAdmin = user?.userType === 'admin' && user?.isSuperAdmin === true;
+                        
+                        // Don't show login as option for current user
+                        const isCurrentUser = admin.id === user?.id;
+                        
+                        // Check for active impersonation
+                        const isBeingImpersonated = sessionStorage.getItem('impersonatedAdminId') === admin.id.toString();
+                        
+                        return (
+                          <TableRow key={admin.id}>
+                            <TableCell>
+                              {admin.firstName} {admin.lastName}
+                              {isCurrentUser && (
+                                <Badge variant="outline" className="ml-2">You</Badge>
+                              )}
+                              {isBeingImpersonated && (
+                                <Badge variant="secondary" className="ml-2">Active Session</Badge>
+                              )}
+                            </TableCell>
+                            <TableCell>{admin.email}</TableCell>
+                            <TableCell>
+                              <Badge variant={
+                                admin.role === "super_admin" 
+                                  ? "destructive" 
+                                  : admin.role === "admin" 
+                                    ? "default" 
+                                    : "outline"
+                              }>
+                                {admin.role || "admin"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {admin.lastLogin ? formatDate(admin.lastLogin) : 'Never'}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex space-x-2">
+                                {isCurrentUserSuperAdmin && !isCurrentUser && (
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    className="flex items-center"
+                                    onClick={() => handleImpersonateAdmin(admin.id)}
+                                    disabled={isBeingImpersonated}
+                                  >
+                                    <UserCircle className="h-4 w-4 mr-1" />
+                                    <span>{isBeingImpersonated ? 'Active' : 'Login as'}</span>
+                                  </Button>
+                                )}
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  className="flex items-center"
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                {admin.role !== "super_admin" && (
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    className="flex items-center"
+                                    onClick={() => handleDeleteUser(admin.id, "admin")}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                )}
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <div className="text-center py-8">
+                    <div className="mb-2">
+                      <UserX className="h-12 w-12 mx-auto text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-medium">No admins found</h3>
+                    <p className="text-muted-foreground">
+                      There are no admin users in the system yet.
+                    </p>
+                  </div>
+                )}
+                
+                {/* Impersonation Active Alert */}
+                {isImpersonating && (
+                  <Alert className="my-4 bg-amber-50 border-amber-200">
+                    <AlertCircle className="h-4 w-4 text-amber-500" />
+                    <AlertTitle className="text-amber-800">Admin Impersonation Active</AlertTitle>
+                    <AlertDescription className="text-amber-700">
+                      <p>You are currently logged in as another administrator.</p>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="mt-2 bg-white hover:bg-amber-100 border-amber-300"
+                        onClick={handleEndImpersonation}
+                      >
+                        <LogOut className="h-4 w-4 mr-2 text-amber-500" />
+                        End Impersonation
+                      </Button>
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button 
+                variant="default" 
+                className="w-full"
+                onClick={() => navigate("/admin-register")}
+              >
+                <UserPlus className="mr-2 h-4 w-4" />
+                Add New Admin
+              </Button>
+            </CardFooter>
           </Card>
         </TabsContent>
       </Tabs>
