@@ -224,17 +224,6 @@ export default function PostJobPage() {
   // Watch form values for preview
   const formValues = form.watch();
   
-  // Function to check if employer exists by ID
-  const checkEmployerExists = async (employerId: number): Promise<boolean> => {
-    try {
-      const res = await apiRequest("GET", `/api/employers/${employerId}`);
-      return res.ok;
-    } catch (error) {
-      console.error("Error checking employer:", error);
-      return false;
-    }
-  };
-  
   // Simple function to update company name
   const handleCompanyNameChange = (value: string) => {
     setCompanyName(value);
