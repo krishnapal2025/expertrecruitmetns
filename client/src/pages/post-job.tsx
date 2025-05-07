@@ -245,6 +245,10 @@ export default function PostJobPage() {
         const user = await userCheckRes.json();
         console.log("Authentication confirmed before job submission:", user);
         
+        if (!selectedEmployerId && user.user.userType === "admin") {
+          throw new Error("Admin must select an employer when posting a job");
+        }
+        
         // For admin users, use the selected employer ID
         const payload = {
           ...data,
@@ -252,11 +256,8 @@ export default function PostJobPage() {
           applicationDeadline: typeof data.applicationDeadline === 'object' 
             ? (data.applicationDeadline as Date).toISOString().split('T')[0]
             : data.applicationDeadline,
-          // If admin with selected employer, use selectedEmployerId
-          // Otherwise use the current user's profile ID (which is handled server-side)
-          ...(user.user.userType === "admin" && selectedEmployerId 
-            ? { selectedEmployerId } 
-            : {})
+          // Always include selectedEmployerId as employerId
+          employerId: selectedEmployerId
         };
         
         console.log("Submitting job with payload:", payload);

@@ -738,20 +738,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validate job data - the schema will handle date conversion
       const validatedData = insertJobSchema.parse(req.body);
 
-      // Admin users must select an employer ID
-      const selectedEmployerId = req.body.selectedEmployerId;
+      // Admin users must select an employer ID via the employerId property
+      const employerId = req.body.employerId;
 
-      if (!selectedEmployerId) {
+      if (!employerId) {
         return res.status(400).json({ message: "Admin must select an employer when posting a job" });
       }
 
       // Verify the employer exists
-      const employer = await storage.getEmployer(selectedEmployerId);
+      const employer = await storage.getEmployer(employerId);
       if (!employer) {
         return res.status(404).json({ message: "Selected employer not found" });
       }
-
-      const employerId = selectedEmployerId;
 
       // Create the job
       const job = await storage.createJob({
