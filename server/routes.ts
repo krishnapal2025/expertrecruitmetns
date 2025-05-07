@@ -737,10 +737,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new job (requires admin authentication)
   app.post("/api/jobs", async (req, res) => {
     try {
-      console.log("POST /api/jobs - Request payload:", req.body);
+      console.log("======== JOB CREATION START ========");
+      console.log("POST /api/jobs - Request payload:", JSON.stringify(req.body, null, 2));
       console.log("POST /api/jobs - Authentication status:", req.isAuthenticated());
-      console.log("POST /api/jobs - User:", req.user);
-      console.log("POST /api/jobs - Session:", req.session);
+      console.log("POST /api/jobs - User type:", req.user?.userType);
       
       // Enhanced authentication check
       if (!req.isAuthenticated() || !req.user) {
@@ -754,20 +754,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only admins can post jobs" });
       }
 
-      // Validate job data - the schema will handle date conversion
-      console.log("Parsing job data with schema:", JSON.stringify(req.body));
-      const validatedData = insertJobSchema.parse(req.body);
-      console.log("Validation successful, validated data:", JSON.stringify(validatedData));
+      // Check which fields are missing or empty in the request
+      const requiredFields = [
+        'title', 'company', 'description', 'requirements', 'benefits', 
+        'category', 'location', 'jobType', 'experience', 
+        'minSalary', 'maxSalary', 'contactEmail', 'applicationDeadline'
+      ];
+      
+      const missingFields = requiredFields.filter(field => {
+        const value = req.body[field];
+        return value === undefined || value === null || value === '';
+      });
+      
+      if (missingFields.length > 0) {
+        console.log("POST /api/jobs - Missing required fields:", missingFields);
+        return res.status(400).json({ 
+          message: `Missing required fields: ${missingFields.join(', ')}`,
+          code: "MISSING_FIELDS" 
+        });
+      }
 
-      // Clean the job data to ensure it's compatible with the database schema
-      const cleanedJobData = { ...validatedData };
-      // If employerId is undefined/null/0, explicitly remove it to avoid database constraint issues
-      if (!cleanedJobData.employerId) {
-        console.log("Removing null/undefined employerId from job data");
-        delete cleanedJobData.employerId;
+      // Validate job data - the schema will handle date conversion
+      console.log("Parsing job data with schema...");
+      try {
+        const validatedData = insertJobSchema.parse(req.body);
+        console.log("Validation successful!");
+      } catch (validationError) {
+        console.error("Schema validation failed:", validationError);
+        throw validationError;
       }
       
-      console.log("Cleaned job data for database insertion:", JSON.stringify(cleanedJobData));
+      // Even if validation passed, recreate the object with only the fields we need
+      // to avoid any unexpected fields
+      const cleanedJobData = {
+        title: req.body.title,
+        company: req.body.company,
+        description: req.body.description,
+        requirements: req.body.requirements,
+        benefits: req.body.benefits,
+        category: req.body.category,
+        location: req.body.location,
+        jobType: req.body.jobType,
+        specialization: req.body.specialization || '',
+        experience: req.body.experience,
+        minSalary: parseInt(req.body.minSalary) || 0,
+        maxSalary: parseInt(req.body.maxSalary) || 0,
+        contactEmail: req.body.contactEmail,
+        applicationDeadline: new Date(req.body.applicationDeadline),
+        salary: req.body.salary || ''
+      };
+      
+      // If employerId is provided and valid, include it
+      if (req.body.employerId && parseInt(req.body.employerId) > 0) {
+        cleanedJobData.employerId = parseInt(req.body.employerId);
+      }
+      
+      console.log("Cleaned job data for database insertion:", JSON.stringify(cleanedJobData, null, 2));
       
       // Create the job with cleaned data
       const job = await storage.createJob(cleanedJobData);
