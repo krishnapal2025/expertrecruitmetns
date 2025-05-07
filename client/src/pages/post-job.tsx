@@ -689,8 +689,13 @@ export default function PostJobPage() {
           contactEmail: data.contactEmail?.trim() || "",
           
           // Date field handling - ensure proper format
-          applicationDeadline: data.applicationDeadline instanceof Date 
-            ? data.applicationDeadline.toISOString().split('T')[0]
+          // Ensure we handle both Date objects and string dates coming from the form
+          applicationDeadline: data.applicationDeadline 
+            ? (data.applicationDeadline instanceof Date 
+              ? data.applicationDeadline.toISOString().split('T')[0]
+              : typeof data.applicationDeadline === 'string' 
+                ? new Date(data.applicationDeadline).toISOString().split('T')[0]
+                : new Date().toISOString().split('T')[0])
             : new Date().toISOString().split('T')[0],
           
           // Optional fields with null safety - we won't allow null values for now to prevent errors
@@ -705,11 +710,19 @@ export default function PostJobPage() {
         // Double-check the main required fields to avoid server errors
         const requiredFields = [
           'title', 'company', 'location', 'category', 'jobType', 'description', 
+          'requirements', 'benefits', 'experience',
           'minSalary', 'maxSalary', 'contactEmail', 'applicationDeadline'
         ];
         
+        // Log detailed info about each field for debugging
+        console.log("Checking required fields...");
+        
         for (const field of requiredFields) {
-          if (!payload[field as keyof typeof payload]) {
+          const value = payload[field as keyof typeof payload];
+          console.log(`Field ${field}: ${typeof value} = ${JSON.stringify(value)}`);
+          
+          if (!value && value !== 0) {
+            console.error(`Missing required field: ${field}`);
             throw new Error(`${field} is required but appears to be missing or empty`);
           }
         }
@@ -803,7 +816,14 @@ export default function PostJobPage() {
       { field: 'location', label: 'Location' },
       { field: 'category', label: 'Category' },
       { field: 'jobType', label: 'Job Type' },
-      { field: 'description', label: 'Description' }
+      { field: 'experience', label: 'Experience Level' },
+      { field: 'description', label: 'Description' },
+      { field: 'requirements', label: 'Requirements' },
+      { field: 'benefits', label: 'Benefits' },
+      { field: 'minSalary', label: 'Minimum Salary' },
+      { field: 'maxSalary', label: 'Maximum Salary' },
+      { field: 'contactEmail', label: 'Contact Email' },
+      { field: 'applicationDeadline', label: 'Application Deadline' }
     ];
     
     const missingFields = requiredFields.filter(
@@ -852,11 +872,16 @@ export default function PostJobPage() {
       minSalary: isNaN(Number(data.minSalary)) ? 0 : Number(data.minSalary),
       maxSalary: isNaN(Number(data.maxSalary)) ? 0 : Number(data.maxSalary),
       description: data.description?.trim() || "",
-      requirements: data.requirements?.trim() || "",
-      benefits: data.benefits?.trim() || "",
-      applicationDeadline: data.applicationDeadline || new Date(),
+      requirements: data.requirements?.trim() || "Job requirements not specified",
+      benefits: data.benefits?.trim() || "Job benefits not specified",
+      // Properly format the deadline date to ISO string (YYYY-MM-DD)
+      applicationDeadline: data.applicationDeadline instanceof Date
+        ? data.applicationDeadline.toISOString().split('T')[0]
+        : (data.applicationDeadline 
+            ? new Date(data.applicationDeadline).toISOString().split('T')[0] 
+            : new Date().toISOString().split('T')[0]),
       contactEmail: data.contactEmail?.trim() || "",
-      experience: data.experience?.trim() || "",
+      experience: data.experience?.trim() || "Entry Level (0-1 years)",
       specialization: data.specialization?.trim() || null,
       employerId: currentUser?.user.userType === "employer" ? currentUser?.user.id : null
     };
