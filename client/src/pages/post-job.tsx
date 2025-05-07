@@ -192,7 +192,9 @@ export default function PostJobPage() {
       if (currentUser?.user.userType !== 'admin') return [];
       const res = await apiRequest('GET', '/api/employers');
       if (!res.ok) throw new Error('Failed to fetch employers');
-      return await res.json();
+      const employersList = await res.json();
+      console.log("Loaded employers:", employersList);
+      return employersList;
     },
     enabled: !!currentUser && currentUser.user.userType === 'admin'
   });
@@ -257,8 +259,8 @@ export default function PostJobPage() {
           applicationDeadline: typeof data.applicationDeadline === 'object' 
             ? (data.applicationDeadline as Date).toISOString().split('T')[0]
             : data.applicationDeadline,
-          // Always include selectedEmployerId as employerId
-          employerId: selectedEmployerId
+          // Always include selectedEmployerId as employerId (must be a number)
+          employerId: Number(selectedEmployerId)
         };
         
         console.log("Submitting job with payload:", payload);
@@ -535,7 +537,13 @@ export default function PostJobPage() {
                         <div className="mb-4">
                           <FormLabel>Select Employer</FormLabel>
                           <Select
-                            onValueChange={(value) => setSelectedEmployerId(Number(value))}
+                            onValueChange={(value) => {
+                              console.log("Selected employer ID:", value, "type:", typeof value);
+                              const employerId = Number(value);
+                              console.log("Converted to number:", employerId, "type:", typeof employerId);
+                              setSelectedEmployerId(employerId);
+                              console.log("State updated with employerId:", employerId);
+                            }}
                           >
                             <SelectTrigger className="w-full">
                               <SelectValue placeholder="Select an employer" />

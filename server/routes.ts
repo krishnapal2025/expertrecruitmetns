@@ -739,9 +739,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertJobSchema.parse(req.body);
 
       // Admin users must select an employer ID via the employerId property
-      const employerId = req.body.employerId;
+      const employerId = Number(req.body.employerId);
 
-      if (!employerId) {
+      if (!employerId || isNaN(employerId)) {
         return res.status(400).json({ message: "Admin must select an employer when posting a job" });
       }
 
