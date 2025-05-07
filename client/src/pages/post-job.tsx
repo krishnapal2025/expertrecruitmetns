@@ -182,9 +182,7 @@ export default function PostJobPage() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isPreview, setIsPreview] = useState(false);
-  const [selectedEmployerId, setSelectedEmployerId] = useState<number | null>(null);
   const [companyName, setCompanyName] = useState<string>('');
-  const [companyNameStatus, setCompanyNameStatus] = useState<{success: boolean, message: string} | null>(null);
   const queryClient = useQueryClient();
   
   // Fetch employers list for admin users to select from
@@ -237,44 +235,9 @@ export default function PostJobPage() {
     }
   };
   
-  // Function to validate company name and find employer ID
-  const validateCompanyName = async () => {
-    if (!companyName) {
-      setCompanyNameStatus({
-        success: false,
-        message: "Please enter a company name"
-      });
-      return;
-    }
-    
-    try {
-      // Encode the company name for URL
-      const encodedCompanyName = encodeURIComponent(companyName);
-      const res = await apiRequest("GET", `/api/employers/by-name/${encodedCompanyName}`);
-      
-      if (!res.ok) {
-        setCompanyNameStatus({
-          success: false,
-          message: "Company not found. Please check the spelling and try again."
-        });
-        setSelectedEmployerId(null);
-        return;
-      }
-      
-      const employer = await res.json();
-      setCompanyNameStatus({
-        success: true,
-        message: `Company verified: ${employer.companyName}`
-      });
-      setSelectedEmployerId(employer.id);
-    } catch (error) {
-      console.error("Error validating company name:", error);
-      setCompanyNameStatus({
-        success: false,
-        message: "Error validating company. Please try again."
-      });
-      setSelectedEmployerId(null);
-    }
+  // Simple function to update company name
+  const handleCompanyNameChange = (value: string) => {
+    setCompanyName(value);
   };
 
   // Create job mutation
@@ -301,27 +264,19 @@ export default function PostJobPage() {
         const user = await userCheckRes.json();
         console.log("Authentication confirmed before job submission:", user);
         
-        if (!selectedEmployerId && user.user.userType === "admin") {
-          throw new Error("Admin must verify a valid company name before posting a job");
-        }
-
-        // Verify the employer exists for admin users
-        if (user.user.userType === "admin" && selectedEmployerId) {
-          const employerExists = await checkEmployerExists(Number(selectedEmployerId));
-          if (!employerExists) {
-            throw new Error(`The selected company does not exist in our system. Please verify the company name again.`);
-          }
+        // For admin users posting on behalf of a company, update the company name
+        if (user.user.userType === "admin" && companyName) {
+          // Update the company name from our input field
+          data.company = companyName;
         }
         
-        // For admin users, use the manually entered employer ID
+        // Prepare the payload for job submission
         const payload = {
           ...data,
           // Convert applicationDeadline to string if it's a Date object
           applicationDeadline: typeof data.applicationDeadline === 'object' 
             ? (data.applicationDeadline as Date).toISOString().split('T')[0]
-            : data.applicationDeadline,
-          // Always include selectedEmployerId as employerId (must be a number)
-          employerId: Number(selectedEmployerId)
+            : data.applicationDeadline
         };
         
         console.log("Submitting job with payload:", payload);
@@ -397,11 +352,11 @@ export default function PostJobPage() {
       return;
     }
 
-    // Check if admin has entered and validated a company name
-    if (currentUser.user.userType === "admin" && (!selectedEmployerId || isNaN(Number(selectedEmployerId)))) {
+    // Check if admin has entered a company name
+    if (currentUser.user.userType === "admin" && !companyName.trim()) {
       toast({
-        title: "Company Verification Required",
-        description: "As an admin, you must enter and verify a valid company name before posting a job.",
+        title: "Company Name Required",
+        description: "Please enter a company name before posting a job.",
         variant: "destructive",
       });
       return;
@@ -599,36 +554,17 @@ export default function PostJobPage() {
                           <FormLabel>Enter Employer Company Name</FormLabel>
                           <Input
                             type="text"
-                            placeholder="Enter exact company name"
+                            placeholder="Enter company name"
                             value={companyName || ''}
                             onChange={(e) => {
                               const value = e.target.value;
                               setCompanyName(value);
-                              // Clear the employer ID when company name changes
-                              setSelectedEmployerId(null);
                             }}
                             className="w-full"
                           />
-                          <div className="flex justify-between">
-                            <p className="text-sm text-muted-foreground mt-1">
-                              Enter the exact company name to post on their behalf
-                            </p>
-                            <Button 
-                              type="button" 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={validateCompanyName}
-                              className="mt-1"
-                              disabled={!companyName}
-                            >
-                              Verify Name
-                            </Button>
-                          </div>
-                          {companyNameStatus && (
-                            <p className={`text-sm mt-1 ${companyNameStatus.success ? 'text-green-500' : 'text-red-500'}`}>
-                              {companyNameStatus.message}
-                            </p>
-                          )}
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Enter the company name to post on their behalf
+                          </p>
                         </div>
                       )}
                       
