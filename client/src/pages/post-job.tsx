@@ -302,14 +302,14 @@ export default function PostJobPage() {
         console.log("Authentication confirmed before job submission:", user);
         
         if (!selectedEmployerId && user.user.userType === "admin") {
-          throw new Error("Admin must enter an employer ID when posting a job");
+          throw new Error("Admin must verify a valid company name before posting a job");
         }
 
         // Verify the employer exists for admin users
         if (user.user.userType === "admin" && selectedEmployerId) {
           const employerExists = await checkEmployerExists(Number(selectedEmployerId));
           if (!employerExists) {
-            throw new Error(`Employer with ID ${selectedEmployerId} does not exist`);
+            throw new Error(`The selected company does not exist in our system. Please verify the company name again.`);
           }
         }
         
@@ -397,11 +397,11 @@ export default function PostJobPage() {
       return;
     }
 
-    // Check if admin has entered an employer ID
+    // Check if admin has entered and validated a company name
     if (currentUser.user.userType === "admin" && (!selectedEmployerId || isNaN(Number(selectedEmployerId)))) {
       toast({
-        title: "Employer ID Required",
-        description: "As an admin, you must enter a valid employer ID when posting a job.",
+        title: "Company Verification Required",
+        description: "As an admin, you must enter and verify a valid company name before posting a job.",
         variant: "destructive",
       });
       return;
@@ -605,7 +605,7 @@ export default function PostJobPage() {
                               const value = e.target.value;
                               setCompanyName(value);
                               // Clear the employer ID when company name changes
-                              setSelectedEmployerId(undefined);
+                              setSelectedEmployerId(null);
                             }}
                             className="w-full"
                           />
