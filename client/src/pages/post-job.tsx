@@ -832,9 +832,23 @@ export default function PostJobPage() {
       { field: 'applicationDeadline', label: 'Application Deadline' }
     ];
     
-    const missingFields = requiredFields.filter(
-      ({ field }) => !data[field as keyof JobPostFormValues]
-    );
+    // More robust check for field values, checking for empty strings, nulls, and undefined
+    const missingFields = requiredFields.filter(({ field }) => {
+      const value = data[field as keyof JobPostFormValues];
+      console.log(`Checking field ${field}:`, value, typeof value);
+      
+      if (value === null || value === undefined) return true;
+      if (typeof value === 'string' && value.trim() === '') return true;
+      if (typeof value === 'number' && (isNaN(value) || value <= 0)) return true;
+      
+      // Special case for dates
+      if (field === 'applicationDeadline') {
+        // If deadline is missing, we'll set a default value later, so don't flag it as missing
+        return false;
+      }
+      
+      return false;
+    });
     
     if (missingFields.length > 0) {
       // Set errors for each missing field to highlight them in red

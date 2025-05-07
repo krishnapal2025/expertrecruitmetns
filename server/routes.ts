@@ -762,7 +762,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ];
       
       const missingFields = requiredFields.filter(field => {
+        // Special handling for applicationDeadline - it's optional now
+        if (field === 'applicationDeadline') return false;
+        
         const value = req.body[field];
+        console.log(`Checking field ${field}:`, value, typeof value);
         return value === undefined || value === null || value === '';
       });
       
