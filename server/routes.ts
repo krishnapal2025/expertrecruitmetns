@@ -2638,24 +2638,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Received staffing inquiry request:", req.body);
 
-      // Skip validation for testing - just use direct SQL
       try {
-        // Direct database insert using SQL - Using literal values instead of parameters
-        const result = await db.execute(`
-          INSERT INTO staffing_inquiries
-            (name, email, phone, company, inquiry_type, message, marketing, status, submittedat)
-          VALUES
-            ('${req.body.name}',
-             '${req.body.email}',
-             ${req.body.phone ? `'${req.body.phone}'` : 'NULL'},
-             ${req.body.company ? `'${req.body.company}'` : 'NULL'},
-             '${req.body.inquiryType}',
-             '${req.body.message}',
-             ${req.body.marketing ? 'TRUE' : 'FALSE'},
-             'new',
-             NOW())
-          RETURNING *
-        `);
+        // Using parameterized query to avoid SQL injection risks
+        const result = await db.execute({
+          text: `
+            INSERT INTO staffing_inquiries
+              (name, email, phone, company, inquiry_type, message, marketing, status, submittedat)
+            VALUES
+              ($1, $2, $3, $4, $5, $6, $7, 'new', NOW())
+            RETURNING *
+          `,
+          values: [
+            req.body.name,
+            req.body.email, 
+            req.body.phone || null,
+            req.body.company || null,
+            req.body.inquiry_type, // Using the correct field name
+            req.body.message,
+            req.body.marketing || false
+          ]
+        });
 
         console.log("Direct SQL insert result:", result);
 
@@ -2670,12 +2672,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Customize notification message based on inquiry type
             let notificationMessage = "";
 
-            if (req.body.inquiryType === "business") {
+            if (req.body.inquiry_type === "business") {
               notificationMessage = `New business inquiry from ${req.body.name} - Employer inquiry`;
-            } else if (req.body.inquiryType === "general") {
+            } else if (req.body.inquiry_type === "general") {
               notificationMessage = `New general inquiry from ${req.body.name} - Job seeker inquiry`;
             } else {
-              notificationMessage = `New ${req.body.inquiryType} inquiry from ${req.body.name}`;
+              notificationMessage = `New ${req.body.inquiry_type} inquiry from ${req.body.name}`;
             }
 
             return storage.createNotification({
@@ -2794,7 +2796,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Create notification with complete required fields
           const notificationData = {
             userId: inquiryUser.id,
-            message: `We've replied to your ${inquiry.inquiryType === "business" ? "business" : "general"} inquiry. Check your email.`,
+            message: `We've replied to your ${inquiry.inquiry_type === "business" ? "business" : "general"} inquiry. Check your email.`,
             // Always include the type for proper routing
             type: "inquiry_reply",
             entityId: parseInt(id),
