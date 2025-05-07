@@ -725,15 +725,16 @@ export default function PostJobPage() {
     onSuccess: (data) => {
       toast({
         title: "Job Posted Successfully",
-        description: "Your job has been posted and is now visible in the Jobs Found section.",
+        description: "Your job has been posted and is now visible in the Post Manager and Jobs Found sections.",
       });
       
       // Invalidate all queries related to jobs to ensure immediate visibility
       queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/employer/jobs"] });
       queryClient.invalidateQueries({ queryKey: ["/api/realtime/jobs"] });
       
-      // Immediately redirect to job board to see the newly posted job
-      setLocation("/job-board");
+      // Redirect to post manager instead of job board so admin can see and manage the new job
+      setLocation("/post-manager");
     },
     onError: (error: Error) => {
       toast({
