@@ -458,6 +458,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Find employer by company name
+  app.get("/api/employers/by-name/:companyName", async (req, res) => {
+    try {
+      const { companyName } = req.params;
+      const employer = await storage.getEmployerByCompanyName(companyName);
+
+      if (!employer) {
+        return res.status(404).json({ message: "Employer not found" });
+      }
+
+      // Return public profile only
+      const publicProfile = {
+        id: employer.id,
+        companyName: employer.companyName,
+        industry: employer.industry
+      };
+
+      res.json(publicProfile);
+    } catch (error) {
+      console.error("Error finding employer by name:", error);
+      res.status(500).json({ message: "Failed to find employer" });
+    }
+  });
+
   // Get all employers (for directory or search)
   app.get("/api/employers", async (req, res) => {
     try {

@@ -551,27 +551,42 @@ export default function PostJobPage() {
                         )}
                       />
                       
-                      {/* Admin-only employer ID input field */}
+                      {/* Admin-only employer name input field */}
                       {currentUser?.user.userType === "admin" && (
                         <div className="mb-4">
-                          <FormLabel>Enter Employer ID</FormLabel>
+                          <FormLabel>Enter Employer Company Name</FormLabel>
                           <Input
-                            type="number"
-                            placeholder="Enter employer ID number"
-                            value={selectedEmployerId || ''}
+                            type="text"
+                            placeholder="Enter exact company name"
+                            value={companyName || ''}
                             onChange={(e) => {
                               const value = e.target.value;
-                              console.log("Entered employer ID:", value, "type:", typeof value);
-                              const employerId = Number(value);
-                              console.log("Converted to number:", employerId, "type:", typeof employerId);
-                              setSelectedEmployerId(employerId);
-                              console.log("State updated with employerId:", employerId);
+                              setCompanyName(value);
+                              // Clear the employer ID when company name changes
+                              setSelectedEmployerId(undefined);
                             }}
                             className="w-full"
                           />
-                          <p className="text-sm text-muted-foreground mt-1">
-                            As an admin, you need to enter the employer ID to post on their behalf
-                          </p>
+                          <div className="flex justify-between">
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Enter the exact company name to post on their behalf
+                            </p>
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={validateCompanyName}
+                              className="mt-1"
+                              disabled={!companyName}
+                            >
+                              Verify Name
+                            </Button>
+                          </div>
+                          {companyNameStatus && (
+                            <p className={`text-sm mt-1 ${companyNameStatus.success ? 'text-green-500' : 'text-red-500'}`}>
+                              {companyNameStatus.message}
+                            </p>
+                          )}
                         </div>
                       )}
                       
