@@ -461,7 +461,7 @@ export default function PostJobPage() {
         const cleanData = {
           // Core fields
           title: data.title?.trim() || "",
-          company: currentUser?.userType === "admin" && companyName ? 
+          company: currentUser?.user?.userType === "admin" && companyName ? 
             companyName.trim() : data.company?.trim() || "",
           location: data.location?.trim() || "",
           category: data.category?.trim() || "",
@@ -504,7 +504,7 @@ export default function PostJobPage() {
           specialization: data.specialization?.trim() || "",
           
           // Reference fields
-          employerId: currentUser?.userType === "employer" ? currentUser?.id : null
+          employerId: currentUser?.user?.userType === "employer" ? currentUser?.user?.id : null
         };
         
         // Log what we're sending (helps with debugging)
@@ -651,7 +651,7 @@ export default function PostJobPage() {
     }
     
     // Company name validation for admin users
-    if (currentUser?.userType === "admin" && !companyName.trim()) {
+    if (currentUser?.user?.userType === "admin" && !companyName.trim()) {
       toast({
         title: "Company Name Required",
         description: "Please enter a company name to post on their behalf",
@@ -661,7 +661,7 @@ export default function PostJobPage() {
     }
     
     // For admin users, copy the company name into the form data
-    if (currentUser?.userType === "admin" && companyName.trim()) {
+    if (currentUser?.user?.userType === "admin" && companyName.trim()) {
       form.setValue('company', companyName.trim());
     }
     
@@ -692,7 +692,7 @@ export default function PostJobPage() {
               </Button>
             </AlertDescription>
           </Alert>
-        ) : (currentUser.userType !== "admin") ? (
+        ) : (currentUser.user.userType !== "admin") ? (
           <Alert className="mb-6">
             <AlertTitle>Admin Access Required</AlertTitle>
             <AlertDescription>
@@ -732,7 +732,7 @@ export default function PostJobPage() {
                         <div className="flex items-center mt-2 text-gray-600">
                           <Building className="h-4 w-4 mr-1" />
                           <span>
-                            {currentUser.userType === "admin" ? companyName : formValues.company || "Company Name"}
+                            {currentUser.user.userType === "admin" ? companyName : formValues.company || "Company Name"}
                           </span>
                         </div>
                       </div>
@@ -915,7 +915,7 @@ export default function PostJobPage() {
                           />
                           
                           {/* Admin-only employer name input field */}
-                          {currentUser.userType === "admin" && (
+                          {currentUser.user.userType === "admin" && (
                             <div className="mb-4">
                               <FormLabel>Employer Company Name</FormLabel>
                               <Input
