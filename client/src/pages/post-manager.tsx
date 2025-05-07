@@ -76,10 +76,9 @@ export default function PostManagerPage() {
         description: "The job listing has been successfully deleted.",
       });
       
-      // Invalidate all queries related to jobs to refresh listings everywhere
+      // Invalidate queries to refresh job listings
       queryClient.invalidateQueries({ queryKey: ["/api/employer/jobs"] });
       queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/realtime/jobs"] });
       
       // Reset job to delete
       setJobToDelete(null);
