@@ -558,7 +558,7 @@ export default function PostJobPage() {
       description: "",
       requirements: "",
       benefits: "",
-      applicationDeadline: new Date().toISOString().split('T')[0],
+      applicationDeadline: new Date(),
       contactEmail: currentUser?.user.email || "",
     },
   });
@@ -689,9 +689,9 @@ export default function PostJobPage() {
           contactEmail: data.contactEmail?.trim() || "",
           
           // Date field handling - ensure proper format
-          applicationDeadline: typeof data.applicationDeadline === 'object' 
-            ? (data.applicationDeadline as Date).toISOString().split('T')[0]
-            : (data.applicationDeadline?.trim() || new Date().toISOString().split('T')[0]),
+          applicationDeadline: data.applicationDeadline instanceof Date 
+            ? data.applicationDeadline.toISOString().split('T')[0]
+            : new Date().toISOString().split('T')[0],
           
           // Optional fields with null safety - we won't allow null values for now to prevent errors
           specialization: data.specialization?.trim() || "",
