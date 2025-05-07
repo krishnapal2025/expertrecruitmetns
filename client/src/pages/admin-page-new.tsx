@@ -848,7 +848,7 @@ function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{jobs?.length || 0}</div>
-                <div className="text-xs text-muted-foreground mt-1">
+                <div className="text-xs text-muted-foreground mt-1 mb-3">
                   {jobsLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
@@ -862,6 +862,17 @@ function AdminDashboard() {
                       }).length || 0}
                     </>
                   )}
+                </div>
+                <div className="flex justify-center">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full" 
+                    onClick={() => navigate("/post-job")}
+                  >
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Post New Job
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -1930,10 +1941,16 @@ function AdminDashboard() {
                   <p className="text-muted-foreground max-w-md mx-auto mb-6">
                     Use the Post Manager page to create and manage blog articles and content.
                   </p>
-                  <Button variant="default" onClick={() => navigate("/post-manager")}>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Go to Post Manager
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button variant="default" onClick={() => navigate("/post-manager")}>
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      Go to Post Manager
+                    </Button>
+                    <Button variant="outline" onClick={() => navigate("/create-blog")}>
+                      <FileText className="mr-2 h-4 w-4" />
+                      Create New Blog Post
+                    </Button>
+                  </div>
                 </div>
               </div>
             </CardContent>
