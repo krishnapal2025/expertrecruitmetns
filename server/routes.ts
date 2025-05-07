@@ -1591,7 +1591,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "admin") {
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
         return res.status(403).json({ message: "Only admins can delete jobs" });
       }
 
@@ -1676,7 +1676,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = req.user;
 
-      if (user.userType === "admin") {
+      if (user.userType === "admin" || user.userType === "super_admin") {
         // Get all jobs
         const employerJobs = await storage.getJobs();
 

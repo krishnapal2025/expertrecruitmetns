@@ -135,29 +135,29 @@ export function AdminProtectedRoute({
   // Create a type for all possible user structures
   type AnyUser = RegularUser | AdminUser | null | undefined;
   
-  // Function to determine if a user is an admin
+  // Function to determine if a user is an admin or super_admin
   const isAdminUser = (user: AnyUser): boolean => {
     if (!user) return false;
     
     // Handle AdminUser structure (from session storage or admin-specific endpoint)
     if ('user' in user && user.user) {
-      return user.user.userType === "admin";
+      return user.user.userType === "admin" || user.user.userType === "super_admin";
     }
     
     // Handle RegularUser structure (from global auth)
     if ('userType' in user) {
-      return user.userType === "admin";
+      return user.userType === "admin" || user.userType === "super_admin";
     }
     
     return false;
   };
 
-  // Show error toast if user is not admin
+  // Show error toast if user is not admin or super_admin
   useEffect(() => {
     if (activeUser && !isAdminUser(activeUser)) {
       toast({
         title: "Access Denied",
-        description: "You don't have permission to access the admin dashboard.",
+        description: "You don't have permission to access the admin dashboard. Only admin or super_admin accounts can access this area.",
         variant: "destructive",
       });
     }
