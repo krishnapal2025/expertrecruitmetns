@@ -352,52 +352,20 @@ export function setupAuth(app: Express) {
       });
     }
     
-    // Check if there's an impersonation session active
-    const impersonatedUserId = req.session.impersonatedUserId;
-    let adminUser = user;
-    let adminUserId = user.id;
-    
-    // If impersonating another admin (and current user is a super_admin)
-    if (impersonatedUserId) {
-      // Verify the current user is actually a super_admin
-      const currentAdminProfile = await storage.getAdminByUserId(user.id);
-      
-      if (!currentAdminProfile || currentAdminProfile.role !== "super_admin") {
-        // Not a super_admin, clear any impersonation session
-        delete req.session.impersonatedUserId;
-        return res.status(403).json({
-          message: "You don't have permission to impersonate other admins"
-        });
-      }
-      
-      // Get the impersonated user
-      const impersonatedUser = await storage.getUser(impersonatedUserId);
-      if (impersonatedUser && impersonatedUser.userType === "admin") {
-        adminUser = impersonatedUser;
-        adminUserId = impersonatedUserId;
-      } else {
-        // Invalid impersonation target, clear session
-        delete req.session.impersonatedUserId;
-      }
-    }
-    
-    // Get admin profile with full details (either the real admin or impersonated one)
-    const adminProfile = await storage.getAdminByUserId(adminUserId);
+    // Get admin profile with full details
+    const adminProfile = await storage.getAdminByUserId(user.id);
     
     if (!adminProfile) {
       return res.status(404).json({ message: "Admin profile not found" });
     }
     
-    // Add flag to indicate if user is being impersonated
-    const isImpersonating = !!impersonatedUserId;
-    
     // Return admin data with profile information optimized for type safety
     res.json({
       user: {
-        id: adminUser.id,
-        email: adminUser.email,
-        username: adminUser.email, // Use email as username for type safety
-        userType: adminUser.userType
+        id: user.id,
+        email: user.email,
+        username: user.email, // Use email as username for type safety
+        userType: user.userType
       },
       profile: {
         id: adminProfile.id,
@@ -405,11 +373,6 @@ export function setupAuth(app: Express) {
         lastName: adminProfile.lastName || "",
         role: adminProfile.role,
         lastLogin: adminProfile.lastLogin || new Date()
-      },
-      // Include impersonation data
-      meta: {
-        isImpersonating,
-        originalUserId: isImpersonating ? user.id : undefined
       }
     });
   });
