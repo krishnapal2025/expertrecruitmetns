@@ -788,33 +788,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Parsing and transforming job data with schema...");
       let validatedJobData;
       try {
-        // Pre-process the data to ensure all required fields have values
-        const processedData = {
-          ...req.body,
-          // Ensure all required string fields have values
-          title: req.body.title || "Untitled Position",
-          company: req.body.company || "Unknown Company",
-          description: req.body.description || "No description provided",
-          requirements: req.body.requirements || "No specific requirements",
-          benefits: req.body.benefits || "Contact for details",
-          category: req.body.category || "General",
-          location: req.body.location || "Remote",
-          jobType: req.body.jobType || "Full-time",
-          experience: req.body.experience || "Not specified",
-          contactEmail: req.body.contactEmail || "contact@expertrecruitments.com",
-          
-          // Ensure numeric fields are valid numbers
-          minSalary: isNaN(Number(req.body.minSalary)) ? 0 : Number(req.body.minSalary),
-          maxSalary: isNaN(Number(req.body.maxSalary)) ? 0 : Number(req.body.maxSalary),
-          
-          // Ensure date fields are valid dates
-          applicationDeadline: req.body.applicationDeadline ? new Date(req.body.applicationDeadline) : new Date()
-        };
-        
-        console.log("Pre-processed data:", JSON.stringify(processedData, null, 2));
-        
         // Parse through our schema which handles all transformations and validations
-        validatedJobData = insertJobSchema.parse(processedData);
+        validatedJobData = insertJobSchema.parse(req.body);
         console.log("Validation and transformation successful!");
       } catch (validationError) {
         console.error("Schema parsing failed:", validationError);
