@@ -845,6 +845,25 @@ export default function PostJobPage() {
                             <FormControl>
                               <Input placeholder="e.g., Senior Frontend Developer" {...field} />
                             </FormControl>
+                            {selectedCategory && (
+                              <div className="mt-2">
+                                <p className="text-sm text-muted-foreground mb-2">Suggested job titles for {selectedCategory}:</p>
+                                <ScrollArea className="h-24 w-full rounded-md border p-2">
+                                  <div className="flex flex-wrap gap-2">
+                                    {commonJobTitles[selectedCategory as keyof typeof commonJobTitles]?.map((title) => (
+                                      <Badge 
+                                        key={title}
+                                        variant={field.value === title ? "default" : "outline"}
+                                        className="cursor-pointer"
+                                        onClick={() => handleJobTitleSelect(title)}
+                                      >
+                                        {title}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </ScrollArea>
+                              </div>
+                            )}
                             <FormMessage />
                           </FormItem>
                         )}
@@ -920,7 +939,10 @@ export default function PostJobPage() {
                             <FormItem>
                               <FormLabel>Job Category</FormLabel>
                               <Select 
-                                onValueChange={field.onChange} 
+                                onValueChange={(value) => {
+                                  field.onChange(value);
+                                  handleCategoryChange(value);
+                                }} 
                                 defaultValue={field.value}
                               >
                                 <FormControl>
@@ -1111,6 +1133,29 @@ export default function PostJobPage() {
                                 {...field}
                               />
                             </FormControl>
+                            {selectedCategory && (
+                              <div className="mt-2">
+                                <p className="text-sm text-muted-foreground mb-2">Common skills for {selectedCategory}:</p>
+                                <ScrollArea className="h-24 w-full rounded-md border p-2">
+                                  <div className="flex flex-wrap gap-2">
+                                    {commonSkills[selectedCategory as keyof typeof commonSkills]?.map((skill) => (
+                                      <Badge 
+                                        key={skill}
+                                        variant={selectedSkills.includes(skill) ? "default" : "outline"}
+                                        className="cursor-pointer"
+                                        onClick={() => handleSkillToggle(skill)}
+                                      >
+                                        <span className="mr-1">{selectedSkills.includes(skill) ? <Check className="h-3 w-3" /> : null}</span>
+                                        {skill}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </ScrollArea>
+                                <p className="text-xs text-muted-foreground mt-2">
+                                  Click on skills to add them to requirements
+                                </p>
+                              </div>
+                            )}
                             <FormMessage />
                           </FormItem>
                         )}
