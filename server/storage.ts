@@ -332,41 +332,53 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log("Creating job with data:", JSON.stringify(insertJob, null, 2));
       
-      // Deep copy and create a clean job data object with all required fields
-      const jobData: Record<string, any> = {
-        // Required fields with fallbacks
-        title: insertJob.title || "Untitled Position",
-        company: insertJob.company || "Unknown Company",
-        description: insertJob.description || "No description provided",
-        requirements: insertJob.requirements || "Please contact for details",
-        benefits: insertJob.benefits || "Please contact for details",
-        category: insertJob.category || "General",
-        location: insertJob.location || "Unspecified",
-        jobType: insertJob.jobType || "Full-time",
-        experience: insertJob.experience || "Not specified",
-        minSalary: Number(insertJob.minSalary) || 0, 
-        maxSalary: Number(insertJob.maxSalary) || 0,
-        contactEmail: insertJob.contactEmail || "contact@expertrecruitments.com",
+      // Use strict typing for job data to match the database schema exactly
+      // This avoids any type mismatches or missing fields
+      const jobData = {
+        // Required string fields
+        title: String(insertJob.title || "Untitled Position"),
+        company: String(insertJob.company || "Unknown Company"),
+        description: String(insertJob.description || "No description provided"),
+        requirements: String(insertJob.requirements || "Please contact for details"),
+        benefits: String(insertJob.benefits || "Please contact for details"),
+        category: String(insertJob.category || "General"),
+        location: String(insertJob.location || "Unspecified"),
+        jobType: String(insertJob.jobType || "Full-time"),
+        experience: String(insertJob.experience || "Not specified"),
+        contactEmail: String(insertJob.contactEmail || "contact@expertrecruitments.com"),
+        
+        // Integer fields
+        minSalary: isNaN(Number(insertJob.minSalary)) ? 0 : Number(insertJob.minSalary),
+        maxSalary: isNaN(Number(insertJob.maxSalary)) ? 0 : Number(insertJob.maxSalary),
         
         // Date handling
-        applicationDeadline: insertJob.applicationDeadline instanceof Date ? 
-          insertJob.applicationDeadline : 
-          new Date(insertJob.applicationDeadline || new Date().setMonth(new Date().getMonth() + 1)),
-            
+        applicationDeadline: insertJob.applicationDeadline instanceof Date 
+          ? insertJob.applicationDeadline 
+          : new Date(),
+                    
+        // Boolean fields with defaults
+        isActive: true,
+        
         // Optional fields
         specialization: insertJob.specialization || null,
         salary: insertJob.salary || null,
+        
+        // Default system fields
+        postedDate: new Date(),
+        applicationCount: 0
       };
       
-      // Only add employerId if it's valid
-      if (insertJob.employerId && Number(insertJob.employerId) > 0) {
-        jobData.employerId = Number(insertJob.employerId);
+      // Handle the employerId field separately to prevent null constraint errors
+      // Only include employerId in the insert if it's a valid number
+      if (insertJob.employerId != null && !isNaN(Number(insertJob.employerId))) {
+        // We know this is valid, so add it to the jobData object
+        (jobData as any).employerId = Number(insertJob.employerId);
       }
       
-      console.log("Inserting job with clean data:", JSON.stringify(jobData, null, 2));
+      console.log("Inserting job with strictly typed data:", JSON.stringify(jobData, null, 2));
       
       // Insert the job with properly formatted data
-      const [job] = await db.insert(jobs).values(jobData).returning();
+      const [job] = await db.insert(jobs).values(jobData as any).returning();
       console.log("Job created successfully, ID:", job.id);
       return job;
     } catch (error) {
