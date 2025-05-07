@@ -880,9 +880,10 @@ export default function PostJobPage() {
       requirements: data.requirements?.trim() || "Job requirements not specified",
       benefits: data.benefits?.trim() || "Job benefits not specified",
       // Convert Date object to string in YYYY-MM-DD format for server schema
+      // Format date as string in YYYY-MM-DD format, which is what the server expects
       applicationDeadline: data.applicationDeadline instanceof Date
         ? data.applicationDeadline.toISOString().split('T')[0] // Format as YYYY-MM-DD
-        : (data.applicationDeadline 
+        : (typeof data.applicationDeadline === 'string' 
             ? new Date(data.applicationDeadline).toISOString().split('T')[0] 
             : new Date().toISOString().split('T')[0]),
       contactEmail: data.contactEmail?.trim() || "",
