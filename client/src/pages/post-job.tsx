@@ -62,14 +62,10 @@ const jobPostSchema = z.object({
   description: z.string().min(30, "Description must be at least 30 characters"),
   requirements: z.string().min(20, "Requirements must be at least 20 characters"),
   benefits: z.string().min(10, "Benefits must be at least 10 characters"),
-  applicationDeadline: z.string().min(1, "Application deadline is required").refine((val) => {
-    try {
-      const date = new Date(val);
-      return !isNaN(date.getTime());
-    } catch {
-      return false;
-    }
-  }, "Please enter a valid date"),
+  applicationDeadline: z.date({
+    required_error: "Application deadline is required",
+    invalid_type_error: "Application deadline must be a valid date"
+  }),
   contactEmail: z.string().email("Must be a valid email address"),
   employerId: z.number().optional(),
 });
@@ -857,7 +853,7 @@ export default function PostJobPage() {
       description: data.description?.trim() || "",
       requirements: data.requirements?.trim() || "",
       benefits: data.benefits?.trim() || "",
-      applicationDeadline: data.applicationDeadline || new Date().toISOString().split('T')[0],
+      applicationDeadline: data.applicationDeadline || new Date(),
       contactEmail: data.contactEmail?.trim() || "",
       experience: data.experience?.trim() || "",
       specialization: data.specialization?.trim() || null,
@@ -1419,15 +1415,38 @@ export default function PostJobPage() {
                           control={form.control}
                           name="applicationDeadline"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="flex flex-col">
                               <FormLabel>Application Deadline</FormLabel>
-                              <FormControl>
-                                <Input 
-                                  type="date" 
-                                  {...field}
-                                  min={new Date().toISOString().split('T')[0]}
-                                />
-                              </FormControl>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      variant={"outline"}
+                                      className={`w-full pl-3 text-left font-normal ${
+                                        !field.value ? "text-muted-foreground" : ""
+                                      }`}
+                                    >
+                                      {field.value ? (
+                                        format(field.value, "PPP")
+                                      ) : (
+                                        <span>Select a date</span>
+                                      )}
+                                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                  <Calendar
+                                    mode="single"
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                    disabled={(date) =>
+                                      date < new Date(new Date().setHours(0, 0, 0, 0))
+                                    }
+                                    initialFocus
+                                  />
+                                </PopoverContent>
+                              </Popover>
                               <FormMessage />
                             </FormItem>
                           )}
