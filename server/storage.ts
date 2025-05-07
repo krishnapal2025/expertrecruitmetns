@@ -329,8 +329,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createJob(insertJob: InsertJob): Promise<Job> {
-    const [job] = await db.insert(jobs).values(insertJob).returning();
-    return job;
+    try {
+      // Clean up the job data before insertion
+      const jobData = { ...insertJob };
+      
+      // If employerId is undefined, null, or invalid, remove it from the insertion data
+      if (jobData.employerId === undefined || jobData.employerId === null) {
+        delete jobData.employerId;
+      }
+      
+      // Insert the job with properly formatted data
+      const [job] = await db.insert(jobs).values(jobData).returning();
+      console.log("Job created successfully:", job.id);
+      return job;
+    } catch (error) {
+      console.error("Error in createJob:", error);
+      throw error;
+    }
   }
 
   async updateJob(updatedJob: Job): Promise<Job> {
