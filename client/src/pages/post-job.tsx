@@ -693,15 +693,15 @@ export default function PostJobPage() {
           // Email with validation 
           contactEmail: data.contactEmail?.trim() || "",
           
-          // Date field handling - ensure proper format as YYYY-MM-DD string for server
-          // The server expects a string in YYYY-MM-DD format, not a Date object
+          // Date field handling - ensure proper format as ISO string for server
+          // The database schema expects a timestamp, so we need to send a full ISO string
           applicationDeadline: data.applicationDeadline 
             ? (data.applicationDeadline instanceof Date 
-              ? data.applicationDeadline.toISOString().split('T')[0] // Format: YYYY-MM-DD
+              ? data.applicationDeadline.toISOString() // Full ISO format with time
               : typeof data.applicationDeadline === 'string' 
-                ? new Date(data.applicationDeadline).toISOString().split('T')[0]
-                : new Date().toISOString().split('T')[0])
-            : new Date().toISOString().split('T')[0],
+                ? new Date(data.applicationDeadline).toISOString()
+                : new Date().toISOString())
+            : new Date().toISOString(),
           
           // Optional fields with null safety - we won't allow null values for now to prevent errors
           specialization: data.specialization?.trim() || "",
@@ -882,10 +882,10 @@ export default function PostJobPage() {
       // Convert Date object to string in YYYY-MM-DD format for server schema
       // Format date as string in YYYY-MM-DD format, which is what the server expects
       applicationDeadline: data.applicationDeadline instanceof Date
-        ? data.applicationDeadline.toISOString().split('T')[0] // Format as YYYY-MM-DD
+        ? data.applicationDeadline.toISOString() // Full ISO format
         : (typeof data.applicationDeadline === 'string' 
-            ? new Date(data.applicationDeadline).toISOString().split('T')[0] 
-            : new Date().toISOString().split('T')[0]),
+            ? new Date(data.applicationDeadline).toISOString()
+            : new Date().toISOString()),
       contactEmail: data.contactEmail?.trim() || "",
       experience: data.experience?.trim() || "Entry Level (0-1 years)",
       specialization: data.specialization?.trim() || null,
