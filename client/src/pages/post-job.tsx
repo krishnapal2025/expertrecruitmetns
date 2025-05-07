@@ -1100,6 +1100,28 @@ export default function PostJobPage() {
                           )}
                         />
                       </div>
+                      
+                      {/* Salary Range Presets */}
+                      <div className="bg-slate-50 p-3 rounded-md border">
+                        <div className="text-sm font-medium mb-2">Salary Range Presets</div>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                          {salaryRanges.map((range, index) => (
+                            <Button 
+                              key={index}
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="text-xs justify-start"
+                              onClick={() => handleSalaryRangeSelect(range)}
+                            >
+                              {range.label}: ${range.min.toLocaleString()} - ${range.max.toLocaleString()}
+                            </Button>
+                          ))}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Click on a preset to automatically fill the salary range
+                        </p>
+                      </div>
                     </CardContent>
                   </Card>
                   
