@@ -37,8 +37,10 @@ function AdminPage() {
       return;
     }
 
-    // Check if user is admin and handle accordingly
-    if (activeUser?.user?.userType === "admin" || activeUser?.userType === "admin") {
+    // Check if user is admin or super_admin and handle accordingly
+    if (activeUser?.user?.userType === "admin" || activeUser?.userType === "admin" || 
+        activeUser?.user?.userType === "super_admin" || activeUser?.userType === "super_admin") {
+      // Super admins have enhanced access to the admin dashboard
       setRedirectPath("/admin-dashboard");
     } else {
       toast({

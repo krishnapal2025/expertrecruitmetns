@@ -842,7 +842,7 @@ export default function PostJobPage() {
     const cleanData = {
       // Required string fields with fallbacks
       title: data.title?.trim() || "Untitled Job Post",
-      company: currentUser.user.userType === "admin" ? 
+      company: (currentUser.user.userType === "admin" || currentUser.user.userType === "super_admin") ? 
         companyName.trim() : data.company?.trim() || "Company Name Required",
       location: data.location?.trim() || "Location Not Specified",
       category: data.category?.trim() || "General",
@@ -928,11 +928,11 @@ export default function PostJobPage() {
               </Button>
             </AlertDescription>
           </Alert>
-        ) : (currentUser.user.userType !== "admin") ? (
+        ) : (currentUser.user.userType !== "admin" && currentUser.user.userType !== "super_admin") ? (
           <Alert className="mb-6">
             <AlertTitle>Admin Account Required</AlertTitle>
             <AlertDescription>
-              Only admin accounts can post jobs. Your current account does not have the necessary permissions.
+              Only admin or super admin accounts can post jobs. Your current account does not have the necessary permissions.
             </AlertDescription>
           </Alert>
         ) : (
@@ -1092,8 +1092,8 @@ export default function PostJobPage() {
                         )}
                       />
                       
-                      {/* Admin-only employer name input field */}
-                      {currentUser?.user.userType === "admin" && (
+                      {/* Admin/SuperAdmin-only employer name input field */}
+                      {(currentUser?.user.userType === "admin" || currentUser?.user.userType === "super_admin") && (
                         <div className="mb-4">
                           <FormLabel>Enter Employer Company Name</FormLabel>
                           <Input
