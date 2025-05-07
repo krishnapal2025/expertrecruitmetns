@@ -173,7 +173,9 @@ export const insertJobSchema = createInsertSchema(jobs)
     // Override the applicationDeadline field to accept string
     applicationDeadline: z.string()
       .min(1, "Application deadline is required")
-      .transform((val) => new Date(val))
+      .transform((val) => new Date(val)),
+    // Ensure employerId is required
+    employerId: z.number({ required_error: "Employer ID is required" })
   });
 
 export const insertApplicationSchema = createInsertSchema(applications).omit({

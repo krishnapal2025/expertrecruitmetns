@@ -61,6 +61,7 @@ const jobPostSchema = z.object({
     }
   }, "Please enter a valid date"),
   contactEmail: z.string().email("Must be a valid email address"),
+  employerId: z.number().optional(),
 });
 
 type JobPostFormValues = z.infer<typeof jobPostSchema>;
