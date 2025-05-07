@@ -757,11 +757,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validate job data - the schema will handle date conversion
       const validatedData = insertJobSchema.parse(req.body);
 
-      // Create the job with default employer ID if not provided
-      const job = await storage.createJob({
-        ...validatedData,
-        employerId: 1 // Use a default employer ID (admin's employer)
-      });
+      // Create the job without requiring an employer ID
+      const job = await storage.createJob(validatedData);
 
       // Update real-time store and create notifications for job seekers
       realtimeStore.lastJobId = Math.max(realtimeStore.lastJobId, job.id);
@@ -843,20 +840,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update real-time store for application tracking
       realtimeStore.lastApplicationId = Math.max(realtimeStore.lastApplicationId, application.id);
 
-      // Get the employer who posted this job
-      const employer = await storage.getEmployer(job.employerId);
-      if (employer) {
-        // Get the employer user
-        const employerUser = await storage.getUserByEmployerId(employer.id);
-        if (employerUser) {
-          // Create a notification for the employer
-          realtimeStore.notifications.push({
-            id: realtimeStore.notificationId++,
-            userId: employerUser.id,
-            message: `${jobSeeker.firstName} ${jobSeeker.lastName} applied for your job: ${job.title}`,
-            read: false,
-            createdAt: new Date()
-          });
+      // Get the employer who posted this job if employerId exists
+      if (job.employerId) {
+        const employer = await storage.getEmployer(job.employerId);
+        if (employer) {
+          // Get the employer user
+          const employerUser = await storage.getUserByEmployerId(employer.id);
+          if (employerUser) {
+            // Create a notification for the employer
+            realtimeStore.notifications.push({
+              id: realtimeStore.notificationId++,
+              userId: employerUser.id,
+              message: `${jobSeeker.firstName} ${jobSeeker.lastName} applied for your job: ${job.title}`,
+              read: false,
+              createdAt: new Date()
+            });
+          }
         }
       }
 

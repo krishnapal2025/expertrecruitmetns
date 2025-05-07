@@ -40,7 +40,7 @@ export const employers = pgTable("employers", {
 // Job listings table
 export const jobs = pgTable("jobs", {
   id: serial("id").primaryKey(),
-  employerId: integer("employer_id").notNull().references(() => employers.id),
+  employerId: integer("employer_id").references(() => employers.id), // Made optional by removing notNull()
   title: text("title").notNull(),
   company: text("company").notNull(),
   description: text("description").notNull(),
@@ -174,8 +174,8 @@ export const insertJobSchema = createInsertSchema(jobs)
     applicationDeadline: z.string()
       .min(1, "Application deadline is required")
       .transform((val) => new Date(val)),
-    // Ensure employerId is required
-    employerId: z.number({ required_error: "Employer ID is required" })
+    // Make employerId optional
+    employerId: z.number().optional()
   });
 
 export const insertApplicationSchema = createInsertSchema(applications).omit({
