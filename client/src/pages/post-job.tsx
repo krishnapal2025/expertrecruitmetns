@@ -177,6 +177,222 @@ const experienceLevels = [
   "Expert (10+ years)",
 ];
 
+// Common job titles by category
+const jobTitles = {
+  Technology: [
+    "Software Engineer",
+    "Frontend Developer",
+    "Backend Developer",
+    "Full Stack Developer",
+    "DevOps Engineer",
+    "Data Scientist",
+    "Machine Learning Engineer",
+    "UI/UX Designer",
+    "Product Manager",
+    "QA Engineer",
+    "Systems Administrator",
+    "IT Support Specialist",
+    "Cloud Architect",
+    "Network Engineer",
+    "Database Administrator",
+  ],
+  Finance: [
+    "Financial Analyst",
+    "Accountant",
+    "Financial Advisor",
+    "Investment Banker",
+    "Risk Analyst",
+    "Wealth Manager",
+    "Auditor",
+    "Credit Analyst",
+    "Tax Consultant",
+    "Fund Manager",
+  ],
+  Healthcare: [
+    "Registered Nurse",
+    "Physician",
+    "Medical Assistant",
+    "Physical Therapist",
+    "Pharmacist",
+    "Dental Hygienist",
+    "Healthcare Administrator",
+    "Occupational Therapist",
+    "Medical Technologist",
+    "Nutritionist",
+  ],
+  Education: [
+    "Teacher",
+    "Professor",
+    "Curriculum Developer",
+    "School Counselor",
+    "Principal",
+    "Academic Advisor",
+    "Special Education Teacher",
+    "Education Coordinator",
+    "Instructional Designer",
+    "Library Director",
+  ],
+  Marketing: [
+    "Marketing Manager",
+    "Digital Marketing Specialist",
+    "SEO Specialist",
+    "Content Strategist",
+    "Social Media Manager",
+    "Brand Manager",
+    "Public Relations Specialist",
+    "Market Research Analyst",
+    "Email Marketing Specialist",
+    "Marketing Coordinator",
+  ],
+  Engineering: [
+    "Civil Engineer",
+    "Mechanical Engineer",
+    "Electrical Engineer",
+    "Chemical Engineer",
+    "Aerospace Engineer",
+    "Environmental Engineer",
+    "Structural Engineer",
+    "Petroleum Engineer",
+    "Industrial Engineer",
+    "Biomedical Engineer",
+  ],
+  Sales: [
+    "Sales Representative",
+    "Account Executive",
+    "Sales Manager",
+    "Business Development Manager",
+    "Sales Director",
+    "Inside Sales Representative",
+    "Outside Sales Representative",
+    "Sales Analyst",
+    "Sales Coordinator",
+    "Regional Sales Manager",
+  ],
+  Hospitality: [
+    "Hotel Manager",
+    "Chef",
+    "Restaurant Manager",
+    "Event Planner",
+    "Front Desk Manager",
+    "Food and Beverage Director",
+    "Concierge",
+    "Sous Chef",
+    "Hospitality Coordinator",
+    "Guest Relations Manager",
+  ],
+};
+
+// Common requirements by category
+const commonRequirements = {
+  Technology: [
+    "Bachelor's degree in Computer Science or related field",
+    "Experience with JavaScript, TypeScript, and React",
+    "Experience with NodeJS and Express",
+    "Experience with SQL and NoSQL databases",
+    "Strong problem-solving skills and attention to detail",
+    "Excellent communication and collaboration skills",
+    "Experience with cloud services (AWS, Azure, GCP)",
+    "Knowledge of CI/CD pipelines and DevOps practices",
+    "Experience with Agile development methodologies",
+    "Ability to work independently and as part of a team",
+  ],
+  Finance: [
+    "Bachelor's degree in Finance, Accounting, or related field",
+    "CPA, CFA, or other relevant certifications",
+    "Experience with financial analysis and reporting",
+    "Knowledge of accounting principles and practices",
+    "Experience with financial modeling and forecasting",
+    "Proficiency in Excel and financial software",
+    "Attention to detail and analytical thinking",
+    "Strong communication and presentation skills",
+    "Knowledge of regulatory requirements and compliance",
+    "Experience with budgeting and financial planning",
+  ],
+  Healthcare: [
+    "Degree in Nursing, Medicine, or relevant healthcare field",
+    "Current license or certification in relevant specialty",
+    "Experience in clinical or healthcare setting",
+    "Knowledge of medical terminology and procedures",
+    "Excellent patient care and communication skills",
+    "Ability to work in fast-paced environments",
+    "Experience with electronic health records (EHR) systems",
+    "Knowledge of healthcare regulations and compliance",
+    "Strong ethical standards and confidentiality",
+    "Ability to work flexible hours including nights and weekends",
+  ],
+  General: [
+    "Bachelor's degree in relevant field",
+    "Minimum of X years of experience in similar role",
+    "Strong communication and interpersonal skills",
+    "Ability to work independently and as part of a team",
+    "Excellent problem-solving and analytical skills",
+    "Proficiency in Microsoft Office suite",
+    "Strong attention to detail and organizational skills",
+    "Ability to work under pressure and meet deadlines",
+    "Excellent time management skills",
+    "Willingness to learn and adapt to new technologies",
+  ]
+};
+
+// Salary ranges by experience level
+const salaryRanges = {
+  "Entry Level (0-1 years)": {
+    "Technology": { min: 40000, max: 65000 },
+    "Finance": { min: 45000, max: 70000 },
+    "Healthcare": { min: 35000, max: 60000 },
+    "Education": { min: 35000, max: 55000 },
+    "Marketing": { min: 38000, max: 60000 },
+    "Engineering": { min: 45000, max: 70000 },
+    "Sales": { min: 35000, max: 65000 },
+    "Hospitality": { min: 30000, max: 50000 },
+    "Default": { min: 35000, max: 60000 }
+  },
+  "Junior (1-3 years)": {
+    "Technology": { min: 65000, max: 90000 },
+    "Finance": { min: 70000, max: 95000 },
+    "Healthcare": { min: 60000, max: 85000 },
+    "Education": { min: 55000, max: 75000 },
+    "Marketing": { min: 60000, max: 85000 },
+    "Engineering": { min: 70000, max: 95000 },
+    "Sales": { min: 65000, max: 90000 },
+    "Hospitality": { min: 50000, max: 70000 },
+    "Default": { min: 60000, max: 85000 }
+  },
+  "Mid-Level (3-5 years)": {
+    "Technology": { min: 90000, max: 120000 },
+    "Finance": { min: 95000, max: 130000 },
+    "Healthcare": { min: 85000, max: 115000 },
+    "Education": { min: 75000, max: 95000 },
+    "Marketing": { min: 85000, max: 110000 },
+    "Engineering": { min: 95000, max: 130000 },
+    "Sales": { min: 90000, max: 120000 },
+    "Hospitality": { min: 70000, max: 95000 },
+    "Default": { min: 85000, max: 115000 }
+  },
+  "Senior (5-10 years)": {
+    "Technology": { min: 120000, max: 160000 },
+    "Finance": { min: 130000, max: 180000 },
+    "Healthcare": { min: 115000, max: 150000 },
+    "Education": { min: 95000, max: 130000 },
+    "Marketing": { min: 110000, max: 150000 },
+    "Engineering": { min: 130000, max: 180000 },
+    "Sales": { min: 120000, max: 160000 },
+    "Hospitality": { min: 95000, max: 130000 },
+    "Default": { min: 115000, max: 160000 }
+  },
+  "Expert (10+ years)": {
+    "Technology": { min: 160000, max: 250000 },
+    "Finance": { min: 180000, max: 300000 },
+    "Healthcare": { min: 150000, max: 250000 },
+    "Education": { min: 130000, max: 180000 },
+    "Marketing": { min: 150000, max: 200000 },
+    "Engineering": { min: 180000, max: 250000 },
+    "Sales": { min: 160000, max: 250000 },
+    "Hospitality": { min: 130000, max: 180000 },
+    "Default": { min: 160000, max: 240000 }
+  }
+};
+
 export default function PostJobPage() {
   const { currentUser, refetchUser } = useAuth();
   const { toast } = useToast();
@@ -223,10 +439,60 @@ export default function PostJobPage() {
   
   // Watch form values for preview
   const formValues = form.watch();
+  const selectedCategory = form.watch('category');
+  const selectedExperience = form.watch('experience');
   
   // Simple function to update company name
   const handleCompanyNameChange = (value: string) => {
     setCompanyName(value);
+  };
+  
+  // Function to suggest salary ranges based on category and experience
+  const suggestSalaryRange = () => {
+    if (selectedCategory && selectedExperience) {
+      const category = selectedCategory;
+      const experience = selectedExperience;
+      
+      const ranges = salaryRanges[experience as keyof typeof salaryRanges];
+      if (ranges) {
+        const categoryRanges = ranges[category as keyof typeof ranges] || ranges["Default"];
+        if (categoryRanges) {
+          form.setValue('minSalary', categoryRanges.min);
+          form.setValue('maxSalary', categoryRanges.max);
+          toast({
+            title: "Salary Range Updated",
+            description: `Suggested salary range for ${category} - ${experience} has been applied.`,
+          });
+        }
+      }
+    } else {
+      toast({
+        title: "Cannot Suggest Salary",
+        description: "Please select both a category and experience level first.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // Function to suggest job titles based on selected category
+  const suggestJobTitles = (selectedCategory: string) => {
+    return jobTitles[selectedCategory as keyof typeof jobTitles] || [];
+  };
+  
+  // Function to load common requirements based on category
+  const loadRequirements = (category: string) => {
+    const categoryKey = category as keyof typeof commonRequirements;
+    const requirementsList = commonRequirements[categoryKey] || commonRequirements.General;
+    
+    if (requirementsList && requirementsList.length > 0) {
+      const formattedRequirements = requirementsList.map(req => `• ${req}`).join('\n\n');
+      form.setValue('requirements', formattedRequirements);
+      
+      toast({
+        title: "Requirements Loaded",
+        description: `Common requirements for ${category} roles have been added.`,
+      });
+    }
   };
 
   // Create job mutation
@@ -555,9 +821,59 @@ export default function PostJobPage() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Job Title</FormLabel>
-                            <FormControl>
-                              <Input placeholder="e.g., Senior Frontend Developer" {...field} />
-                            </FormControl>
+                            <div className="flex gap-2 items-start">
+                              <div className="flex-1">
+                                <FormControl>
+                                  <Input placeholder="e.g., Senior Frontend Developer" {...field} />
+                                </FormControl>
+                              </div>
+                              {selectedCategory && (
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  className="mt-1"
+                                  onClick={() => {
+                                    const titles = suggestJobTitles(selectedCategory);
+                                    if (titles.length > 0) {
+                                      // Create a dropdown-like dialog to select from titles
+                                      const select = document.createElement('select');
+                                      select.style.position = 'fixed';
+                                      select.style.top = '-100px';
+                                      select.style.opacity = '0';
+                                      
+                                      titles.forEach(title => {
+                                        const option = document.createElement('option');
+                                        option.value = title;
+                                        option.text = title;
+                                        select.appendChild(option);
+                                      });
+                                      
+                                      document.body.appendChild(select);
+                                      select.size = Math.min(titles.length, 10);
+                                      select.focus();
+                                      
+                                      select.onchange = () => {
+                                        const selectedTitle = select.value;
+                                        form.setValue('title', selectedTitle);
+                                        document.body.removeChild(select);
+                                        
+                                        toast({
+                                          title: "Job Title Selected",
+                                          description: `You've selected "${selectedTitle}" as the job title.`,
+                                        });
+                                      };
+                                      
+                                      select.onblur = () => {
+                                        document.body.removeChild(select);
+                                      };
+                                    }
+                                  }}
+                                >
+                                  Suggest Titles
+                                </Button>
+                              )}
+                            </div>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -782,6 +1098,22 @@ export default function PostJobPage() {
                           )}
                         />
                       </div>
+                      
+                      {/* Salary range suggestion button */}
+                      {selectedCategory && selectedExperience && (
+                        <div className="flex justify-end mt-4">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center gap-1"
+                            onClick={suggestSalaryRange}
+                          >
+                            <DollarSign className="h-4 w-4" />
+                            Suggest Salary Range
+                          </Button>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                   
@@ -816,7 +1148,20 @@ export default function PostJobPage() {
                         name="requirements"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Requirements</FormLabel>
+                            <div className="flex justify-between items-center">
+                              <FormLabel>Requirements</FormLabel>
+                              {selectedCategory && (
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  className="flex items-center gap-1 text-xs"
+                                  onClick={() => loadRequirements(selectedCategory)}
+                                >
+                                  Load Common Requirements
+                                </Button>
+                              )}
+                            </div>
                             <FormControl>
                               <Textarea 
                                 placeholder="List the qualifications and skills required..."
