@@ -807,8 +807,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           minSalary: isNaN(Number(req.body.minSalary)) ? 0 : Number(req.body.minSalary),
           maxSalary: isNaN(Number(req.body.maxSalary)) ? 0 : Number(req.body.maxSalary),
           
-          // Ensure date fields are valid dates
-          applicationDeadline: req.body.applicationDeadline ? new Date(req.body.applicationDeadline) : new Date()
+          // Ensure applicationDeadline is a string, which will be validated by our schema
+          applicationDeadline: req.body.applicationDeadline ? 
+            req.body.applicationDeadline instanceof Date ? 
+              req.body.applicationDeadline.toISOString() : 
+              req.body.applicationDeadline : 
+            new Date().toISOString()
         };
         
         console.log("Pre-processed data:", JSON.stringify(processedData, null, 2));
