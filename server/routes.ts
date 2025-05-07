@@ -863,9 +863,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         if (errorMessage.includes("not null constraint") || errorMessage.includes("violates not-null constraint")) {
+          // Extract column name from error message if possible
+          const columnMatch = errorMessage.match(/column [\"']?([a-z_]+)[\"']?/i);
+          const columnName = columnMatch ? columnMatch[1] : "unknown";
+          console.error(`NULL constraint violation detected on column: ${columnName}`);
+          
           return res.status(400).json({ 
-            message: "Missing required field. Please check that all required fields are provided.",
-            code: "NULL_CONSTRAINT_ERROR"
+            message: `Missing required field: ${columnName}. Please check that all required fields are provided.`,
+            code: "NULL_CONSTRAINT_ERROR",
+            field: columnName
           });
         }
         

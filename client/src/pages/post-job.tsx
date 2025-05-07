@@ -899,11 +899,12 @@ export default function PostJobPage() {
       // Convert Date object to string in YYYY-MM-DD format for server schema
       // Format date as string in ISO format
       // The server expects a string that it can parse with new Date()
+      // Ensure applicationDeadline is properly formatted as ISO string
       applicationDeadline: data.applicationDeadline instanceof Date
-        ? data.applicationDeadline.toISOString() 
-        : (typeof data.applicationDeadline === 'string' && data.applicationDeadline.trim() !== ''
-            ? data.applicationDeadline // Keep as is if it's already a string
-            : new Date().toISOString()),
+        ? data.applicationDeadline.toISOString()
+        : (typeof data.applicationDeadline === 'string' && data.applicationDeadline
+            ? data.applicationDeadline // Keep as is if it's already a non-empty string 
+            : new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000).toISOString()), // 30 days from now
       contactEmail: data.contactEmail?.trim() || "",
       experience: data.experience?.trim() || "Entry Level (0-1 years)",
       specialization: data.specialization?.trim() || null,

@@ -332,29 +332,47 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log("Creating job with data:", JSON.stringify(insertJob, null, 2));
       
+      // Add detailed validation logging for debugging
+      console.log("Validating required fields:");
+      console.log("- title:", insertJob.title, typeof insertJob.title);
+      console.log("- company:", insertJob.company, typeof insertJob.company);
+      console.log("- description:", insertJob.description, typeof insertJob.description);
+      console.log("- requirements:", insertJob.requirements, typeof insertJob.requirements);
+      console.log("- benefits:", insertJob.benefits, typeof insertJob.benefits);
+      console.log("- category:", insertJob.category, typeof insertJob.category);
+      console.log("- location:", insertJob.location, typeof insertJob.location);
+      console.log("- jobType:", insertJob.jobType, typeof insertJob.jobType);
+      console.log("- experience:", insertJob.experience, typeof insertJob.experience);
+      console.log("- contactEmail:", insertJob.contactEmail, typeof insertJob.contactEmail);
+      console.log("- minSalary:", insertJob.minSalary, typeof insertJob.minSalary);
+      console.log("- maxSalary:", insertJob.maxSalary, typeof insertJob.maxSalary);
+      console.log("- applicationDeadline:", insertJob.applicationDeadline, typeof insertJob.applicationDeadline);
+      
       // Use strict typing for job data to match the database schema exactly
       // This avoids any type mismatches or missing fields
       const jobData = {
-        // Required string fields
-        title: String(insertJob.title || "Untitled Position"),
-        company: String(insertJob.company || "Unknown Company"),
-        description: String(insertJob.description || "No description provided"),
-        requirements: String(insertJob.requirements || "Please contact for details"),
-        benefits: String(insertJob.benefits || "Please contact for details"),
-        category: String(insertJob.category || "General"),
-        location: String(insertJob.location || "Unspecified"),
-        jobType: String(insertJob.jobType || "Full-time"),
-        experience: String(insertJob.experience || "Not specified"),
-        contactEmail: String(insertJob.contactEmail || "contact@expertrecruitments.com"),
+        // Required string fields - ensure they are never empty strings
+        title: String(insertJob.title || "Untitled Position").trim() || "Untitled Position",
+        company: String(insertJob.company || "Unknown Company").trim() || "Unknown Company",
+        description: String(insertJob.description || "No description provided").trim() || "No description provided",
+        requirements: String(insertJob.requirements || "Please contact for details").trim() || "Please contact for details",
+        benefits: String(insertJob.benefits || "Please contact for details").trim() || "Please contact for details",
+        category: String(insertJob.category || "General").trim() || "General",
+        location: String(insertJob.location || "Unspecified").trim() || "Unspecified",
+        jobType: String(insertJob.jobType || "Full-time").trim() || "Full-time",
+        experience: String(insertJob.experience || "Not specified").trim() || "Not specified",
+        contactEmail: String(insertJob.contactEmail || "contact@expertrecruitments.com").trim() || "contact@expertrecruitments.com",
         
-        // Integer fields
+        // Integer fields - ensure they are valid numbers
         minSalary: isNaN(Number(insertJob.minSalary)) ? 0 : Number(insertJob.minSalary),
         maxSalary: isNaN(Number(insertJob.maxSalary)) ? 0 : Number(insertJob.maxSalary),
         
-        // Date handling
+        // Date handling - ensure we have a valid date
         applicationDeadline: insertJob.applicationDeadline instanceof Date 
           ? insertJob.applicationDeadline 
-          : new Date(),
+          : (typeof insertJob.applicationDeadline === 'string' && insertJob.applicationDeadline.trim()
+              ? new Date(insertJob.applicationDeadline)
+              : new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)), // Default to 30 days from now
                     
         // Boolean fields with defaults
         isActive: true,
@@ -376,6 +394,14 @@ export class DatabaseStorage implements IStorage {
       }
       
       console.log("Inserting job with strictly typed data:", JSON.stringify(jobData, null, 2));
+      
+      // Validate all required fields are present and not empty
+      if (!jobData.title || !jobData.company || !jobData.description || 
+          !jobData.requirements || !jobData.benefits || !jobData.category || 
+          !jobData.location || !jobData.jobType || !jobData.experience || 
+          !jobData.contactEmail) {
+        throw new Error("Missing required fields in job data. Check server logs for details.");
+      }
       
       // Insert the job with properly formatted data
       const [job] = await db.insert(jobs).values(jobData as any).returning();
