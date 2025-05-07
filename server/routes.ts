@@ -2056,6 +2056,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to register admin account" });
     }
   });
+  
+  // Super Admin direct signup with security key
+  app.post("/api/super-admin/signup", async (req, res) => {
+    console.log("Received super admin signup request");
+    
+    try {
+      // Validate the super admin security key first
+      const securityKey = req.body.securityKey;
+      
+      // This is a high-security key for creating the most privileged accounts
+      // In production, this would be stored securely, not hardcoded
+      const SUPER_ADMIN_KEY = process.env.SUPER_ADMIN_SECURITY_KEY || "expert_recruiter_super_admin_2025";
+      
+      if (!securityKey || securityKey !== SUPER_ADMIN_KEY) {
+        console.log("Invalid super admin security key");
+        return res.status(403).json({ 
+          message: "Invalid security key. Super administrator creation requires a valid security key." 
+        });
+      }
+      
+      // Force set userType to "super_admin" regardless of what was sent
+      const requestWithUserType = {
+        ...req.body,
+        userType: "super_admin", // Always override this field for super admin
+        role: "super_admin"      // Also set the role
+      };
+      
+      // Validate signup data - use admin schema without invitation code
+      const superAdminSchema = adminSignupSchema.omit({ 
+        invitationCode: true 
+      });
+      
+      const validatedData = superAdminSchema.parse(requestWithUserType);
+      
+      // Check if the email is already registered
+      const existingUser = await storage.getUserByEmail(validatedData.email);
+      if (existingUser) {
+        return res.status(400).json({ message: "Email already registered" });
+      }
+
+      // Hash the password
+      const hashedPassword = await hashPassword(validatedData.password);
+      
+      // Create user with super_admin userType
+      const user = await storage.createUser({
+        email: validatedData.email,
+        password: hashedPassword,
+        userType: "super_admin" // Set user type as super_admin
+      });
+
+      // Create admin profile with super_admin role
+      const admin = await storage.createAdmin({
+        userId: user.id,
+        firstName: validatedData.firstName,
+        lastName: validatedData.lastName,
+        role: "super_admin", // Set role as super_admin
+        phoneNumber: validatedData.phoneNumber || null
+      });
+
+      console.log(`Super admin account created successfully for: ${validatedData.email}`);
+      
+      // Return success but don't auto-login - require explicit login for super admins
+      res.status(201).json({ 
+        success: true,
+        message: "Super administrator account created successfully. Please log in to access your account."
+      });
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ 
+          message: validationError.message,
+          validationErrors: validationError.errors 
+        });
+      }
+
+      console.error("Error registering super admin:", error);
+      res.status(500).json({ message: "Failed to register super administrator account" });
+    }
+  });
 
   // Admin registration with invitation code
   app.post("/api/admin/register", async (req, res) => {
