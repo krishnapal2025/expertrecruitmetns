@@ -755,10 +755,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Validate job data - the schema will handle date conversion
+      console.log("Parsing job data with schema:", JSON.stringify(req.body));
       const validatedData = insertJobSchema.parse(req.body);
+      console.log("Validation successful, validated data:", JSON.stringify(validatedData));
 
-      // Create the job without requiring an employer ID
-      const job = await storage.createJob(validatedData);
+      // Clean the job data to ensure it's compatible with the database schema
+      const cleanedJobData = { ...validatedData };
+      // If employerId is undefined/null/0, explicitly remove it to avoid database constraint issues
+      if (!cleanedJobData.employerId) {
+        console.log("Removing null/undefined employerId from job data");
+        delete cleanedJobData.employerId;
+      }
+      
+      console.log("Cleaned job data for database insertion:", JSON.stringify(cleanedJobData));
+      
+      // Create the job with cleaned data
+      const job = await storage.createJob(cleanedJobData);
+      console.log("Job created successfully:", JSON.stringify(job));
 
       // Update real-time store and create notifications for job seekers
       realtimeStore.lastJobId = Math.max(realtimeStore.lastJobId, job.id);
@@ -780,13 +793,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.status(201).json(job);
     } catch (error) {
+      console.error("JOB CREATION ERROR DETAILS:", error);
+      
+      // Handle Zod validation errors
       if (error instanceof ZodError) {
         const validationError = fromZodError(error);
-        return res.status(400).json({ message: validationError.message });
+        console.error("Validation error in job data:", validationError.message);
+        return res.status(400).json({ 
+          message: validationError.message,
+          code: "VALIDATION_ERROR"
+        });
       }
-
-      console.error("Error creating job:", error);
-      res.status(500).json({ message: "Failed to create job" });
+      
+      // Handle database errors
+      if (error instanceof Error) {
+        console.error("Database error in job creation:", error.message);
+        console.error("Error stack:", error.stack);
+        
+        // Check for common error patterns in the message
+        const errorMessage = error.message.toLowerCase();
+        
+        if (errorMessage.includes("foreign key constraint") || errorMessage.includes("violates foreign key constraint")) {
+          return res.status(400).json({ 
+            message: "Invalid reference to another record. Please make sure all referenced IDs exist.",
+            code: "FOREIGN_KEY_ERROR"
+          });
+        }
+        
+        if (errorMessage.includes("not null constraint") || errorMessage.includes("violates not-null constraint")) {
+          return res.status(400).json({ 
+            message: "Missing required field. Please check that all required fields are provided.",
+            code: "NULL_CONSTRAINT_ERROR"
+          });
+        }
+        
+        if (errorMessage.includes("unique constraint") || errorMessage.includes("violates unique constraint")) {
+          return res.status(400).json({ 
+            message: "A record with this information already exists.",
+            code: "UNIQUE_CONSTRAINT_ERROR"
+          });
+        }
+      }
+      
+      // Generic error response
+      console.error("Unhandled error creating job:", error);
+      res.status(500).json({ 
+        message: "Failed to create job. Please try again or contact support.",
+        code: "INTERNAL_SERVER_ERROR"
+      });
     }
   });
 
