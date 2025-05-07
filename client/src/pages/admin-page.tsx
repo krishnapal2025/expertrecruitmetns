@@ -39,7 +39,6 @@ function AdminPage() {
 
     // Check if user is admin and handle accordingly
     if (activeUser?.user?.userType === "admin" || activeUser?.userType === "admin") {
-      // Fix redirect path to match the actual route defined in App.tsx
       setRedirectPath("/admin-dashboard");
     } else {
       toast({
