@@ -32,10 +32,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Briefcase, Building, Clock, DollarSign, MapPin, Save } from "lucide-react";
+import { Briefcase, Building, Clock, DollarSign, MapPin, Save, Tag, Check } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InsertJob } from "@shared/schema";
 
 // Form schema for job posting
@@ -77,6 +80,89 @@ const categories = [
   "Sales",
   "Hospitality",
 ];
+
+// Common job titles by category
+const commonJobTitles = {
+  "Technology": [
+    "Software Engineer",
+    "Full Stack Developer",
+    "Frontend Developer",
+    "Backend Developer",
+    "DevOps Engineer",
+    "Data Scientist",
+    "Machine Learning Engineer",
+    "Cloud Architect",
+    "UI/UX Designer",
+    "QA Engineer"
+  ],
+  "Finance": [
+    "Financial Analyst",
+    "Accountant",
+    "Investment Banker",
+    "Financial Advisor",
+    "Risk Manager",
+    "Compliance Officer",
+    "Credit Analyst",
+    "Tax Consultant",
+    "Financial Controller"
+  ],
+  "Healthcare": [
+    "Registered Nurse",
+    "Physician Assistant",
+    "Medical Doctor",
+    "Healthcare Administrator",
+    "Pharmacist",
+    "Physical Therapist",
+    "Medical Technologist",
+    "Dentist",
+    "Radiologist"
+  ],
+  "Education": [
+    "Teacher",
+    "Professor",
+    "Academic Advisor",
+    "School Principal",
+    "Curriculum Developer",
+    "Special Education Teacher",
+    "Educational Consultant"
+  ],
+  "Marketing": [
+    "Marketing Manager",
+    "Social Media Specialist",
+    "Digital Marketing Specialist",
+    "SEO Expert",
+    "Content Writer",
+    "Brand Manager",
+    "Public Relations Specialist"
+  ],
+  "Engineering": [
+    "Civil Engineer",
+    "Mechanical Engineer",
+    "Electrical Engineer",
+    "Chemical Engineer",
+    "Aerospace Engineer",
+    "Environmental Engineer",
+    "Structural Engineer"
+  ],
+  "Sales": [
+    "Sales Representative",
+    "Account Executive",
+    "Sales Manager",
+    "Business Development Manager",
+    "Customer Success Manager",
+    "Territory Manager",
+    "Inside Sales Representative"
+  ],
+  "Hospitality": [
+    "Hotel Manager",
+    "Event Coordinator",
+    "Chef",
+    "Restaurant Manager",
+    "Concierge",
+    "Catering Manager",
+    "Tourism Guide"
+  ]
+};
 
 // Specializations
 const specializations = [
@@ -177,12 +263,160 @@ const experienceLevels = [
   "Expert (10+ years)",
 ];
 
+// Common skills by category
+const commonSkills = {
+  "Technology": [
+    "JavaScript",
+    "Python",
+    "React",
+    "Node.js",
+    "Java",
+    "AWS",
+    "Docker",
+    "Kubernetes",
+    "SQL",
+    "NoSQL",
+    "TypeScript",
+    "Go",
+    "C#",
+    "PHP",
+    "Ruby",
+    "Swift",
+    "Linux",
+    "Git",
+    "CI/CD",
+    "HTML/CSS"
+  ],
+  "Finance": [
+    "Financial Analysis",
+    "QuickBooks",
+    "Excel",
+    "SAP",
+    "Oracle Financials",
+    "Bloomberg Terminal",
+    "Financial Modeling",
+    "Forecasting",
+    "Budgeting",
+    "Risk Assessment",
+    "CFA",
+    "GAAP",
+    "IFRS",
+    "Tax Preparation",
+    "Financial Reporting"
+  ],
+  "Healthcare": [
+    "Electronic Medical Records (EMR)",
+    "Patient Care",
+    "Medical Billing",
+    "CPR",
+    "HIPAA Compliance",
+    "Medical Terminology",
+    "Epic Systems",
+    "Cerner",
+    "Phlebotomy",
+    "ICD-10 Coding",
+    "Vital Signs",
+    "Patient Assessment",
+    "Clinical Documentation"
+  ],
+  "Marketing": [
+    "Google Analytics",
+    "Social Media Management",
+    "SEO",
+    "Content Marketing",
+    "Adobe Creative Suite",
+    "Email Marketing",
+    "Google Ads",
+    "Facebook Ads",
+    "CRM Software",
+    "Copywriting",
+    "Market Research",
+    "Brand Development",
+    "Graphic Design",
+    "Video Production",
+    "WordPress"
+  ],
+  "Engineering": [
+    "AutoCAD",
+    "SolidWorks",
+    "MATLAB",
+    "PLC Programming",
+    "Structural Analysis",
+    "HVAC Design",
+    "Electrical Design",
+    "Civil 3D",
+    "Finite Element Analysis",
+    "GIS",
+    "Project Management",
+    "Blueprint Reading",
+    "Quality Control",
+    "Prototyping"
+  ],
+  "Sales": [
+    "CRM Software",
+    "Negotiation",
+    "Cold Calling",
+    "Account Management",
+    "Salesforce",
+    "HubSpot",
+    "Product Demonstrations",
+    "Lead Generation",
+    "Sales Forecasting",
+    "Client Relationship Management",
+    "B2B Sales",
+    "B2C Sales",
+    "Solution Selling",
+    "Contract Negotiation"
+  ],
+  "Education": [
+    "Curriculum Development",
+    "Classroom Management",
+    "Student Assessment",
+    "LMS Platforms",
+    "Google Classroom",
+    "Blackboard",
+    "Canvas",
+    "Differentiated Instruction",
+    "IEP Development",
+    "Educational Technology",
+    "Lesson Planning",
+    "Student Counseling"
+  ],
+  "Hospitality": [
+    "Hotel Management Software",
+    "POS Systems",
+    "Customer Service",
+    "Event Planning",
+    "Food Safety",
+    "Inventory Management",
+    "Reservation Systems",
+    "Guest Relations",
+    "Menu Planning",
+    "Catering Management",
+    "Wine Knowledge",
+    "Resort Management"
+  ]
+};
+
+// Common salary ranges (in USD)
+const salaryRanges = [
+  { label: "Entry Level", min: 30000, max: 50000 },
+  { label: "Junior", min: 50000, max: 80000 },
+  { label: "Mid-Level", min: 80000, max: 120000 },
+  { label: "Senior", min: 120000, max: 180000 },
+  { label: "Expert/Leadership", min: 180000, max: 250000 },
+  { label: "Executive", min: 250000, max: 500000 },
+];
+
 export default function PostJobPage() {
   const { currentUser, refetchUser } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isPreview, setIsPreview] = useState(false);
   const [companyName, setCompanyName] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [requirementsText, setRequirementsText] = useState<string>('');
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const queryClient = useQueryClient();
   
   // Fetch employers list for admin users to select from
@@ -227,6 +461,59 @@ export default function PostJobPage() {
   // Simple function to update company name
   const handleCompanyNameChange = (value: string) => {
     setCompanyName(value);
+  };
+  
+  // Handle category change and reset job title suggestions
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    form.setValue('category', category);
+  };
+  
+  // Handle job title selection
+  const handleJobTitleSelect = (title: string) => {
+    form.setValue('title', title);
+  };
+  
+  // Handle salary range selection
+  const handleSalaryRangeSelect = (range: {min: number, max: number}) => {
+    form.setValue('minSalary', range.min);
+    form.setValue('maxSalary', range.max);
+  };
+  
+  // Handle skill selection and update requirements field
+  const handleSkillToggle = (skill: string) => {
+    let updatedSkills: string[];
+    
+    if (selectedSkills.includes(skill)) {
+      // Remove skill if already selected
+      updatedSkills = selectedSkills.filter(s => s !== skill);
+    } else {
+      // Add skill if not already selected
+      updatedSkills = [...selectedSkills, skill];
+    }
+    
+    setSelectedSkills(updatedSkills);
+    
+    // Generate requirements text based on selected skills
+    if (updatedSkills.length > 0) {
+      const skillsText = updatedSkills.join(', ');
+      const currentText = form.getValues('requirements') || '';
+      
+      // Only update if no skills are already included or if requirements field is empty
+      if (!currentText.includes('Required skills:')) {
+        const newRequirements = `Required skills: ${skillsText}\n\n${currentText}`;
+        form.setValue('requirements', newRequirements.trim());
+        setRequirementsText(newRequirements.trim());
+      } else {
+        // Replace existing skills list
+        const newRequirements = currentText.replace(
+          /Required skills:.*(?=\n|$)/,
+          `Required skills: ${skillsText}`
+        );
+        form.setValue('requirements', newRequirements.trim());
+        setRequirementsText(newRequirements.trim());
+      }
+    }
   };
 
   // Create job mutation
