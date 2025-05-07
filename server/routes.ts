@@ -88,9 +88,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve the uploads directory for uploaded files
   app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
   
-  // Image upload endpoint for blog posts (admin only)
+  // Image upload endpoint for blog posts (admin or super_admin only)
   app.post("/api/upload/blog-image", (req, res) => {
-    if (!req.isAuthenticated() || req.user.userType !== "admin") {
+    if (!req.isAuthenticated() || (req.user.userType !== "admin" && req.user.userType !== "super_admin")) {
       return res.status(403).json({ message: "Unauthorized: Admin access required" });
     }
     
@@ -748,8 +748,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "You must be logged in to post a job. Please refresh the page and try again." });
       }
       
-      // Verify that the user is an admin
-      if (req.user.userType !== "admin") {
+      // Verify that the user is an admin or super_admin
+      if (req.user.userType !== "admin" && req.user.userType !== "super_admin") {
         console.log("POST /api/jobs - User type not authorized:", req.user.userType);
         return res.status(403).json({ message: "Only admins can post jobs" });
       }
@@ -1507,7 +1507,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "admin") {
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
         return res.status(403).json({ message: "Only admins can access this endpoint" });
       }
 
@@ -1529,7 +1529,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "admin") {
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
         return res.status(403).json({ message: "Only admins can edit jobs" });
       }
 
@@ -3022,9 +3022,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update an existing blog post (admin only)
+  // Update an existing blog post (admin or super_admin only)
   app.patch("/api/blog-posts/:id", async (req, res) => {
-    if (!req.isAuthenticated() || req.user.userType !== "admin") {
+    if (!req.isAuthenticated() || (req.user.userType !== "admin" && req.user.userType !== "super_admin")) {
       return res.status(403).json({ message: "Unauthorized: Admin access required" });
     }
 
@@ -3055,9 +3055,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Delete a blog post (admin only)
+  // Delete a blog post (admin or super_admin only)
   app.delete("/api/blog-posts/:id", async (req, res) => {
-    if (!req.isAuthenticated() || req.user.userType !== "admin") {
+    if (!req.isAuthenticated() || (req.user.userType !== "admin" && req.user.userType !== "super_admin")) {
       return res.status(403).json({ message: "Unauthorized: Admin access required" });
     }
 
