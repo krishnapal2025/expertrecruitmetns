@@ -1106,7 +1106,17 @@ export default function PostJobPage() {
                           <FormItem>
                             <FormLabel>Job Title</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g., Senior Frontend Developer" {...field} />
+                              <Input 
+                                placeholder="e.g., Senior Frontend Developer" 
+                                {...field} 
+                                onChange={(e) => {
+                                  field.onChange(e);
+                                  // Clear error when user types
+                                  if (e.target.value.trim()) {
+                                    form.clearErrors('title');
+                                  }
+                                }}
+                              />
                             </FormControl>
                             <FormMessage className="text-red-500" />
                             {selectedCategory && (
@@ -1180,7 +1190,11 @@ export default function PostJobPage() {
                             <FormItem>
                               <FormLabel>Location</FormLabel>
                               <Select 
-                                onValueChange={field.onChange} 
+                                onValueChange={(value) => {
+                                  field.onChange(value);
+                                  // Clear error when user selects a value
+                                  form.clearErrors('location');
+                                }} 
                                 defaultValue={field.value}
                               >
                                 <FormControl>
@@ -1333,6 +1347,13 @@ export default function PostJobPage() {
                                   min="0"
                                   step="1000"
                                   {...field}
+                                  onChange={(e) => {
+                                    field.onChange(e);
+                                    // Clear error when user enters a valid value
+                                    if (e.target.value && Number(e.target.value) > 0) {
+                                      form.clearErrors('minSalary');
+                                    }
+                                  }}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -1353,6 +1374,13 @@ export default function PostJobPage() {
                                   min="0"
                                   step="1000"
                                   {...field}
+                                  onChange={(e) => {
+                                    field.onChange(e);
+                                    // Clear error when user enters a valid value
+                                    if (e.target.value && Number(e.target.value) > 0) {
+                                      form.clearErrors('maxSalary');
+                                    }
+                                  }}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -1406,6 +1434,13 @@ export default function PostJobPage() {
                                 placeholder="Describe the role and responsibilities..."
                                 className="min-h-32"
                                 {...field}
+                                onChange={(e) => {
+                                  field.onChange(e);
+                                  // Clear error when user types sufficient content
+                                  if (e.target.value.trim().length > 10) {
+                                    form.clearErrors('description');
+                                  }
+                                }}
                               />
                             </FormControl>
                             <FormMessage />
@@ -1424,6 +1459,13 @@ export default function PostJobPage() {
                                 placeholder="List the qualifications and skills required..."
                                 className="min-h-24"
                                 {...field}
+                                onChange={(e) => {
+                                  field.onChange(e);
+                                  // Clear error when user types sufficient content
+                                  if (e.target.value.trim().length > 10) {
+                                    form.clearErrors('requirements');
+                                  }
+                                }}
                               />
                             </FormControl>
                             {selectedCategory && (
@@ -1465,6 +1507,13 @@ export default function PostJobPage() {
                                 placeholder="List the benefits offered..."
                                 className="min-h-20"
                                 {...field}
+                                onChange={(e) => {
+                                  field.onChange(e);
+                                  // Clear error when user types sufficient content
+                                  if (e.target.value.trim().length > 10) {
+                                    form.clearErrors('benefits');
+                                  }
+                                }}
                               />
                             </FormControl>
                             <FormMessage />
@@ -1535,6 +1584,13 @@ export default function PostJobPage() {
                                   type="email" 
                                   placeholder="Contact email for applications"
                                   {...field}
+                                  onChange={(e) => {
+                                    field.onChange(e);
+                                    // Clear error when user enters a valid email
+                                    if (e.target.value && e.target.value.includes('@')) {
+                                      form.clearErrors('contactEmail');
+                                    }
+                                  }}
                                 />
                               </FormControl>
                               <FormMessage />
