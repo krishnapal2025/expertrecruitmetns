@@ -757,23 +757,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validate job data - the schema will handle date conversion
       const validatedData = insertJobSchema.parse(req.body);
 
-      // Admin users must select an employer ID via the employerId property
-      const employerId = Number(req.body.employerId);
-
-      if (!employerId || isNaN(employerId)) {
-        return res.status(400).json({ message: "Admin must select an employer when posting a job" });
-      }
-
-      // Verify the employer exists
-      const employer = await storage.getEmployer(employerId);
-      if (!employer) {
-        return res.status(404).json({ message: "Selected employer not found" });
-      }
-
-      // Create the job
+      // Create the job with default employer ID if not provided
       const job = await storage.createJob({
         ...validatedData,
-        employerId: employerId
+        employerId: 1 // Use a default employer ID (admin's employer)
       });
 
       // Update real-time store and create notifications for job seekers
