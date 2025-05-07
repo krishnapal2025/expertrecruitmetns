@@ -62,10 +62,15 @@ const jobPostSchema = z.object({
   description: z.string().min(30, "Description must be at least 30 characters"),
   requirements: z.string().min(20, "Requirements must be at least 20 characters"),
   benefits: z.string().min(10, "Benefits must be at least 10 characters"),
-  applicationDeadline: z.date({
-    required_error: "Application deadline is required",
-    invalid_type_error: "Application deadline must be a valid date"
-  }),
+  applicationDeadline: z.union([
+    z.date({
+      required_error: "Application deadline is required",
+      invalid_type_error: "Application deadline must be a valid date"
+    }),
+    z.string()
+      .min(1, "Application deadline is required")
+      .transform(val => new Date(val))
+  ]),
   contactEmail: z.string().email("Must be a valid email address"),
   employerId: z.number().optional(),
 });
@@ -688,11 +693,11 @@ export default function PostJobPage() {
           // Email with validation 
           contactEmail: data.contactEmail?.trim() || "",
           
-          // Date field handling - ensure proper format
-          // Ensure we handle both Date objects and string dates coming from the form
+          // Date field handling - ensure proper format as YYYY-MM-DD string for server
+          // The server expects a string in YYYY-MM-DD format, not a Date object
           applicationDeadline: data.applicationDeadline 
             ? (data.applicationDeadline instanceof Date 
-              ? data.applicationDeadline.toISOString().split('T')[0]
+              ? data.applicationDeadline.toISOString().split('T')[0] // Format: YYYY-MM-DD
               : typeof data.applicationDeadline === 'string' 
                 ? new Date(data.applicationDeadline).toISOString().split('T')[0]
                 : new Date().toISOString().split('T')[0])
@@ -887,8 +892,9 @@ export default function PostJobPage() {
     };
     
     console.log("Clean data to be sent to server:", JSON.stringify(cleanData, null, 2));
-    // Use the cleanData instead of the raw form data for submission
-    createJobMutation.mutate(cleanData as JobPostFormValues);
+    // Use the cleanData directly with the 'any' typed mutation function
+    // No type casting needed as we've changed the mutation function to accept 'any'
+    createJobMutation.mutate(cleanData);
   };
   
   // Get currency symbol based on selected location
