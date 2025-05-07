@@ -920,7 +920,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
           // Get all jobs for this employer
           const allJobs = await storage.getJobs();
-          jobs = allJobs.filter(job => job.employerId === employer.id);
+          jobs = allJobs.filter(job => job.employerId && job.employerId === employer.id);
         } else {
           // Admin gets access to all jobs
           jobs = await storage.getJobs();
@@ -997,7 +997,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (employer) {
           // Get the job to check if it belongs to this employer
           const job = await storage.getJob(application.jobId);
-          if (job && job.employerId === employer.id) {
+          if (job && (!job.employerId || job.employerId === employer.id)) {
             authorized = true;
           }
         }
@@ -1057,7 +1057,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(404).json({ message: "Employer profile not found" });
         }
 
-        if (job.employerId !== employer.id) {
+        // Only check employerId if it exists on the job
+        if (job.employerId && job.employerId !== employer.id) {
           return res.status(403).json({ message: "You can only view applications for your own jobs" });
         }
       }
@@ -1228,7 +1229,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const employer = await storage.getEmployerByUserId(user.id);
         const job = await storage.getJob(application.jobId);
 
-        if (!employer || !job || job.employerId !== employer.id) {
+        if (!employer || !job || (job.employerId && job.employerId !== employer.id)) {
           return res.status(403).json({ message: "You can only delete applications for your own jobs" });
         }
       } else if (user.userType === "admin") {
@@ -1299,7 +1300,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
 
         const job = await storage.getJob(application.jobId);
-        if (!job || job.employerId !== employer.id) {
+        if (!job || (job.employerId && job.employerId !== employer.id)) {
           return res.status(403).json({ message: "You can only update status for applications to your own jobs" });
         }
       }
