@@ -235,6 +235,7 @@ export default function PostJobPage() {
       // Re-check authentication status before submission
       // This helps ensure the session is still valid
       try {
+        console.log("Verifying authentication before POST request...");
         const userCheckRes = await fetch('/api/user', { 
           credentials: 'include',
           headers: {
@@ -251,7 +252,7 @@ export default function PostJobPage() {
         }
         
         const user = await userCheckRes.json();
-        console.log("Authentication confirmed before job submission:", user);
+        console.log("Authentication confirmed before request");
         
         // For admin users posting on behalf of a company, update the company name
         if (user.user.userType === "admin" && companyName) {
@@ -259,16 +260,31 @@ export default function PostJobPage() {
           data.company = companyName;
         }
         
-        // Prepare the payload for job submission
+        // Create a clean job payload with explicit string/number handling
+        // This ensures consistent data types are sent to the server
         const payload = {
-          ...data,
+          title: data.title,
+          company: data.company,
+          location: data.location,
+          category: data.category,
+          jobType: data.jobType,
+          description: data.description,
+          requirements: data.requirements,
+          benefits: data.benefits,
+          experience: data.experience,
+          minSalary: Number(data.minSalary),
+          maxSalary: Number(data.maxSalary),
+          contactEmail: data.contactEmail,
           // Convert applicationDeadline to string if it's a Date object
           applicationDeadline: typeof data.applicationDeadline === 'object' 
             ? (data.applicationDeadline as Date).toISOString().split('T')[0]
-            : data.applicationDeadline
+            : data.applicationDeadline,
+          // Optional fields
+          specialization: data.specialization || "",
+          salary: data.salary || ""
         };
         
-        console.log("Submitting job with payload:", payload);
+        console.log("Submitting job with clean payload:", payload);
         
         const res = await apiRequest("POST", "/api/jobs", payload);
         if (!res.ok) {

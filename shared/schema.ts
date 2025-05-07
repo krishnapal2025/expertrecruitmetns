@@ -170,28 +170,84 @@ export const insertJobSchema = createInsertSchema(jobs)
     applicationCount: true,
   })
   .extend({
-    // Override the applicationDeadline field to accept string
+    // Override the applicationDeadline field to accept string (YYYY-MM-DD format)
     applicationDeadline: z.string()
       .min(1, "Application deadline is required")
-      .transform((val) => new Date(val)),
+      .transform((val) => {
+        try {
+          const date = new Date(val);
+          if (isNaN(date.getTime())) {
+            throw new Error("Invalid date format");
+          }
+          return date;
+        } catch (error) {
+          // Fallback to current date + 30 days if parsing fails
+          const date = new Date();
+          date.setDate(date.getDate() + 30);
+          return date;
+        }
+      }),
+      
     // Make employerId optional
-    employerId: z.number().optional(),
-    // Ensure required fields that might be missing have defaults or clear validation errors
-    title: z.string().min(2, "Job title is required"),
-    company: z.string().min(2, "Company name is required"),
-    description: z.string().min(10, "Job description is required"),
-    requirements: z.string().min(10, "Job requirements are required"),
-    benefits: z.string().min(10, "Job benefits are required"),
-    category: z.string().min(2, "Job category is required"),
-    location: z.string().min(2, "Job location is required"),
-    jobType: z.string().min(2, "Job type is required"),
-    experience: z.string().min(2, "Experience level is required"),
-    minSalary: z.coerce.number().min(0, "Minimum salary is required"),
-    maxSalary: z.coerce.number().min(0, "Maximum salary is required"),
-    contactEmail: z.string().email("A valid contact email is required"),
+    employerId: z.number().optional().nullable(),
+    
+    // Ensure required fields with better validation
+    title: z.string()
+      .min(2, "Job title is required")
+      .max(150, "Job title must be less than 150 characters")
+      .transform(val => val?.trim()),
+      
+    company: z.string()
+      .min(2, "Company name is required")
+      .max(100, "Company name must be less than 100 characters")
+      .transform(val => val?.trim()),
+      
+    description: z.string()
+      .min(10, "Job description is required")
+      .transform(val => val?.trim() || "No description provided"),
+      
+    requirements: z.string()
+      .min(10, "Job requirements are required")
+      .transform(val => val?.trim() || "Please contact for details"),
+      
+    benefits: z.string()
+      .min(10, "Job benefits are required")
+      .transform(val => val?.trim() || "Please contact for details"),
+      
+    category: z.string()
+      .min(2, "Job category is required")
+      .transform(val => val?.trim() || "General"),
+      
+    location: z.string()
+      .min(2, "Job location is required")
+      .transform(val => val?.trim() || "Remote"),
+      
+    jobType: z.string()
+      .min(2, "Job type is required")
+      .transform(val => val?.trim() || "Full-time"),
+      
+    experience: z.string()
+      .min(2, "Experience level is required")
+      .transform(val => val?.trim() || "Not specified"),
+      
+    // Ensure salary fields are numbers
+    minSalary: z.preprocess(
+      (val) => (val === '' || val === null || val === undefined) ? 0 : Number(val),
+      z.number().min(0, "Minimum salary must be a positive number")
+    ),
+    
+    maxSalary: z.preprocess(
+      (val) => (val === '' || val === null || val === undefined) ? 0 : Number(val),
+      z.number().min(0, "Maximum salary must be a positive number")
+    ),
+    
+    contactEmail: z.string()
+      .email("A valid contact email is required")
+      .transform(val => val?.trim()),
+      
     // Optional fields
-    specialization: z.string().optional(),
-    salary: z.string().optional()
+    specialization: z.string().optional().nullable(),
+    salary: z.string().optional().nullable()
   });
 
 export const insertApplicationSchema = createInsertSchema(applications).omit({
