@@ -52,6 +52,10 @@ import {
   UserPlus,
   Pencil,
   MapPin,
+  ShieldCheck,
+  UserCircle,
+  Edit,
+  LogOut,
 } from "lucide-react";
 
 // Date utilities
@@ -68,6 +72,9 @@ function AdminDashboard() {
   const [searchEmployers, setSearchEmployers] = useState("");
   const [searchJobSeekers, setSearchJobSeekers] = useState("");
   const [vacancyStatusFilter, setVacancyStatusFilter] = useState("all");
+  
+  // Admin impersonation state
+  const [isImpersonating, setIsImpersonating] = useState(false);
   
   // State for vacancy management
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
@@ -415,6 +422,96 @@ function AdminDashboard() {
       });
     },
   });
+  
+  // Admin impersonation mutation
+  const impersonateAdminMutation = useMutation({
+    mutationFn: async (targetAdminId: number) => {
+      const res = await apiRequest("POST", "/api/admin/impersonate", { targetAdminId });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to impersonate admin");
+      }
+      return await res.json();
+    },
+    onSuccess: (data) => {
+      // Store original admin ID in session storage for restoration later
+      sessionStorage.setItem('originalAdminId', user?.user?.id.toString() || '');
+      sessionStorage.setItem('impersonatedAdminId', data.targetAdmin.id.toString());
+      
+      setIsImpersonating(true);
+      
+      toast({
+        title: "Admin impersonation active",
+        description: `You are now logged in as ${data.targetAdmin.firstName} ${data.targetAdmin.lastName}`,
+      });
+      
+      // Refresh the page to reload all queries with the new impersonated user context
+      window.location.reload();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to impersonate admin",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // End impersonation mutation
+  const endImpersonationMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/admin/end-impersonation", {});
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to end admin impersonation");
+      }
+      return await res.json();
+    },
+    onSuccess: () => {
+      // Clear session storage
+      sessionStorage.removeItem('originalAdminId');
+      sessionStorage.removeItem('impersonatedAdminId');
+      
+      setIsImpersonating(false);
+      
+      toast({
+        title: "Impersonation ended",
+        description: "You've returned to your own admin account",
+      });
+      
+      // Refresh the page to reload all queries with the original user context
+      window.location.reload();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to end impersonation",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // Handle impersonation actions
+  const handleImpersonateAdmin = (adminId: number) => {
+    // Confirm before starting impersonation
+    if (window.confirm("Are you sure you want to impersonate this admin? You will be logged in as them until you end the impersonation session.")) {
+      impersonateAdminMutation.mutate(adminId);
+    }
+  };
+  
+  const handleEndImpersonation = () => {
+    endImpersonationMutation.mutate();
+  };
+  
+  // Check for active impersonation on component mount
+  useEffect(() => {
+    const originalAdminId = sessionStorage.getItem('originalAdminId');
+    const impersonatedAdminId = sessionStorage.getItem('impersonatedAdminId');
+    
+    if (originalAdminId && impersonatedAdminId) {
+      setIsImpersonating(true);
+    }
+  }, []);
   
   // Filter functions
   const filteredEmployers = users
