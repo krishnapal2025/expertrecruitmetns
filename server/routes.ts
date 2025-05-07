@@ -784,32 +784,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         throw validationError;
       }
       
-      // Even if validation passed, recreate the object with only the fields we need
-      // to avoid any unexpected fields
-      const cleanedJobData = {
-        title: req.body.title,
-        company: req.body.company,
-        description: req.body.description,
-        requirements: req.body.requirements,
-        benefits: req.body.benefits,
-        category: req.body.category,
-        location: req.body.location,
-        jobType: req.body.jobType,
-        specialization: req.body.specialization || '',
-        experience: req.body.experience,
-        minSalary: parseInt(req.body.minSalary) || 0,
-        maxSalary: parseInt(req.body.maxSalary) || 0,
-        contactEmail: req.body.contactEmail,
-        applicationDeadline: new Date(req.body.applicationDeadline),
-        salary: req.body.salary || ''
-      };
-      
-      // If employerId is provided and valid, include it
-      if (req.body.employerId && parseInt(req.body.employerId) > 0) {
-        cleanedJobData.employerId = parseInt(req.body.employerId);
+      // Use schema validation for data cleaning and transformation
+      console.log("Parsing and transforming job data with schema...");
+      let validatedJobData;
+      try {
+        // Parse through our schema which handles all transformations and validations
+        validatedJobData = insertJobSchema.parse(req.body);
+        console.log("Validation and transformation successful!");
+      } catch (validationError) {
+        console.error("Schema parsing failed:", validationError);
+        throw validationError;
       }
       
-      console.log("Cleaned job data for database insertion:", JSON.stringify(cleanedJobData, null, 2));
+      // Add additional properties to create a complete job record
+      const cleanedJobData = {
+        ...validatedJobData,
+        // Set default values for any potentially missing fields
+        employerId: validatedJobData.employerId || null,
+        // Mark as active by default
+        isActive: true,
+        // Set posted date to now
+        postedDate: new Date(),
+        // Initialize application count
+        applicationCount: 0
+      };
+      
+      console.log("Final cleaned job data prepared for database:", JSON.stringify(cleanedJobData, null, 2));
       
       // Create the job with cleaned data
       const job = await storage.createJob(cleanedJobData);

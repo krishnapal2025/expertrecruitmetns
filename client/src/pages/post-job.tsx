@@ -260,28 +260,38 @@ export default function PostJobPage() {
           data.company = companyName;
         }
         
-        // Create a clean job payload with explicit string/number handling
-        // This ensures consistent data types are sent to the server
+        // Create a clean job payload with explicit string/number handling and null safety
+        // This ensures consistent data types are sent to the server and matches our schema validation
         const payload = {
-          title: data.title,
-          company: data.company,
-          location: data.location,
-          category: data.category,
-          jobType: data.jobType,
-          description: data.description,
-          requirements: data.requirements,
-          benefits: data.benefits,
-          experience: data.experience,
-          minSalary: Number(data.minSalary),
-          maxSalary: Number(data.maxSalary),
-          contactEmail: data.contactEmail,
-          // Convert applicationDeadline to string if it's a Date object
+          // Required fields with trimming
+          title: data.title?.trim() || "",
+          company: data.company?.trim() || "",
+          location: data.location?.trim() || "",
+          category: data.category?.trim() || "",
+          jobType: data.jobType?.trim() || "",
+          description: data.description?.trim() || "",
+          requirements: data.requirements?.trim() || "",
+          benefits: data.benefits?.trim() || "",
+          experience: data.experience?.trim() || "",
+          
+          // Numeric fields with proper conversion and fallbacks
+          minSalary: isNaN(Number(data.minSalary)) ? 0 : Number(data.minSalary),
+          maxSalary: isNaN(Number(data.maxSalary)) ? 0 : Number(data.maxSalary),
+          
+          // Email with validation
+          contactEmail: data.contactEmail?.trim() || "",
+          
+          // Date field handling - ensure proper format
           applicationDeadline: typeof data.applicationDeadline === 'object' 
             ? (data.applicationDeadline as Date).toISOString().split('T')[0]
-            : data.applicationDeadline,
-          // Optional fields
-          specialization: data.specialization || "",
-          salary: data.salary || ""
+            : (data.applicationDeadline?.trim() || new Date().toISOString().split('T')[0]),
+          
+          // Optional fields with null safety
+          specialization: data.specialization?.trim() || null,
+          salary: data.salary?.trim() || null,
+          
+          // If we're admin posting on behalf of company, we don't need employerId
+          employerId: currentUser?.user.userType === "employer" ? currentUser?.user.id : null
         };
         
         console.log("Submitting job with clean payload:", payload);
