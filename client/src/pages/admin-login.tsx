@@ -63,7 +63,8 @@ export default function AdminLoginPage() {
   // Only redirect if not opened as a separate session
   if (user && !isAdminSession) {
     if (user.userType === "admin") {
-      setLocation("/admin");
+      // Redirect admin users to homepage instead of admin dashboard
+      setLocation("/");
     } else {
       setLocation("/");
     }
@@ -113,19 +114,19 @@ export default function AdminLoginPage() {
         description: "Welcome to your admin dashboard.",
       });
       
-      // Always navigate to admin dashboard after successful login
+      // Navigate to the home page with admin section visible, as requested
       // Add sessionType parameter to maintain session isolation across page reloads
-      const adminPath = sessionStorage.getItem('adminLoginNewTab') === 'true' 
-        ? '/admin?sessionType=admin' 
-        : '/admin';
+      const redirectPath = sessionStorage.getItem('adminLoginNewTab') === 'true' 
+        ? '/?sessionType=admin' 
+        : '/';
       
       // For isolation tabs, use direct location change to preserve session
       if (sessionStorage.getItem('adminLoginNewTab') === 'true') {
         // Replace current URL without affecting history
-        window.location.href = adminPath;
+        window.location.href = redirectPath;
       } else {
         // Normal navigation for regular flow
-        setLocation(adminPath);
+        setLocation(redirectPath);
       }
     } catch (error) {
       toast({
