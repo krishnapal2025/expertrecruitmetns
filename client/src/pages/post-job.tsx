@@ -183,6 +183,8 @@ export default function PostJobPage() {
   const [, setLocation] = useLocation();
   const [isPreview, setIsPreview] = useState(false);
   const [selectedEmployerId, setSelectedEmployerId] = useState<number | null>(null);
+  const [companyName, setCompanyName] = useState<string>('');
+  const [companyNameStatus, setCompanyNameStatus] = useState<{success: boolean, message: string} | null>(null);
   const queryClient = useQueryClient();
   
   // Fetch employers list for admin users to select from
@@ -224,7 +226,7 @@ export default function PostJobPage() {
   // Watch form values for preview
   const formValues = form.watch();
   
-  // Function to check if employer exists
+  // Function to check if employer exists by ID
   const checkEmployerExists = async (employerId: number): Promise<boolean> => {
     try {
       const res = await apiRequest("GET", `/api/employers/${employerId}`);
@@ -232,6 +234,46 @@ export default function PostJobPage() {
     } catch (error) {
       console.error("Error checking employer:", error);
       return false;
+    }
+  };
+  
+  // Function to validate company name and find employer ID
+  const validateCompanyName = async () => {
+    if (!companyName) {
+      setCompanyNameStatus({
+        success: false,
+        message: "Please enter a company name"
+      });
+      return;
+    }
+    
+    try {
+      // Encode the company name for URL
+      const encodedCompanyName = encodeURIComponent(companyName);
+      const res = await apiRequest("GET", `/api/employers/by-name/${encodedCompanyName}`);
+      
+      if (!res.ok) {
+        setCompanyNameStatus({
+          success: false,
+          message: "Company not found. Please check the spelling and try again."
+        });
+        setSelectedEmployerId(null);
+        return;
+      }
+      
+      const employer = await res.json();
+      setCompanyNameStatus({
+        success: true,
+        message: `Company verified: ${employer.companyName}`
+      });
+      setSelectedEmployerId(employer.id);
+    } catch (error) {
+      console.error("Error validating company name:", error);
+      setCompanyNameStatus({
+        success: false,
+        message: "Error validating company. Please try again."
+      });
+      setSelectedEmployerId(null);
     }
   };
 
