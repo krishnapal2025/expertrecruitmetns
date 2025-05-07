@@ -224,6 +224,17 @@ export default function PostJobPage() {
   // Watch form values for preview
   const formValues = form.watch();
   
+  // Function to check if employer exists
+  const checkEmployerExists = async (employerId: number): Promise<boolean> => {
+    try {
+      const res = await apiRequest("GET", `/api/employers/${employerId}`);
+      return res.ok;
+    } catch (error) {
+      console.error("Error checking employer:", error);
+      return false;
+    }
+  };
+
   // Create job mutation
   const createJobMutation = useMutation({
     mutationFn: async (data: JobPostFormValues) => {
@@ -249,10 +260,18 @@ export default function PostJobPage() {
         console.log("Authentication confirmed before job submission:", user);
         
         if (!selectedEmployerId && user.user.userType === "admin") {
-          throw new Error("Admin must select an employer when posting a job");
+          throw new Error("Admin must enter an employer ID when posting a job");
+        }
+
+        // Verify the employer exists for admin users
+        if (user.user.userType === "admin" && selectedEmployerId) {
+          const employerExists = await checkEmployerExists(Number(selectedEmployerId));
+          if (!employerExists) {
+            throw new Error(`Employer with ID ${selectedEmployerId} does not exist`);
+          }
         }
         
-        // For admin users, use the selected employer ID
+        // For admin users, use the manually entered employer ID
         const payload = {
           ...data,
           // Convert applicationDeadline to string if it's a Date object
@@ -336,11 +355,11 @@ export default function PostJobPage() {
       return;
     }
 
-    // Check if admin has selected an employer
-    if (currentUser.user.userType === "admin" && !selectedEmployerId) {
+    // Check if admin has entered an employer ID
+    if (currentUser.user.userType === "admin" && (!selectedEmployerId || isNaN(Number(selectedEmployerId)))) {
       toast({
-        title: "Employer Selection Required",
-        description: "As an admin, you must select an employer when posting a job.",
+        title: "Employer ID Required",
+        description: "As an admin, you must enter a valid employer ID when posting a job.",
         variant: "destructive",
       });
       return;
@@ -532,32 +551,26 @@ export default function PostJobPage() {
                         )}
                       />
                       
-                      {/* Admin-only employer selection dropdown */}
+                      {/* Admin-only employer ID input field */}
                       {currentUser?.user.userType === "admin" && (
                         <div className="mb-4">
-                          <FormLabel>Select Employer</FormLabel>
-                          <Select
-                            onValueChange={(value) => {
-                              console.log("Selected employer ID:", value, "type:", typeof value);
+                          <FormLabel>Enter Employer ID</FormLabel>
+                          <Input
+                            type="number"
+                            placeholder="Enter employer ID number"
+                            value={selectedEmployerId || ''}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              console.log("Entered employer ID:", value, "type:", typeof value);
                               const employerId = Number(value);
                               console.log("Converted to number:", employerId, "type:", typeof employerId);
                               setSelectedEmployerId(employerId);
                               console.log("State updated with employerId:", employerId);
                             }}
-                          >
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select an employer" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {employers?.map((employer: any) => (
-                                <SelectItem key={employer.id} value={employer.id.toString()}>
-                                  {employer.companyName}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                            className="w-full"
+                          />
                           <p className="text-sm text-muted-foreground mt-1">
-                            As an admin, you are posting on behalf of this employer
+                            As an admin, you need to enter the employer ID to post on their behalf
                           </p>
                         </div>
                       )}
