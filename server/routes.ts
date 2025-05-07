@@ -2617,7 +2617,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       const user = req.user as Express.User;
 
-      if (!user || user.userType !== "admin") {
+      if (!user || (user.userType !== "admin" && user.userType !== "super_admin")) {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
@@ -2720,7 +2720,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { status } = req.body;
       const user = req.user as Express.User;
 
-      if (!user || user.userType !== "admin") {
+      if (!user || (user.userType !== "admin" && user.userType !== "super_admin")) {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
@@ -2750,7 +2750,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user as Express.User;
 
       // Authorization check
-      if (!user || user.userType !== "admin") {
+      if (!user || (user.userType !== "admin" && user.userType !== "super_admin")) {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
@@ -2862,8 +2862,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         limit: limit ? parseInt(String(limit)) : undefined
       });
 
-      // If requesting only published posts and not logged in as admin, filter them
-      if (!req.isAuthenticated() || req.user.userType !== "admin") {
+      // If requesting only published posts and not logged in as admin or super_admin, filter them
+      if (!req.isAuthenticated() || (req.user.userType !== "admin" && req.user.userType !== "super_admin")) {
         const publicPosts = posts.filter(post => post.published);
         return res.json(publicPosts);
       }
@@ -2887,9 +2887,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Blog post not found" });
       }
 
-      // If post is not published and user is not admin, don't allow access
-      if (!post.published && (!req.isAuthenticated() || req.user.userType !== "admin")) {
-        console.log(`Blog post with slug '${slug}' is not published and user is not admin`);
+      // If post is not published and user is not admin or super_admin, don't allow access
+      if (!post.published && (!req.isAuthenticated() || (req.user.userType !== "admin" && req.user.userType !== "super_admin"))) {
+        console.log(`Blog post with slug '${slug}' is not published and user is not admin or super_admin`);
         return res.status(404).json({ message: "Blog post not found" });
       }
 
@@ -2913,9 +2913,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Blog post not found" });
       }
 
-      // If post is not published and user is not admin, don't allow access
-      if (!post.published && (!req.isAuthenticated() || req.user.userType !== "admin")) {
-        console.log(`Blog post with ID ${id} is not published and user is not admin`);
+      // If post is not published and user is not admin or super_admin, don't allow access
+      if (!post.published && (!req.isAuthenticated() || (req.user.userType !== "admin" && req.user.userType !== "super_admin"))) {
+        console.log(`Blog post with ID ${id} is not published and user is not admin or super_admin`);
         return res.status(404).json({ message: "Blog post not found" });
       }
 
@@ -2936,7 +2936,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized: Please log in" });
       }
       
-      if (req.user.userType !== "admin") {
+      if (req.user.userType !== "admin" && req.user.userType !== "super_admin") {
         console.log(`Unauthorized attempt to create blog post by user type: ${req.user.userType}`);
         return res.status(403).json({ message: "Unauthorized: Admin access required" });
       }
