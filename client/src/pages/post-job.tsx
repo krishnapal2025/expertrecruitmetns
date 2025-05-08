@@ -32,7 +32,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Briefcase, Building, Clock, DollarSign, MapPin, Save, Tag, Check, CalendarIcon, Edit, Eye, RotateCcw } from "lucide-react";
+import { Briefcase, Building, Clock, DollarSign, Mail, MapPin, Save, Tag, Check, CalendarIcon, Edit, Eye, RotateCcw } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -1551,26 +1551,35 @@ export default function PostJobPage() {
                           name="applicationDeadline"
                           render={({ field }) => (
                             <FormItem className="flex flex-col">
-                              <FormLabel>Application Deadline</FormLabel>
+                              <FormLabel className="font-medium">
+                                <CalendarIcon className="inline-block mr-2 h-4 w-4 text-primary" />
+                                Application Deadline
+                              </FormLabel>
                               <Popover>
                                 <PopoverTrigger asChild>
                                   <FormControl>
                                     <Button
                                       variant={"outline"}
-                                      className={`w-full pl-3 text-left font-normal border-primary/20 focus:border-primary/50 shadow-sm ${
-                                        !field.value ? "text-muted-foreground" : ""
-                                      }`}
+                                      className={`w-full pl-3 text-left font-normal border-primary/30 hover:border-primary/50 focus:border-primary/60 shadow-sm ${
+                                        !field.value ? "text-muted-foreground" : "text-foreground"
+                                      } transition-colors duration-200 bg-white hover:bg-gray-50/80`}
                                     >
                                       {field.value ? (
-                                        format(field.value, "PPP")
+                                        <span className="font-medium">{format(field.value, "PPP")}</span>
                                       ) : (
                                         <span>Select a date</span>
                                       )}
-                                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                      <CalendarIcon className="ml-auto h-4 w-4 text-primary" />
                                     </Button>
                                   </FormControl>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0 border-primary/20 shadow-lg rounded-xl" align="start">
+                                <PopoverContent 
+                                  className="w-auto p-0 border-primary/20 shadow-lg rounded-xl overflow-hidden" 
+                                  align="start"
+                                >
+                                  <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-3 py-2 border-b border-primary/10">
+                                    <h4 className="text-sm font-medium text-primary">Choose Application Deadline</h4>
+                                  </div>
                                   <Calendar
                                     mode="single"
                                     selected={field.value}
@@ -1579,7 +1588,7 @@ export default function PostJobPage() {
                                       date < new Date(new Date().setHours(0, 0, 0, 0))
                                     }
                                     initialFocus
-                                    className="rounded-md"
+                                    className="p-3 rounded-md"
                                   />
                                 </PopoverContent>
                               </Popover>
@@ -1593,12 +1602,15 @@ export default function PostJobPage() {
                           name="contactEmail"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Contact Email</FormLabel>
+                              <FormLabel className="font-medium">
+                                <Mail className="inline-block mr-2 h-4 w-4 text-primary" />
+                                Contact Email
+                              </FormLabel>
                               <FormControl>
                                 <Input 
                                   type="email" 
                                   placeholder="Contact email for applications"
-                                  className="border-primary/20 focus:border-primary/50 shadow-sm"
+                                  className="border-primary/30 focus:border-primary/60 shadow-sm hover:border-primary/50 transition-colors duration-200"
                                   {...field}
                                   onChange={(e) => {
                                     field.onChange(e);
