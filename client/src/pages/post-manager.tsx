@@ -244,11 +244,11 @@ export default function PostManagerPage() {
   // Reset filters
   const resetFilters = () => {
     setFilters({
-      category: "",
-      jobType: "",
-      specialization: "",
-      location: "",
-      experience: "",
+      category: "all-categories",
+      jobType: "all-types",
+      specialization: "all-specializations",
+      location: "all-locations",
+      experience: "all-experience",
       salaryRange: [0, 300000],
       sortBy: "latest"
     });
