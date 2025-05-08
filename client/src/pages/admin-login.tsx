@@ -48,15 +48,22 @@ export default function AdminLoginPage() {
     },
   });
   
-  // Handle form submission - use dedicated admin login endpoint
+  // Handle form submission - use dedicated admin login endpoint with cross-domain handling
   const onSubmit = async (data: FormValues) => {
     try {
+      // Detect environment type for special handling
+      const isFlyIoEnvironment = window.location.hostname.includes('.fly.dev') ||
+                                window.location.hostname.endsWith('.fly.io');
+      const isReplitEnvironment = window.location.hostname.endsWith('.replit.app');
+      const isCrossDomainEnvironment = isFlyIoEnvironment || isReplitEnvironment;
+      
       // Make a direct API call to the admin-only login endpoint
       const response = await fetch('/api/admin/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include', // Always include credentials for session cookies
         body: JSON.stringify(data)
       });
       
@@ -66,16 +73,35 @@ export default function AdminLoginPage() {
         throw new Error(responseData.message || 'Login failed');
       }
       
+      // Check if we're dealing with a deployment environment response
+      if (responseData.environment === 'cross-domain') {
+        console.log("Detected cross-domain environment response:", responseData.notes);
+      }
+      
       // Update the user data in React Query cache
       queryClient.setQueryData(["/api/user"], responseData);
       
-      toast({
-        title: "Login Successful",
-        description: "Welcome to your admin dashboard.",
-      });
+      // Enhanced login success message for deployment environments
+      if (isCrossDomainEnvironment) {
+        let environmentType = isReplitEnvironment ? "Replit" : "Fly.io";
+        toast({
+          title: "Login Successful",
+          description: `Welcome to your admin dashboard. Session established in ${environmentType} environment.`,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "Login Successful",
+          description: "Welcome to your admin dashboard.",
+        });
+      }
       
+      // Redirect to admin dashboard
       setLocation("/admin");
     } catch (error) {
+      // More detailed error handling
+      console.error("Login error:", error);
+      
       toast({
         title: "Login Failed",
         description: error instanceof Error ? error.message : "Invalid credentials. Please try again.",

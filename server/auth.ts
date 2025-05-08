@@ -472,6 +472,12 @@ export function setupAuth(app: Express) {
       req.login(user, async (err) => {
         if (err) return next(err);
         
+        // Get deployment environment info
+        const isProduction = process.env.NODE_ENV === 'production';
+        const isFlyIo = process.env.FLY_APP_NAME !== undefined;
+        const isReplit = process.env.REPL_ID !== undefined || process.env.REPL_SLUG !== undefined;
+        const isCrossDomainEnvironment = isFlyIo || isReplit;
+        
         // Get admin profile
         const admin = await storage.getAdminByUserId(user.id);
         
@@ -484,14 +490,54 @@ export function setupAuth(app: Express) {
         // Update last login time
         await storage.updateAdminLastLogin(admin.id);
         
-        res.status(200).json({ 
-          user, 
-          profile: { 
-            id: admin.id, 
-            role: admin.role,
-            firstName: admin.firstName,
-            lastName: admin.lastName
-          } 
+        // Ensure session is saved before responding
+        req.session!.save((err) => {
+          if (err) {
+            console.error("Error saving admin session after login:", err);
+            return res.status(500).json({ 
+              message: "Login successful, but session could not be saved",
+              user,
+              profile: { 
+                id: admin.id, 
+                role: admin.role,
+                firstName: admin.firstName,
+                lastName: admin.lastName
+              }
+            });
+          }
+          
+          // For cross-domain environments, add helpful info to response
+          if (isCrossDomainEnvironment) {
+            res.status(200).json({
+              user, 
+              profile: { 
+                id: admin.id, 
+                role: admin.role,
+                firstName: admin.firstName,
+                lastName: admin.lastName
+              },
+              environment: 'cross-domain',
+              notes: {
+                sessionInfo: "Your admin session has been created in a deployment environment.",
+                cookieSettings: {
+                  secure: isProduction,
+                  sameSite: isProduction && isCrossDomainEnvironment ? "none" : "lax",
+                  domain: process.env.COOKIE_DOMAIN || undefined
+                }
+              }
+            });
+          } else {
+            // Standard response for development environments
+            res.status(200).json({ 
+              user, 
+              profile: { 
+                id: admin.id, 
+                role: admin.role,
+                firstName: admin.firstName,
+                lastName: admin.lastName
+              } 
+            });
+          }
         });
       });
     })(req, res, next);
