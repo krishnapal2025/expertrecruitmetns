@@ -181,27 +181,27 @@ export default function PostManagerPage() {
     }
     
     // Apply category filter
-    if (filters.category && filters.category !== "all-categories") {
+    if (filters.category && filters.category !== "all-categories" && filters.category !== "") {
       filteredJobs = filteredJobs.filter(job => job.category === filters.category);
     }
     
     // Apply job type filter
-    if (filters.jobType && filters.jobType !== "all-types") {
+    if (filters.jobType && filters.jobType !== "all-types" && filters.jobType !== "") {
       filteredJobs = filteredJobs.filter(job => job.jobType === filters.jobType);
     }
     
     // Apply specialization filter
-    if (filters.specialization && filters.specialization !== "all-specializations") {
+    if (filters.specialization && filters.specialization !== "all-specializations" && filters.specialization !== "") {
       filteredJobs = filteredJobs.filter(job => job.specialization === filters.specialization);
     }
     
     // Apply location filter
-    if (filters.location && filters.location !== "all-locations") {
+    if (filters.location && filters.location !== "all-locations" && filters.location !== "") {
       filteredJobs = filteredJobs.filter(job => job.location === filters.location);
     }
     
     // Apply experience filter
-    if (filters.experience && filters.experience !== "all-experience") {
+    if (filters.experience && filters.experience !== "all-experience" && filters.experience !== "") {
       filteredJobs = filteredJobs.filter(job => job.experience === filters.experience);
     }
     
