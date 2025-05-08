@@ -43,6 +43,12 @@ export default function SuperAdminSignupPage() {
         console.log("Response status:", res.status); // Log the response status
         
         if (!res.ok) {
+          // Handle specific status codes
+          if (res.status === 401) {
+            // For 401 Unauthorized, provide a more specific message
+            throw new Error("Your session has expired. Please refresh the page and try again.");
+          }
+          
           const errorData = await res.json().catch(() => ({ message: "Unknown error occurred" }));
           console.error("Error response:", errorData);
           throw new Error(errorData.message || "Registration failed");
@@ -283,6 +289,19 @@ export default function SuperAdminSignupPage() {
                   )}
                   Create Super Admin Account
                 </Button>
+                
+                {/* Session recovery button */}
+                <div className="text-center mt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.location.reload()}
+                    className="text-xs"
+                  >
+                    <span className="mr-1">⟳</span> Session expired? Refresh the page
+                  </Button>
+                </div>
               </form>
             </Form>
           </CardContent>
