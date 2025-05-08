@@ -45,7 +45,9 @@ export function setupAuth(app: Express) {
       domain: isFlyIo ? process.env.COOKIE_DOMAIN : undefined // Set domain in production
     },
     // These settings help with session persistence on Fly.io
-    proxy: isFlyIo
+    proxy: isFlyIo,
+    // Add rolling to renew session on each request
+    rolling: true
   };
 
   app.set("trust proxy", 1);
