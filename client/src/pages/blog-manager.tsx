@@ -87,7 +87,7 @@ export default function BlogManagerPage() {
       if (!res.ok) throw new Error("Failed to fetch blog posts");
       return res.json() as Promise<BlogPost[]>;
     },
-    enabled: user?.userType === "admin",
+    enabled: user?.userType === "admin" || user?.userType === "super_admin",
   });
 
   // Delete blog post mutation
