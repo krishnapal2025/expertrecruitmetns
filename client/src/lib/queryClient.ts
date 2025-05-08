@@ -2,8 +2,36 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
+    let errorText = res.statusText;
+    try {
+      // Try to parse JSON error response if available
+      const text = await res.text();
+      // Check if it's JSON
+      try {
+        const json = JSON.parse(text);
+        // Handle different API error formats
+        errorText = json.message || json.error || text || res.statusText;
+      } catch {
+        // If not JSON, use the text response
+        errorText = text || res.statusText;
+      }
+    } catch (e) {
+      // Fallback to statusText if text() fails
+      console.error("Error parsing error response:", e);
+    }
+    
+    // Handle specific status codes with friendly messages
+    if (res.status === 401) {
+      throw new Error("Your session has expired. Please refresh the page and log in again.");
+    } else if (res.status === 403) {
+      throw new Error("You don't have permission to perform this action.");
+    } else if (res.status === 404) {
+      throw new Error("The requested resource was not found.");
+    } else if (res.status === 500) {
+      throw new Error("A server error occurred. Please try again later.");
+    } else {
+      throw new Error(`${res.status}: ${errorText}`);
+    }
   }
 }
 
@@ -11,9 +39,15 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
+  customOptions?: RequestInit
 ): Promise<Response> {
   // Log the request for debugging purposes
   console.log(`API Request: ${method} ${url}`, data ? { data } : '');
+  
+  // Detect if we might be in a cross-domain scenario (like fly.io deployment)
+  const isFlyIoDeployment = window.location.hostname.includes('.fly.dev') ||
+                          window.location.hostname.endsWith('.fly.io') ||
+                          window.location.hostname.endsWith('.replit.app');
   
   // Make sure credentials are always included
   const headers: Record<string, string> = {
@@ -27,11 +61,17 @@ export async function apiRequest(
     headers["Content-Type"] = "application/json";
   }
   
+  // For fly.io, make sure we're including the right SameSite settings
+  if (isFlyIoDeployment) {
+    console.log("Detected fly.io/replit deployment, using special cookie handling");
+  }
+  
   const options: RequestInit = {
     method,
     headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
+    ...customOptions // Allow custom options to override defaults
   };
   
   try {
@@ -91,10 +131,28 @@ export const getQueryFn: <T>(options: {
     // Log query attempt
     console.log(`Fetching data from: ${queryKey[0]}`);
     
+    // Detect if we might be in a cross-domain scenario (like fly.io deployment)
+    const isFlyIoDeployment = window.location.hostname.includes('.fly.dev') ||
+                            window.location.hostname.endsWith('.fly.io') ||
+                            window.location.hostname.endsWith('.replit.app');
+    
     try {
-      const res = await fetch(queryKey[0] as string, {
+      const fetchOptions: RequestInit = {
         credentials: "include",
-      });
+        headers: {
+          // Prevent caching for queries too
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      };
+      
+      // Special handling for fly.io/replit deployments
+      if (isFlyIoDeployment) {
+        console.log(`Cross-domain fetch for ${queryKey[0]} in fly.io/replit environment`);
+      }
+      
+      const res = await fetch(queryKey[0] as string, fetchOptions);
       
       // Log response status
       console.log(`Query response from ${queryKey[0]}: Status ${res.status}`);

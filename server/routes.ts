@@ -1927,6 +1927,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin direct signup without invitation code
   app.post("/api/admin/signup", async (req, res) => {
     console.log("Received admin signup request:", { ...req.body, password: '[REDACTED]' });
+    console.log("Session data:", { 
+      id: req.sessionID,
+      auth: req.isAuthenticated(),
+      cookieSet: !!req.headers.cookie
+    });
     
     try {
       console.log("Raw request body:", { ...req.body, password: '[REDACTED]' });
@@ -1980,6 +1985,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       console.log("Admin profile created successfully with ID:", admin.id);
 
+      // Create a special session for fly.io deployments if needed
+      if (process.env.FLY_APP_NAME) {
+        // Make sure session is initialized
+        if (!req.session) {
+          console.log("Creating new session for fly.io environment");
+          req.session = { cookie: {} } as any;
+        }
+        
+        // Explicitly save the session before attempting login
+        req.session.save((err) => {
+          if (err) {
+            console.error("Error saving session:", err);
+          }
+          console.log("Session saved successfully before login");
+        });
+      }
+
       // Log in the user
       console.log("Logging in the newly created admin user");
       req.login(user, (err) => {
@@ -1988,9 +2010,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(500).json({ message: "Signup successful, but failed to log in" });
         }
 
-        console.log("Admin user logged in successfully");
-        // Return user and admin profile
-        res.status(201).json({ user, admin });
+        // Ensure session is saved after login
+        req.session!.save((err) => {
+          if (err) {
+            console.error("Error saving session after login:", err);
+            return res.status(500).json({ 
+              message: "Signup successful, but session could not be saved",
+              user,
+              admin 
+            });
+          }
+          
+          console.log("Session saved successfully after login");
+          console.log("Admin user logged in successfully");
+          
+          // Return user and admin profile
+          res.status(201).json({ user, admin });
+        });
       });
     } catch (error) {
       if (error instanceof ZodError) {
