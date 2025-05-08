@@ -280,7 +280,7 @@ export default function Navbar() {
                       </ScrollLink>
                     )}
                     {/* Employer-specific menu items removed */}
-                    {currentUser?.user?.userType === "admin" && (
+                    {(currentUser?.user?.userType === "admin" || currentUser?.user?.userType === "super_admin") && (
                       <>
                         <ScrollLink href="/admin" className="w-full">
                           <DropdownMenuItem>
@@ -420,7 +420,7 @@ export default function Navbar() {
                             if (!currentUser) {
                               // Not logged in - go to employer registration
                               setTimeout(() => window.location.href = "/employer-register", 100);
-                            } else if (currentUser?.user?.userType === "employer" || currentUser?.user?.userType === "admin") {
+                            } else if (currentUser?.user?.userType === "employer" || currentUser?.user?.userType === "admin" || currentUser?.user?.userType === "super_admin") {
                               // Employer or admin - go to the requested page
                               setTimeout(() => window.location.href = link.href, 100);
                             } else if (currentUser?.user?.userType === "jobseeker") {
@@ -438,7 +438,7 @@ export default function Navbar() {
                             if (!currentUser) {
                               // Not logged in - go to job seeker registration
                               setTimeout(() => window.location.href = "/job-seeker-register", 100);
-                            } else if (currentUser?.user?.userType === "jobseeker" || currentUser?.user?.userType === "admin") {
+                            } else if (currentUser?.user?.userType === "jobseeker" || currentUser?.user?.userType === "admin" || currentUser?.user?.userType === "super_admin") {
                               // Job seeker or admin - go to the requested page
                               setTimeout(() => window.location.href = link.href, 100);
                             } else if (currentUser?.user?.userType === "employer") {
@@ -505,7 +505,7 @@ export default function Navbar() {
                         
                         {/* Employer-specific menu items removed as requested */}
                         
-                        {currentUser?.user?.userType === "admin" && (
+                        {(currentUser?.user?.userType === "admin" || currentUser?.user?.userType === "super_admin") && (
                           <>
                             <div 
                               className="px-4 py-2 rounded-md hover:bg-primary/10 text-primary bg-primary/5 font-medium flex items-center cursor-pointer"
