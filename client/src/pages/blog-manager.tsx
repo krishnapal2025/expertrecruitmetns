@@ -211,7 +211,7 @@ export default function BlogManagerPage() {
     });
   };
 
-  if (user?.userType !== "admin") {
+  if (user?.userType !== "admin" && user?.userType !== "super_admin") {
     return null;
   }
 

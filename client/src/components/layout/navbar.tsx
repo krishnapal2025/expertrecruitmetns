@@ -138,7 +138,7 @@ export default function Navbar() {
     }
     
     // Admin specific links
-    if (currentUser?.user?.userType === "admin") {
+    if (currentUser?.user?.userType === "admin" || currentUser?.user?.userType === "super_admin") {
       return [
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about-us" },
