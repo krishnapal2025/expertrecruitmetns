@@ -32,7 +32,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Briefcase, Building, Clock, DollarSign, MapPin, Save, Tag, Check, CalendarIcon, Edit, Eye } from "lucide-react";
+import { Briefcase, Building, Clock, DollarSign, MapPin, Save, Tag, Check, CalendarIcon, Edit, Eye, RotateCcw } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -1534,10 +1534,13 @@ export default function PostJobPage() {
                     </CardContent>
                   </Card>
                   
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Application Information</CardTitle>
-                      <CardDescription>
+                  <Card className="border-t-4 border-t-primary shadow-lg rounded-xl overflow-hidden">
+                    <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
+                      <CardTitle className="text-2xl text-primary/90 flex items-center">
+                        <Calendar className="h-5 w-5 mr-2" />
+                        Application Information
+                      </CardTitle>
+                      <CardDescription className="text-base mt-2">
                         Details for candidates to apply for this position
                       </CardDescription>
                     </CardHeader>
@@ -1554,7 +1557,7 @@ export default function PostJobPage() {
                                   <FormControl>
                                     <Button
                                       variant={"outline"}
-                                      className={`w-full pl-3 text-left font-normal ${
+                                      className={`w-full pl-3 text-left font-normal border-primary/20 focus:border-primary/50 shadow-sm ${
                                         !field.value ? "text-muted-foreground" : ""
                                       }`}
                                     >
@@ -1567,7 +1570,7 @@ export default function PostJobPage() {
                                     </Button>
                                   </FormControl>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
+                                <PopoverContent className="w-auto p-0 border-primary/20 shadow-lg rounded-xl" align="start">
                                   <Calendar
                                     mode="single"
                                     selected={field.value}
@@ -1576,6 +1579,7 @@ export default function PostJobPage() {
                                       date < new Date(new Date().setHours(0, 0, 0, 0))
                                     }
                                     initialFocus
+                                    className="rounded-md"
                                   />
                                 </PopoverContent>
                               </Popover>
@@ -1594,6 +1598,7 @@ export default function PostJobPage() {
                                 <Input 
                                   type="email" 
                                   placeholder="Contact email for applications"
+                                  className="border-primary/20 focus:border-primary/50 shadow-sm"
                                   {...field}
                                   onChange={(e) => {
                                     field.onChange(e);
@@ -1612,19 +1617,28 @@ export default function PostJobPage() {
                     </CardContent>
                   </Card>
                   
-                  <div className="flex justify-end space-x-2">
-                    <Button variant="outline" type="button" onClick={() => form.reset()}>
-                      Reset
+                  <div className="flex justify-end space-x-3 mt-6">
+                    <Button 
+                      variant="outline" 
+                      type="button" 
+                      onClick={() => form.reset()} 
+                      className="border-gray-300 hover:bg-gray-50 hover:text-gray-700 transition-all"
+                    >
+                      Reset Form
                     </Button>
                     <Button 
                       type="button" 
                       onClick={() => setIsPreview(true)}
+                      variant="secondary"
+                      className="bg-primary/10 hover:bg-primary/20 text-primary-foreground transition-all"
                     >
+                      <Eye className="mr-2 h-4 w-4" />
                       Preview
                     </Button>
                     <Button 
                       type="submit"
                       disabled={createJobMutation.isPending}
+                      className="bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
                     >
                       <Save className="mr-2 h-4 w-4" />
                       {createJobMutation.isPending ? "Posting..." : "Post Job"}
