@@ -1096,7 +1096,7 @@ export default function PostJobPage() {
               // Job Post Form
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-4xl mx-auto">
-                  <Card className="border-t-4 border-t-primary shadow-lg">
+                  <Card className="border-t-4 border-t-primary shadow-lg rounded-xl overflow-hidden">
                     <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
                       <CardTitle className="text-2xl text-primary/90 flex items-center">
                         <Briefcase className="h-5 w-5 mr-2" />
@@ -1106,7 +1106,7 @@ export default function PostJobPage() {
                         Enter the basic information about the job position
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-6 px-6">
                       <FormField
                         control={form.control}
                         name="title"
@@ -1423,10 +1423,13 @@ export default function PostJobPage() {
                     </CardContent>
                   </Card>
                   
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Job Description</CardTitle>
-                      <CardDescription>
+                  <Card className="border-t-4 border-t-primary shadow-lg rounded-xl overflow-hidden">
+                    <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
+                      <CardTitle className="text-2xl text-primary/90 flex items-center">
+                        <Tag className="h-5 w-5 mr-2" />
+                        Job Description
+                      </CardTitle>
+                      <CardDescription className="text-base mt-2">
                         Provide details about the role, responsibilities, and benefits
                       </CardDescription>
                     </CardHeader>
@@ -1440,7 +1443,7 @@ export default function PostJobPage() {
                             <FormControl>
                               <Textarea 
                                 placeholder="Describe the role and responsibilities..."
-                                className="min-h-32"
+                                className="min-h-36 resize-y border-primary/20 focus:border-primary/50 shadow-sm"
                                 {...field}
                                 onChange={(e) => {
                                   field.onChange(e);
@@ -1465,7 +1468,7 @@ export default function PostJobPage() {
                             <FormControl>
                               <Textarea 
                                 placeholder="List the qualifications and skills required..."
-                                className="min-h-24"
+                                className="min-h-28 resize-y border-primary/20 focus:border-primary/50 shadow-sm"
                                 {...field}
                                 onChange={(e) => {
                                   field.onChange(e);
@@ -1513,7 +1516,7 @@ export default function PostJobPage() {
                             <FormControl>
                               <Textarea 
                                 placeholder="List the benefits offered..."
-                                className="min-h-20"
+                                className="min-h-24 resize-y border-primary/20 focus:border-primary/50 shadow-sm"
                                 {...field}
                                 onChange={(e) => {
                                   field.onChange(e);
