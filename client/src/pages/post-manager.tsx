@@ -310,6 +310,96 @@ export default function PostManagerPage() {
     }
   };
   
+  // Job preview dialog component
+  const JobPreviewDialog = ({ job, open, onOpenChange }: { job: Job | null, open: boolean, onOpenChange: (open: boolean) => void }) => {
+    if (!job) return null;
+    
+    const postedDate = job.createdAt ? new Date(job.createdAt) : new Date(job.postedDate || Date.now());
+    const deadline = job.applicationDeadline ? new Date(job.applicationDeadline) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{job.title}</DialogTitle>
+            <DialogDescription className="flex items-center">
+              <Building className="h-4 w-4 mr-1" />
+              {job.company}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            <div className="flex flex-wrap gap-3 text-sm">
+              <Badge variant="outline" className="flex items-center">
+                <MapPin className="h-3 w-3 mr-1" />
+                {job.location}
+              </Badge>
+              <Badge variant="outline" className="flex items-center">
+                <Briefcase className="h-3 w-3 mr-1" />
+                {job.category}
+              </Badge>
+              <Badge variant="outline" className="flex items-center">
+                <Clock className="h-3 w-3 mr-1" />
+                {job.jobType}
+              </Badge>
+              {job.specialization && (
+                <Badge variant="outline" className="flex items-center">
+                  {job.specialization}
+                </Badge>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="font-semibold mb-1">Experience Level</p>
+                <p>{job.experience}</p>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">Salary Range</p>
+                <p>
+                  {job.minSalary && job.maxSalary 
+                    ? `$${job.minSalary.toLocaleString()} - $${job.maxSalary.toLocaleString()}`
+                    : 'Not specified'}
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">Posted Date</p>
+                <p>{postedDate.toLocaleDateString()}</p>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">Application Deadline</p>
+                <p>{deadline.toLocaleDateString()}</p>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-2">Job Description</h3>
+              <div className="whitespace-pre-line text-sm">{job.description}</div>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-2">Requirements</h3>
+              <div className="whitespace-pre-line text-sm">{job.requirements}</div>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-2">Benefits</h3>
+              <div className="whitespace-pre-line text-sm">{job.benefits}</div>
+            </div>
+          </div>
+          
+          <DialogFooter className="mt-6">
+            <Button variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
+            <Button onClick={() => setLocation(`/jobs/${job.id}`)}>
+              <ExternalLink className="h-4 w-4 mr-1" />
+              View on Website
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  };
+
   // Job card component
   const JobCard = ({ job, status }: { job: Job, status: "active" | "closed" }) => {
     const isActive = status === "active";
@@ -375,7 +465,7 @@ export default function PostManagerPage() {
         <Separator />
         
         <CardFooter className="pt-3 flex justify-between">
-          <div>
+          <div className="flex space-x-2">
             <Button 
               variant="outline" 
               size="sm" 
@@ -383,6 +473,14 @@ export default function PostManagerPage() {
             >
               <ExternalLink className="h-4 w-4 mr-1" />
               View
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setJobToPreview(job)}
+            >
+              <EyeIcon className="h-4 w-4 mr-1" />
+              Preview
             </Button>
           </div>
           
@@ -484,6 +582,15 @@ export default function PostManagerPage() {
         <meta name="description" content="Manage your job listings, track applications, and post new positions." />
       </Helmet>
       
+      {/* Job Preview Dialog */}
+      <JobPreviewDialog 
+        job={jobToPreview} 
+        open={!!jobToPreview} 
+        onOpenChange={(open) => {
+          if (!open) setJobToPreview(null);
+        }} 
+      />
+      
       <div className="max-w-4xl mx-auto">
         {/* Create Job Banner Section */}
         <div className="mb-10 bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-xl shadow-sm border border-primary/20">
@@ -528,7 +635,7 @@ export default function PostManagerPage() {
               </Button>
             </AlertDescription>
           </Alert>
-        ) : (currentUser.user.userType !== "admin") ? (
+        ) : (currentUser.user.userType !== "admin" && currentUser.user.userType !== "super_admin") ? (
           <Alert className="mb-6">
             <AlertTitle>Admin Account Required</AlertTitle>
             <AlertDescription>
@@ -545,44 +652,523 @@ export default function PostManagerPage() {
           <Tabs defaultValue="active">
             <TabsList className="mb-6">
               <TabsTrigger value="active">
-                Active Jobs ({activeJobs.length})
+                Active Jobs ({filteredActiveJobs.length})
               </TabsTrigger>
               <TabsTrigger value="closed">
-                Closed Jobs ({closedJobs.length})
+                Closed Jobs ({filteredClosedJobs.length})
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="active">
-              {activeJobs.length > 0 ? (
-                activeJobs.map((job) => (
-                  <JobCard key={job.id} job={job} status="active" />
-                ))
+            <TabsContent value="active" className="space-y-6">
+              {/* Filter Section */}
+              <div className="bg-white p-4 rounded-lg border shadow-sm">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold flex items-center">
+                    <SlidersHorizontal className="h-4 w-4 mr-2" />
+                    Filters
+                  </h3>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={resetFilters}
+                    className="text-xs"
+                  >
+                    <X className="h-3 w-3 mr-1" />
+                    Reset Filters
+                  </Button>
+                </div>
+                
+                <div className="mb-4">
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+                    <Input
+                      placeholder="Search by title, company, or description"
+                      value={searchTerm}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
+                      className="pl-8"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <Label>Category</Label>
+                    <Select
+                      value={filters.category}
+                      onValueChange={(value) => handleFilterChange("category", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All categories" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All categories</SelectItem>
+                        {jobCategories.map((category) => (
+                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label>Job Type</Label>
+                    <Select
+                      value={filters.jobType}
+                      onValueChange={(value) => handleFilterChange("jobType", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All types" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All types</SelectItem>
+                        {jobTypes.map((type) => (
+                          <SelectItem key={type} value={type}>{type}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label>Specialization</Label>
+                    <Select
+                      value={filters.specialization}
+                      onValueChange={(value) => handleFilterChange("specialization", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All specializations" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All specializations</SelectItem>
+                        {specializations.map((spec) => (
+                          <SelectItem key={spec} value={spec}>{spec}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label>Location</Label>
+                    <Select
+                      value={filters.location}
+                      onValueChange={(value) => handleFilterChange("location", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All locations" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All locations</SelectItem>
+                        {locations.map((location) => (
+                          <SelectItem key={location} value={location}>{location}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <Label>Experience</Label>
+                    <Select
+                      value={filters.experience}
+                      onValueChange={(value) => handleFilterChange("experience", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All experience levels" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All experience levels</SelectItem>
+                        {experienceLevels.map((level) => (
+                          <SelectItem key={level} value={level}>{level}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label>Salary Range: ${filters.salaryRange[0].toLocaleString()} - ${filters.salaryRange[1].toLocaleString()}</Label>
+                    <Slider
+                      value={filters.salaryRange}
+                      min={0}
+                      max={300000}
+                      step={10000}
+                      onValueChange={(value) => handleFilterChange("salaryRange", value)}
+                      className="mt-3"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Sort By</Label>
+                    <Select
+                      value={filters.sortBy}
+                      onValueChange={(value) => handleFilterChange("sortBy", value as any)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Latest" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="latest">Latest</SelectItem>
+                        <SelectItem value="a-z">A to Z</SelectItem>
+                        <SelectItem value="z-a">Z to A</SelectItem>
+                        <SelectItem value="salary-low">Salary (Low to High)</SelectItem>
+                        <SelectItem value="salary-high">Salary (High to Low)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+              
+              {filteredActiveJobs.length > 0 ? (
+                <>
+                  {paginatedActiveJobs.map((job) => (
+                    <JobCard key={job.id} job={job} status="active" />
+                  ))}
+                  
+                  {/* Pagination */}
+                  {totalActivePages > 1 && (
+                    <div className="flex justify-center mt-8">
+                      <Pagination>
+                        <PaginationContent>
+                          <PaginationItem>
+                            <PaginationPrevious 
+                              href="#" 
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage > 1) setCurrentPage(currentPage - 1);
+                              }} 
+                              aria-disabled={currentPage === 1}
+                              className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                            />
+                          </PaginationItem>
+                          
+                          {Array.from({ length: totalActivePages }).map((_, i) => {
+                            // Show first, last, current and nearby pages
+                            if (
+                              i === 0 || 
+                              i === totalActivePages - 1 || 
+                              (i >= currentPage - 2 && i <= currentPage + 1)
+                            ) {
+                              return (
+                                <PaginationItem key={i}>
+                                  <PaginationLink 
+                                    href="#" 
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setCurrentPage(i + 1);
+                                    }}
+                                    isActive={currentPage === i + 1}
+                                  >
+                                    {i + 1}
+                                  </PaginationLink>
+                                </PaginationItem>
+                              );
+                            }
+                            
+                            // Show ellipsis for gaps
+                            if (
+                              (i === 1 && currentPage > 3) || 
+                              (i === totalActivePages - 2 && currentPage < totalActivePages - 2)
+                            ) {
+                              return (
+                                <PaginationItem key={i}>
+                                  <PaginationEllipsis />
+                                </PaginationItem>
+                              );
+                            }
+                            
+                            return null;
+                          })}
+                          
+                          <PaginationItem>
+                            <PaginationNext 
+                              href="#" 
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage < totalActivePages) setCurrentPage(currentPage + 1);
+                              }} 
+                              aria-disabled={currentPage === totalActivePages}
+                              className={currentPage === totalActivePages ? "pointer-events-none opacity-50" : ""}
+                            />
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="text-center py-12 bg-gray-50 rounded-lg">
                   <Briefcase className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">No Active Jobs</h3>
+                  <h3 className="text-xl font-semibold mb-2">No Active Jobs Found</h3>
                   <p className="text-gray-600 mb-6">
-                    You don't have any active job listings at the moment.
+                    {searchTerm || Object.values(filters).some(v => v !== "" && (typeof v === 'string' ? v !== "" : true)) ? 
+                      "No jobs match your current filters. Try adjusting your search criteria." : 
+                      "You don't have any active job listings at the moment."
+                    }
                   </p>
-                  <Button onClick={() => setLocation("/post-job")}>
-                    Post a New Job
+                  <Button onClick={() => searchTerm || Object.values(filters).some(v => v !== "" && (typeof v === 'string' ? v !== "" : true)) ? 
+                    resetFilters() : setLocation("/post-job")
+                  }>
+                    {searchTerm || Object.values(filters).some(v => v !== "" && (typeof v === 'string' ? v !== "" : true)) ? 
+                      "Reset Filters" : "Post a New Job"
+                    }
                   </Button>
                 </div>
               )}
             </TabsContent>
             
-            <TabsContent value="closed">
-              {closedJobs.length > 0 ? (
-                closedJobs.map((job) => (
-                  <JobCard key={job.id} job={job} status="closed" />
-                ))
+            <TabsContent value="closed" className="space-y-6">
+              {/* Filter Section */}
+              <div className="bg-white p-4 rounded-lg border shadow-sm">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold flex items-center">
+                    <SlidersHorizontal className="h-4 w-4 mr-2" />
+                    Filters
+                  </h3>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={resetFilters}
+                    className="text-xs"
+                  >
+                    <X className="h-3 w-3 mr-1" />
+                    Reset Filters
+                  </Button>
+                </div>
+                
+                <div className="mb-4">
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+                    <Input
+                      placeholder="Search by title, company, or description"
+                      value={searchTerm}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
+                      className="pl-8"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <Label>Category</Label>
+                    <Select
+                      value={filters.category}
+                      onValueChange={(value) => handleFilterChange("category", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All categories" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All categories</SelectItem>
+                        {jobCategories.map((category) => (
+                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label>Job Type</Label>
+                    <Select
+                      value={filters.jobType}
+                      onValueChange={(value) => handleFilterChange("jobType", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All types" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All types</SelectItem>
+                        {jobTypes.map((type) => (
+                          <SelectItem key={type} value={type}>{type}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label>Specialization</Label>
+                    <Select
+                      value={filters.specialization}
+                      onValueChange={(value) => handleFilterChange("specialization", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All specializations" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All specializations</SelectItem>
+                        {specializations.map((spec) => (
+                          <SelectItem key={spec} value={spec}>{spec}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label>Location</Label>
+                    <Select
+                      value={filters.location}
+                      onValueChange={(value) => handleFilterChange("location", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All locations" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All locations</SelectItem>
+                        {locations.map((location) => (
+                          <SelectItem key={location} value={location}>{location}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <Label>Experience</Label>
+                    <Select
+                      value={filters.experience}
+                      onValueChange={(value) => handleFilterChange("experience", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All experience levels" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All experience levels</SelectItem>
+                        {experienceLevels.map((level) => (
+                          <SelectItem key={level} value={level}>{level}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label>Salary Range: ${filters.salaryRange[0].toLocaleString()} - ${filters.salaryRange[1].toLocaleString()}</Label>
+                    <Slider
+                      value={filters.salaryRange}
+                      min={0}
+                      max={300000}
+                      step={10000}
+                      onValueChange={(value) => handleFilterChange("salaryRange", value)}
+                      className="mt-3"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Sort By</Label>
+                    <Select
+                      value={filters.sortBy}
+                      onValueChange={(value) => handleFilterChange("sortBy", value as any)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Latest" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="latest">Latest</SelectItem>
+                        <SelectItem value="a-z">A to Z</SelectItem>
+                        <SelectItem value="z-a">Z to A</SelectItem>
+                        <SelectItem value="salary-low">Salary (Low to High)</SelectItem>
+                        <SelectItem value="salary-high">Salary (High to Low)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+              
+              {filteredClosedJobs.length > 0 ? (
+                <>
+                  {paginatedClosedJobs.map((job) => (
+                    <JobCard key={job.id} job={job} status="closed" />
+                  ))}
+                  
+                  {/* Pagination */}
+                  {totalClosedPages > 1 && (
+                    <div className="flex justify-center mt-8">
+                      <Pagination>
+                        <PaginationContent>
+                          <PaginationItem>
+                            <PaginationPrevious 
+                              href="#" 
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage > 1) setCurrentPage(currentPage - 1);
+                              }} 
+                              aria-disabled={currentPage === 1}
+                              className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                            />
+                          </PaginationItem>
+                          
+                          {Array.from({ length: totalClosedPages }).map((_, i) => {
+                            // Show first, last, current and nearby pages
+                            if (
+                              i === 0 || 
+                              i === totalClosedPages - 1 || 
+                              (i >= currentPage - 2 && i <= currentPage + 1)
+                            ) {
+                              return (
+                                <PaginationItem key={i}>
+                                  <PaginationLink 
+                                    href="#" 
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setCurrentPage(i + 1);
+                                    }}
+                                    isActive={currentPage === i + 1}
+                                  >
+                                    {i + 1}
+                                  </PaginationLink>
+                                </PaginationItem>
+                              );
+                            }
+                            
+                            // Show ellipsis for gaps
+                            if (
+                              (i === 1 && currentPage > 3) || 
+                              (i === totalClosedPages - 2 && currentPage < totalClosedPages - 2)
+                            ) {
+                              return (
+                                <PaginationItem key={i}>
+                                  <PaginationEllipsis />
+                                </PaginationItem>
+                              );
+                            }
+                            
+                            return null;
+                          })}
+                          
+                          <PaginationItem>
+                            <PaginationNext 
+                              href="#" 
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage < totalClosedPages) setCurrentPage(currentPage + 1);
+                              }} 
+                              aria-disabled={currentPage === totalClosedPages}
+                              className={currentPage === totalClosedPages ? "pointer-events-none opacity-50" : ""}
+                            />
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="text-center py-12 bg-gray-50 rounded-lg">
                   <Clock className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">No Closed Jobs</h3>
+                  <h3 className="text-xl font-semibold mb-2">No Closed Jobs Found</h3>
                   <p className="text-gray-600">
-                    You don't have any expired or closed job listings.
+                    {searchTerm || Object.values(filters).some(v => v !== "" && (typeof v === 'string' ? v !== "" : true)) ? 
+                      "No jobs match your current filters. Try adjusting your search criteria." : 
+                      "You don't have any expired or closed job listings."
+                    }
                   </p>
+                  {(searchTerm || Object.values(filters).some(v => v !== "" && (typeof v === 'string' ? v !== "" : true))) && (
+                    <Button variant="outline" onClick={resetFilters} className="mt-4">
+                      Reset Filters
+                    </Button>
+                  )}
                 </div>
               )}
             </TabsContent>
