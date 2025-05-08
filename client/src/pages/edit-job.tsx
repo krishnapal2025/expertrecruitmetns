@@ -243,7 +243,7 @@ export default function EditJobPage() {
       queryClient.invalidateQueries({ queryKey: ["/api/jobs", jobId] });
       
       // Redirect to jobs page
-      setLocation("/my-jobs");
+      setLocation("/post-manager");
     },
     onError: (error: Error) => {
       toast({
@@ -282,7 +282,7 @@ export default function EditJobPage() {
           <AlertDescription>
             The job you're trying to edit doesn't exist or has been removed.
             <div className="mt-4">
-              <Button variant="outline" onClick={() => setLocation("/my-jobs")}>
+              <Button variant="outline" onClick={() => setLocation("/post-manager")}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to My Jobs
               </Button>
@@ -301,7 +301,7 @@ export default function EditJobPage() {
           <AlertDescription>
             You don't have permission to edit this job. You can only edit jobs that you have posted.
             <div className="mt-4">
-              <Button variant="outline" onClick={() => setLocation("/my-jobs")}>
+              <Button variant="outline" onClick={() => setLocation("/post-manager")}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to My Jobs
               </Button>
@@ -319,7 +319,7 @@ export default function EditJobPage() {
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={() => setLocation("/my-jobs")}
+            onClick={() => setLocation("/post-manager")}
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
@@ -571,7 +571,7 @@ export default function EditJobPage() {
               <Button 
                 type="button" 
                 variant="outline"
-                onClick={() => setLocation("/my-jobs")}
+                onClick={() => setLocation("/post-manager")}
               >
                 Cancel
               </Button>
