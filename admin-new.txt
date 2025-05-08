@@ -92,7 +92,7 @@ function AdminDashboard() {
       return;
     }
     
-    if (user.userType !== "admin" && user.userType !== "super_admin") {
+    if (user.userType !== "admin") {
       toast({
         title: "Access Denied",
         description: "You don't have permission to access the admin dashboard.",
@@ -106,7 +106,7 @@ function AdminDashboard() {
   const { isLoading: adminLoading } = useQuery({
     queryKey: ["/api/admin/user"],
     queryFn: async () => {
-      if (!user || user.userType !== "admin" && user.userType !== "super_admin") return null;
+      if (!user || user.userType !== "admin") return null;
       try {
         const res = await fetch("/api/admin/user");
         if (!res.ok) return null;
@@ -126,7 +126,7 @@ function AdminDashboard() {
       if (!res.ok) throw new Error("Failed to fetch users");
       return await res.json();
     },
-    enabled: !!user && user.userType === "admin" || user.userType === "super_admin"
+    enabled: !!user && user.userType === "admin"
   });
   
   // Fetch jobs
@@ -137,7 +137,7 @@ function AdminDashboard() {
       if (!res.ok) throw new Error("Failed to fetch jobs");
       return await res.json();
     },
-    enabled: !!user && user.userType === "admin" || user.userType === "super_admin"
+    enabled: !!user && user.userType === "admin"
   });
   
   // Fetch vacancies with shorter refresh interval for real-time updates
