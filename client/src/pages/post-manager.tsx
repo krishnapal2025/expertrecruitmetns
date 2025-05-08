@@ -131,11 +131,11 @@ export default function PostManagerPage() {
   
   // Filter states
   const [filters, setFilters] = useState({
-    category: "",
-    jobType: "",
-    specialization: "",
-    location: "",
-    experience: "",
+    category: "all-categories",
+    jobType: "all-types",
+    specialization: "all-specializations",
+    location: "all-locations",
+    experience: "all-experience",
     salaryRange: [0, 300000] as [number, number],
     sortBy: "latest" as "latest" | "a-z" | "z-a" | "salary-low" | "salary-high"
   });
@@ -181,27 +181,27 @@ export default function PostManagerPage() {
     }
     
     // Apply category filter
-    if (filters.category) {
+    if (filters.category && filters.category !== "all-categories") {
       filteredJobs = filteredJobs.filter(job => job.category === filters.category);
     }
     
     // Apply job type filter
-    if (filters.jobType) {
+    if (filters.jobType && filters.jobType !== "all-types") {
       filteredJobs = filteredJobs.filter(job => job.jobType === filters.jobType);
     }
     
     // Apply specialization filter
-    if (filters.specialization) {
+    if (filters.specialization && filters.specialization !== "all-specializations") {
       filteredJobs = filteredJobs.filter(job => job.specialization === filters.specialization);
     }
     
     // Apply location filter
-    if (filters.location) {
+    if (filters.location && filters.location !== "all-locations") {
       filteredJobs = filteredJobs.filter(job => job.location === filters.location);
     }
     
     // Apply experience filter
-    if (filters.experience) {
+    if (filters.experience && filters.experience !== "all-experience") {
       filteredJobs = filteredJobs.filter(job => job.experience === filters.experience);
     }
     
