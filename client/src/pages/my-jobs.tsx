@@ -38,15 +38,15 @@ export default function PostManagerPage() {
   const [, setLocation] = useLocation();
   const [jobToDelete, setJobToDelete] = useState<number | null>(null);
   
-  // Fetch employer's jobs
+  // Fetch jobs (admin only)
   const { data: jobs, isLoading } = useQuery<Job[]>({
-    queryKey: ["/api/employer/jobs"],
+    queryKey: ["/api/jobs"],
     queryFn: async () => {
-      const res = await apiRequest("GET", "/api/employer/jobs");
-      if (!res.ok) throw new Error("Failed to fetch your job listings");
+      const res = await apiRequest("GET", "/api/jobs");
+      if (!res.ok) throw new Error("Failed to fetch job listings");
       return await res.json();
     },
-    enabled: !!currentUser?.profile.id && currentUser?.user.userType === "employer",
+    enabled: !!currentUser?.profile.id && currentUser?.user.userType === "admin",
   });
   
   // Get active and closed jobs
@@ -308,17 +308,17 @@ export default function PostManagerPage() {
           <Alert className="mb-6">
             <AlertTitle>Authentication Required</AlertTitle>
             <AlertDescription>
-              You need to be logged in as an employer to access the Post Manager.
-              <Button variant="link" onClick={() => setLocation("/auth")}>
-                Sign in or register
+              You need to be logged in as an admin to access the Post Manager.
+              <Button variant="link" onClick={() => setLocation("/admin-login")}>
+                Sign in as admin
               </Button>
             </AlertDescription>
           </Alert>
-        ) : currentUser.user.userType !== "employer" ? (
+        ) : currentUser.user.userType !== "admin" ? (
           <Alert className="mb-6">
-            <AlertTitle>Employer Account Required</AlertTitle>
+            <AlertTitle>Admin Account Required</AlertTitle>
             <AlertDescription>
-              Only employer accounts can post and manage jobs. Your current account is registered as a job seeker.
+              Only admin accounts can post and manage jobs. Your current account does not have the necessary permissions.
             </AlertDescription>
           </Alert>
         ) : isLoading ? (

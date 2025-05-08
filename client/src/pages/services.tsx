@@ -9,6 +9,9 @@ import {
 } from "lucide-react";
 import MinimalistTestimonialSlider from "@/components/services/minimalist-testimonial-slider";
 import servicesBgImage from "@/assets/modern-equipped-computer-lab.jpg";
+import servicesBgImageSmall from "@/assets/optimized/modern-equipped-computer-lab-sm.webp";
+import servicesBgImageMedium from "@/assets/optimized/modern-equipped-computer-lab-md.webp";
+import OptimizedHeroBackground from "@/components/hero/optimized-hero-background";
 
 export default function ServicesPage() {
   return (
@@ -19,20 +22,16 @@ export default function ServicesPage() {
       </Helmet>
 
       <div className="relative min-h-[90vh] overflow-hidden">
-        {/* Background Image with Black Tint */}
-        <div className="absolute inset-0 bg-black/65 z-10"></div>
-        <div 
-          className="absolute inset-0 bg-center bg-cover" 
-          style={{ 
-            backgroundImage: `url(${servicesBgImage})`,
-            backgroundPosition: 'center center',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            height: '100%',
-            width: '100%',
-            filter: 'brightness(0.85)'
-          }}
-        ></div>
+        {/* Optimized Background Image */}
+        <OptimizedHeroBackground 
+          imageSrc={servicesBgImage}
+          smallImageSrc={servicesBgImageSmall}
+          mediumImageSrc={servicesBgImageMedium}
+          alt="Modern computer lab"
+          brightness={0.85}
+          overlayOpacity={0.65}
+          priority={true}
+        />
         
         {/* Accent lines */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>

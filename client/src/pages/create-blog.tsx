@@ -7,7 +7,32 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Loader2, Image as ImageIcon, Trash2, AlignLeft, AlignCenter, AlignRight, Bold, Italic, List, ListOrdered, FileEdit, Upload, X, ImagePlus } from "lucide-react";
+import { 
+  Loader2, 
+  Image as ImageIcon, 
+  Trash2, 
+  AlignLeft, 
+  AlignCenter, 
+  AlignRight, 
+  Bold, 
+  Italic, 
+  List, 
+  ListOrdered, 
+  FileEdit, 
+  Upload, 
+  X, 
+  ImagePlus,
+  Eye,
+  FileText,
+  Smartphone,
+  Layers,
+  PenLine,
+  ChevronUp,
+  ChevronDown,
+  Info as InfoIcon,
+  Heading2,
+  Pilcrow as ParagraphIcon
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -82,6 +107,7 @@ const CreateBlogPage = () => {
       size?: string;
       weight?: string;
       style?: string;
+      fontSize?: string; // Added fontSize property for the numerical input
     };
   };
 
@@ -100,6 +126,7 @@ const CreateBlogPage = () => {
     fontStyle: 'normal',
     fontWeight: 'bold',
     fontSize: '2xl',
+    customFontSize: '24px',
     alignment: 'left',
     color: 'primary'
   });
@@ -109,6 +136,7 @@ const CreateBlogPage = () => {
     fontStyle: 'normal',
     fontWeight: 'medium',
     fontSize: 'lg',
+    customFontSize: '18px',
     alignment: 'left',
     color: 'gray-600'
   });
@@ -147,7 +175,7 @@ const CreateBlogPage = () => {
     
     // Title always appears first in the preview/published blog
     if (title) {
-      previewContent += `<h1 class="text-3xl font-${titleFormatting.fontWeight} font-${titleFormatting.fontStyle} text-${titleFormatting.fontSize} text-${titleFormatting.alignment} text-${titleFormatting.color} mb-4">${title}</h1>`;
+      previewContent += `<h1 class="font-${titleFormatting.fontWeight} font-${titleFormatting.fontStyle} text-${titleFormatting.alignment} text-${titleFormatting.color} mb-4" style="font-size: ${titleFormatting.customFontSize};">${title}</h1>`;
     }
     
     // Banner image appears after the title
@@ -166,17 +194,24 @@ const CreateBlogPage = () => {
     }
     
     if (subtitle) {
-      previewContent += `<p class="text-xl font-${subtitleFormatting.fontWeight} font-${subtitleFormatting.fontStyle} text-${subtitleFormatting.fontSize} text-${subtitleFormatting.alignment} text-${subtitleFormatting.color} mb-6">${subtitle}</p>`;
+      previewContent += `<p class="font-${subtitleFormatting.fontWeight} font-${subtitleFormatting.fontStyle} text-${subtitleFormatting.alignment} text-${subtitleFormatting.color} mb-6" style="font-size: ${subtitleFormatting.customFontSize};">${subtitle}</p>`;
     }
     
     previewContent += '<div class="prose max-w-none">';
     contentSections.forEach(section => {
       if (section.type === 'header' && section.content) {
-        // Get the selected header color if it exists in the section's format state
+        // Get the selected header color and other formatting options
         const headerColor = section.format?.color || "slate-900"; // Default color if not set
-        previewContent += `<h2 class="text-xl font-semibold my-4 text-${headerColor}">${section.content}</h2>`;
+        const alignment = section.format?.alignment || "left"; // Default alignment if not set
+        const fontSize = section.format?.fontSize || "24px"; // Default font size if not set
+        
+        previewContent += `<h2 class="font-semibold my-4 text-${headerColor} text-${alignment}" style="font-size: ${fontSize};">${section.content}</h2>`;
       } else if (section.type === 'paragraph' && section.content) {
-        previewContent += `<div class="my-4">${section.content}</div>`;
+        // Get the formatting options for paragraphs
+        const fontSize = section.format?.fontSize || "16px"; // Default font size if not set
+        const alignment = section.format?.alignment || "left"; // Default alignment if not set
+        
+        previewContent += `<div class="my-4 text-${alignment}" style="font-size: ${fontSize};">${section.content}</div>`;
       } else if (section.type === 'image' && section.content) {
         previewContent += `
           <div class="my-6">
@@ -204,30 +239,41 @@ const CreateBlogPage = () => {
       // Convert tags from string to array for the API
       const tagsArray = data.tags ? data.tags.split(',').map(tag => tag.trim()) : [];
       
-      // Create API-compatible data structure
+      // Create API-compatible data structure, ensuring all required fields are present
       const postData = {
         title: data.title,
-        subtitle: data.subtitle,
+        subtitle: data.subtitle || null,
         content: data.content,
-        bannerImage: data.bannerImage,
-        category: data.category,
-        excerpt: data.excerpt,
-        readTime: data.readTime,
-        metaDescription: data.metaDescription,
-        slug: data.slug,
-        published: data.published,
+        bannerImage: data.bannerImage || null,
+        category: data.category || "Uncategorized", // Default category
+        excerpt: data.excerpt || null,
+        readTime: data.readTime || "5 min read",
+        metaDescription: data.metaDescription || null,
+        slug: data.slug || null, // Server will generate if null
+        published: data.published !== undefined ? data.published : true, // Default to published
         tags: tagsArray, // Pass as array to the API
       };
 
-      console.log("Submitting blog post:", postData);
+      console.log("Submitting blog post with data:", postData);
+      console.log("Content length:", postData.content?.length || 0);
+      console.log("Authentication status:", !!localStorage.getItem("isLoggedIn")); // Check auth state
       
-      const response = await apiRequest("POST", "/api/blog-posts", postData);
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("API Error:", errorData);
-        throw new Error(errorData.message || "Failed to create blog post");
+      try {
+        // Make the API request with credentials
+        const response = await apiRequest("POST", "/api/blog-posts", postData);
+        console.log("API response status:", response.status);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("API Error:", errorData);
+          throw new Error(errorData.message || "Failed to create blog post");
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error("API request failed:", error);
+        throw error;
       }
-      return await response.json();
     },
     onSuccess: (data) => {
       // Invalidate the blog posts query cache so the updated list shows immediately
@@ -257,6 +303,17 @@ const CreateBlogPage = () => {
   const onSubmit = (data: BlogFormValues) => {
     console.log("Form submitted with data:", data);
     
+    // Debug the form state
+    console.log("Form state:", form.formState);
+    console.log("Form errors:", form.formState.errors);
+    
+    // Make sure we have the most up-to-date content from sections
+    const allContent = contentSections.map(section => section.content).join('');
+    if (allContent.length > 0) {
+      data.content = allContent;
+      form.setValue('content', allContent, { shouldValidate: true });
+    }
+    
     // Make sure content is being populated
     if (!data.content || data.content.trim().length < 100) {
       toast({
@@ -264,23 +321,71 @@ const CreateBlogPage = () => {
         description: "Please add more content to your blog post (minimum 100 characters)",
         variant: "destructive",
       });
+      console.error("Content validation failed:", data.content ? data.content.length : 0, "characters");
       return;
     }
     
     // Generate slug if one doesn't exist
     const slug = data.slug || data.title.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-');
     
-    // Pass the form data directly - the mutation function will handle the tags conversion
-    // Don't convert tags to array here; it will be done in the mutation function
+    // Create complete submission data with defaults for required fields
     const submissionData = {
       ...data,
-      slug,
+      title: data.title.trim(),
+      content: data.content,
+      slug: slug,
+      category: data.category || "Industry Insights", // Default category
       readTime: data.readTime || "5 min read",
       excerpt: data.excerpt || data.content.replace(/<[^>]*>/g, '').substring(0, 150) + "...",
+      published: data.published !== undefined ? data.published : true, // Default to published
+      bannerImage: data.bannerImage || null,
+      tags: data.tags || "",
+      subtitle: data.subtitle || null,
+      metaDescription: data.metaDescription || null
     };
     
-    console.log("Submitting data:", submissionData);
-    createBlogMutation.mutate(submissionData);
+    console.log("Submitting complete data:", submissionData);
+    console.log("Content length:", submissionData.content.length);
+    console.log("Authentication status:", localStorage.getItem("isLoggedIn") ? "Logged in" : "Not logged in");
+    
+    // Explicitly checking required fields
+    if (!submissionData.title) {
+      console.error("Missing required field: title");
+      toast({
+        title: "Missing title",
+        description: "Please provide a title for your blog post",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!submissionData.category) {
+      console.error("Missing required field: category");
+      toast({
+        title: "Missing category",
+        description: "Please select a category for your blog post",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    try {
+      // Call the mutation with the complete data
+      createBlogMutation.mutate(submissionData);
+      
+      // Show temporary success message while waiting for mutation
+      toast({
+        title: "Processing blog post",
+        description: "Your blog post is being saved...",
+      });
+    } catch (error) {
+      console.error("Error triggering mutation:", error);
+      toast({
+        title: "Submission error",
+        description: "There was a problem submitting your blog post. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const addSection = (type: 'paragraph' | 'header' | 'image') => {
@@ -352,18 +457,29 @@ const CreateBlogPage = () => {
   ];
 
   return (
-    <div className="container max-w-7xl py-12">
-      <div className="flex flex-col lg:flex-row gap-6">
+    <div className="container max-w-7xl py-10 px-4 sm:px-6 lg:px-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-primary mb-2">Create New Blog Post</h1>
+        <div className="flex items-center text-muted-foreground">
+          <FileEdit className="mr-2 h-5 w-5" />
+          <span>Publish high-quality content to engage your audience</span>
+        </div>
+      </div>
+      
+      <div className="flex flex-col lg:flex-row gap-8">
         {/* Editor Column */}
-        <div className="w-full lg:w-[55%]">
-          <Card className="w-full shadow-md">
-            <CardHeader className="bg-slate-50 border-b">
-              <CardTitle className="text-3xl font-bold text-primary">Create New Blog Post</CardTitle>
+        <div className="w-full lg:w-[58%]">
+          <Card className="w-full shadow-lg border-slate-200 overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-slate-50 to-white border-b py-5">
+              <CardTitle className="text-2xl font-bold text-primary flex items-center">
+                <PenLine className="mr-2 h-5 w-5" />
+                Editor
+              </CardTitle>
               <CardDescription>
-                Add a new article to the Expert Recruitments blog
+                Create professional content with our rich text editor
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-6">
+            <CardContent className="p-6 pt-8">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                   <div className="grid grid-cols-1 gap-6">
@@ -413,22 +529,22 @@ const CreateBlogPage = () => {
                               </div>
                               
                               <div>
-                                <h4 className="text-sm font-medium mb-1">Font Size</h4>
-                                <Select 
-                                  defaultValue={titleFormatting.fontSize}
-                                  onValueChange={(value) => setTitleFormatting({...titleFormatting, fontSize: value})}
-                                >
-                                  <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Font Size" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="lg">Large</SelectItem>
-                                    <SelectItem value="xl">Extra Large</SelectItem>
-                                    <SelectItem value="2xl">2XL</SelectItem>
-                                    <SelectItem value="3xl">3XL</SelectItem>
-                                    <SelectItem value="4xl">4XL</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                <h4 className="text-sm font-medium mb-1">Font Size (px)</h4>
+                                <div className="flex items-center">
+                                  <Input 
+                                    type="number" 
+                                    min="12" 
+                                    max="72" 
+                                    defaultValue="24" 
+                                    className="w-24"
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      const fontSize = parseInt(value) ? `${value}px` : '24px';
+                                      setTitleFormatting({...titleFormatting, customFontSize: fontSize});
+                                    }}
+                                  />
+                                  <span className="ml-2">px</span>
+                                </div>
                               </div>
                               
                               <div>
@@ -573,21 +689,22 @@ const CreateBlogPage = () => {
                               </div>
                               
                               <div>
-                                <h4 className="text-sm font-medium mb-1">Font Size</h4>
-                                <Select 
-                                  defaultValue={subtitleFormatting.fontSize}
-                                  onValueChange={(value) => setSubtitleFormatting({...subtitleFormatting, fontSize: value})}
-                                >
-                                  <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Font Size" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="base">Normal</SelectItem>
-                                    <SelectItem value="lg">Large</SelectItem>
-                                    <SelectItem value="xl">Extra Large</SelectItem>
-                                    <SelectItem value="2xl">2XL</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                <h4 className="text-sm font-medium mb-1">Font Size (px)</h4>
+                                <div className="flex items-center">
+                                  <Input 
+                                    type="number" 
+                                    min="12" 
+                                    max="50" 
+                                    defaultValue="18" 
+                                    className="w-24"
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      const fontSize = parseInt(value) ? `${value}px` : '18px';
+                                      setSubtitleFormatting({...subtitleFormatting, customFontSize: fontSize});
+                                    }}
+                                  />
+                                  <span className="ml-2">px</span>
+                                </div>
                               </div>
                               
                               <div>
@@ -947,21 +1064,22 @@ const CreateBlogPage = () => {
                               </div>
                               
                               <div className="flex flex-wrap gap-2 mt-2">
-                                <h4 className="text-sm font-medium w-full mb-1">Font Size</h4>
-                                <Select
-                                  onValueChange={(value) => console.log('Font size changed:', value)}
-                                  defaultValue="normal"
-                                >
-                                  <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Font Size" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="small">Small</SelectItem>
-                                    <SelectItem value="normal">Normal</SelectItem>
-                                    <SelectItem value="large">Large</SelectItem>
-                                    <SelectItem value="xl">Extra Large</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                <h4 className="text-sm font-medium w-full mb-1">Font Size (px)</h4>
+                                <div className="flex items-center">
+                                  <Input 
+                                    type="number" 
+                                    min="12" 
+                                    max="36" 
+                                    defaultValue="16" 
+                                    className="w-24"
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      const fontSize = parseInt(value) ? `${value}px` : '16px';
+                                      updateSectionFormat(index, 'fontSize', fontSize);
+                                    }}
+                                  />
+                                  <span className="ml-2">px</span>
+                                </div>
                               </div>
                             </div>
                             
@@ -980,7 +1098,7 @@ const CreateBlogPage = () => {
                                   ['clean']
                                 ]
                               }}
-                              className="min-h-[150px]"
+                              className="min-h-[300px]"
                             />
                           </div>
                         )}
@@ -989,22 +1107,22 @@ const CreateBlogPage = () => {
                           <div>
                             <div className="mb-2">
                               <div className="flex flex-wrap gap-2 mb-2">
-                                <h4 className="text-sm font-medium w-full mb-1">Heading Style</h4>
-                                <Select
-                                  onValueChange={(value) => console.log('Header style changed:', value)}
-                                  defaultValue="h2"
-                                >
-                                  <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Heading Size" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="h1">Heading 1 (Largest)</SelectItem>
-                                    <SelectItem value="h2">Heading 2</SelectItem>
-                                    <SelectItem value="h3">Heading 3</SelectItem>
-                                    <SelectItem value="h4">Heading 4</SelectItem>
-                                    <SelectItem value="h5">Heading 5 (Smallest)</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                <h4 className="text-sm font-medium w-full mb-1">Heading Size (px)</h4>
+                                <div className="flex items-center">
+                                  <Input 
+                                    type="number" 
+                                    min="16" 
+                                    max="48" 
+                                    defaultValue="24" 
+                                    className="w-24"
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      const fontSize = parseInt(value) ? `${value}px` : '24px';
+                                      updateSectionFormat(index, 'fontSize', fontSize);
+                                    }}
+                                  />
+                                  <span className="ml-2">px</span>
+                                </div>
                               </div>
                               
                               <div className="flex flex-wrap gap-2">
@@ -1155,32 +1273,41 @@ const CreateBlogPage = () => {
                       </div>
                     ))}
                     
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => addSection('header')}
-                        className="flex items-center"
-                      >
-                        <span className="mr-1">Add Heading</span>
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => addSection('paragraph')}
-                        className="flex items-center"
-                      >
-                        <span className="mr-1">Add Paragraph</span>
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => addSection('image')}
-                        className="flex items-center"
-                      >
-                        <ImageIcon className="h-4 w-4 mr-1" />
-                        <span>Add Image</span>
-                      </Button>
+                    <div className="mt-6 mb-3">
+                      <h3 className="text-sm font-medium text-gray-700 mb-2">Add Content</h3>
+                      <div className="flex flex-wrap gap-3">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => addSection('header')}
+                          className="flex items-center bg-blue-50 hover:bg-blue-100 border-blue-200 hover:border-blue-300 text-blue-700"
+                        >
+                          <Heading2 className="h-4 w-4 mr-2" />
+                          <span>Add Heading</span>
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => addSection('paragraph')}
+                          className="flex items-center bg-green-50 hover:bg-green-100 border-green-200 hover:border-green-300 text-green-700"
+                        >
+                          <ParagraphIcon className="h-4 w-4 mr-2" />
+                          <span>Add Paragraph</span>
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => addSection('image')}
+                          className="flex items-center bg-purple-50 hover:bg-purple-100 border-purple-200 hover:border-purple-300 text-purple-700"
+                        >
+                          <ImageIcon className="h-4 w-4 mr-2" />
+                          <span>Add Image</span>
+                        </Button>
+                      </div>
+                      <div className="text-xs text-gray-500 mt-2">
+                        <InfoIcon className="h-3 w-3 inline-block mr-1" />
+                        Add as many sections as needed to build your blog post
+                      </div>
                     </div>
                   </div>
                   
@@ -1270,20 +1397,70 @@ const CreateBlogPage = () => {
                     )}
                   />
 
-                  <CardFooter className="flex justify-between px-0">
-                    <Button variant="outline" type="button" onClick={() => navigate("/admin-dashboard")}>
+                  <CardFooter className="flex justify-between px-0 pt-4 border-t mt-6">
+                    <Button 
+                      variant="outline" 
+                      type="button" 
+                      onClick={() => navigate("/admin-dashboard")}
+                      className="flex items-center"
+                    >
+                      <X className="mr-2 h-4 w-4" />
                       Cancel
                     </Button>
-                    <Button type="submit" disabled={createBlogMutation.isPending}>
-                      {createBlogMutation.isPending ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Saving...
-                        </>
-                      ) : (
-                        "Create Blog Post"
-                      )}
-                    </Button>
+                    <div className="flex items-center gap-3">
+                      <Button 
+                        type="button" 
+                        variant="ghost"
+                        onClick={() => {
+                          form.reset();
+                          setContentSections([{ 
+                            type: 'paragraph', 
+                            content: '',
+                            format: { alignment: 'left' }
+                          }]);
+                          toast({
+                            title: "Form reset",
+                            description: "All fields have been cleared",
+                          });
+                        }}
+                        className="text-gray-500"
+                      >
+                        Reset Form
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        disabled={createBlogMutation.isPending} 
+                        className="bg-primary hover:bg-primary/90 text-white px-6"
+                        onClick={() => {
+                          console.log("Submit button clicked");
+                          // Double-check form validation status
+                          if (!form.formState.isValid) {
+                            console.log("Form is invalid:", form.formState.errors);
+                            return;
+                          }
+                          
+                          // Manually trigger form submission if needed
+                          if (!form.getValues('content')) {
+                            form.setValue('content', 
+                              contentSections.map(section => section.content).join(''), 
+                              { shouldValidate: true }
+                            );
+                          }
+                        }}
+                      >
+                        {createBlogMutation.isPending ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            <FileEdit className="mr-2 h-4 w-4" />
+                            Create Blog Post
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </CardFooter>
                 </form>
               </Form>
@@ -1292,25 +1469,36 @@ const CreateBlogPage = () => {
         </div>
         
         {/* Preview Column */}
-        <div className="w-full lg:w-[45%]">
-          <Card className="w-full h-full shadow-md sticky top-6">
-            <CardHeader className="bg-slate-50 border-b">
-              <CardTitle className="text-xl font-bold text-primary flex items-center">
-                <span className="mr-2">Preview</span>
+        <div className="w-full lg:w-[42%]">
+          <Card className="w-full h-full shadow-lg border-slate-200 sticky top-6">
+            <CardHeader className="bg-gradient-to-r from-slate-50 to-white border-b py-5">
+              <CardTitle className="text-2xl font-bold text-primary flex items-center">
+                <Eye className="mr-2 h-5 w-5" />
+                Preview
               </CardTitle>
               <CardDescription>
-                See how your blog post will look
+                See how your blog post will appear to readers
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-4 overflow-y-auto bg-white" style={{ maxHeight: 'calc(100vh - 170px)' }}>
-              <div className="rounded-md border p-4 bg-white">
-                {!previewHtml ? (
-                  <div className="py-12 text-center text-gray-500">
-                    <p>Your blog post preview will appear here as you type</p>
+            <CardContent className="p-0 overflow-hidden">
+              <div className="relative">
+                <div className="absolute top-2 right-2 z-10">
+                  <Badge variant="outline" className="bg-white/90 backdrop-blur-sm">
+                    <Smartphone className="h-3 w-3 mr-1" /> Mobile View
+                  </Badge>
+                </div>
+                <div className="overflow-y-auto bg-slate-50 border rounded-lg mx-4 my-4 shadow-inner" style={{ maxHeight: 'calc(100vh - 220px)' }}>
+                  <div className="max-w-[375px] mx-auto p-4 bg-white min-h-[600px] shadow-sm">
+                    {!previewHtml ? (
+                      <div className="py-12 text-center text-gray-500 border border-dashed border-gray-200 rounded-md">
+                        <FileText className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                        <p className="text-sm">Your blog post preview will appear here as you type</p>
+                      </div>
+                    ) : (
+                      <div className="blog-preview" dangerouslySetInnerHTML={{ __html: previewHtml }} />
+                    )}
                   </div>
-                ) : (
-                  <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
-                )}
+                </div>
               </div>
             </CardContent>
           </Card>

@@ -17,13 +17,13 @@ function AdminPage() {
       return;
     }
 
-    // Check if user is admin and handle accordingly
-    if (user.userType === "admin") {
+    // Check if user is admin or super_admin and handle accordingly
+    if (user.userType === "admin" || user.userType === "super_admin") {
       setRedirectPath("/admin-dashboard");
     } else {
       toast({
         title: "Access Denied",
-        description: "You don't have permission to access the admin dashboard.",
+        description: "You don't have permission to access the admin dashboard. Only admin or super_admin accounts can access this area.",
         variant: "destructive",
       });
       setRedirectPath("/");

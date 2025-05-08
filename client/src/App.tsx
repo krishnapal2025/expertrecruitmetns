@@ -2,6 +2,7 @@ import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import PreloadHeroImages from "@/components/preload-hero-images";
 import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/home-page";
 import AboutUsPage from "@/pages/about-us";
@@ -157,6 +158,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        {/* Preload all hero background images */}
+        <PreloadHeroImages />
 
         <div className="flex flex-col min-h-screen">
           <Navbar />

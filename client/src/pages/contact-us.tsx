@@ -13,7 +13,10 @@ import { toast } from "@/hooks/use-toast";
 import { Mail, Phone, Send, Loader2, Globe, ArrowRight, ChevronDown } from "lucide-react";
 import { IndiaFlag, UAEFlag, USAFlag } from "@/components/flags";
 import { motion } from "framer-motion";
+import OptimizedHeroBackground from "@/components/hero/optimized-hero-background";
 import contactHeroBg from "../assets/images/contact-hero-bg.jpg";
+import contactHeroBgSmall from "../assets/optimized/images/contact-hero-bg-sm.webp";
+import contactHeroBgMedium from "../assets/optimized/images/contact-hero-bg-md.webp";
 import { useAuth } from "@/hooks/use-auth";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -155,20 +158,16 @@ export default function ContactUsPage() {
 
       {/* Hero Section with Black Tint - matching Services page style */}
       <div className="relative min-h-[90vh] overflow-hidden">
-        {/* Background Image with Black Tint */}
-        <div className="absolute inset-0 bg-black/65 z-10"></div>
-        <div 
-          className="absolute inset-0 bg-center bg-cover" 
-          style={{ 
-            backgroundImage: `url(${contactHeroBg})`,
-            backgroundPosition: 'center center',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            height: '100%',
-            width: '100%',
-            filter: 'brightness(0.85)'
-          }}
-        ></div>
+        {/* Optimized Background Image */}
+        <OptimizedHeroBackground 
+          imageSrc={contactHeroBg}
+          smallImageSrc={contactHeroBgSmall}
+          mediumImageSrc={contactHeroBgMedium}
+          alt="Contact us banner"
+          brightness={0.85}
+          overlayOpacity={0.65}
+          priority={true}
+        />
         
         {/* Accent lines */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>
