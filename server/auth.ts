@@ -170,14 +170,56 @@ export function setupAuth(app: Express) {
         });
       }
 
-      // Log user in
+      // Log user in with enhanced cross-domain handling
       req.login(user, (err) => {
         if (err) return next(err);
-        res.status(201).json({
-          id: user.id,
-          email: user.email,
-          userType: user.userType,
-          profile
+        
+        // Get deployment environment info
+        const isProduction = process.env.NODE_ENV === 'production';
+        const isFlyIo = process.env.FLY_APP_NAME !== undefined;
+        const isReplit = process.env.REPL_ID !== undefined || process.env.REPL_SLUG !== undefined;
+        const isCrossDomainEnvironment = isFlyIo || isReplit;
+        
+        // Ensure session is saved before responding
+        req.session!.save((err) => {
+          if (err) {
+            console.error("Error saving session after login:", err);
+            return res.status(500).json({ 
+              message: "Account created, but session could not be saved",
+              user: {
+                id: user.id,
+                email: user.email,
+                userType: user.userType
+              }
+            });
+          }
+          
+          // For cross-domain environments, add helpful info to response
+          if (isCrossDomainEnvironment) {
+            res.status(201).json({
+              id: user.id,
+              email: user.email,
+              userType: user.userType,
+              profile,
+              environment: isCrossDomainEnvironment ? 'cross-domain' : 'same-origin',
+              notes: {
+                sessionInfo: "Your session has been created. In some deployment environments, you may need to log in again.",
+                cookieSettings: {
+                  secure: isProduction,
+                  sameSite: isProduction && isCrossDomainEnvironment ? "none" : "lax",
+                  domain: process.env.COOKIE_DOMAIN || undefined
+                }
+              }
+            });
+          } else {
+            // Standard response for development environments
+            res.status(201).json({
+              id: user.id,
+              email: user.email,
+              userType: user.userType,
+              profile
+            });
+          }
         });
       });
     } catch (error) {
@@ -216,12 +258,49 @@ export function setupAuth(app: Express) {
         phoneNumber
       });
 
-      // Log user in
+      // Log user in with cross-domain support
       req.login(user, (err) => {
         if (err) return next(err);
-        res.status(201).json({
-          user,
-          profile: jobSeeker
+        
+        // Get deployment environment info
+        const isProduction = process.env.NODE_ENV === 'production';
+        const isFlyIo = process.env.FLY_APP_NAME !== undefined;
+        const isReplit = process.env.REPL_ID !== undefined || process.env.REPL_SLUG !== undefined;
+        const isCrossDomainEnvironment = isFlyIo || isReplit;
+        
+        // Ensure session is saved before responding
+        req.session!.save((err) => {
+          if (err) {
+            console.error("Error saving session after login:", err);
+            return res.status(500).json({ 
+              message: "Account created, but session could not be saved",
+              user,
+              profile: jobSeeker
+            });
+          }
+          
+          // For cross-domain environments, add helpful info to response
+          if (isCrossDomainEnvironment) {
+            res.status(201).json({
+              user,
+              profile: jobSeeker,
+              environment: isCrossDomainEnvironment ? 'cross-domain' : 'same-origin',
+              notes: {
+                sessionInfo: "Your session has been created. In some deployment environments, you may need to log in again.",
+                cookieSettings: {
+                  secure: isProduction,
+                  sameSite: isProduction && isCrossDomainEnvironment ? "none" : "lax",
+                  domain: process.env.COOKIE_DOMAIN || undefined
+                }
+              }
+            });
+          } else {
+            // Standard response for development environments
+            res.status(201).json({
+              user,
+              profile: jobSeeker
+            });
+          }
         });
       });
     } catch (error) {
@@ -260,12 +339,49 @@ export function setupAuth(app: Express) {
         website
       });
 
-      // Log user in
+      // Log user in with cross-domain support
       req.login(user, (err) => {
         if (err) return next(err);
-        res.status(201).json({
-          user,
-          profile: employer
+        
+        // Get deployment environment info
+        const isProduction = process.env.NODE_ENV === 'production';
+        const isFlyIo = process.env.FLY_APP_NAME !== undefined;
+        const isReplit = process.env.REPL_ID !== undefined || process.env.REPL_SLUG !== undefined;
+        const isCrossDomainEnvironment = isFlyIo || isReplit;
+        
+        // Ensure session is saved before responding
+        req.session!.save((err) => {
+          if (err) {
+            console.error("Error saving session after login:", err);
+            return res.status(500).json({ 
+              message: "Account created, but session could not be saved",
+              user,
+              profile: employer
+            });
+          }
+          
+          // For cross-domain environments, add helpful info to response
+          if (isCrossDomainEnvironment) {
+            res.status(201).json({
+              user,
+              profile: employer,
+              environment: isCrossDomainEnvironment ? 'cross-domain' : 'same-origin',
+              notes: {
+                sessionInfo: "Your session has been created. In some deployment environments, you may need to log in again.",
+                cookieSettings: {
+                  secure: isProduction,
+                  sameSite: isProduction && isCrossDomainEnvironment ? "none" : "lax",
+                  domain: process.env.COOKIE_DOMAIN || undefined
+                }
+              }
+            });
+          } else {
+            // Standard response for development environments
+            res.status(201).json({
+              user,
+              profile: employer
+            });
+          }
         });
       });
     } catch (error) {
@@ -282,17 +398,60 @@ export function setupAuth(app: Express) {
       req.login(user, async (err) => {
         if (err) return next(err);
         
+        // Get deployment environment info
+        const isProduction = process.env.NODE_ENV === 'production';
+        const isFlyIo = process.env.FLY_APP_NAME !== undefined;
+        const isReplit = process.env.REPL_ID !== undefined || process.env.REPL_SLUG !== undefined;
+        const isCrossDomainEnvironment = isFlyIo || isReplit;
+        
+        // Fetch appropriate profile based on user type
         let profile;
         if (user.userType === "jobseeker") {
           profile = await storage.getJobSeekerByUserId(user.id);
         } else if (user.userType === "employer") {
           profile = await storage.getEmployerByUserId(user.id);
-        } else if (user.userType === "admin") {
-          // For admin users, we don't need to fetch additional profile data
-          profile = { id: user.id, role: "admin" };
+        } else if (user.userType === "admin" || user.userType === "super_admin") {
+          profile = await storage.getAdminByUserId(user.id);
+          // If admin profile not found, use minimal profile
+          if (!profile) {
+            profile = { id: user.id, role: user.userType };
+          }
         }
         
-        res.status(200).json({ user, profile });
+        // Ensure session is saved before responding
+        req.session!.save((err) => {
+          if (err) {
+            console.error("Error saving session after login:", err);
+            return res.status(500).json({ 
+              message: "Login successful, but session could not be saved",
+              user,
+              profile
+            });
+          }
+          
+          // For cross-domain environments, add helpful info to response
+          if (isCrossDomainEnvironment) {
+            res.status(200).json({
+              user,
+              profile,
+              environment: isCrossDomainEnvironment ? 'cross-domain' : 'same-origin',
+              notes: {
+                sessionInfo: "Your session has been created in a deployment environment.",
+                cookieSettings: {
+                  secure: isProduction,
+                  sameSite: isProduction && isCrossDomainEnvironment ? "none" : "lax",
+                  domain: process.env.COOKIE_DOMAIN || undefined
+                }
+              }
+            });
+          } else {
+            // Standard response for development environments
+            res.status(200).json({
+              user,
+              profile
+            });
+          }
+        });
       });
     })(req, res, next);
   });

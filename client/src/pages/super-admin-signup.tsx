@@ -38,10 +38,35 @@ export default function SuperAdminSignupPage() {
   const registerMutation = useMutation({
     mutationFn: async (data: FormValues) => {
       console.log("Submitting form data:", data); // Log the data being sent
+      
+      // Detect deployment environment more comprehensively
+      const isFlyIoEnvironment = window.location.hostname.includes('.fly.dev') ||
+                               window.location.hostname.endsWith('.fly.io');
+      const isReplitEnvironment = window.location.hostname.endsWith('.replit.app');
+      const isProduction = process.env.NODE_ENV === 'production' || 
+                         window.location.hostname !== 'localhost';
+      const isCrossDomainEnvironment = isFlyIoEnvironment || isReplitEnvironment;
+      
+      console.log("Environment detection:", {
+        isFlyIo: isFlyIoEnvironment,
+        isReplit: isReplitEnvironment,
+        isProduction,
+        isCrossDomain: isCrossDomainEnvironment,
+        hostname: window.location.hostname
+      });
+      
       try {
+        // Enhanced headers for cross-domain requests
+        const customHeaders: Record<string, string> = {
+          'X-Client-Environment': isCrossDomainEnvironment ? 'cross-domain' : 'same-origin',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        };
+        
         // Set credentials to include for cookie-based authentication
         const res = await apiRequest("POST", "/api/admin/signup", data, {
           credentials: 'include', // Important for cross-domain cookie handling in production
+          headers: customHeaders
         });
         console.log("Response status:", res.status); // Log the response status
         
@@ -60,10 +85,27 @@ export default function SuperAdminSignupPage() {
         const responseData = await res.json().catch(() => ({ message: "Failed to parse response" }));
         console.log("Success response:", responseData);
         
-        // If we're in production, we might need to handle cookies differently
-        // Check if we have user data without session cookies (common in cross-domain scenarios)
-        if (responseData.user && responseData.admin && !document.cookie.includes('connect.sid')) {
-          console.log("Successfully created admin but no session cookie found - this is normal for cross-domain production environments");
+        // Check for various deployment environment indicators
+        if (responseData.user && responseData.admin) {
+          // Check if we have user data without session cookies (common in cross-domain scenarios)
+          const hasCookie = document.cookie.includes('connect.sid');
+          
+          // Log session state for debugging
+          console.log("Session state after signup:", {
+            cookieExists: hasCookie,
+            crossDomain: isCrossDomainEnvironment,
+            responseEnvironment: responseData.environment,
+            responseHasNotes: !!responseData.notes
+          });
+          
+          // Add deployment environment info if not provided by server
+          if (isCrossDomainEnvironment && !responseData.environment) {
+            responseData.environment = 'cross-domain';
+            responseData.notes = responseData.notes || {
+              sessionInfo: "Client detected cross-domain environment",
+              clientHostname: window.location.hostname
+            };
+          }
         }
         
         return responseData;
@@ -74,17 +116,53 @@ export default function SuperAdminSignupPage() {
     },
     onSuccess: (data) => {
       console.log("Registration successful:", data);
-      toast({
-        title: "Registration successful",
-        description: "Your super admin account has been created.",
-        variant: "default",
-      });
-      if (data.user) {
-        queryClient.setQueryData(["/api/user"], data.user);
+      
+      // Check if there's environment info in the response
+      const isDeploymentEnvironment = data.environment === 'cross-domain';
+      const hasCrossDomainNotes = data.notes && data.notes.sessionInfo;
+      
+      if (isDeploymentEnvironment || hasCrossDomainNotes) {
+        // Display success with special handling for deployment environments
+        toast({
+          title: "Registration successful - Deployment environment",
+          description: "Your super admin account has been created. In deployment environments, you may need to log in manually with your new credentials.",
+          variant: "default",
+          duration: 8000, // Longer duration for this important message
+        });
+        
+        // Update query cache with user data if available
+        if (data.user) {
+          queryClient.setQueryData(["/api/user"], data.user);
+          
+          // Show session info if provided
+          if (hasCrossDomainNotes) {
+            console.log("Cross-domain session info:", data.notes);
+          }
+          
+          // Add a slight delay before redirecting to allow reading the message
+          setTimeout(() => {
+            navigate("/admin-login");
+          }, 4000);
+        } else {
+          console.warn("User data missing from success response in deployment environment");
+          navigate("/admin-login");
+        }
       } else {
-        console.warn("User data missing from success response");
+        // Standard success for development environment
+        toast({
+          title: "Registration successful",
+          description: "Your super admin account has been created.",
+          variant: "default",
+        });
+        
+        if (data.user) {
+          queryClient.setQueryData(["/api/user"], data.user);
+        } else {
+          console.warn("User data missing from success response");
+        }
+        
+        navigate("/admin");
       }
-      navigate("/admin");
     },
     onError: (error: Error) => {
       console.error("Mutation error:", error);
@@ -112,23 +190,40 @@ export default function SuperAdminSignupPage() {
   // Handle form submission
   const onSubmit = (data: FormValues) => {
     console.log("Form data validated:", data);
+    
     // Ensure role is set to super_admin
     const formData: FormValues = {
       ...data,
       role: "super_admin" as const // Force the role to be super_admin with correct type
     };
     
-    // Check if this might be a fly.io environment
+    // Use the same environment detection as in mutationFn for consistency
     const isFlyIoEnvironment = window.location.hostname.includes('.fly.dev') ||
-                             window.location.hostname.endsWith('.fly.io') ||
-                             window.location.hostname.endsWith('.replit.app');
+                             window.location.hostname.endsWith('.fly.io');
+    const isReplitEnvironment = window.location.hostname.endsWith('.replit.app');
+    const isProduction = process.env.NODE_ENV === 'production' || 
+                       window.location.hostname !== 'localhost';
+    const isCrossDomainEnvironment = isFlyIoEnvironment || isReplitEnvironment;
     
-    if (isFlyIoEnvironment) {
-      console.log("Detected fly.io/replit environment - adding special handling");
-      // For fly.io environments, we'll show a warning that they may need to log in again after signup
+    // Add specific warnings for different deployment environments
+    if (isCrossDomainEnvironment) {
+      let environmentName = "deployed";
+      let additionalInfo = "";
+      
+      if (isFlyIoEnvironment) {
+        environmentName = "Fly.io";
+        additionalInfo = "Cross-domain cookies require special handling in Fly.io environments.";
+      } else if (isReplitEnvironment) {
+        environmentName = "Replit";
+        additionalInfo = "Replit deployments use special session handling.";
+      }
+      
+      console.log(`Detected ${environmentName} environment - adding special handling`);
+      
+      // Show detailed warning based on environment type
       toast({
-        title: "Note for deployed environments",
-        description: "After successful signup, you may need to log in again with your new credentials.",
+        title: `${environmentName} Environment Detected`,
+        description: `After successful signup, you may need to log in again with your new credentials. ${additionalInfo}`,
         variant: "default",
         duration: 10000 // Show for 10 seconds
       });
