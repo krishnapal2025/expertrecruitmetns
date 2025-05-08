@@ -36,19 +36,9 @@ export default function JobSeekerRegisterPage() {
   // Redirect if already logged in
   useEffect(() => {
     if (currentUser) {
-      // If already logged in as employer, show a message and stay on the page
-      if (currentUser.user.userType === 'employer') {
-        toast({
-          title: "Already registered as an employer",
-          description: "You are already registered as an employer. To access job seeker features, please register a separate job seeker account.",
-          variant: "default",
-        });
-      } else {
-        // If logged in as job seeker or admin, redirect to home
-        navigate("/");
-      }
+      navigate("/");
     }
-  }, [currentUser, navigate, toast]);
+  }, [currentUser, navigate]);
   
   // Job seeker registration form
   const jobSeekerForm = useForm<JobSeekerRegister>({

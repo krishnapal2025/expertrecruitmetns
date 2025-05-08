@@ -88,9 +88,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve the uploads directory for uploaded files
   app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
   
-  // Image upload endpoint for blog posts (admin or super_admin only)
+  // Image upload endpoint for blog posts (admin only)
   app.post("/api/upload/blog-image", (req, res) => {
-    if (!req.isAuthenticated() || (req.user.userType !== "admin" && req.user.userType !== "super_admin")) {
+    if (!req.isAuthenticated() || req.user.userType !== "admin") {
       return res.status(403).json({ message: "Unauthorized: Admin access required" });
     }
     
@@ -458,30 +458,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Find employer by company name
-  app.get("/api/employers/by-name/:companyName", async (req, res) => {
-    try {
-      const { companyName } = req.params;
-      const employer = await storage.getEmployerByCompanyName(companyName);
-
-      if (!employer) {
-        return res.status(404).json({ message: "Employer not found" });
-      }
-
-      // Return public profile only
-      const publicProfile = {
-        id: employer.id,
-        companyName: employer.companyName,
-        industry: employer.industry
-      };
-
-      res.json(publicProfile);
-    } catch (error) {
-      console.error("Error finding employer by name:", error);
-      res.status(500).json({ message: "Failed to find employer" });
-    }
-  });
-
   // Get all employers (for directory or search)
   app.get("/api/employers", async (req, res) => {
     try {
@@ -734,90 +710,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create a new job (requires admin authentication)
+  // Create a new job (requires employer or admin authentication)
   app.post("/api/jobs", async (req, res) => {
     try {
-      console.log("======== JOB CREATION START ========");
-      console.log("POST /api/jobs - Request payload:", JSON.stringify(req.body, null, 2));
-      console.log("POST /api/jobs - Authentication status:", req.isAuthenticated());
-      console.log("POST /api/jobs - User type:", req.user?.userType);
-      
-      // Enhanced authentication check
-      if (!req.isAuthenticated() || !req.user) {
-        console.log("POST /api/jobs - Authentication failed - No session or user");
-        return res.status(401).json({ message: "You must be logged in to post a job. Please refresh the page and try again." });
-      }
-      
-      // Verify that the user is an admin or super_admin
-      if (req.user.userType !== "admin" && req.user.userType !== "super_admin") {
-        console.log("POST /api/jobs - User type not authorized:", req.user.userType);
-        return res.status(403).json({ message: "Only admins can post jobs" });
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to post a job" });
       }
 
-      // Check which fields are missing or empty in the request
-      const requiredFields = [
-        'title', 'company', 'description', 'requirements', 'benefits', 
-        'category', 'location', 'jobType', 'experience', 
-        'minSalary', 'maxSalary', 'contactEmail', 'applicationDeadline'
-      ];
-      
-      const missingFields = requiredFields.filter(field => {
-        // Special handling for applicationDeadline - it's optional now
-        if (field === 'applicationDeadline') return false;
-        
-        const value = req.body[field];
-        console.log(`Checking field ${field}:`, value, typeof value);
-        return value === undefined || value === null || value === '';
-      });
-      
-      if (missingFields.length > 0) {
-        console.log("POST /api/jobs - Missing required fields:", missingFields);
-        return res.status(400).json({ 
-          message: `Missing required fields: ${missingFields.join(', ')}`,
-          code: "MISSING_FIELDS" 
-        });
+      const user = req.user;
+      if (user.userType !== "employer" && user.userType !== "admin") {
+        return res.status(403).json({ message: "Only employers or admins can post jobs" });
       }
 
       // Validate job data - the schema will handle date conversion
-      console.log("Parsing job data with schema...");
-      try {
-        const validatedData = insertJobSchema.parse(req.body);
-        console.log("Validation successful!");
-      } catch (validationError) {
-        console.error("Schema validation failed:", validationError);
-        throw validationError;
+      const validatedData = insertJobSchema.parse(req.body);
+
+      let employerId;
+
+      // If user is an employer, use their employer ID
+      if (user.userType === "employer") {
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (!employer) {
+          return res.status(404).json({ message: "Employer profile not found" });
+        }
+        employerId = employer.id;
+      } else {
+        // For admin users, use the selected employer ID from the request
+        const selectedEmployerId = req.body.selectedEmployerId;
+
+        if (!selectedEmployerId) {
+          return res.status(400).json({ message: "Admin must select an employer when posting a job" });
+        }
+
+        // Verify the employer exists
+        const employer = await storage.getEmployer(selectedEmployerId);
+        if (!employer) {
+          return res.status(404).json({ message: "Selected employer not found" });
+        }
+
+        employerId = selectedEmployerId;
       }
-      
-      // Use schema validation for data cleaning and transformation
-      console.log("Parsing and transforming job data with schema...");
-      let validatedJobData;
-      try {
-        // Parse through our schema which handles all transformations and validations
-        validatedJobData = insertJobSchema.parse(req.body);
-        console.log("Validation and transformation successful!");
-      } catch (validationError) {
-        console.error("Schema parsing failed:", validationError);
-        throw validationError;
-      }
-      
-      // Add additional properties to create a complete job record
-      const cleanedJobData = {
-        ...validatedJobData,
-        // Set default values for any potentially missing fields
-        employerId: validatedJobData.employerId || null,
-        // Mark as active by default
-        isActive: true,
-        // Set posted date to now
-        postedDate: new Date(),
-        // Initialize application count
-        applicationCount: 0
-      };
-      
-      console.log("Final cleaned job data prepared for database:", JSON.stringify(cleanedJobData, null, 2));
-      
-      // Create the job with cleaned data
-      const job = await storage.createJob(cleanedJobData);
-      console.log("Job created successfully:", JSON.stringify(job));
+
+      // Create the job
+      const job = await storage.createJob({
+        ...validatedData,
+        employerId: employerId
+      });
 
       // Update real-time store and create notifications for job seekers
       realtimeStore.lastJobId = Math.max(realtimeStore.lastJobId, job.id);
@@ -839,60 +777,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.status(201).json(job);
     } catch (error) {
-      console.error("JOB CREATION ERROR DETAILS:", error);
-      
-      // Handle Zod validation errors
       if (error instanceof ZodError) {
         const validationError = fromZodError(error);
-        console.error("Validation error in job data:", validationError.message);
-        return res.status(400).json({ 
-          message: validationError.message,
-          code: "VALIDATION_ERROR"
-        });
+        return res.status(400).json({ message: validationError.message });
       }
-      
-      // Handle database errors
-      if (error instanceof Error) {
-        console.error("Database error in job creation:", error.message);
-        console.error("Error stack:", error.stack);
-        
-        // Check for common error patterns in the message
-        const errorMessage = error.message.toLowerCase();
-        
-        if (errorMessage.includes("foreign key constraint") || errorMessage.includes("violates foreign key constraint")) {
-          return res.status(400).json({ 
-            message: "Invalid reference to another record. Please make sure all referenced IDs exist.",
-            code: "FOREIGN_KEY_ERROR"
-          });
-        }
-        
-        if (errorMessage.includes("not null constraint") || errorMessage.includes("violates not-null constraint")) {
-          // Extract column name from error message if possible
-          const columnMatch = errorMessage.match(/column [\"']?([a-z_]+)[\"']?/i);
-          const columnName = columnMatch ? columnMatch[1] : "unknown";
-          console.error(`NULL constraint violation detected on column: ${columnName}`);
-          
-          return res.status(400).json({ 
-            message: `Missing required field: ${columnName}. Please check that all required fields are provided.`,
-            code: "NULL_CONSTRAINT_ERROR",
-            field: columnName
-          });
-        }
-        
-        if (errorMessage.includes("unique constraint") || errorMessage.includes("violates unique constraint")) {
-          return res.status(400).json({ 
-            message: "A record with this information already exists.",
-            code: "UNIQUE_CONSTRAINT_ERROR"
-          });
-        }
-      }
-      
-      // Generic error response
-      console.error("Unhandled error creating job:", error);
-      res.status(500).json({ 
-        message: "Failed to create job. Please try again or contact support.",
-        code: "INTERNAL_SERVER_ERROR"
-      });
+
+      console.error("Error creating job:", error);
+      res.status(500).json({ message: "Failed to create job" });
     }
   });
 
@@ -946,22 +837,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update real-time store for application tracking
       realtimeStore.lastApplicationId = Math.max(realtimeStore.lastApplicationId, application.id);
 
-      // Get the employer who posted this job if employerId exists
-      if (job.employerId) {
-        const employer = await storage.getEmployer(job.employerId);
-        if (employer) {
-          // Get the employer user
-          const employerUser = await storage.getUserByEmployerId(employer.id);
-          if (employerUser) {
-            // Create a notification for the employer
-            realtimeStore.notifications.push({
-              id: realtimeStore.notificationId++,
-              userId: employerUser.id,
-              message: `${jobSeeker.firstName} ${jobSeeker.lastName} applied for your job: ${job.title}`,
-              read: false,
-              createdAt: new Date()
-            });
-          }
+      // Get the employer who posted this job
+      const employer = await storage.getEmployer(job.employerId);
+      if (employer) {
+        // Get the employer user
+        const employerUser = await storage.getUserByEmployerId(employer.id);
+        if (employerUser) {
+          // Create a notification for the employer
+          realtimeStore.notifications.push({
+            id: realtimeStore.notificationId++,
+            userId: employerUser.id,
+            message: `${jobSeeker.firstName} ${jobSeeker.lastName} applied for your job: ${job.title}`,
+            read: false,
+            createdAt: new Date()
+          });
         }
       }
 
@@ -1026,7 +915,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
           // Get all jobs for this employer
           const allJobs = await storage.getJobs();
-          jobs = allJobs.filter(job => job.employerId && job.employerId === employer.id);
+          jobs = allJobs.filter(job => job.employerId === employer.id);
         } else {
           // Admin gets access to all jobs
           jobs = await storage.getJobs();
@@ -1103,7 +992,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (employer) {
           // Get the job to check if it belongs to this employer
           const job = await storage.getJob(application.jobId);
-          if (job && (!job.employerId || job.employerId === employer.id)) {
+          if (job && job.employerId === employer.id) {
             authorized = true;
           }
         }
@@ -1163,8 +1052,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(404).json({ message: "Employer profile not found" });
         }
 
-        // Only check employerId if it exists on the job
-        if (job.employerId && job.employerId !== employer.id) {
+        if (job.employerId !== employer.id) {
           return res.status(403).json({ message: "You can only view applications for your own jobs" });
         }
       }
@@ -1335,7 +1223,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const employer = await storage.getEmployerByUserId(user.id);
         const job = await storage.getJob(application.jobId);
 
-        if (!employer || !job || (job.employerId && job.employerId !== employer.id)) {
+        if (!employer || !job || job.employerId !== employer.id) {
           return res.status(403).json({ message: "You can only delete applications for your own jobs" });
         }
       } else if (user.userType === "admin") {
@@ -1406,7 +1294,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
 
         const job = await storage.getJob(application.jobId);
-        if (!job || (job.employerId && job.employerId !== employer.id)) {
+        if (!job || job.employerId !== employer.id) {
           return res.status(403).json({ message: "You can only update status for applications to your own jobs" });
         }
       }
@@ -1499,20 +1387,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get jobs (now admin only, maintains backward compatibility for client)
+  // Get jobs posted by current employer
   app.get("/api/employer/jobs", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "You must be logged in to view jobs" });
+        return res.status(401).json({ message: "You must be logged in to view your posted jobs" });
       }
 
       const user = req.user;
-      if (user.userType !== "admin" && user.userType !== "super_admin") {
-        return res.status(403).json({ message: "Only admins can access this endpoint" });
+      if (user.userType !== "employer" && user.userType !== "admin") {
+        return res.status(403).json({ message: "Only employers or admins can access this endpoint" });
       }
 
-      // Admin users get all jobs from all employers
-      const jobs = await storage.getJobs();
+      let jobs = [];
+
+      if (user.userType === "employer") {
+        // Get employer profile
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (!employer) {
+          return res.status(404).json({ message: "Employer profile not found" });
+        }
+
+        // Get jobs posted by this employer
+        jobs = await storage.getJobsByEmployerId(employer.id);
+      } else if (user.userType === "admin") {
+        // Admin users get all jobs from all employers
+        jobs = await storage.getJobs();
+      }
 
       res.json(jobs);
     } catch (error) {
@@ -1521,7 +1422,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Edit a job (requires admin authentication only)
+  // Edit a job (requires employer or admin authentication)
   app.put("/api/jobs/:id", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
@@ -1529,8 +1430,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "admin" && user.userType !== "super_admin") {
-        return res.status(403).json({ message: "Only admins can edit jobs" });
+      if (user.userType !== "employer" && user.userType !== "admin") {
+        return res.status(403).json({ message: "Only employers or admins can edit jobs" });
       }
 
       const jobId = parseInt(req.params.id);
@@ -1544,22 +1445,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Job not found" });
       }
 
+      // For employers, verify ownership of the job
+      if (user.userType === "employer") {
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (!employer) {
+          return res.status(404).json({ message: "Employer profile not found" });
+        }
+
+        // Check if job belongs to this employer
+        if (job.employerId !== employer.id) {
+          return res.status(403).json({ message: "You can only edit your own job listings" });
+        }
+      }
+      // Admin users can edit any job
+
       // Validate job data
       const validatedData = insertJobSchema.parse(req.body);
 
-      // Preserve the existing employer ID unless specifically changed in the request
       let employerId = job.employerId;
-      
-      // If admin is explicitly changing the employer
-      if (req.body.employerId) {
-        const newEmployerId = Number(req.body.employerId);
-        if (!isNaN(newEmployerId)) {
-          // Verify the new employer exists
-          const employer = await storage.getEmployer(newEmployerId);
-          if (!employer) {
-            return res.status(404).json({ message: "Selected employer not found" });
-          }
-          employerId = newEmployerId;
+
+      // If user is an employer, use their employer ID
+      if (user.userType === "employer") {
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (employer) {
+          employerId = employer.id;
         }
       }
 
@@ -1583,7 +1492,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Delete a job (requires admin authentication only)
+  // Delete a job (requires employer or admin authentication)
   app.delete("/api/jobs/:id", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
@@ -1591,8 +1500,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "admin" && user.userType !== "super_admin") {
-        return res.status(403).json({ message: "Only admins can delete jobs" });
+      if (user.userType !== "employer" && user.userType !== "admin") {
+        return res.status(403).json({ message: "Only employers or admins can delete jobs" });
       }
 
       const jobId = parseInt(req.params.id);
@@ -1606,6 +1515,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Job not found" });
       }
 
+      // For employers, verify ownership of the job
+      if (user.userType === "employer") {
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (!employer) {
+          return res.status(404).json({ message: "Employer profile not found" });
+        }
+
+        // Check if job belongs to this employer
+        if (job.employerId !== employer.id) {
+          return res.status(403).json({ message: "You can only delete your own job listings" });
+        }
+      }
       // Admin users can delete any job
 
       // First, get all applications for this job
@@ -1664,7 +1585,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get real-time application updates (admin only)
+  // Get real-time application updates for employers
   app.get("/api/realtime/applications", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
@@ -1676,9 +1597,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = req.user;
 
-      if (user.userType === "admin" || user.userType === "super_admin") {
-        // Get all jobs
-        const employerJobs = await storage.getJobs();
+      if (user.userType === "employer" || user.userType === "admin") {
+        // Get employer profile for employers
+        let employerJobs = [];
+
+        if (user.userType === "employer") {
+          const employer = await storage.getEmployerByUserId(user.id);
+          if (!employer) {
+            return res.status(404).json({ message: "Employer profile not found" });
+          }
+
+          // Get all jobs for this employer
+          const jobs = await storage.getJobs();
+          employerJobs = jobs.filter(job => job.employerId === employer.id);
+        } else {
+          // For admin users, get all jobs
+          employerJobs = await storage.getJobs();
+        }
 
         // Get new applications for all jobs
         let newApplications: any[] = [];
@@ -1702,7 +1637,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastId: realtimeStore.lastApplicationId
         });
       } else {
-        res.status(403).json({ message: "Only admin users can access this endpoint" });
+        res.status(403).json({ message: "Only employers or admins can access this endpoint" });
       }
     } catch (error) {
       console.error("Error fetching real-time application updates:", error);
@@ -1815,49 +1750,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoints
-  
-  // Get admin user data endpoint - specifically for admin dashboard
-  app.get("/api/admin/user", async (req, res) => {
-    try {
-      // Check if the user is authenticated
-      if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
-      const user = req.user;
-      
-      // Check if user is an admin or super_admin
-      if (user.userType !== "admin" && user.userType !== "super_admin") {
-        return res.status(403).json({ 
-          message: "Access denied. This endpoint is for administrators only." 
-        });
-      }
-      
-      // Get admin profile
-      const admin = await storage.getAdminByUserId(user.id);
-      
-      if (!admin) {
-        return res.status(404).json({ message: "Admin profile not found" });
-      }
-      
-      // Return admin data without sensitive information
-      res.json({
-        id: user.id,
-        email: user.email,
-        userType: user.userType,
-        profile: {
-          id: admin.id,
-          firstName: admin.firstName,
-          lastName: admin.lastName,
-          role: admin.role,
-          lastLogin: admin.lastLogin
-        }
-      });
-    } catch (error) {
-      console.error("Error fetching admin user data:", error);
-      res.status(500).json({ message: "Failed to fetch admin user data" });
-    }
-  });
 
   // Verify invitation code
   app.post("/api/admin/verify-invitation", async (req, res) => {
@@ -1931,12 +1823,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Raw request body:", { ...req.body, password: '[REDACTED]' });
       
-      // Determine the userType based on the role field
-      const userType = req.body.role === "super_admin" ? "super_admin" : "admin";
-      
+      // Force set userType to "admin" regardless of what was sent
       const requestWithUserType = {
         ...req.body,
-        userType: userType // Set based on role
+        userType: "admin" // Always override this field
       };
       
       console.log("Modified request body:", { ...requestWithUserType, password: '[REDACTED]' });
@@ -1965,7 +1855,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.createUser({
         email: validatedData.email,
         password: hashedPassword,
-        userType: userType // Use the userType we determined earlier (admin or super_admin)
+        userType: "admin" // Always ensure this is "admin"
       });
       console.log("User created successfully with ID:", user.id);
 
@@ -2066,7 +1956,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get admin profile endpoint has been updated
+  // Get the current admin's profile
+  app.get("/api/admin/user", async (req, res) => {
+    try {
+      // Check if user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = req.user;
+
+      if (user.userType !== "admin") {
+        return res.status(403).json({ message: "Only administrators can access this resource" });
+      }
+
+      // Get admin profile
+      const admin = await storage.getAdminByUserId(user.id);
+
+      if (!admin) {
+        return res.status(404).json({ message: "Admin profile not found" });
+      }
+
+      // Update last login time
+      await storage.updateAdminLastLogin(admin.id);
+
+      res.json(admin);
+    } catch (error) {
+      console.error("Error fetching admin profile:", error);
+      res.status(500).json({ message: "Failed to fetch admin profile" });
+    }
+  });
 
   // Get all invitation codes (admin only)
   app.get("/api/admin/invitation-codes", async (req, res) => {
@@ -2146,7 +2065,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUserByEmail(email);
 
       // Don't reveal if user exists or not for security reasons
-      if (!user || (user.userType !== "admin" && user.userType !== "super_admin")) {
+      if (!user || user.userType !== "admin") {
         console.log(`User not found or not an admin: ${email}`);
         return res.status(200).json({
           message: "If an account with that email exists, a password reset link has been sent"
@@ -2403,7 +2322,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user;
 
       // Check userType directly
-      if (user.userType !== "admin" && user.userType !== "super_admin") {
+      if (user.userType !== "admin") {
         return res.status(403).json({ message: "Only administrators can access vacancies" });
       }
 
@@ -2426,7 +2345,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user;
 
       // Check userType directly
-      if (user.userType !== "admin" && user.userType !== "super_admin") {
+      if (user.userType !== "admin") {
         return res.status(403).json({ message: "Only administrators can delete vacancies" });
       }
 
@@ -2470,7 +2389,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check userType directly
-      if (user.userType !== "admin" && user.userType !== "super_admin") {
+      if (user.userType !== "admin") {
         return res.status(403).json({ message: "Only administrators can update vacancy status" });
       }
 
@@ -2517,7 +2436,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check userType directly
-      if (user.userType !== "admin" && user.userType !== "super_admin") {
+      if (user.userType !== "admin") {
         return res.status(403).json({
           success: false,
           message: "Only administrators can assign vacancies"
@@ -2591,7 +2510,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Received request for staffing inquiries");
 
       const user = req.user as Express.User;
-      if (!user || (user.userType !== "admin" && user.userType !== "super_admin")) {
+      if (!user || user.userType !== "admin") {
         console.log("User not authorized:", req.user ? req.user.userType : 'not authenticated');
         return res.status(403).json({ message: "Unauthorized" });
       }
@@ -2617,7 +2536,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       const user = req.user as Express.User;
 
-      if (!user || (user.userType !== "admin" && user.userType !== "super_admin")) {
+      if (!user || user.userType !== "admin") {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
@@ -2720,7 +2639,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { status } = req.body;
       const user = req.user as Express.User;
 
-      if (!user || (user.userType !== "admin" && user.userType !== "super_admin")) {
+      if (!user || user.userType !== "admin") {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
@@ -2750,7 +2669,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user as Express.User;
 
       // Authorization check
-      if (!user || (user.userType !== "admin" && user.userType !== "super_admin")) {
+      if (!user || user.userType !== "admin") {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
@@ -2862,8 +2781,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         limit: limit ? parseInt(String(limit)) : undefined
       });
 
-      // If requesting only published posts and not logged in as admin or super_admin, filter them
-      if (!req.isAuthenticated() || (req.user.userType !== "admin" && req.user.userType !== "super_admin")) {
+      // If requesting only published posts and not logged in as admin, filter them
+      if (!req.isAuthenticated() || req.user.userType !== "admin") {
         const publicPosts = posts.filter(post => post.published);
         return res.json(publicPosts);
       }
@@ -2887,9 +2806,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Blog post not found" });
       }
 
-      // If post is not published and user is not admin or super_admin, don't allow access
-      if (!post.published && (!req.isAuthenticated() || (req.user.userType !== "admin" && req.user.userType !== "super_admin"))) {
-        console.log(`Blog post with slug '${slug}' is not published and user is not admin or super_admin`);
+      // If post is not published and user is not admin, don't allow access
+      if (!post.published && (!req.isAuthenticated() || req.user.userType !== "admin")) {
+        console.log(`Blog post with slug '${slug}' is not published and user is not admin`);
         return res.status(404).json({ message: "Blog post not found" });
       }
 
@@ -2913,9 +2832,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Blog post not found" });
       }
 
-      // If post is not published and user is not admin or super_admin, don't allow access
-      if (!post.published && (!req.isAuthenticated() || (req.user.userType !== "admin" && req.user.userType !== "super_admin"))) {
-        console.log(`Blog post with ID ${id} is not published and user is not admin or super_admin`);
+      // If post is not published and user is not admin, don't allow access
+      if (!post.published && (!req.isAuthenticated() || req.user.userType !== "admin")) {
+        console.log(`Blog post with ID ${id} is not published and user is not admin`);
         return res.status(404).json({ message: "Blog post not found" });
       }
 
@@ -2929,38 +2848,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Create a new blog post (admin only)
   app.post("/api/blog-posts", async (req, res) => {
-    try {
-      // Check authentication
-      if (!req.isAuthenticated()) {
-        console.log("Unauthorized attempt to create blog post: Not authenticated");
-        return res.status(403).json({ message: "Unauthorized: Please log in" });
-      }
-      
-      if (req.user.userType !== "admin" && req.user.userType !== "super_admin") {
-        console.log(`Unauthorized attempt to create blog post by user type: ${req.user.userType}`);
-        return res.status(403).json({ message: "Unauthorized: Admin access required" });
-      }
+    if (!req.isAuthenticated() || req.user.userType !== "admin") {
+      return res.status(403).json({ message: "Unauthorized: Admin access required" });
+    }
 
-      console.log("Processing blog post submission from:", req.user.email);
+    try {
       console.log("Received blog post data:", req.body);
 
       // Process incoming data
       let processedData = { ...req.body };
-      
-      // Validate required fields
-      if (!processedData.title || !processedData.content) {
-        console.log("Missing required fields:", {
-          hasTitle: !!processedData.title,
-          hasContent: !!processedData.content
-        });
-        return res.status(400).json({ 
-          message: "Missing required fields", 
-          details: {
-            title: !processedData.title ? "Title is required" : null,
-            content: !processedData.content ? "Content is required" : null
-          }
-        });
-      }
 
       // Generate slug if not provided
       if (!processedData.slug) {
@@ -2970,14 +2866,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .replace(/\s+/g, '-') // Replace spaces with hyphens
           .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
           .trim();
-        
-        console.log("Generated slug:", processedData.slug);
       }
 
       // Set default values for optional fields
       processedData.readTime = processedData.readTime || "5 min read";
       processedData.published = processedData.published === false ? false : true;
-      processedData.publishDate = new Date();
 
       // If excerpt is not provided, create one from content
       if (!processedData.excerpt && processedData.content) {
@@ -3022,9 +2915,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update an existing blog post (admin or super_admin only)
+  // Update an existing blog post (admin only)
   app.patch("/api/blog-posts/:id", async (req, res) => {
-    if (!req.isAuthenticated() || (req.user.userType !== "admin" && req.user.userType !== "super_admin")) {
+    if (!req.isAuthenticated() || req.user.userType !== "admin") {
       return res.status(403).json({ message: "Unauthorized: Admin access required" });
     }
 
@@ -3055,9 +2948,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Delete a blog post (admin or super_admin only)
+  // Delete a blog post (admin only)
   app.delete("/api/blog-posts/:id", async (req, res) => {
-    if (!req.isAuthenticated() || (req.user.userType !== "admin" && req.user.userType !== "super_admin")) {
+    if (!req.isAuthenticated() || req.user.userType !== "admin") {
       return res.status(403).json({ message: "Unauthorized: Admin access required" });
     }
 

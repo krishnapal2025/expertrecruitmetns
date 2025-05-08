@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -32,21 +32,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Briefcase, Building, Clock, DollarSign, MapPin, Save, Tag, Check, CalendarIcon } from "lucide-react";
+import { Briefcase, Building, Clock, DollarSign, MapPin, Save } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InsertJob } from "@shared/schema";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { format } from "date-fns";
 
 // Form schema for job posting
 const jobPostSchema = z.object({
@@ -62,17 +52,15 @@ const jobPostSchema = z.object({
   description: z.string().min(30, "Description must be at least 30 characters"),
   requirements: z.string().min(20, "Requirements must be at least 20 characters"),
   benefits: z.string().min(10, "Benefits must be at least 10 characters"),
-  applicationDeadline: z.union([
-    z.date({
-      required_error: "Application deadline is required",
-      invalid_type_error: "Application deadline must be a valid date"
-    }),
-    z.string()
-      .min(1, "Application deadline is required")
-      .transform(val => new Date(val))
-  ]),
+  applicationDeadline: z.string().min(1, "Application deadline is required").refine((val) => {
+    try {
+      const date = new Date(val);
+      return !isNaN(date.getTime());
+    } catch {
+      return false;
+    }
+  }, "Please enter a valid date"),
   contactEmail: z.string().email("Must be a valid email address"),
-  employerId: z.number().optional(),
 });
 
 type JobPostFormValues = z.infer<typeof jobPostSchema>;
@@ -88,89 +76,6 @@ const categories = [
   "Sales",
   "Hospitality",
 ];
-
-// Common job titles by category
-const commonJobTitles = {
-  "Technology": [
-    "Software Engineer",
-    "Full Stack Developer",
-    "Frontend Developer",
-    "Backend Developer",
-    "DevOps Engineer",
-    "Data Scientist",
-    "Machine Learning Engineer",
-    "Cloud Architect",
-    "UI/UX Designer",
-    "QA Engineer"
-  ],
-  "Finance": [
-    "Financial Analyst",
-    "Accountant",
-    "Investment Banker",
-    "Financial Advisor",
-    "Risk Manager",
-    "Compliance Officer",
-    "Credit Analyst",
-    "Tax Consultant",
-    "Financial Controller"
-  ],
-  "Healthcare": [
-    "Registered Nurse",
-    "Physician Assistant",
-    "Medical Doctor",
-    "Healthcare Administrator",
-    "Pharmacist",
-    "Physical Therapist",
-    "Medical Technologist",
-    "Dentist",
-    "Radiologist"
-  ],
-  "Education": [
-    "Teacher",
-    "Professor",
-    "Academic Advisor",
-    "School Principal",
-    "Curriculum Developer",
-    "Special Education Teacher",
-    "Educational Consultant"
-  ],
-  "Marketing": [
-    "Marketing Manager",
-    "Social Media Specialist",
-    "Digital Marketing Specialist",
-    "SEO Expert",
-    "Content Writer",
-    "Brand Manager",
-    "Public Relations Specialist"
-  ],
-  "Engineering": [
-    "Civil Engineer",
-    "Mechanical Engineer",
-    "Electrical Engineer",
-    "Chemical Engineer",
-    "Aerospace Engineer",
-    "Environmental Engineer",
-    "Structural Engineer"
-  ],
-  "Sales": [
-    "Sales Representative",
-    "Account Executive",
-    "Sales Manager",
-    "Business Development Manager",
-    "Customer Success Manager",
-    "Territory Manager",
-    "Inside Sales Representative"
-  ],
-  "Hospitality": [
-    "Hotel Manager",
-    "Event Coordinator",
-    "Chef",
-    "Restaurant Manager",
-    "Concierge",
-    "Catering Manager",
-    "Tourism Guide"
-  ]
-};
 
 // Specializations
 const specializations = [
@@ -271,266 +176,13 @@ const experienceLevels = [
   "Expert (10+ years)",
 ];
 
-// Common skills by category
-const commonSkills = {
-  "Technology": [
-    "JavaScript",
-    "Python",
-    "React",
-    "Node.js",
-    "Java",
-    "AWS",
-    "Docker",
-    "Kubernetes",
-    "SQL",
-    "NoSQL",
-    "TypeScript",
-    "Go",
-    "C#",
-    "PHP",
-    "Ruby",
-    "Swift",
-    "Linux",
-    "Git",
-    "CI/CD",
-    "HTML/CSS"
-  ],
-  "Finance": [
-    "Financial Analysis",
-    "QuickBooks",
-    "Excel",
-    "SAP",
-    "Oracle Financials",
-    "Bloomberg Terminal",
-    "Financial Modeling",
-    "Forecasting",
-    "Budgeting",
-    "Risk Assessment",
-    "CFA",
-    "GAAP",
-    "IFRS",
-    "Tax Preparation",
-    "Financial Reporting"
-  ],
-  "Healthcare": [
-    "Electronic Medical Records (EMR)",
-    "Patient Care",
-    "Medical Billing",
-    "CPR",
-    "HIPAA Compliance",
-    "Medical Terminology",
-    "Epic Systems",
-    "Cerner",
-    "Phlebotomy",
-    "ICD-10 Coding",
-    "Vital Signs",
-    "Patient Assessment",
-    "Clinical Documentation"
-  ],
-  "Marketing": [
-    "Google Analytics",
-    "Social Media Management",
-    "SEO",
-    "Content Marketing",
-    "Adobe Creative Suite",
-    "Email Marketing",
-    "Google Ads",
-    "Facebook Ads",
-    "CRM Software",
-    "Copywriting",
-    "Market Research",
-    "Brand Development",
-    "Graphic Design",
-    "Video Production",
-    "WordPress"
-  ],
-  "Engineering": [
-    "AutoCAD",
-    "SolidWorks",
-    "MATLAB",
-    "PLC Programming",
-    "Structural Analysis",
-    "HVAC Design",
-    "Electrical Design",
-    "Civil 3D",
-    "Finite Element Analysis",
-    "GIS",
-    "Project Management",
-    "Blueprint Reading",
-    "Quality Control",
-    "Prototyping"
-  ],
-  "Sales": [
-    "CRM Software",
-    "Negotiation",
-    "Cold Calling",
-    "Account Management",
-    "Salesforce",
-    "HubSpot",
-    "Product Demonstrations",
-    "Lead Generation",
-    "Sales Forecasting",
-    "Client Relationship Management",
-    "B2B Sales",
-    "B2C Sales",
-    "Solution Selling",
-    "Contract Negotiation"
-  ],
-  "Education": [
-    "Curriculum Development",
-    "Classroom Management",
-    "Student Assessment",
-    "LMS Platforms",
-    "Google Classroom",
-    "Blackboard",
-    "Canvas",
-    "Differentiated Instruction",
-    "IEP Development",
-    "Educational Technology",
-    "Lesson Planning",
-    "Student Counseling"
-  ],
-  "Hospitality": [
-    "Hotel Management Software",
-    "POS Systems",
-    "Customer Service",
-    "Event Planning",
-    "Food Safety",
-    "Inventory Management",
-    "Reservation Systems",
-    "Guest Relations",
-    "Menu Planning",
-    "Catering Management",
-    "Wine Knowledge",
-    "Resort Management"
-  ]
-};
-
-// Function to get currency symbol based on location
-const getCurrencySymbol = (location: string): string => {
-  if (!location) return '$'; // Default USD
-  
-  if (location.includes("India")) return '₹'; // Indian Rupee
-  if (location.includes("UAE")) return 'د.إ'; // UAE Dirham
-  if (location.includes("UK")) return '£'; // British Pound
-  if (location.includes("Europe") || location.includes("France") || location.includes("Germany")) return '€'; // Euro
-  if (location.includes("Canada")) return 'C$'; // Canadian Dollar
-  if (location.includes("Australia")) return 'A$'; // Australian Dollar
-  
-  return '$'; // Default USD
-};
-
-// Function to get location-specific salary ranges (monthly figures)
-const getSalaryRangesByLocation = (location: string) => {
-  // Default ranges in USD (annual salaries)
-  if (!location || location.includes("USA") || location.includes("United States")) {
-    return [
-      { label: "Entry Level", min: 2500, max: 4200, period: "monthly" },
-      { label: "Junior", min: 4200, max: 6700, period: "monthly" },
-      { label: "Mid-Level", min: 6700, max: 10000, period: "monthly" },
-      { label: "Senior", min: 10000, max: 15000, period: "monthly" },
-      { label: "Expert/Leadership", min: 15000, max: 20800, period: "monthly" },
-      { label: "Executive", min: 20800, max: 41600, period: "monthly" },
-    ];
-  }
-  
-  // Indian Rupee (INR) - converted to appropriate scales
-  else if (location.includes("India")) {
-    return [
-      { label: "Entry Level", min: 25000, max: 50000, period: "monthly" },
-      { label: "Junior", min: 50000, max: 100000, period: "monthly" },
-      { label: "Mid-Level", min: 100000, max: 200000, period: "monthly" },
-      { label: "Senior", min: 200000, max: 400000, period: "monthly" },
-      { label: "Expert/Leadership", min: 400000, max: 670000, period: "monthly" },
-      { label: "Executive", min: 670000, max: 1700000, period: "monthly" },
-    ];
-  }
-  
-  // UAE Dirham (AED)
-  else if (location.includes("UAE")) {
-    return [
-      { label: "Entry Level", min: 5000, max: 10000, period: "monthly" },
-      { label: "Junior", min: 10000, max: 15000, period: "monthly" },
-      { label: "Mid-Level", min: 15000, max: 25000, period: "monthly" },
-      { label: "Senior", min: 25000, max: 40000, period: "monthly" },
-      { label: "Expert/Leadership", min: 40000, max: 58000, period: "monthly" },
-      { label: "Executive", min: 58000, max: 125000, period: "monthly" },
-    ];
-  }
-  
-  // British Pound (GBP)
-  else if (location.includes("UK")) {
-    return [
-      { label: "Entry Level", min: 2100, max: 2900, period: "monthly" },
-      { label: "Junior", min: 2900, max: 4200, period: "monthly" },
-      { label: "Mid-Level", min: 4200, max: 5800, period: "monthly" },
-      { label: "Senior", min: 5800, max: 8300, period: "monthly" },
-      { label: "Expert/Leadership", min: 8300, max: 12500, period: "monthly" },
-      { label: "Executive", min: 12500, max: 29000, period: "monthly" },
-    ];
-  }
-  
-  // Euro (EUR)
-  else if (location.includes("Europe") || location.includes("France") || location.includes("Germany")) {
-    return [
-      { label: "Entry Level", min: 2500, max: 3700, period: "monthly" },
-      { label: "Junior", min: 3700, max: 5000, period: "monthly" },
-      { label: "Mid-Level", min: 5000, max: 7100, period: "monthly" },
-      { label: "Senior", min: 7100, max: 10000, period: "monthly" },
-      { label: "Expert/Leadership", min: 10000, max: 15000, period: "monthly" },
-      { label: "Executive", min: 15000, max: 29000, period: "monthly" },
-    ];
-  }
-  
-  // Canadian Dollar (CAD)
-  else if (location.includes("Canada")) {
-    return [
-      { label: "Entry Level", min: 3300, max: 5000, period: "monthly" },
-      { label: "Junior", min: 5000, max: 7100, period: "monthly" },
-      { label: "Mid-Level", min: 7100, max: 10000, period: "monthly" },
-      { label: "Senior", min: 10000, max: 13300, period: "monthly" },
-      { label: "Expert/Leadership", min: 13300, max: 18300, period: "monthly" },
-      { label: "Executive", min: 18300, max: 37500, period: "monthly" },
-    ];
-  }
-  
-  // Australian Dollar (AUD)
-  else if (location.includes("Australia")) {
-    return [
-      { label: "Entry Level", min: 4200, max: 5800, period: "monthly" },
-      { label: "Junior", min: 5800, max: 7500, period: "monthly" },
-      { label: "Mid-Level", min: 7500, max: 10000, period: "monthly" },
-      { label: "Senior", min: 10000, max: 13300, period: "monthly" },
-      { label: "Expert/Leadership", min: 13300, max: 18300, period: "monthly" },
-      { label: "Executive", min: 18300, max: 37500, period: "monthly" },
-    ];
-  }
-  
-  // Default to USD for all other locations (monthly salaries)
-  else {
-    return [
-      { label: "Entry Level", min: 2500, max: 4200, period: "monthly" },
-      { label: "Junior", min: 4200, max: 6700, period: "monthly" },
-      { label: "Mid-Level", min: 6700, max: 10000, period: "monthly" },
-      { label: "Senior", min: 10000, max: 15000, period: "monthly" },
-      { label: "Expert/Leadership", min: 15000, max: 20800, period: "monthly" },
-      { label: "Executive", min: 20800, max: 41600, period: "monthly" },
-    ];
-  }
-};
-
 export default function PostJobPage() {
-  const { currentUser, refetchUser } = useAuth();
+  const { currentUser } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isPreview, setIsPreview] = useState(false);
-  const [companyName, setCompanyName] = useState<string>('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [requirementsText, setRequirementsText] = useState<string>('');
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedEmployerId, setSelectedEmployerId] = useState<number | null>(null);
   const queryClient = useQueryClient();
-  
-
   
   // Fetch employers list for admin users to select from
   const { data: employers } = useQuery({
@@ -539,9 +191,7 @@ export default function PostJobPage() {
       if (currentUser?.user.userType !== 'admin') return [];
       const res = await apiRequest('GET', '/api/employers');
       if (!res.ok) throw new Error('Failed to fetch employers');
-      const employersList = await res.json();
-      console.log("Loaded employers:", employersList);
-      return employersList;
+      return await res.json();
     },
     enabled: !!currentUser && currentUser.user.userType === 'admin'
   });
@@ -563,200 +213,42 @@ export default function PostJobPage() {
       description: "",
       requirements: "",
       benefits: "",
-      applicationDeadline: new Date(),
+      applicationDeadline: new Date().toISOString().split('T')[0],
       contactEmail: currentUser?.user.email || "",
     },
-    mode: "onBlur", // Show errors after field loses focus
   });
   
   // Watch form values for preview
   const formValues = form.watch();
   
-  // Simple function to update company name
-  const handleCompanyNameChange = (value: string) => {
-    setCompanyName(value);
-  };
-  
-  // Handle category change and reset job title suggestions
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-    form.setValue('category', category);
-    
-    // Reset selected skills when category changes
-    setSelectedSkills([]);
-    
-    // Clear requirements field if needed
-    if (form.getValues("requirements")) {
-      form.setValue("requirements", "");
-    }
-  };
-  
-  // Handle job title selection
-  const handleJobTitleSelect = (title: string) => {
-    form.setValue('title', title);
-  };
-  
-  // Handle salary range selection
-  const handleSalaryRangeSelect = (range: {min: number, max: number, period?: string}) => {
-    // Ensure we're setting numeric values and handle any potential null cases
-    const minSalary = range.min || 0;
-    const maxSalary = range.max || 0;
-    
-    console.log(`Setting salary range: ${minSalary} - ${maxSalary}`);
-    
-    // Set the values in the form
-    form.setValue('minSalary', minSalary);
-    form.setValue('maxSalary', maxSalary);
-  };
-  
-  // Handle skill selection and update requirements field
-  const handleSkillToggle = (skill: string) => {
-    let updatedSkills: string[];
-    
-    if (selectedSkills.includes(skill)) {
-      // Remove skill if already selected
-      updatedSkills = selectedSkills.filter(s => s !== skill);
-    } else {
-      // Add skill if not already selected
-      updatedSkills = [...selectedSkills, skill];
-    }
-    
-    setSelectedSkills(updatedSkills);
-    
-    // Generate requirements text based on selected skills
-    if (updatedSkills.length > 0) {
-      const skillsText = updatedSkills.join(', ');
-      const currentText = form.getValues('requirements') || '';
-      
-      // Only update if no skills are already included or if requirements field is empty
-      if (!currentText.includes('Required skills:')) {
-        const newRequirements = `Required skills: ${skillsText}\n\n${currentText}`;
-        form.setValue('requirements', newRequirements.trim());
-        setRequirementsText(newRequirements.trim());
-      } else {
-        // Replace existing skills list
-        const newRequirements = currentText.replace(
-          /Required skills:.*(?=\n|$)/,
-          `Required skills: ${skillsText}`
-        );
-        form.setValue('requirements', newRequirements.trim());
-        setRequirementsText(newRequirements.trim());
-      }
-    }
-  };
-
   // Create job mutation
   const createJobMutation = useMutation({
-    mutationFn: async (data: any) => {
-      // Re-check authentication status before submission
-      // This helps ensure the session is still valid
-      try {
-        console.log("Verifying authentication before POST request...");
-        const userCheckRes = await fetch('/api/user', { 
-          credentials: 'include',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        });
-        
-        // If not authenticated, throw error to prevent job submission
-        if (!userCheckRes.ok || userCheckRes.status === 401) {
-          console.error("Authentication check failed before job submission");
-          throw new Error("Your session has expired. Please refresh the page and login again.");
-        }
-        
-        const user = await userCheckRes.json();
-        console.log("Authentication confirmed before request");
-        
-        // Create a clean job payload with explicit string/number handling and null safety
-        // This ensures consistent data types are sent to the server and matches our schema validation
-        const payload = {
-          // Required fields with trimming
-          title: data.title?.trim() || "",
-          company: user.user.userType === "admin" && companyName ? 
-            companyName.trim() : data.company?.trim() || "",
-          location: data.location?.trim() || "",
-          category: data.category?.trim() || "",
-          jobType: data.jobType?.trim() || "",
-          description: data.description?.trim() || "",
-          
-          // Additional fields - use empty strings to avoid null constraint errors
-          requirements: data.requirements?.trim() || "",
-          benefits: data.benefits?.trim() || "",
-          experience: data.experience?.trim() || "",
-          
-          // Numeric fields - ensure they are actual numbers and positive
-          minSalary: Math.max(0, isNaN(Number(data.minSalary)) ? 0 : Number(data.minSalary)),
-          maxSalary: Math.max(0, isNaN(Number(data.maxSalary)) ? 0 : Number(data.maxSalary)),
-          
-          // Email with validation 
-          contactEmail: data.contactEmail?.trim() || "",
-          
-          // Date field handling - ensure proper format as ISO string for server
-          // The database schema expects a timestamp, so we need to send a full ISO string
-          applicationDeadline: data.applicationDeadline 
-            ? (data.applicationDeadline instanceof Date 
-              ? data.applicationDeadline.toISOString() // Full ISO format with time
-              : typeof data.applicationDeadline === 'string' 
-                ? new Date(data.applicationDeadline).toISOString()
-                : new Date().toISOString())
-            : new Date().toISOString(),
-          
-          // Optional fields with null safety - we won't allow null values for now to prevent errors
-          specialization: data.specialization?.trim() || "",
-          
-          // If we're admin posting on behalf of company, we don't need employerId
-          employerId: currentUser?.user.userType === "employer" ? currentUser?.user.id : null
-        };
-        
-        console.log("Submitting job with clean payload:", payload);
-        
-        // Double-check the main required fields to avoid server errors
-        const requiredFields = [
-          'title', 'company', 'location', 'category', 'jobType', 'description', 
-          'requirements', 'benefits', 'experience',
-          'minSalary', 'maxSalary', 'contactEmail', 'applicationDeadline'
-        ];
-        
-        // Log detailed info about each field for debugging
-        console.log("Checking required fields...");
-        
-        for (const field of requiredFields) {
-          const value = payload[field as keyof typeof payload];
-          console.log(`Field ${field}: ${typeof value} = ${JSON.stringify(value)}`);
-          
-          if (!value && value !== 0) {
-            console.error(`Missing required field: ${field}`);
-            throw new Error(`${field} is required but appears to be missing or empty`);
-          }
-        }
-        
-        const res = await apiRequest("POST", "/api/jobs", payload);
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || "Failed to create job");
-        }
-        return await res.json();
-      } catch (error) {
-        console.error("Error during job submission:", error);
-        console.error("Detailed error message:", JSON.stringify(error, null, 2));
-        throw error;
-      }
+    mutationFn: async (data: JobPostFormValues) => {
+      // For admin users, use the selected employer ID
+      const payload = {
+        ...data,
+        // If admin with selected employer, use selectedEmployerId
+        // Otherwise use the current user's profile ID
+        ...(currentUser?.user.userType === "admin" && selectedEmployerId 
+          ? { selectedEmployerId } 
+          : { employerId: currentUser?.profile.id })
+      };
+      
+      const res = await apiRequest("POST", "/api/jobs", payload);
+      return await res.json();
     },
     onSuccess: (data) => {
       toast({
         title: "Job Posted Successfully",
-        description: "Your job has been posted and is now visible in the Manage Posts section.",
+        description: "Your job has been posted and is now visible in the Jobs Found section.",
       });
       
       // Invalidate all queries related to jobs to ensure immediate visibility
       queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
       queryClient.invalidateQueries({ queryKey: ["/api/realtime/jobs"] });
       
-      // Immediately redirect to post manager to see and manage the newly posted job
-      setLocation("/post-manager");
+      // Immediately redirect to job board to see the newly posted job
+      setLocation("/job-board");
     },
     onError: (error: Error) => {
       toast({
@@ -768,167 +260,8 @@ export default function PostJobPage() {
   });
   
   // Handle form submission
-  const onSubmit = async (data: JobPostFormValues) => {
-    // Check if the user is authenticated
-    if (!currentUser) {
-      // Try to refresh the session before giving up
-      try {
-        console.log("Attempting to refresh user session before job submission");
-        const refreshedUser = await refetchUser();
-        if (!refreshedUser) {
-          toast({
-            title: "Authentication Required",
-            description: "You must be logged in to post a job.",
-            variant: "destructive",
-          });
-          return;
-        }
-        console.log("Successfully refreshed user session:", refreshedUser);
-      } catch (error) {
-        console.error("Failed to refresh user session:", error);
-        toast({
-          title: "Authentication Required",
-          description: "You must be logged in to post a job. Please refresh the page and try again.",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
-
-    // Re-check authentication after potential refresh
-    if (!currentUser) {
-      toast({
-        title: "Authentication Required",
-        description: "You must be logged in to post a job.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Check if admin has entered a company name
-    if (currentUser.user.userType === "admin" && !companyName.trim()) {
-      toast({
-        title: "Company Name Required",
-        description: "Please enter a company name before posting a job.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // Perform client-side validation for required fields
-    const requiredFields = [
-      { field: 'title', label: 'Job Title' },
-      { field: 'company', label: 'Company Name' },
-      { field: 'location', label: 'Location' },
-      { field: 'category', label: 'Category' },
-      { field: 'jobType', label: 'Job Type' },
-      { field: 'experience', label: 'Experience Level' },
-      { field: 'description', label: 'Description' },
-      { field: 'requirements', label: 'Requirements' },
-      { field: 'benefits', label: 'Benefits' },
-      { field: 'minSalary', label: 'Minimum Salary' },
-      { field: 'maxSalary', label: 'Maximum Salary' },
-      { field: 'contactEmail', label: 'Contact Email' },
-      { field: 'applicationDeadline', label: 'Application Deadline' }
-    ];
-    
-    // More robust check for field values, checking for empty strings, nulls, and undefined
-    const missingFields = requiredFields.filter(({ field }) => {
-      const value = data[field as keyof JobPostFormValues];
-      console.log(`Checking field ${field}:`, value, typeof value);
-      
-      if (value === null || value === undefined) return true;
-      if (typeof value === 'string' && value.trim() === '') return true;
-      if (typeof value === 'number' && (isNaN(value) || value <= 0)) return true;
-      
-      // Special case for dates
-      if (field === 'applicationDeadline') {
-        // If deadline is missing, we'll set a default value later, so don't flag it as missing
-        return false;
-      }
-      
-      return false;
-    });
-    
-    if (missingFields.length > 0) {
-      // Set errors for each missing field to highlight them in red
-      missingFields.forEach(({ field, label }) => {
-        form.setError(field as any, {
-          type: 'required',
-          message: `${label} is required`
-        });
-      });
-      
-      toast({
-        title: "Missing Required Fields",
-        description: `Please fill in the following required fields: ${missingFields.map(f => f.label).join(', ')}`,
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // Check numeric fields
-    if (isNaN(Number(data.minSalary)) || Number(data.minSalary) <= 0) {
-      form.setError('minSalary', {
-        type: 'min',
-        message: 'Minimum salary must be greater than 0'
-      });
-      toast({
-        title: "Invalid Minimum Salary",
-        description: "Please enter a valid minimum salary amount.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (isNaN(Number(data.maxSalary)) || Number(data.maxSalary) <= 0) {
-      form.setError('maxSalary', {
-        type: 'min',
-        message: 'Maximum salary must be greater than 0'
-      });
-      toast({
-        title: "Invalid Maximum Salary",
-        description: "Please enter a valid maximum salary amount.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    console.log("Form submission data:", data);
-    console.log("Submitting job with user:", currentUser);
-    
-    // Log exactly what we're sending to the server for debugging
-    const cleanData = {
-      title: data.title?.trim() || "",
-      company: currentUser.user.userType === "admin" ? 
-        companyName.trim() : data.company?.trim() || "",
-      location: data.location?.trim() || "",
-      category: data.category?.trim() || "",
-      jobType: data.jobType?.trim() || "",
-      minSalary: isNaN(Number(data.minSalary)) ? 0 : Number(data.minSalary),
-      maxSalary: isNaN(Number(data.maxSalary)) ? 0 : Number(data.maxSalary),
-      description: data.description?.trim() || "",
-      requirements: data.requirements?.trim() || "Job requirements not specified",
-      benefits: data.benefits?.trim() || "Job benefits not specified",
-      // Convert Date object to string in YYYY-MM-DD format for server schema
-      // Format date as string in ISO format
-      // The server expects a string that it can parse with new Date()
-      // Ensure applicationDeadline is properly formatted as ISO string
-      applicationDeadline: data.applicationDeadline instanceof Date
-        ? data.applicationDeadline.toISOString()
-        : (typeof data.applicationDeadline === 'string' && data.applicationDeadline
-            ? data.applicationDeadline // Keep as is if it's already a non-empty string 
-            : new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000).toISOString()), // 30 days from now
-      contactEmail: data.contactEmail?.trim() || "",
-      experience: data.experience?.trim() || "Entry Level (0-1 years)",
-      specialization: data.specialization?.trim() || null,
-      employerId: currentUser?.user.userType === "employer" ? currentUser?.user.id : null
-    };
-    
-    console.log("Clean data to be sent to server:", JSON.stringify(cleanData, null, 2));
-    // Use the cleanData directly with the 'any' typed mutation function
-    // No type casting needed as we've changed the mutation function to accept 'any'
-    createJobMutation.mutate(cleanData);
+  const onSubmit = (data: JobPostFormValues) => {
+    createJobMutation.mutate(data);
   };
   
   // Get currency symbol based on selected location
@@ -962,17 +295,17 @@ export default function PostJobPage() {
           <Alert className="mb-6">
             <AlertTitle>Authentication Required</AlertTitle>
             <AlertDescription>
-              You need to be logged in as an admin to post jobs. 
-              <Button variant="link" onClick={() => setLocation("/admin-login")}>
-                Sign in as admin
+              You need to be logged in as an employer to post jobs. 
+              <Button variant="link" onClick={() => setLocation("/auth")}>
+                Sign in or register
               </Button>
             </AlertDescription>
           </Alert>
-        ) : (currentUser.user.userType !== "admin") ? (
+        ) : (currentUser.user.userType !== "employer" && currentUser.user.userType !== "admin") ? (
           <Alert className="mb-6">
-            <AlertTitle>Admin Account Required</AlertTitle>
+            <AlertTitle>Employer Account Required</AlertTitle>
             <AlertDescription>
-              Only admin accounts can post jobs. Your current account does not have the necessary permissions.
+              Only employer accounts can post jobs. Your current account is registered as a job seeker.
             </AlertDescription>
           </Alert>
         ) : (
@@ -1106,65 +439,34 @@ export default function PostJobPage() {
                           <FormItem>
                             <FormLabel>Job Title</FormLabel>
                             <FormControl>
-                              <Input 
-                                placeholder="e.g., Senior Frontend Developer" 
-                                {...field} 
-                                onChange={(e) => {
-                                  field.onChange(e);
-                                  // Clear error when user types
-                                  if (e.target.value.trim()) {
-                                    form.clearErrors('title');
-                                  }
-                                }}
-                              />
+                              <Input placeholder="e.g., Senior Frontend Developer" {...field} />
                             </FormControl>
-                            <FormMessage className="text-red-500" />
-                            {selectedCategory && (
-                              <div className="mt-2">
-                                <p className="text-sm text-muted-foreground mb-2">Suggested job titles for {selectedCategory}:</p>
-                                <ScrollArea className="h-24 w-full rounded-md border p-2">
-                                  <div className="flex flex-wrap gap-2">
-                                    {commonJobTitles[selectedCategory as keyof typeof commonJobTitles]?.map((title) => (
-                                      <Badge 
-                                        key={title}
-                                        variant={field.value === title ? "default" : "outline"}
-                                        className="cursor-pointer"
-                                        onClick={() => handleJobTitleSelect(title)}
-                                      >
-                                        {title}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                </ScrollArea>
-                              </div>
-                            )}
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                       
-                      {/* Admin-only employer name input field */}
+                      {/* Admin-only employer selection dropdown */}
                       {currentUser?.user.userType === "admin" && (
                         <div className="mb-4">
-                          <FormLabel>Enter Employer Company Name</FormLabel>
-                          <Input
-                            type="text"
-                            placeholder="Enter company name"
-                            value={companyName || ''}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              setCompanyName(value);
-                            }}
-                            className={`w-full ${!companyName.trim() ? 'border-red-500' : ''}`}
-                          />
+                          <FormLabel>Select Employer</FormLabel>
+                          <Select
+                            onValueChange={(value) => setSelectedEmployerId(Number(value))}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select an employer" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {employers?.map((employer: any) => (
+                                <SelectItem key={employer.id} value={employer.id.toString()}>
+                                  {employer.companyName}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                           <p className="text-sm text-muted-foreground mt-1">
-                            Enter the company name to post on their behalf
+                            As an admin, you are posting on behalf of this employer
                           </p>
-                          {!companyName.trim() && (
-                            <p className="text-sm text-red-500 mt-1">
-                              Company name is required
-                            </p>
-                          )}
                         </div>
                       )}
                       
@@ -1190,11 +492,7 @@ export default function PostJobPage() {
                             <FormItem>
                               <FormLabel>Location</FormLabel>
                               <Select 
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                  // Clear error when user selects a value
-                                  form.clearErrors('location');
-                                }} 
+                                onValueChange={field.onChange} 
                                 defaultValue={field.value}
                               >
                                 <FormControl>
@@ -1222,10 +520,7 @@ export default function PostJobPage() {
                             <FormItem>
                               <FormLabel>Job Category</FormLabel>
                               <Select 
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                  handleCategoryChange(value);
-                                }} 
+                                onValueChange={field.onChange} 
                                 defaultValue={field.value}
                               >
                                 <FormControl>
@@ -1347,13 +642,6 @@ export default function PostJobPage() {
                                   min="0"
                                   step="1000"
                                   {...field}
-                                  onChange={(e) => {
-                                    field.onChange(e);
-                                    // Clear error when user enters a valid value
-                                    if (e.target.value && Number(e.target.value) > 0) {
-                                      form.clearErrors('minSalary');
-                                    }
-                                  }}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -1374,43 +662,12 @@ export default function PostJobPage() {
                                   min="0"
                                   step="1000"
                                   {...field}
-                                  onChange={(e) => {
-                                    field.onChange(e);
-                                    // Clear error when user enters a valid value
-                                    if (e.target.value && Number(e.target.value) > 0) {
-                                      form.clearErrors('maxSalary');
-                                    }
-                                  }}
                                 />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
-                      </div>
-                      
-                      {/* Salary Range Presets */}
-                      <div className="bg-slate-50 p-3 rounded-md border">
-                        <div className="text-sm font-medium mb-2">
-                          Salary Range Presets {formValues.location && `(${formValues.location})`}
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                          {getSalaryRangesByLocation(formValues.location || '').map((range, index) => (
-                            <Button 
-                              key={index}
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              className="text-xs justify-start"
-                              onClick={() => handleSalaryRangeSelect(range)}
-                            >
-                              {range.label}: {getCurrencySymbol(formValues.location || '')}{range.min.toLocaleString()} - {getCurrencySymbol(formValues.location || '')}{range.max.toLocaleString()} monthly
-                            </Button>
-                          ))}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-2">
-                          Click on a preset to automatically fill the monthly salary range based on {formValues.location ? formValues.location : "default"} salary standards
-                        </p>
                       </div>
                     </CardContent>
                   </Card>
@@ -1434,13 +691,6 @@ export default function PostJobPage() {
                                 placeholder="Describe the role and responsibilities..."
                                 className="min-h-32"
                                 {...field}
-                                onChange={(e) => {
-                                  field.onChange(e);
-                                  // Clear error when user types sufficient content
-                                  if (e.target.value.trim().length > 10) {
-                                    form.clearErrors('description');
-                                  }
-                                }}
                               />
                             </FormControl>
                             <FormMessage />
@@ -1459,38 +709,8 @@ export default function PostJobPage() {
                                 placeholder="List the qualifications and skills required..."
                                 className="min-h-24"
                                 {...field}
-                                onChange={(e) => {
-                                  field.onChange(e);
-                                  // Clear error when user types sufficient content
-                                  if (e.target.value.trim().length > 10) {
-                                    form.clearErrors('requirements');
-                                  }
-                                }}
                               />
                             </FormControl>
-                            {selectedCategory && (
-                              <div className="mt-2">
-                                <p className="text-sm text-muted-foreground mb-2">Common skills for {selectedCategory}:</p>
-                                <ScrollArea className="h-24 w-full rounded-md border p-2">
-                                  <div className="flex flex-wrap gap-2">
-                                    {commonSkills[selectedCategory as keyof typeof commonSkills]?.map((skill) => (
-                                      <Badge 
-                                        key={skill}
-                                        variant={selectedSkills.includes(skill) ? "default" : "outline"}
-                                        className="cursor-pointer"
-                                        onClick={() => handleSkillToggle(skill)}
-                                      >
-                                        <span className="mr-1">{selectedSkills.includes(skill) ? <Check className="h-3 w-3" /> : null}</span>
-                                        {skill}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                </ScrollArea>
-                                <p className="text-xs text-muted-foreground mt-2">
-                                  Click on skills to add them to requirements
-                                </p>
-                              </div>
-                            )}
                             <FormMessage />
                           </FormItem>
                         )}
@@ -1507,13 +727,6 @@ export default function PostJobPage() {
                                 placeholder="List the benefits offered..."
                                 className="min-h-20"
                                 {...field}
-                                onChange={(e) => {
-                                  field.onChange(e);
-                                  // Clear error when user types sufficient content
-                                  if (e.target.value.trim().length > 10) {
-                                    form.clearErrors('benefits');
-                                  }
-                                }}
                               />
                             </FormControl>
                             <FormMessage />
@@ -1536,38 +749,15 @@ export default function PostJobPage() {
                           control={form.control}
                           name="applicationDeadline"
                           render={({ field }) => (
-                            <FormItem className="flex flex-col">
+                            <FormItem>
                               <FormLabel>Application Deadline</FormLabel>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <FormControl>
-                                    <Button
-                                      variant={"outline"}
-                                      className={`w-full pl-3 text-left font-normal ${
-                                        !field.value ? "text-muted-foreground" : ""
-                                      }`}
-                                    >
-                                      {field.value ? (
-                                        format(field.value, "PPP")
-                                      ) : (
-                                        <span>Select a date</span>
-                                      )}
-                                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                    </Button>
-                                  </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                  <Calendar
-                                    mode="single"
-                                    selected={field.value}
-                                    onSelect={field.onChange}
-                                    disabled={(date) =>
-                                      date < new Date(new Date().setHours(0, 0, 0, 0))
-                                    }
-                                    initialFocus
-                                  />
-                                </PopoverContent>
-                              </Popover>
+                              <FormControl>
+                                <Input 
+                                  type="date" 
+                                  {...field}
+                                  min={new Date().toISOString().split('T')[0]}
+                                />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -1584,13 +774,6 @@ export default function PostJobPage() {
                                   type="email" 
                                   placeholder="Contact email for applications"
                                   {...field}
-                                  onChange={(e) => {
-                                    field.onChange(e);
-                                    // Clear error when user enters a valid email
-                                    if (e.target.value && e.target.value.includes('@')) {
-                                      form.clearErrors('contactEmail');
-                                    }
-                                  }}
                                 />
                               </FormControl>
                               <FormMessage />

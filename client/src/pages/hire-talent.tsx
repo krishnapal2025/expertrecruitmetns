@@ -4,10 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { ArrowRight, ChevronDown, DollarSign, Shield, Users, Building2, UserPlus, Award, Target, Globe, CheckCircle2, Search, Briefcase } from "lucide-react";
 import { motion } from "framer-motion";
-import OptimizedHeroBackground from "@/components/hero/optimized-hero-background";
 import handshakeImage from "../assets/business-people-shaking-hands-meeting-room.jpg";
-import handshakeImageSmall from "../assets/optimized/business-people-shaking-hands-meeting-room-sm.webp";
-import handshakeImageMedium from "../assets/optimized/business-people-shaking-hands-meeting-room-md.webp";
 
 export default function HireTalentPage() {
   return (
@@ -19,16 +16,20 @@ export default function HireTalentPage() {
 
       {/* Hero Section */}
       <div className="relative min-h-[90vh] overflow-hidden" id="hire-talent-hero-section">
-        {/* Optimized Background Image */}
-        <OptimizedHeroBackground 
-          imageSrc={handshakeImage}
-          smallImageSrc={handshakeImageSmall}
-          mediumImageSrc={handshakeImageMedium}
-          alt="Business people in meeting"
-          brightness={0.85}
-          overlayOpacity={0.75}
-          priority={true}
-        />
+        {/* Background Image */}
+        <div className="absolute inset-0 bg-black/75 z-10"></div>
+        <div 
+          className="absolute inset-0 bg-center bg-cover" 
+          style={{ 
+            backgroundImage: `url(${handshakeImage})`,
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            height: '100%',
+            width: '100%',
+            filter: 'brightness(0.85)'
+          }}
+        ></div>
         
         {/* Accent lines */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-10"></div>

@@ -38,15 +38,15 @@ export default function PostManagerPage() {
   const [, setLocation] = useLocation();
   const [jobToDelete, setJobToDelete] = useState<number | null>(null);
   
-  // Fetch jobs (admin only)
+  // Fetch employer's jobs
   const { data: jobs, isLoading } = useQuery<Job[]>({
-    queryKey: ["/api/jobs"],
+    queryKey: ["/api/employer/jobs"],
     queryFn: async () => {
-      const res = await apiRequest("GET", "/api/jobs");
-      if (!res.ok) throw new Error("Failed to fetch job listings");
+      const res = await apiRequest("GET", "/api/employer/jobs");
+      if (!res.ok) throw new Error("Failed to fetch your job listings");
       return await res.json();
     },
-    enabled: !!currentUser?.profile.id && currentUser?.user.userType === "admin",
+    enabled: !!currentUser?.profile.id && currentUser?.user.userType === "employer",
   });
   
   // Get active and closed jobs
@@ -308,17 +308,17 @@ export default function PostManagerPage() {
           <Alert className="mb-6">
             <AlertTitle>Authentication Required</AlertTitle>
             <AlertDescription>
-              You need to be logged in as an admin to access the Post Manager.
-              <Button variant="link" onClick={() => setLocation("/admin-login")}>
-                Sign in as admin
+              You need to be logged in as an employer to access the Post Manager.
+              <Button variant="link" onClick={() => setLocation("/auth")}>
+                Sign in or register
               </Button>
             </AlertDescription>
           </Alert>
-        ) : currentUser.user.userType !== "admin" ? (
+        ) : currentUser.user.userType !== "employer" ? (
           <Alert className="mb-6">
-            <AlertTitle>Admin Account Required</AlertTitle>
+            <AlertTitle>Employer Account Required</AlertTitle>
             <AlertDescription>
-              Only admin accounts can post and manage jobs. Your current account does not have the necessary permissions.
+              Only employer accounts can post and manage jobs. Your current account is registered as a job seeker.
             </AlertDescription>
           </Alert>
         ) : isLoading ? (

@@ -260,11 +260,8 @@ export default function EditJobPage() {
   };
   
   // Check if current user has permission to edit this job
-  const userCanEdit = 
-    // Employers can edit their own jobs
-    (currentUser?.user.userType === "employer" && job?.employerId === currentUser?.profile.id) ||
-    // Admins and super_admins can edit any job
-    (currentUser?.user.userType === "admin" || currentUser?.user.userType === "super_admin");
+  const userCanEdit = currentUser?.user.userType === "employer" && 
+                      job?.employerId === currentUser?.profile.id;
   
   if (isLoadingJob) {
     return (

@@ -32,7 +32,7 @@ export default function AdminLoginPage() {
   
   // If already logged in, redirect to appropriate page
   if (user) {
-    if (user.userType === "admin" || user.userType === "super_admin") {
+    if (user.userType === "admin") {
       setLocation("/admin");
     } else {
       setLocation("/");
@@ -109,118 +109,109 @@ export default function AdminLoginPage() {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
+                  <FormItem className="space-y-2">
+                    <FormLabel className="text-gray-700 text-base">Email</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="admin@example.com"
-                        type="email"
-                        autoComplete="email"
-                        {...field}
+                      <Input 
+                        placeholder="your@email.com" 
+                        className="border-gray-300 focus:border-primary focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-11"
+                        {...field} 
                       />
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <div className="relative">
-                      <FormControl>
-                        <Input
-                          placeholder="Enter your password"
-                          type={showPassword ? "text" : "password"}
-                          autoComplete="current-password"
-                          {...field}
-                        />
-                      </FormControl>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-0 top-0 h-full px-3 py-2"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-4 w-4 text-gray-500" />
-                        ) : (
-                          <Eye className="h-4 w-4 text-gray-500" />
-                        )}
-                        <span className="sr-only">
-                          {showPassword ? "Hide password" : "Show password"}
-                        </span>
-                      </Button>
-                    </div>
-                    <FormMessage />
+                    <FormMessage className="text-sm" />
                   </FormItem>
                 )}
               />
 
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel className="text-gray-700 text-base">Password</FormLabel>
+                    <div className="relative">
+                      <FormControl>
+                        <Input 
+                          type={showPassword ? "text" : "password"} 
+                          placeholder="Enter your password" 
+                          className="border-gray-300 focus:border-primary focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 pr-10 h-11"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <button 
+                        type="button"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5" />
+                        ) : (
+                          <Eye className="h-5 w-5" />
+                        )}
+                      </button>
+                    </div>
+                    <FormMessage className="text-sm" />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex justify-between">
+                <Link href="/admin-register" className="text-sm text-primary hover:underline">
+                  Create an account
+                </Link>
+                <Link href="/admin/forgot-password" className="text-sm text-primary hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
+
               <Button 
                 type="submit" 
-                className="w-full" 
-                disabled={form.formState.isSubmitting}
+                className="w-full font-medium bg-[#5372f1] hover:bg-[#4060e0] text-white transition-colors h-12 text-base"
+                disabled={loginMutation.isPending}
               >
-                {form.formState.isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Logging in...
-                  </>
+                {loginMutation.isPending ? (
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 ) : (
-                  "Log In"
+                  <Lock className="mr-2 h-5 w-5" />
                 )}
+                Sign in
               </Button>
             </form>
           </Form>
-          
-          <div className="mt-6">
-            <div className="text-center">
-              <Link href="/admin/forgot-password" className="text-sm font-medium text-primary hover:underline">
-                Forgot your password?
-              </Link>
-            </div>
-            <Separator className="my-4" />
-            <div className="text-center">
-              <p className="text-xs text-gray-500">
-                This portal is for administrative personnel only.
-                <br />
-                If you're a job seeker or employer, <Link href="/auth" className="text-primary hover:underline">log in here</Link>.
-              </p>
-            </div>
-          </div>
         </div>
-        
-        {/* Right Side - Information */}
-        <div className="w-full md:w-3/5 bg-gradient-to-br from-primary to-primary-600 p-8 text-white relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 bottom-0 bg-black/20"></div>
-          <div className="relative z-10">
-            <div className="flex items-center mb-6">
-              <img src={expertLogo} alt="Expert Recruitments" className="h-10 w-10 mr-3" />
-              <div>
-                <h2 className="text-xl font-bold">Expert Recruitments</h2>
-                <p className="text-white/80 text-sm">Admin Control Center</p>
+
+        {/* Right Side - Hero Content */}
+        <div className="hidden md:block md:w-3/5 bg-[#5372f1] text-white p-8 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center mb-4">
+              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-white p-2 border border-white shadow-sm mr-3">
+                <img 
+                  src={expertLogo} 
+                  alt="Expert Recruitments LLC" 
+                  className="h-full w-full object-contain"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-white font-bold text-lg uppercase" style={{ letterSpacing: '0.1em' }}>Expert</span>
+                <span className="text-white text-xs">Recruitments LLC</span>
               </div>
             </div>
+
+            <h2 className="text-2xl font-bold mb-3">
+              Admin Dashboard
+            </h2>
             
-            <div className="mb-8">
-              <h3 className="text-lg font-medium mb-2">Welcome Back</h3>
-              <p className="text-white/80 text-sm">
-                Access the administrative portal to manage the Expert Recruitments platform.
-                Monitor job listings, applications, user accounts, and site content from a central dashboard.
-              </p>
-            </div>
+            <p className="text-white/90 text-base mb-4">
+              Manage recruitment platform, monitor applications, and oversee
+              the Expert Recruitments ecosystem.
+            </p>
             
-            <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3 mb-3">
               <Card className="bg-white/10 border-0 backdrop-blur-sm text-white">
                 <CardHeader className="py-2 px-4">
                   <CardTitle className="text-base">User Management</CardTitle>

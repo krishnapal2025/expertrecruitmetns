@@ -18,7 +18,6 @@ type AuthContextType = {
   user: User | null; // Add direct access to the user object
   isLoading: boolean;
   error: Error | null;
-  refetchUser: () => Promise<UserWithProfile | null>;
   loginMutation: UseMutationResult<UserWithProfile, Error, LoginCredentials>;
   logoutMutation: UseMutationResult<void, Error, void>;
   registerJobSeekerMutation: UseMutationResult<UserWithProfile, Error, JobSeekerRegister>;
@@ -33,13 +32,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     data: currentUser,
     error,
     isLoading,
-    refetch: refetchUser,
   } = useQuery<UserWithProfile | null, Error>({
     queryKey: ["/api/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
-    refetchOnWindowFocus: true, // Automatically check session on window focus
-    refetchOnMount: true, // Refetch when component mounts
-    staleTime: 60000, // Consider data stale after 1 minute
   });
 
   const loginMutation = useMutation({
@@ -133,10 +128,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user: currentUser?.user ?? null,
         isLoading,
         error,
-        refetchUser: async () => {
-          const result = await refetchUser();
-          return result.data ?? null;
-        },
         loginMutation,
         logoutMutation,
         registerJobSeekerMutation,
