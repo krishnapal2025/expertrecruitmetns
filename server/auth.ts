@@ -29,42 +29,84 @@ export async function comparePasswords(supplied: string, stored: string) {
 }
 
 export function setupAuth(app: Express) {
+  // Detect environment for cookie configuration
   const isProduction = process.env.NODE_ENV === 'production';
   const isFlyIo = process.env.FLY_APP_NAME !== undefined;
   const isReplit = process.env.REPL_ID !== undefined || process.env.REPL_SLUG !== undefined;
   
-  // Also detect any Replit app deployment
+  // Cross-domain environments (e.g., Fly.io, Replit) need special cookie settings
   const isCrossDomainEnvironment = isFlyIo || isReplit;
   
   console.log(`Auth setup - Production mode: ${isProduction}, Fly.io: ${isFlyIo}, Replit: ${isReplit}`);
   
-  // Determine if we need special cross-domain cookie settings
-  let cookieSameSite: 'none' | 'lax' | 'strict' = 'lax';
-  if (isProduction && isCrossDomainEnvironment) {
-    cookieSameSite = 'none'; // For cross-domain authentication in fly.io/replit
+  // Determine correct sameSite policy:
+  // - 'none': Allows cross-domain cookies (must be used with secure:true in production)
+  // - 'lax': Restricted cross-domain but allows redirects (better default security)
+  // - 'strict': Only same-site requests (most secure, but breaks many login flows)
+  let cookieSameSite: 'none' | 'lax' | 'strict';
+  
+  if (isReplit) {
+    // Replit is a special case where we want 'lax' even in production
+    // As Replit apps usually don't use custom domains
+    cookieSameSite = 'lax';
+  } else if (isProduction && isCrossDomainEnvironment) {
+    // Production cross-domain environments like Fly.io with custom domains 
+    cookieSameSite = 'none';
+  } else {
+    // Default for development and non-cross-domain production
+    cookieSameSite = 'lax';
   }
   
-  // Get domain from env or set to undefined
-  const cookieDomain = isCrossDomainEnvironment 
-    ? (process.env.COOKIE_DOMAIN || undefined) 
-    : undefined;
+  // Domain might be needed for custom domain setups
+  // For Fly.io deployments, domain should be set via COOKIE_DOMAIN env var
+  const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
   
+  // Configure session for optimal security and cross-domain compatibility
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || "robert-half-job-portal-secret",
+    // Use environment variable for secret or a strong default
+    // In production, always set SESSION_SECRET environment variable
+    secret: process.env.SESSION_SECRET || "expert-recruitments-secure-session-secret-key",
+    
+    // resave: false means don't save session if unmodified
     resave: false,
-    saveUninitialized: true, // Changed to true to ensure session is always saved
+    
+    // saveUninitialized: true creates a session even if nothing stored
+    // Important for login flows to ensure cookies are set properly
+    saveUninitialized: true,
+    
+    // Use the database store for persistent sessions
     store: storage.sessionStore,
+    
+    // Cookie configuration
     cookie: {
-      secure: isProduction, // Use secure cookies in production
+      // Only set secure=true in production or when using HTTPS
+      // Warning: secure=true won't work on HTTP connections
+      secure: isProduction,
+      
+      // httpOnly prevents client-side JS from reading cookie
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days for longer sessions
+      
+      // 30 days session lifetime
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+      
+      // Use the configured sameSite value based on environment
       sameSite: cookieSameSite,
-      domain: cookieDomain
+      
+      // Domain setting, typically needed for custom domains
+      domain: cookieDomain,
+      
+      // Path limits where cookie is sent
+      path: '/'
     },
-    // These settings help with session persistence in hosted environments
-    proxy: isCrossDomainEnvironment,
-    // Add rolling to renew session on each request
-    rolling: true
+    
+    // Enable proxy header trust for reverse proxies (important for Fly.io, Replit)
+    proxy: true,
+    
+    // Add rolling to renew session with each request (extends session lifetime)
+    rolling: true,
+    
+    // Optional name for identifying the session cookie
+    name: 'er_session_id'
   };
   
   // Log session cookie settings for debugging
