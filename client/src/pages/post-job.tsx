@@ -32,7 +32,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Briefcase, Building, Clock, DollarSign, Mail, MapPin, Save, Tag, Check, CalendarIcon, Edit, Eye, RotateCcw } from "lucide-react";
+import { Briefcase, Building, Clock, DollarSign, MapPin, Save, Tag, Check, CalendarIcon } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -951,10 +951,10 @@ export default function PostJobPage() {
   };
   
   return (
-    <div className="container mx-auto px-4 py-12 max-w-6xl">
-      <div className="mx-auto text-center">
-        <h1 className="text-4xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">Post a Job</h1>
-        <p className="text-gray-600 mb-10 max-w-2xl mx-auto">
+    <div className="container mx-auto px-4 py-12">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-2">Post a Job</h1>
+        <p className="text-gray-600 mb-8">
           Create a new job listing to find the perfect candidate for your position
         </p>
         
@@ -978,25 +978,20 @@ export default function PostJobPage() {
         ) : (
           <>
             {/* Toggle between form and preview */}
-            <div className="flex justify-center mb-8">
-              <div className="bg-gray-100 dark:bg-gray-800/40 p-1 rounded-lg inline-flex shadow-sm">
-                <Button
-                  variant={isPreview ? "outline" : "default"}
-                  className={`mr-2 px-8 ${!isPreview ? 'bg-white dark:bg-gray-800 shadow-sm' : 'bg-transparent'}`}
-                  onClick={() => setIsPreview(false)}
-                >
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit Job
-                </Button>
-                <Button
-                  variant={isPreview ? "default" : "outline"}
-                  className={`px-8 ${isPreview ? 'bg-white dark:bg-gray-800 shadow-sm' : 'bg-transparent'}`}
-                  onClick={() => setIsPreview(true)}
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  Preview
-                </Button>
-              </div>
+            <div className="flex mb-6 border-b pb-4">
+              <Button
+                variant={isPreview ? "outline" : "default"}
+                className="mr-2"
+                onClick={() => setIsPreview(false)}
+              >
+                Edit Job
+              </Button>
+              <Button
+                variant={isPreview ? "default" : "outline"}
+                onClick={() => setIsPreview(true)}
+              >
+                Preview
+              </Button>
             </div>
             
             {isPreview ? (
@@ -1095,18 +1090,15 @@ export default function PostJobPage() {
             ) : (
               // Job Post Form
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-4xl mx-auto">
-                  <Card className="border-t-4 border-t-primary shadow-lg rounded-xl overflow-hidden">
-                    <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
-                      <CardTitle className="text-2xl text-primary/90 flex items-center">
-                        <Briefcase className="h-5 w-5 mr-2" />
-                        Job Details
-                      </CardTitle>
-                      <CardDescription className="text-base mt-2">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Job Details</CardTitle>
+                      <CardDescription>
                         Enter the basic information about the job position
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-6 px-6">
+                    <CardContent className="space-y-4">
                       <FormField
                         control={form.control}
                         name="title"
@@ -1423,13 +1415,10 @@ export default function PostJobPage() {
                     </CardContent>
                   </Card>
                   
-                  <Card className="border-t-4 border-t-primary shadow-lg rounded-xl overflow-hidden">
-                    <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
-                      <CardTitle className="text-2xl text-primary/90 flex items-center">
-                        <Tag className="h-5 w-5 mr-2" />
-                        Job Description
-                      </CardTitle>
-                      <CardDescription className="text-base mt-2">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Job Description</CardTitle>
+                      <CardDescription>
                         Provide details about the role, responsibilities, and benefits
                       </CardDescription>
                     </CardHeader>
@@ -1443,7 +1432,7 @@ export default function PostJobPage() {
                             <FormControl>
                               <Textarea 
                                 placeholder="Describe the role and responsibilities..."
-                                className="min-h-36 resize-y border-primary/20 focus:border-primary/50 shadow-sm"
+                                className="min-h-32"
                                 {...field}
                                 onChange={(e) => {
                                   field.onChange(e);
@@ -1468,7 +1457,7 @@ export default function PostJobPage() {
                             <FormControl>
                               <Textarea 
                                 placeholder="List the qualifications and skills required..."
-                                className="min-h-28 resize-y border-primary/20 focus:border-primary/50 shadow-sm"
+                                className="min-h-24"
                                 {...field}
                                 onChange={(e) => {
                                   field.onChange(e);
@@ -1516,7 +1505,7 @@ export default function PostJobPage() {
                             <FormControl>
                               <Textarea 
                                 placeholder="List the benefits offered..."
-                                className="min-h-24 resize-y border-primary/20 focus:border-primary/50 shadow-sm"
+                                className="min-h-20"
                                 {...field}
                                 onChange={(e) => {
                                   field.onChange(e);
@@ -1534,13 +1523,10 @@ export default function PostJobPage() {
                     </CardContent>
                   </Card>
                   
-                  <Card className="border-t-4 border-t-primary shadow-lg rounded-xl overflow-hidden">
-                    <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
-                      <CardTitle className="text-2xl text-primary/90 flex items-center">
-                        <Calendar className="h-5 w-5 mr-2" />
-                        Application Information
-                      </CardTitle>
-                      <CardDescription className="text-base mt-2">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Application Information</CardTitle>
+                      <CardDescription>
                         Details for candidates to apply for this position
                       </CardDescription>
                     </CardHeader>
@@ -1551,35 +1537,26 @@ export default function PostJobPage() {
                           name="applicationDeadline"
                           render={({ field }) => (
                             <FormItem className="flex flex-col">
-                              <FormLabel className="font-medium">
-                                <CalendarIcon className="inline-block mr-2 h-4 w-4 text-primary" />
-                                Application Deadline
-                              </FormLabel>
+                              <FormLabel>Application Deadline</FormLabel>
                               <Popover>
                                 <PopoverTrigger asChild>
                                   <FormControl>
                                     <Button
                                       variant={"outline"}
-                                      className={`w-full pl-3 text-left font-normal border-primary/30 hover:border-primary/50 focus:border-primary/60 shadow-sm ${
-                                        !field.value ? "text-muted-foreground" : "text-foreground"
-                                      } transition-colors duration-200 bg-white hover:bg-gray-50/80`}
+                                      className={`w-full pl-3 text-left font-normal ${
+                                        !field.value ? "text-muted-foreground" : ""
+                                      }`}
                                     >
                                       {field.value ? (
-                                        <span className="font-medium">{format(field.value, "PPP")}</span>
+                                        format(field.value, "PPP")
                                       ) : (
                                         <span>Select a date</span>
                                       )}
-                                      <CalendarIcon className="ml-auto h-4 w-4 text-primary" />
+                                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                     </Button>
                                   </FormControl>
                                 </PopoverTrigger>
-                                <PopoverContent 
-                                  className="w-auto p-0 border-primary/20 shadow-lg rounded-xl overflow-hidden" 
-                                  align="start"
-                                >
-                                  <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-3 py-2 border-b border-primary/10">
-                                    <h4 className="text-sm font-medium text-primary">Choose Application Deadline</h4>
-                                  </div>
+                                <PopoverContent className="w-auto p-0" align="start">
                                   <Calendar
                                     mode="single"
                                     selected={field.value}
@@ -1588,7 +1565,6 @@ export default function PostJobPage() {
                                       date < new Date(new Date().setHours(0, 0, 0, 0))
                                     }
                                     initialFocus
-                                    className="p-3 rounded-md"
                                   />
                                 </PopoverContent>
                               </Popover>
@@ -1602,15 +1578,11 @@ export default function PostJobPage() {
                           name="contactEmail"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="font-medium">
-                                <Mail className="inline-block mr-2 h-4 w-4 text-primary" />
-                                Contact Email
-                              </FormLabel>
+                              <FormLabel>Contact Email</FormLabel>
                               <FormControl>
                                 <Input 
                                   type="email" 
                                   placeholder="Contact email for applications"
-                                  className="border-primary/30 focus:border-primary/60 shadow-sm hover:border-primary/50 transition-colors duration-200"
                                   {...field}
                                   onChange={(e) => {
                                     field.onChange(e);
@@ -1629,28 +1601,19 @@ export default function PostJobPage() {
                     </CardContent>
                   </Card>
                   
-                  <div className="flex justify-end space-x-3 mt-6">
-                    <Button 
-                      variant="outline" 
-                      type="button" 
-                      onClick={() => form.reset()} 
-                      className="border-gray-300 hover:bg-gray-50 hover:text-gray-700 transition-all"
-                    >
-                      Reset Form
+                  <div className="flex justify-end space-x-2">
+                    <Button variant="outline" type="button" onClick={() => form.reset()}>
+                      Reset
                     </Button>
                     <Button 
                       type="button" 
                       onClick={() => setIsPreview(true)}
-                      variant="secondary"
-                      className="bg-primary/10 hover:bg-primary/20 text-primary-foreground transition-all"
                     >
-                      <Eye className="mr-2 h-4 w-4" />
                       Preview
                     </Button>
                     <Button 
                       type="submit"
                       disabled={createJobMutation.isPending}
-                      className="bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
                     >
                       <Save className="mr-2 h-4 w-4" />
                       {createJobMutation.isPending ? "Posting..." : "Post Job"}
