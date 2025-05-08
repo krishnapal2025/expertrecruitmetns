@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
@@ -27,16 +27,118 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Job } from "@shared/schema";
-import { Briefcase, Building, Calendar, Clock, Edit, ExternalLink, MapPin, Plus, Trash2, Users } from "lucide-react";
+import { 
+  Briefcase, Building, Calendar, Clock, Edit, EyeIcon, ExternalLink, 
+  MapPin, Plus, Search, SlidersHorizontal, Trash2, Users, X 
+} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+
+// Predefined filter options
+const jobCategories = [
+  "Accounting & Finance",
+  "Administration",
+  "Customer Service",
+  "Engineering",
+  "Healthcare",
+  "Human Resources",
+  "Information Technology",
+  "Legal",
+  "Marketing",
+  "Operations",
+  "Project Management",
+  "Research & Development",
+  "Retail",
+  "Sales",
+  "Supply Chain",
+  "Other"
+];
+
+const jobTypes = [
+  "Full-time",
+  "Part-time",
+  "Contract",
+  "Temporary",
+  "Internship",
+  "Remote"
+];
+
+const experienceLevels = [
+  "Entry Level",
+  "Junior",
+  "Mid-Level",
+  "Senior",
+  "Manager",
+  "Director",
+  "Executive"
+];
+
+const locations = [
+  "New York",
+  "Los Angeles",
+  "Chicago",
+  "Houston",
+  "Phoenix",
+  "Philadelphia",
+  "San Antonio",
+  "San Diego",
+  "Dallas",
+  "San Jose",
+  "Remote"
+];
+
+const specializations = [
+  "Web Development",
+  "Mobile Development",
+  "Data Science",
+  "AI/Machine Learning",
+  "DevOps/Cloud",
+  "Cybersecurity",
+  "UX/UI Design",
+  "Product Management",
+  "Digital Marketing",
+  "Content Creation",
+  "Data Analysis",
+  "Healthcare Admin",
+  "Legal Services",
+  "Accounting",
+  "Human Resources",
+  "Customer Support",
+  "Sales",
+  "Other"
+];
 
 export default function PostManagerPage() {
   const { currentUser } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [jobToDelete, setJobToDelete] = useState<number | null>(null);
+  const [jobToPreview, setJobToPreview] = useState<Job | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  
+  // Filter states
+  const [filters, setFilters] = useState({
+    category: "",
+    jobType: "",
+    specialization: "",
+    location: "",
+    experience: "",
+    salaryRange: [0, 300000] as [number, number],
+    sortBy: "latest" as "latest" | "a-z" | "z-a" | "salary-low" | "salary-high"
+  });
   
   // Jobs endpoint (admin only)
   const endpoint = "/api/jobs";
@@ -49,7 +151,8 @@ export default function PostManagerPage() {
       if (!res.ok) throw new Error("Failed to fetch job listings");
       return await res.json();
     },
-    enabled: !!currentUser?.profile.id && currentUser?.user.userType === "admin",
+    enabled: !!currentUser?.profile.id && 
+      (currentUser?.user.userType === "admin" || currentUser?.user.userType === "super_admin"),
   });
   
   // Get active and closed jobs
@@ -62,6 +165,114 @@ export default function PostManagerPage() {
     const deadline = new Date(job.applicationDeadline);
     return deadline < new Date();
   }) || [];
+  
+  // Apply filters to jobs
+  const applyFilters = (jobList: Job[]) => {
+    let filteredJobs = [...jobList];
+    
+    // Apply search term
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filteredJobs = filteredJobs.filter(job => 
+        job.title.toLowerCase().includes(term) || 
+        job.company.toLowerCase().includes(term) ||
+        job.description.toLowerCase().includes(term)
+      );
+    }
+    
+    // Apply category filter
+    if (filters.category) {
+      filteredJobs = filteredJobs.filter(job => job.category === filters.category);
+    }
+    
+    // Apply job type filter
+    if (filters.jobType) {
+      filteredJobs = filteredJobs.filter(job => job.jobType === filters.jobType);
+    }
+    
+    // Apply specialization filter
+    if (filters.specialization) {
+      filteredJobs = filteredJobs.filter(job => job.specialization === filters.specialization);
+    }
+    
+    // Apply location filter
+    if (filters.location) {
+      filteredJobs = filteredJobs.filter(job => job.location === filters.location);
+    }
+    
+    // Apply experience filter
+    if (filters.experience) {
+      filteredJobs = filteredJobs.filter(job => job.experience === filters.experience);
+    }
+    
+    // Apply salary range filter
+    filteredJobs = filteredJobs.filter(job => 
+      (job.minSalary === null || job.minSalary >= filters.salaryRange[0]) &&
+      (job.maxSalary === null || job.maxSalary <= filters.salaryRange[1])
+    );
+    
+    // Apply sorting
+    switch (filters.sortBy) {
+      case "latest":
+        filteredJobs.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt) : new Date();
+          const dateB = b.createdAt ? new Date(b.createdAt) : new Date();
+          return dateB.getTime() - dateA.getTime();
+        });
+        break;
+      case "a-z":
+        filteredJobs.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "z-a":
+        filteredJobs.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case "salary-low":
+        filteredJobs.sort((a, b) => (a.minSalary || 0) - (b.minSalary || 0));
+        break;
+      case "salary-high":
+        filteredJobs.sort((a, b) => (b.maxSalary || 0) - (a.maxSalary || 0));
+        break;
+    }
+    
+    return filteredJobs;
+  };
+  
+  // Apply filters and pagination
+  const filteredActiveJobs = applyFilters(activeJobs);
+  const filteredClosedJobs = applyFilters(closedJobs);
+  
+  // Reset filters
+  const resetFilters = () => {
+    setFilters({
+      category: "",
+      jobType: "",
+      specialization: "",
+      location: "",
+      experience: "",
+      salaryRange: [0, 300000],
+      sortBy: "latest"
+    });
+    setSearchTerm("");
+    setCurrentPage(1);
+  };
+  
+  // Handle filter changes
+  const handleFilterChange = (key: string, value: any) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+    setCurrentPage(1); // Reset to first page when filter changes
+  };
+  
+  // Pagination logic
+  const paginateJobs = (jobList: Job[]) => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return jobList.slice(startIndex, startIndex + itemsPerPage);
+  };
+  
+  const paginatedActiveJobs = paginateJobs(filteredActiveJobs);
+  const paginatedClosedJobs = paginateJobs(filteredClosedJobs);
+  
+  const totalActivePages = Math.ceil(filteredActiveJobs.length / itemsPerPage);
+  const totalClosedPages = Math.ceil(filteredClosedJobs.length / itemsPerPage);
   
   // Delete job mutation
   const deleteJobMutation = useMutation({
