@@ -1933,6 +1933,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       cookieSet: !!req.headers.cookie
     });
     
+    // Get deployment environment info for cross-domain handling
+    const isProduction = process.env.NODE_ENV === 'production';
+    const isFlyIo = process.env.FLY_APP_NAME !== undefined;
+    const isReplit = process.env.REPL_ID !== undefined || process.env.REPL_SLUG !== undefined;
+    const isCrossDomainEnvironment = isFlyIo || isReplit;
+    
+    // Log environment for debugging
+    console.log("Environment detection:", {
+      isProduction,
+      isFlyIo,
+      isReplit,
+      isCrossDomain: isCrossDomainEnvironment,
+      clientEnv: req.headers['x-client-environment'] || 'not-specified'
+    });
+    
     try {
       console.log("Raw request body:", { ...req.body, password: '[REDACTED]' });
       
@@ -1985,48 +2000,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       console.log("Admin profile created successfully with ID:", admin.id);
 
-      // Create a special session for fly.io deployments if needed
-      if (process.env.FLY_APP_NAME) {
+      // Extended session handling for cross-domain environments
+      if (isCrossDomainEnvironment) {
         // Make sure session is initialized
         if (!req.session) {
-          console.log("Creating new session for fly.io environment");
+          console.log("Creating new session for cross-domain environment");
           req.session = { cookie: {} } as any;
         }
         
         // Explicitly save the session before attempting login
-        req.session.save((err) => {
-          if (err) {
-            console.error("Error saving session:", err);
-          }
-          console.log("Session saved successfully before login");
+        await new Promise<void>((resolve, reject) => {
+          req.session!.save((err) => {
+            if (err) {
+              console.error("Error saving session before login:", err);
+              reject(err);
+            } else {
+              console.log("Session saved successfully before login");
+              resolve();
+            }
+          });
+        }).catch(err => {
+          console.warn("Non-fatal error saving session:", err);
         });
       }
 
       // Log in the user
       console.log("Logging in the newly created admin user");
-      req.login(user, (err) => {
+      req.login(user, async (err) => {
         if (err) {
           console.error("Error logging in after signup:", err);
-          return res.status(500).json({ message: "Signup successful, but failed to log in" });
+          return res.status(500).json({ 
+            message: "Signup successful, but failed to log in", 
+            error: err.message,
+            user,
+            admin,
+            environment: isCrossDomainEnvironment ? 'cross-domain' : 'same-origin'
+          });
         }
 
-        // Ensure session is saved after login
-        req.session!.save((err) => {
-          if (err) {
-            console.error("Error saving session after login:", err);
-            return res.status(500).json({ 
-              message: "Signup successful, but session could not be saved",
-              user,
-              admin 
+        try {
+          // Ensure session is saved after login
+          await new Promise<void>((resolve, reject) => {
+            req.session!.save((err) => {
+              if (err) {
+                console.error("Error saving session after login:", err);
+                reject(err);
+              } else {
+                console.log("Session saved successfully after login");
+                resolve();
+              }
             });
-          }
+          });
           
-          console.log("Session saved successfully after login");
           console.log("Admin user logged in successfully");
           
-          // Return user and admin profile
-          res.status(201).json({ user, admin });
-        });
+          // For cross-domain environments, add helpful info to response
+          if (isCrossDomainEnvironment) {
+            res.status(201).json({
+              user,
+              admin,
+              environment: 'cross-domain',
+              notes: {
+                sessionInfo: "Your session has been created. In some deployment environments, you may need to log in again.",
+                cookieSettings: {
+                  secure: isProduction,
+                  sameSite: isProduction && isCrossDomainEnvironment ? "none" : "lax",
+                  domain: process.env.COOKIE_DOMAIN || undefined
+                }
+              }
+            });
+          } else {
+            // Standard response for development environments
+            res.status(201).json({ user, admin });
+          }
+        } catch (sessionError) {
+          // Still return success but with warning about session
+          console.error("Error saving session, but user account created:", sessionError);
+          res.status(201).json({ 
+            user, 
+            admin, 
+            warning: "Session could not be saved. You may need to log in manually.",
+            environment: isCrossDomainEnvironment ? 'cross-domain' : 'same-origin'
+          });
+        }
       });
     } catch (error) {
       if (error instanceof ZodError) {
