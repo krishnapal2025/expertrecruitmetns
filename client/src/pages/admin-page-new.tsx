@@ -148,7 +148,7 @@ function AdminDashboard() {
       if (!res.ok) throw new Error("Failed to fetch vacancies");
       return await res.json();
     },
-    enabled: !!user && user.userType === "admin",
+    enabled: !!user && user.userType === "admin" || user.userType === "super_admin",
     refetchInterval: 5000, // Refetch every 5 seconds to show new submissions quickly
     refetchOnWindowFocus: true
   });
@@ -161,7 +161,7 @@ function AdminDashboard() {
       if (!res.ok) throw new Error("Failed to fetch inquiries");
       return await res.json();
     },
-    enabled: !!user && user.userType === "admin",
+    enabled: !!user && user.userType === "admin" || user.userType === "super_admin",
     refetchInterval: 5000, // Refetch every 5 seconds to show new submissions quickly
     refetchOnWindowFocus: true
   });
@@ -174,7 +174,7 @@ function AdminDashboard() {
       if (!res.ok) throw new Error("Failed to fetch applications");
       return await res.json();
     },
-    enabled: !!user && user.userType === "admin",
+    enabled: !!user && user.userType === "admin" || user.userType === "super_admin",
     refetchInterval: 5000, // Refetch every 5 seconds to show new submissions quickly
     refetchOnWindowFocus: true
   });

@@ -138,7 +138,7 @@ export default function EditBlogPage() {
       return;
     }
     
-    if (user.userType !== "admin") {
+    if (user.userType !== "admin" && user.userType !== "super_admin") {
       toast({
         title: "Access Denied",
         description: "You don't have permission to access this page.",
