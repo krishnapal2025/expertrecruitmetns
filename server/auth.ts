@@ -32,10 +32,12 @@ export function setupAuth(app: Express) {
   const isProduction = process.env.NODE_ENV === 'production';
   const isFlyIo = process.env.FLY_APP_NAME !== undefined;
   
+  console.log(`Auth setup - Production mode: ${isProduction}, Fly.io: ${isFlyIo}`);
+  
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || "robert-half-job-portal-secret",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true, // Changed to true to ensure session is always saved
     store: storage.sessionStore,
     cookie: {
       secure: isProduction, // Use secure cookies in production
@@ -49,6 +51,15 @@ export function setupAuth(app: Express) {
     // Add rolling to renew session on each request
     rolling: true
   };
+  
+  // Log session cookie settings for debugging
+  console.log("Session cookie settings:", {
+    secure: sessionSettings.cookie?.secure,
+    sameSite: sessionSettings.cookie?.sameSite,
+    domain: sessionSettings.cookie?.domain,
+    maxAge: sessionSettings.cookie?.maxAge,
+    proxy: sessionSettings.proxy
+  });
 
   app.set("trust proxy", 1);
   app.use(session(sessionSettings));

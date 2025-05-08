@@ -39,7 +39,10 @@ export default function SuperAdminSignupPage() {
     mutationFn: async (data: FormValues) => {
       console.log("Submitting form data:", data); // Log the data being sent
       try {
-        const res = await apiRequest("POST", "/api/admin/signup", data);
+        // Set credentials to include for cookie-based authentication
+        const res = await apiRequest("POST", "/api/admin/signup", data, {
+          credentials: 'include', // Important for cross-domain cookie handling in production
+        });
         console.log("Response status:", res.status); // Log the response status
         
         if (!res.ok) {
@@ -56,6 +59,13 @@ export default function SuperAdminSignupPage() {
         
         const responseData = await res.json().catch(() => ({ message: "Failed to parse response" }));
         console.log("Success response:", responseData);
+        
+        // If we're in production, we might need to handle cookies differently
+        // Check if we have user data without session cookies (common in cross-domain scenarios)
+        if (responseData.user && responseData.admin && !document.cookie.includes('connect.sid')) {
+          console.log("Successfully created admin but no session cookie found - this is normal for cross-domain production environments");
+        }
+        
         return responseData;
       } catch (err) {
         console.error("Registration error:", err);
@@ -107,6 +117,22 @@ export default function SuperAdminSignupPage() {
       ...data,
       role: "super_admin" as const // Force the role to be super_admin with correct type
     };
+    
+    // Check if this might be a fly.io environment
+    const isFlyIoEnvironment = window.location.hostname.includes('.fly.dev') ||
+                             window.location.hostname.endsWith('.fly.io') ||
+                             window.location.hostname.endsWith('.replit.app');
+    
+    if (isFlyIoEnvironment) {
+      console.log("Detected fly.io/replit environment - adding special handling");
+      // For fly.io environments, we'll show a warning that they may need to log in again after signup
+      toast({
+        title: "Note for deployed environments",
+        description: "After successful signup, you may need to log in again with your new credentials.",
+        variant: "default",
+        duration: 10000 // Show for 10 seconds
+      });
+    }
     
     try {
       registerMutation.mutate(formData);
