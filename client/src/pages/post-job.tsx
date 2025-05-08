@@ -1544,8 +1544,8 @@ export default function PostJobPage() {
                         Details for candidates to apply for this position
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <CardContent className="space-y-6 pt-4 pb-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormField
                           control={form.control}
                           name="applicationDeadline"
@@ -1574,11 +1574,12 @@ export default function PostJobPage() {
                                   </FormControl>
                                 </PopoverTrigger>
                                 <PopoverContent 
-                                  className="w-auto p-0 border-primary/20 shadow-lg rounded-xl overflow-hidden" 
+                                  className="w-[300px] p-0 border-primary/20 shadow-lg rounded-xl overflow-hidden" 
                                   align="start"
+                                  sideOffset={4}
                                 >
                                   <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-3 py-2 border-b border-primary/10">
-                                    <h4 className="text-sm font-medium text-primary">Choose Application Deadline</h4>
+                                    <h4 className="text-sm font-medium text-primary">Select Deadline</h4>
                                   </div>
                                   <Calendar
                                     mode="single"
@@ -1588,7 +1589,17 @@ export default function PostJobPage() {
                                       date < new Date(new Date().setHours(0, 0, 0, 0))
                                     }
                                     initialFocus
-                                    className="p-3 rounded-md"
+                                    className="p-2 rounded-md"
+                                    classNames={{
+                                      day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-primary/10", 
+                                      head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem] p-1",
+                                      caption: "flex justify-center pt-2 pb-1 relative items-center gap-1",
+                                      months: "flex flex-col space-y-3",
+                                      month: "space-y-4",
+                                      cell: "h-9 w-9 text-center text-sm p-0 relative m-0.5",
+                                      table: "w-full border-collapse space-y-2",
+                                      row: "flex w-full mt-1"
+                                    }}
                                   />
                                 </PopoverContent>
                               </Popover>
