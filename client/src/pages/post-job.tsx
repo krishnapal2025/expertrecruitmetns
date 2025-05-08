@@ -968,7 +968,7 @@ export default function PostJobPage() {
               </Button>
             </AlertDescription>
           </Alert>
-        ) : (currentUser.user.userType !== "admin") ? (
+        ) : (currentUser.user.userType !== "admin" && currentUser.user.userType !== "super_admin") ? (
           <Alert className="mb-6">
             <AlertTitle>Admin Account Required</AlertTitle>
             <AlertDescription>
@@ -1144,7 +1144,7 @@ export default function PostJobPage() {
                       />
                       
                       {/* Admin-only employer name input field */}
-                      {currentUser?.user.userType === "admin" && (
+                      {(currentUser?.user.userType === "admin" || currentUser?.user.userType === "super_admin") && (
                         <div className="mb-4">
                           <FormLabel>Enter Employer Company Name</FormLabel>
                           <Input

@@ -145,7 +145,7 @@ const CreateBlogPage = () => {
   const [previewHtml, setPreviewHtml] = useState<string>("");
   
   // Check if user is admin
-  if (user?.userType !== "admin") {
+  if (user?.userType !== "admin" && user?.userType !== "super_admin") {
     navigate("/admin-login");
     return null;
   }

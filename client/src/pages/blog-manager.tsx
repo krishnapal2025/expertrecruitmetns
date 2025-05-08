@@ -69,7 +69,7 @@ export default function BlogManagerPage() {
 
   // Check if user is admin
   useEffect(() => {
-    if (user?.userType !== "admin") {
+    if (user?.userType !== "admin" && user?.userType !== "super_admin") {
       navigate("/admin-login");
     }
   }, [user, navigate]);
