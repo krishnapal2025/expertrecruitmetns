@@ -314,7 +314,7 @@ export default function PostManagerPage() {
               </Button>
             </AlertDescription>
           </Alert>
-        ) : currentUser.user.userType !== "admin" ? (
+        ) : (currentUser.user.userType !== "admin" && currentUser.user.userType !== "super_admin") ? (
           <Alert className="mb-6">
             <AlertTitle>Admin Account Required</AlertTitle>
             <AlertDescription>
