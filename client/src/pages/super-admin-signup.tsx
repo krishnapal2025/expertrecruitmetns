@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { UserIcon, ShieldCheck } from "lucide-react";
+import { UserIcon, ShieldCheck, RefreshCcw } from "lucide-react";
 import { Loader2 } from "lucide-react";
 
 // Use the schema we defined in shared/schema.ts
@@ -299,7 +299,7 @@ export default function SuperAdminSignupPage() {
                     onClick={() => window.location.reload()}
                     className="text-xs"
                   >
-                    <span className="mr-1">⟳</span> Session expired? Refresh the page
+                    <RefreshCcw className="h-3 w-3 mr-1" /> Session expired? Refresh the page
                   </Button>
                 </div>
               </form>
