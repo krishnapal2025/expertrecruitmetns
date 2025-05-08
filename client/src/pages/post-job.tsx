@@ -32,7 +32,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Briefcase, Building, Clock, DollarSign, MapPin, Save, Tag, Check, CalendarIcon } from "lucide-react";
+import { Briefcase, Building, Clock, DollarSign, MapPin, Save, Tag, Check, CalendarIcon, Edit, Eye } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -951,10 +951,10 @@ export default function PostJobPage() {
   };
   
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Post a Job</h1>
-        <p className="text-gray-600 mb-8">
+    <div className="container mx-auto px-4 py-12 max-w-6xl">
+      <div className="mx-auto text-center">
+        <h1 className="text-4xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">Post a Job</h1>
+        <p className="text-gray-600 mb-10 max-w-2xl mx-auto">
           Create a new job listing to find the perfect candidate for your position
         </p>
         
@@ -978,20 +978,25 @@ export default function PostJobPage() {
         ) : (
           <>
             {/* Toggle between form and preview */}
-            <div className="flex mb-6 border-b pb-4">
-              <Button
-                variant={isPreview ? "outline" : "default"}
-                className="mr-2"
-                onClick={() => setIsPreview(false)}
-              >
-                Edit Job
-              </Button>
-              <Button
-                variant={isPreview ? "default" : "outline"}
-                onClick={() => setIsPreview(true)}
-              >
-                Preview
-              </Button>
+            <div className="flex justify-center mb-8">
+              <div className="bg-gray-100 dark:bg-gray-800/40 p-1 rounded-lg inline-flex shadow-sm">
+                <Button
+                  variant={isPreview ? "outline" : "default"}
+                  className={`mr-2 px-8 ${!isPreview ? 'bg-white dark:bg-gray-800 shadow-sm' : 'bg-transparent'}`}
+                  onClick={() => setIsPreview(false)}
+                >
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit Job
+                </Button>
+                <Button
+                  variant={isPreview ? "default" : "outline"}
+                  className={`px-8 ${isPreview ? 'bg-white dark:bg-gray-800 shadow-sm' : 'bg-transparent'}`}
+                  onClick={() => setIsPreview(true)}
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  Preview
+                </Button>
+              </div>
             </div>
             
             {isPreview ? (
@@ -1090,11 +1095,14 @@ export default function PostJobPage() {
             ) : (
               // Job Post Form
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Job Details</CardTitle>
-                      <CardDescription>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-4xl mx-auto">
+                  <Card className="border-t-4 border-t-primary shadow-lg">
+                    <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
+                      <CardTitle className="text-2xl text-primary/90 flex items-center">
+                        <Briefcase className="h-5 w-5 mr-2" />
+                        Job Details
+                      </CardTitle>
+                      <CardDescription className="text-base mt-2">
                         Enter the basic information about the job position
                       </CardDescription>
                     </CardHeader>
