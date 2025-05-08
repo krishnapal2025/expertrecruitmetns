@@ -18,7 +18,7 @@ function AdminPage() {
     }
 
     // Check if user is admin and handle accordingly
-    if (user.userType === "admin") {
+    if (user.userType === "admin" || user.userType === "super_admin") {
       setRedirectPath("/admin-dashboard");
     } else {
       toast({
