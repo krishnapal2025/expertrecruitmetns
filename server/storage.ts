@@ -16,7 +16,7 @@ import session from "express-session";
 import createMemoryStore from "memorystore";
 import connectPg from "connect-pg-simple";
 import { db, type DatabaseInstance } from "./db";
-import { eq, like, gte, lte, or, and, sql, desc } from "drizzle-orm";
+import { eq, like, gte, lte, or, and, sql, desc, inArray } from "drizzle-orm";
 import pkg from 'pg';
 const { Pool } = pkg;
 import type { Pool as PgPool } from 'pg';
@@ -44,6 +44,7 @@ export interface IStorage {
   getAllUsers(): Promise<User[]>;
   getUserByEmployerId(employerId: number): Promise<User | undefined>;
   getUserByJobSeekerId(jobSeekerId: number): Promise<User | undefined>;
+  removeSuperAdminUsers(): Promise<{ count: number; removedUserIds: number[] }>;
   getUserById(id: number): Promise<User | undefined>;
   updateUserPassword(userId: number, password: string): Promise<User | undefined>;
 
@@ -201,6 +202,59 @@ export class DatabaseStorage implements IStorage {
     if (!jobSeeker) return undefined;
 
     return this.getUser(jobSeeker.userId);
+  }
+  
+  // Special method to remove super admin users
+  async removeSuperAdminUsers(): Promise<{ count: number; removedUserIds: number[] }> {
+    console.log("Removing all super_admin users from the database");
+    
+    try {
+      // First, find all super_admin users
+      const superAdminUsers = await db
+        .select()
+        .from(users)
+        .where(eq(users.userType, "super_admin"));
+      
+      if (superAdminUsers.length === 0) {
+        console.log("No super_admin users found to remove");
+        return { count: 0, removedUserIds: [] };
+      }
+      
+      // Get the IDs of all super admins
+      const superAdminIds = superAdminUsers.map(user => user.id);
+      console.log(`Found ${superAdminIds.length} super_admin users with IDs:`, superAdminIds);
+      
+      // Find the corresponding admin profile IDs for these users
+      const adminProfiles = await db
+        .select()
+        .from(admins)
+        .where(inArray(admins.userId, superAdminIds));
+      
+      const adminProfileIds = adminProfiles.map(admin => admin.id);
+      
+      // Delete admin profiles first due to foreign key constraints
+      if (adminProfileIds.length > 0) {
+        console.log(`Deleting ${adminProfileIds.length} admin profiles...`);
+        await db
+          .delete(admins)
+          .where(inArray(admins.id, adminProfileIds));
+      }
+      
+      // Delete the user records
+      console.log(`Deleting ${superAdminIds.length} super_admin user accounts...`);
+      await db
+        .delete(users)
+        .where(inArray(users.id, superAdminIds));
+      
+      console.log(`Successfully removed ${superAdminIds.length} super_admin users`);
+      return { 
+        count: superAdminIds.length, 
+        removedUserIds: superAdminIds 
+      };
+    } catch (error) {
+      console.error("Error removing super_admin users:", error);
+      throw error;
+    }
   }
   
   // Alias for getUser - used by CV endpoint

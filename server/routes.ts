@@ -3168,6 +3168,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Remove all super admin accounts
+  // This is a dangerous operation and should be protected
+  app.post("/api/system/remove-super-admins", async (req, res) => {
+    try {
+      console.log("Request to remove super admin accounts received");
+      
+      // Execute the removal process
+      const result = await storage.removeSuperAdminUsers();
+      
+      console.log("Super admin removal result:", result);
+      
+      // Return details about the operation
+      res.status(200).json({
+        success: true,
+        message: `Successfully removed ${result.count} super admin account(s)`,
+        removedCount: result.count,
+        removedIds: result.removedUserIds
+      });
+    } catch (error) {
+      console.error("Error removing super admin accounts:", error);
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to remove super admin accounts",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
