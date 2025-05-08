@@ -31,8 +31,23 @@ export async function comparePasswords(supplied: string, stored: string) {
 export function setupAuth(app: Express) {
   const isProduction = process.env.NODE_ENV === 'production';
   const isFlyIo = process.env.FLY_APP_NAME !== undefined;
+  const isReplit = process.env.REPL_ID !== undefined || process.env.REPL_SLUG !== undefined;
   
-  console.log(`Auth setup - Production mode: ${isProduction}, Fly.io: ${isFlyIo}`);
+  // Also detect any Replit app deployment
+  const isCrossDomainEnvironment = isFlyIo || isReplit;
+  
+  console.log(`Auth setup - Production mode: ${isProduction}, Fly.io: ${isFlyIo}, Replit: ${isReplit}`);
+  
+  // Determine if we need special cross-domain cookie settings
+  let cookieSameSite: 'none' | 'lax' | 'strict' = 'lax';
+  if (isProduction && isCrossDomainEnvironment) {
+    cookieSameSite = 'none'; // For cross-domain authentication in fly.io/replit
+  }
+  
+  // Get domain from env or set to undefined
+  const cookieDomain = isCrossDomainEnvironment 
+    ? (process.env.COOKIE_DOMAIN || undefined) 
+    : undefined;
   
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || "robert-half-job-portal-secret",
@@ -43,11 +58,11 @@ export function setupAuth(app: Express) {
       secure: isProduction, // Use secure cookies in production
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days for longer sessions
-      sameSite: isFlyIo ? 'none' : 'lax', // Critical fix for Fly.io
-      domain: isFlyIo ? process.env.COOKIE_DOMAIN : undefined // Set domain in production
+      sameSite: cookieSameSite,
+      domain: cookieDomain
     },
-    // These settings help with session persistence on Fly.io
-    proxy: isFlyIo,
+    // These settings help with session persistence in hosted environments
+    proxy: isCrossDomainEnvironment,
     // Add rolling to renew session on each request
     rolling: true
   };
@@ -58,7 +73,8 @@ export function setupAuth(app: Express) {
     sameSite: sessionSettings.cookie?.sameSite,
     domain: sessionSettings.cookie?.domain,
     maxAge: sessionSettings.cookie?.maxAge,
-    proxy: sessionSettings.proxy
+    proxy: sessionSettings.proxy,
+    environment: isCrossDomainEnvironment ? 'cross-domain' : 'same-origin'
   });
 
   app.set("trust proxy", 1);
