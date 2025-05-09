@@ -6,6 +6,7 @@ const sharedConfig = {
   app: {
     name: 'Expert Recruitments',
     version: process.env.npm_package_version || '1.0.0',
+    port: process.env.PORT ? parseInt(process.env.PORT) : 5000,
   },
   
   email: {
