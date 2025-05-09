@@ -86,6 +86,9 @@ app.use((req, res, next) => {
       serveStatic(app);
     }
 
+    // Set trusted proxies for Express
+    app.set('trust proxy', true);
+
     // Serve the app on configured port
     // This serves both the API and the client
     const port = config.app.port;
@@ -94,6 +97,10 @@ app.use((req, res, next) => {
       host: "0.0.0.0"
     }, () => {
       log(`serving on port ${port} in ${config.ENV.NODE_ENV} environment`);
+      log(`Server bound to host: 0.0.0.0`);
+      if (config.ENV.IS_FLY_IO) {
+        log('Running in Fly.io environment');
+      }
     });
   } catch (error) {
     log("Error during server startup:", error instanceof Error ? error.message : String(error));
