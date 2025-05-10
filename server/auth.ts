@@ -170,7 +170,7 @@ export function setupAuth(app: Express) {
         // Job seeker fields
         firstName, lastName, gender, dateOfBirth, country, phoneNumber,
         // Employer fields 
-        companyName, industry, companySize, description, logoPath, websiteUrl
+        companyName, industry, companyType, website
       } = req.body;
 
       if (!email || !password || !userType) {
@@ -193,7 +193,7 @@ export function setupAuth(app: Express) {
         userType
       });
 
-      let profile;
+      let profile: any; // Using any for simplicity
       if (userType === 'jobseeker') {
         // Create job seeker profile
         profile = await storage.createJobSeeker({
@@ -201,7 +201,7 @@ export function setupAuth(app: Express) {
           firstName: firstName || '',
           lastName: lastName || '',
           gender: gender || '',
-          dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : new Date(),
+          dateOfBirth: dateOfBirth || new Date().toISOString().split('T')[0], // Convert to string date format YYYY-MM-DD
           country: country || '',
           phoneNumber: phoneNumber || ''
         });
@@ -211,10 +211,10 @@ export function setupAuth(app: Express) {
           userId: user.id,
           companyName: companyName || '',
           industry: industry || '',
-          companySize: companySize || '',
-          description: description || '',
-          logoPath: logoPath || null,
-          websiteUrl: websiteUrl || null
+          companyType: companyType || '',  // Changed from companySize to match the schema
+          phoneNumber: phoneNumber || '',
+          country: country || '',
+          website: website || ''
         });
       }
 
@@ -301,7 +301,7 @@ export function setupAuth(app: Express) {
         firstName,
         lastName,
         gender,
-        dateOfBirth: new Date(dateOfBirth),
+        dateOfBirth: dateOfBirth || new Date().toISOString().split('T')[0], // Convert to string date format YYYY-MM-DD
         country,
         phoneNumber
       });
