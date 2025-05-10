@@ -41,56 +41,41 @@ export function AdminsList({ user }: { user: User | null }) {
     enabled: !!user && (user.userType === "admin" || user.userType === "super_admin")
   });
 
-  // Simplified direct admin delete mutation
+  // Admin delete mutation - using the same pattern as vacancy deletion
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: number) => {
+      console.log("Deleting admin user with ID:", userId);
+      
       try {
-        console.log(`Attempting to delete user ID: ${userId}`);
+        // Use apiRequest from queryClient to handle auth properly
+        const res = await apiRequest(
+          "DELETE", 
+          `/api/users/${userId}`
+        );
         
-        // Use the current user from props for auth headers
-        if (!user || !user.id) {
-          throw new Error("No authenticated user found. Please log in again.");
-        }
-        
-        // Make the direct DELETE request with simplified headers
-        const response = await fetch(`/api/users/${userId}`, {
-          method: 'DELETE',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Admin-Session': 'true',
-            'X-Admin-Id': user.id.toString(),
-            'X-Admin-Type': user.userType
-          }
-        });
-        
-        console.log(`Received response with status: ${response.status}`);
-        
-        // Handle error response
-        if (!response.ok) {
-          let errorMessage = "Failed to delete admin account";
+        if (!res.ok) {
+          const error = await res.json();
+          console.error("Delete admin error:", error);
           
-          try {
-            const errorData = await response.json();
-            errorMessage = errorData.message || errorMessage;
-          } catch (parseError) {
-            // If we can't parse JSON, use text content if available
-            const textContent = await response.text();
-            if (textContent) errorMessage = textContent;
+          // Even if there's a 404, we'll still consider it a success
+          // because the user might have been already deleted
+          if (res.status === 404) {
+            return { success: true, message: "Admin account already deleted or not found" };
           }
           
-          throw new Error(`${errorMessage} (Status: ${response.status})`);
+          throw new Error(error.message || "Failed to delete admin account");
         }
         
-        // Success - return data or simple confirmation
+        // Parse response JSON
         try {
-          return await response.json();
+          return await res.json();
         } catch (e) {
-          // If no JSON response, just return success
-          return { success: true };
+          // If no valid JSON, still return success
+          return { success: true, message: "Admin deleted successfully" };
         }
-      } catch (error: any) {
-        console.error("Error deleting admin:", error);
+      } catch (error) {
+        console.error("Delete admin error:", error);
+        // Re-throw to trigger onError handler
         throw error;
       }
     },
@@ -113,6 +98,10 @@ export function AdminsList({ user }: { user: User | null }) {
       
       // Log error details for debugging
       console.error("Delete operation failed:", error);
+      
+      // Close dialog even on error
+      setShowDeleteDialog(false);
+      setAdminToDelete(null);
     },
   });
 
