@@ -272,95 +272,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
   
-  // Method to delete a specific super admin user by ID
-  async deleteSuperAdmin(id: number): Promise<{ success: boolean; message: string }> {
-    console.log(`Attempting to delete super admin with ID: ${id}`);
-    
-    try {
-      // First verify that the user exists and is a super_admin
-      const user = await this.getUser(id);
-      
-      if (!user) {
-        console.log(`No user found with ID ${id}`);
-        return { success: false, message: "User not found" };
-      }
-      
-      if (user.userType !== "super_admin") {
-        console.log(`User with ID ${id} is not a super_admin (type: ${user.userType})`);
-        return { success: false, message: "User is not a super admin" };
-      }
-      
-      // Find the admin profile for this user
-      const adminProfile = await this.getAdminByUserId(id);
-      
-      // Use direct pool queries since Drizzle ORM's transaction support
-      // has compatibility issues with the current implementation
-      try {
-        console.log(`Using direct pool queries to delete super admin ${id}`);
-        
-        // Start a transaction
-        await this.pool.query('BEGIN');
-        
-        // Update blog posts to remove author reference
-        await this.pool.query(
-          `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1`,
-          [id]
-        );
-        
-        // Delete notifications
-        await this.pool.query(
-          `DELETE FROM notifications WHERE user_id = $1`,
-          [id]
-        );
-        
-        // Clear job assignments
-        await this.pool.query(
-          `UPDATE jobs SET assigned_to = NULL WHERE assigned_to = $1`,
-          [id]
-        );
-        
-        // Delete admin profile if exists
-        if (adminProfile) {
-          await this.pool.query(
-            `DELETE FROM admins WHERE id = $1`,
-            [adminProfile.id]
-          );
-        }
-        
-        // Finally delete the user
-        const result = await this.pool.query(
-          `DELETE FROM users WHERE id = $1 AND user_type = 'super_admin' RETURNING id`,
-          [id]
-        );
-        
-        if (result.rowCount === 0) {
-          // Rollback transaction
-          await this.pool.query('ROLLBACK');
-          return { success: false, message: "Failed to delete super admin user" };
-        }
-        
-        // Commit transaction
-        await this.pool.query('COMMIT');
-        
-        console.log(`Successfully deleted super admin user with ID ${id}`);
-        return { success: true, message: `Successfully deleted super admin with ID ${id}` };
-      } catch (txError) {
-        // Rollback transaction on error
-        await this.pool.query('ROLLBACK');
-        console.error(`Transaction error while deleting super admin ${id}:`, txError);
-        return { 
-          success: false, 
-          message: txError instanceof Error ? txError.message : "Transaction failed" 
-        };
-      }
-    } catch (error) {
-      console.error(`Error deleting super admin ${id}:`, error);
-      return { 
-        success: false, 
-        message: error instanceof Error ? error.message : "Unknown error occurred" 
-      };
-    }
-  }
+  // First implementation of deleteSuperAdmin is removed to fix duplicate method error
   
   // Alias for getUser - used by CV endpoint
   async getUserById(id: number): Promise<User | undefined> {
@@ -415,12 +327,8 @@ export class DatabaseStorage implements IStorage {
         );
         console.log(`Deleted ${notifResult.rowCount} notifications`);
         
-        // Clear job assignments
-        const jobResult = await client.query(
-          `UPDATE jobs SET assigned_to = NULL WHERE assigned_to = $1`,
-          [id]
-        );
-        console.log(`Cleared ${jobResult.rowCount} job assignments`);
+        // Skip job assignments update - column doesn't exist in the schema
+        console.log(`Skipping job assignments update - column not in schema`);
         
         // Delete admin profile if exists
         if (admin) {
@@ -999,17 +907,8 @@ export class DatabaseStorage implements IStorage {
             throw new Error(`Failed to delete notifications: ${notifError.message}`);
           }
           
-          // Step 7: Clear job assignments if any
-          try {
-            const jobAssignmentUpdate = await db.query(
-              `UPDATE jobs SET assigned_to = NULL WHERE assigned_to = $1 RETURNING id`,
-              [userId]
-            );
-            console.log(`DEBUG: Cleared ${jobAssignmentUpdate.rowCount} job assignments`);
-          } catch (jobError) {
-            console.error("ERROR in job assignment update step:", jobError);
-            throw new Error(`Failed to update job assignments: ${jobError.message}`);
-          }
+          // Step 7: Skip job assignments (column doesn't exist in current schema)
+          console.log(`DEBUG: Skipping job assignments step - column not in schema`);
           
           // Step 8: Get and delete admin profile
           if (admin) {
