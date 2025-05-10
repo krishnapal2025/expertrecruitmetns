@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/table";
 
 // Icons
-  ShieldCheck,
 import { InquiryPreviewModal } from "@/components/inquiry-preview-modal";
 import {
   Loader2,
@@ -792,10 +791,6 @@ function AdminDashboard() {
           <TabsTrigger value="dashboard">
             <BarChart2 className="mr-2 h-4 w-4" />
             Dashboard
-          <TabsTrigger value="admins">
-            <ShieldCheck className="mr-2 h-4 w-4" />
-            Admins
-          </TabsTrigger>
           </TabsTrigger>
           <TabsTrigger value="employers">
             <Building className="mr-2 h-4 w-4" />
