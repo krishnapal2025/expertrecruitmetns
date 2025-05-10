@@ -72,7 +72,7 @@ const jobPostSchema = z.object({
       .transform(val => new Date(val))
   ]),
   contactEmail: z.string().email("Must be a valid email address"),
-  employerId: z.number().optional(),
+  employerId: z.number().default(0),
 });
 
 type JobPostFormValues = z.infer<typeof jobPostSchema>;
@@ -707,8 +707,10 @@ export default function PostJobPage() {
           // Optional fields with null safety - we won't allow null values for now to prevent errors
           specialization: data.specialization?.trim() || "",
           
-          // We no longer need to include employerId as we're using company name directly
-          employerId: null
+          // Always include employerId as 0 (not null) to prevent database schema errors
+          // This is a workaround to handle the case where the database schema might still require this field
+          // The server will handle this value properly
+          employerId: 0
         };
         
         console.log("Submitting job with clean payload:", payload);
