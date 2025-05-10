@@ -37,7 +37,7 @@ export default function EditBlogPage() {
       if (!res.ok) throw new Error("Failed to fetch blog post");
       return await res.json();
     },
-    enabled: !!id && !!user && user.userType === "admin"
+    enabled: !!id && !!user && (user.userType === "admin" || user.userType === "super_admin")
   });
   
   // Populate form with data when blogPost is loaded
@@ -98,7 +98,7 @@ export default function EditBlogPage() {
         title: "Blog post deleted",
         description: "Your blog post has been deleted successfully.",
       });
-      navigate("/admin-dashboard");
+      navigate("/blog-manager");
     },
     onError: (error: Error) => {
       toast({
@@ -165,9 +165,9 @@ export default function EditBlogPage() {
       
       <div className="container mx-auto py-8 max-w-4xl">
         <div className="mb-8">
-          <Button variant="ghost" onClick={() => navigate("/admin-dashboard")} className="mb-4">
+          <Button variant="ghost" onClick={() => navigate("/blog-manager")} className="mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Dashboard
+            Back to Blog Manager
           </Button>
           
           <h1 className="text-3xl font-bold">Edit Blog Post</h1>
@@ -306,7 +306,17 @@ export default function EditBlogPage() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => navigate(`/article/${id}`)}
+                  onClick={() => {
+                    if (blogPost && blogPost.slug) {
+                      window.open(`/article/${blogPost.slug}`, "_blank");
+                    } else {
+                      toast({
+                        title: "Preview not available",
+                        description: "Save the blog post first to preview it.",
+                        variant: "destructive",
+                      });
+                    }
+                  }}
                 >
                   <Eye className="mr-2 h-4 w-4" />
                   Preview
