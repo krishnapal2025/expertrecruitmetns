@@ -3406,6 +3406,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // API endpoint to delete a specific super admin by ID
+  app.delete("/api/admin/super-admins/:id", async (req, res) => {
+    try {
+      // Check if user is authenticated and is a super admin
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = req.user;
+
+      // Only super admins can delete other super admin accounts
+      if (user.userType !== "super_admin") {
+        return res.status(403).json({ 
+          message: "Access denied. Only super admins can delete super admin accounts." 
+        });
+      }
+      
+      const superAdminId = parseInt(req.params.id, 10);
+      
+      if (isNaN(superAdminId)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+      
+      // Check if user is trying to delete their own account
+      if (superAdminId === user.id) {
+        return res.status(403).json({ message: "Cannot delete your own account" });
+      }
+      
+      // Use the storage function to delete the super admin
+      const result = await storage.deleteSuperAdmin(superAdminId);
+      
+      if (result.success) {
+        res.status(200).json({ 
+          success: true, 
+          message: result.message
+        });
+      } else {
+        res.status(400).json({ 
+          success: false, 
+          message: result.message
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting super admin account:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to delete super admin account",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // Remove all super admin accounts
   // This is a dangerous operation and should be protected
   app.post("/api/system/remove-super-admins", async (req, res) => {

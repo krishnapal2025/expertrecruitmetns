@@ -260,6 +260,82 @@ export class DatabaseStorage implements IStorage {
     }
   }
   
+  // Method to delete a specific super admin user by ID
+  async deleteSuperAdmin(id: number): Promise<{ success: boolean; message: string }> {
+    console.log(`Attempting to delete super admin with ID: ${id}`);
+    
+    try {
+      // First verify that the user exists and is a super_admin
+      const user = await this.getUser(id);
+      
+      if (!user) {
+        console.log(`No user found with ID ${id}`);
+        return { success: false, message: "User not found" };
+      }
+      
+      if (user.userType !== "super_admin") {
+        console.log(`User with ID ${id} is not a super_admin (type: ${user.userType})`);
+        return { success: false, message: "User is not a super admin" };
+      }
+      
+      // Find the admin profile for this user
+      const adminProfile = await this.getAdminByUserId(id);
+      
+      // Transaction to ensure all deletions succeed or fail together
+      return await db.transaction(async (tx) => {
+        try {
+          // Delete references in blog posts
+          await tx.query(
+            `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1`,
+            [id]
+          );
+          
+          // Delete notifications
+          await tx.query(
+            `DELETE FROM notifications WHERE user_id = $1`,
+            [id]
+          );
+          
+          // Clear job assignments
+          await tx.query(
+            `UPDATE jobs SET assigned_to = NULL WHERE assigned_to = $1`,
+            [id]
+          );
+          
+          // Delete admin profile if exists
+          if (adminProfile) {
+            await tx.query(
+              `DELETE FROM admins WHERE id = $1`,
+              [adminProfile.id]
+            );
+          }
+          
+          // Finally delete the user
+          const result = await tx.query(
+            `DELETE FROM users WHERE id = $1 AND user_type = 'super_admin' RETURNING id`,
+            [id]
+          );
+          
+          if (result.rowCount === 0) {
+            return { success: false, message: "Failed to delete super admin user" };
+          }
+          
+          console.log(`Successfully deleted super admin user with ID ${id}`);
+          return { success: true, message: `Successfully deleted super admin with ID ${id}` };
+        } catch (error) {
+          console.error(`Error in transaction while deleting super admin ${id}:`, error);
+          throw error;
+        }
+      });
+    } catch (error) {
+      console.error(`Error deleting super admin ${id}:`, error);
+      return { 
+        success: false, 
+        message: error instanceof Error ? error.message : "Unknown error occurred" 
+      };
+    }
+  }
+  
   // Alias for getUser - used by CV endpoint
   async getUserById(id: number): Promise<User | undefined> {
     return this.getUser(id);
