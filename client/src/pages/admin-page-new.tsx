@@ -792,10 +792,10 @@ function AdminDashboard() {
           <TabsTrigger value="dashboard">
             <BarChart2 className="mr-2 h-4 w-4" />
             Dashboard
+          </TabsTrigger>
           <TabsTrigger value="admins">
             <ShieldCheck className="mr-2 h-4 w-4" />
             Admins
-          </TabsTrigger>
           </TabsTrigger>
           <TabsTrigger value="employers">
             <Building className="mr-2 h-4 w-4" />
