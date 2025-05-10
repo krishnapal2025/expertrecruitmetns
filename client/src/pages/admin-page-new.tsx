@@ -417,9 +417,14 @@ function AdminDashboard() {
     },
   });
   
+  // Fix: Filter for admin and super_admin accounts
+  // Based on SQL query there are two super_admin accounts
   const filteredAdmins = users
     ? users
-        .filter((u: User) => u.userType === "admin" || u.userType === "super_admin")
+        .filter((u: User) => {
+          // SQL data shows the column name is user_type but our code accesses userType
+          return u.userType === "admin" || u.userType === "super_admin";
+        })
         .filter((admin: any) => {
           if (!searchAdmins) return true;
           const searchLower = searchAdmins.toLowerCase();
@@ -429,6 +434,9 @@ function AdminDashboard() {
           );
         })
     : [];
+  
+  console.log("All users:", users);
+  console.log("Admin users:", filteredAdmins);
   // Filter functions
   const filteredEmployers = users
     ? users
@@ -1086,7 +1094,9 @@ function AdminDashboard() {
                 <div>
                   <CardTitle>Admin Accounts</CardTitle>
                   <CardDescription>
-                    Manage administrator accounts and permissions
+                    Manage administrator accounts and permissions. {filteredAdmins.length > 0 
+                      ? `Currently ${filteredAdmins.length} admin accounts in the system.`
+                      : "No admin accounts found in the system."}
                   </CardDescription>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -1104,6 +1114,22 @@ function AdminDashboard() {
               {usersLoading ? (
                 <div className="flex justify-center py-8">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : filteredAdmins.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <ShieldAlert className="h-10 w-10 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium">No Admin Accounts Found</h3>
+                  <p className="text-sm text-muted-foreground mt-2 max-w-md">
+                    Our system should have two super admin accounts:<br/>
+                    <span className="font-semibold">info@expertlaborsupply.com</span> and <span className="font-semibold">admin@expertrecruitments.com</span>
+                  </p>
+                  <Alert variant="destructive" className="mt-4 max-w-md">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Data Access Issue</AlertTitle>
+                    <AlertDescription>
+                      You might need to check if you're correctly logged in as an admin or if there's a data loading issue.
+                    </AlertDescription>
+                  </Alert>
                 </div>
               ) : (
                 <ScrollArea className="h-[400px]">
