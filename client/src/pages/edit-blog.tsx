@@ -29,6 +29,9 @@ export default function EditBlogPage() {
   const [readTime, setReadTime] = useState("");
   const [published, setPublished] = useState(false);
   
+  // State to track if form has been modified from original blog post data
+  const [isFormModified, setIsFormModified] = useState(false);
+  
   // Fetch the blog post data
   const { data: blogPost, isLoading: isLoadingBlogPost } = useQuery({
     queryKey: [`/api/blog-posts/${id}`],
@@ -50,8 +53,38 @@ export default function EditBlogPage() {
       setBannerImage(blogPost.bannerImage || "");
       setReadTime(blogPost.readTime || "");
       setPublished(blogPost.published || false);
+      
+      // Reset the form modified state when loading initial data
+      setIsFormModified(false);
     }
   }, [blogPost]);
+  
+  // Function to create input change handlers that track modifications for string values
+  const createStringChangeHandler = (
+    setter: React.Dispatch<React.SetStateAction<string>>,
+    originalValue: string | undefined
+  ) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | string) => {
+    const newValue = typeof e === 'object' && e !== null && 'target' in e ? e.target.value : e;
+    setter(newValue);
+    
+    // Check if the current value is different from the original blog post
+    if (newValue !== (originalValue || "")) {
+      setIsFormModified(true);
+    }
+  };
+  
+  // Function for boolean values (like the published checkbox)
+  const createBooleanChangeHandler = (
+    setter: React.Dispatch<React.SetStateAction<boolean>>,
+    originalValue: boolean | undefined
+  ) => (value: boolean) => {
+    setter(value);
+    
+    // Check if the current value is different from the original blog post
+    if (value !== (originalValue || false)) {
+      setIsFormModified(true);
+    }
+  };
   
   // Update blog post mutation
   const updateBlogMutation = useMutation({
@@ -192,7 +225,7 @@ export default function EditBlogPage() {
                     id="title"
                     placeholder="Enter blog post title"
                     value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    onChange={createStringChangeHandler(setTitle, blogPost?.title)}
                     required
                   />
                 </div>
@@ -203,7 +236,7 @@ export default function EditBlogPage() {
                     id="subtitle"
                     placeholder="Enter a subtitle or brief excerpt"
                     value={subtitle}
-                    onChange={(e) => setSubtitle(e.target.value)}
+                    onChange={createStringChangeHandler(setSubtitle, blogPost?.subtitle)}
                   />
                 </div>
                 
@@ -307,12 +340,31 @@ export default function EditBlogPage() {
                   type="button"
                   variant="outline"
                   onClick={() => {
-                    if (blogPost && blogPost.slug) {
+                    // Create a sanitized slug from the current title for preview if needed
+                    const createSlugFromTitle = (title: string) => {
+                      return title
+                        .toLowerCase()
+                        .replace(/[^\w\s]/gi, '')
+                        .replace(/\s+/g, '-');
+                    };
+                    
+                    if (blogPost && blogPost.slug && !isFormModified) {
+                      // Use existing slug if available and form hasn't been modified
                       window.open(`/article/${blogPost.slug}`, "_blank");
+                    } else if (title) {
+                      // Inform user we're using a temporary preview based on current form data
+                      toast({
+                        title: "Using temporary preview",
+                        description: "Viewing a preview with your current changes. Save the post to finalize.",
+                      });
+                      
+                      // Use the current title to generate a temporary slug for preview
+                      const tempSlug = createSlugFromTitle(title);
+                      window.open(`/article/${tempSlug}`, "_blank");
                     } else {
                       toast({
                         title: "Preview not available",
-                        description: "Save the blog post first to preview it.",
+                        description: "Please provide a title for your blog post.",
                         variant: "destructive",
                       });
                     }
