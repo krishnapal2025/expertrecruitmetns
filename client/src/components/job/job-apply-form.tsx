@@ -41,11 +41,28 @@ export default function JobApplyForm({ jobId, jobTitle, employerName, onSuccess 
   
   // Job application mutation
   const applicationMutation = useMutation({
-    mutationFn: async (data: ApplicationFormValues) => {
-      // Send application data to server
-      const res = await apiRequest("POST", `/api/jobs/${jobId}/apply`, {
-        coverLetter: data.coverLetter,
+    mutationFn: async (data: ApplicationFormValues & { fileData?: File }) => {
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append("coverLetter", data.coverLetter);
+      
+      // Add resume file if provided
+      if (data.fileData) {
+        formData.append("resume", data.fileData);
+      }
+      
+      // Send application data with file to server
+      const res = await fetch(`/api/jobs/${jobId}/apply`, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
       });
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to submit application");
+      }
+      
       return res.json();
     },
     onSuccess: () => {
@@ -70,31 +87,63 @@ export default function JobApplyForm({ jobId, jobTitle, employerName, onSuccess 
     },
   });
   
+  // State to store the file object
+  const [fileData, setFileData] = useState<File | null>(null);
+  
   // Handle file upload
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // In a real implementation, we would handle the file upload here
-      // For this demo, we'll just store the filename
+      // Check file type
+      if (!file.name.match(/\.(pdf|docx)$/i)) {
+        toast({
+          title: "Invalid file format",
+          description: "Only PDF and DOCX files are allowed for resume uploads.",
+          variant: "destructive",
+        });
+        // Reset the input
+        event.target.value = '';
+        setFileName("");
+        setFileData(null);
+        return;
+      }
+      
+      // Check file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Resume file size must be less than 5MB.",
+          variant: "destructive",
+        });
+        // Reset the input
+        event.target.value = '';
+        setFileName("");
+        setFileData(null);
+        return;
+      }
+      
+      // Store the file object and filename
+      setFileData(file);
       setFileName(file.name);
     }
   };
   
   // Handle form submission
   const onSubmit = (data: ApplicationFormValues) => {
-    // Simulate file upload if a file was selected
-    if (fileName) {
-      setIsUploading(true);
-      // Simulate upload delay
-      setTimeout(() => {
-        setIsUploading(false);
-        // Submit application
-        applicationMutation.mutate(data);
-      }, 1500);
-    } else {
-      // Submit application without file
-      applicationMutation.mutate(data);
-    }
+    setIsUploading(true);
+    
+    // Submit application with file if selected
+    applicationMutation.mutate(
+      { 
+        ...data, 
+        fileData: fileData || undefined 
+      },
+      {
+        onSettled: () => {
+          setIsUploading(false);
+        }
+      }
+    );
   };
   
   return (
@@ -139,7 +188,7 @@ export default function JobApplyForm({ jobId, jobTitle, employerName, onSuccess 
                 id="cv"
                 type="file"
                 className="hidden"
-                accept=".pdf,.doc,.docx"
+                accept=".pdf,.docx"
                 onChange={handleFileChange}
               />
             </label>

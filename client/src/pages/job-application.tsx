@@ -140,10 +140,27 @@ export default function JobApplicationPage() {
     }
   }, [currentUser, location, navigate, toast]);
   
+  // State to store file objects
+  const [cvFile, setCvFile] = useState<File | null>(null);
+  
   // Handle CV file upload
   const handleCvFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Check file type
+      if (!file.name.match(/\.(pdf|docx)$/i)) {
+        toast({
+          title: "Invalid file format",
+          description: "Only PDF and DOCX files are allowed for resume uploads",
+          variant: "destructive",
+        });
+        // Reset input
+        event.target.value = '';
+        setCvFileName("");
+        setCvFile(null);
+        return;
+      }
+      
       // Validate file size (5MB max)
       if (file.size > 5 * 1024 * 1024) {
         toast({
@@ -151,8 +168,14 @@ export default function JobApplicationPage() {
           description: "Please upload a file smaller than 5MB",
           variant: "destructive",
         });
+        // Reset input
+        event.target.value = '';
+        setCvFileName("");
+        setCvFile(null);
         return;
       }
+      
+      setCvFile(file);
       setCvFileName(file.name);
     }
   };
@@ -177,26 +200,48 @@ export default function JobApplicationPage() {
   // Job application mutation
   const applicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormValues) => {
-      // In a real implementation, file uploads would be handled here
-      const res = await apiRequest("POST", `/api/jobs/${jobId}/apply`, {
-        coverLetter: data.coverLetter,
-        additionalData: {
-          fullName: data.fullName,
-          email: data.email,
-          phone: data.phone,
-          currentPosition: data.currentPosition,
-          yearsOfExperience: data.yearsOfExperience,
-          availableStartDate: data.availableStartDate,
-          salaryExpectation: `${data.salaryExpectation} ${selectedCurrency}`,
-          heardAbout: data.heardAbout,
-          linkedinProfile: data.linkedinProfile,
-          portfolioUrl: data.portfolioUrl,
-          relocation: data.relocation,
-          referenceContacts: data.referenceContacts,
-          hasCvFile: !!cvFileName,
-          hasAdditionalDocuments: !!additionalFileName,
-        }
+      // Create FormData for file uploads
+      const formData = new FormData();
+      
+      // Append basic form data
+      formData.append("coverLetter", data.coverLetter);
+      
+      // Append additional applicant data as JSON
+      const additionalData = {
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        currentPosition: data.currentPosition,
+        yearsOfExperience: data.yearsOfExperience,
+        availableStartDate: data.availableStartDate,
+        salaryExpectation: `${data.salaryExpectation} ${selectedCurrency}`,
+        heardAbout: data.heardAbout,
+        linkedinProfile: data.linkedinProfile,
+        portfolioUrl: data.portfolioUrl,
+        relocation: data.relocation,
+        referenceContacts: data.referenceContacts,
+        hasCvFile: !!cvFileName,
+        hasAdditionalDocuments: !!additionalFileName,
+      };
+      formData.append("additionalData", JSON.stringify(additionalData));
+      
+      // Add resume file if available
+      if (cvFile) {
+        formData.append("resume", cvFile);
+      }
+      
+      // Send application data to server with files
+      const res = await fetch(`/api/jobs/${jobId}/apply`, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
       });
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to submit application");
+      }
+      
       return res.json();
     },
     onSuccess: () => {
