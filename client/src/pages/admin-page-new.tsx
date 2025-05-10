@@ -123,10 +123,10 @@ function AdminDashboard() {
   });
   
   // Fetch users
-  const { data: users, isLoading: usersLoading } = useQuery({
-    queryKey: ["/api/users"],
+  const { data: users, isLoading: usersLoading, error: usersError } = useQuery({
+    queryKey: ["/api/admin/all"],
     queryFn: async () => {
-      const res = await fetch("/api/users");
+      const res = await fetch("/api/admin/all");
       if (!res.ok) throw new Error("Failed to fetch users");
       return await res.json();
     },
