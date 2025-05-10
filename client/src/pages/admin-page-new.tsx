@@ -220,8 +220,8 @@ function AdminDashboard() {
   
   // Mutations for actions
   const deleteUserMutation = useMutation({
-    mutationFn: async (userId: number) => {
-      const res = await apiRequest("DELETE", `/api/users/${userId}`);
+    mutationFn: async (data: { id: number, userType: string }) => {
+      const res = await apiRequest("DELETE", `/api/users/${data.id}?type=${data.userType}`);
       if (!res.ok) {
         const error = await res.json();
         throw new Error(error.message || "Failed to delete user");
