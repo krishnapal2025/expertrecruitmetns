@@ -874,12 +874,9 @@ export class DatabaseStorage implements IStorage {
           );
           console.log(`DEBUG: Found ${notificationCount.rows[0].count || 0} notifications for this admin`);
           
-          // Step 4: Check for any additional references in other tables (job assignments, etc.)
-          const jobAssignmentCount = await db.query(
-            `SELECT COUNT(*) FROM jobs WHERE assigned_to = $1`,
-            [userId]
-          );
-          console.log(`DEBUG: Found ${jobAssignmentCount.rows[0].count || 0} job assignments to this admin`);
+          // Step 4: Check for any additional references in other tables
+          // Skipping job assignments check as the 'assigned_to' column doesn't exist in the current schema
+          console.log(`DEBUG: Skipping job assignments check - column not in schema`);
           
           console.log("Starting direct SQL deletion operations with proper error handling");
           
