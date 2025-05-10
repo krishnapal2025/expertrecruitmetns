@@ -281,52 +281,66 @@ export class DatabaseStorage implements IStorage {
       // Find the admin profile for this user
       const adminProfile = await this.getAdminByUserId(id);
       
-      // Transaction to ensure all deletions succeed or fail together
-      return await db.transaction(async (tx) => {
-        try {
-          // Delete references in blog posts
-          await tx.query(
-            `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1`,
-            [id]
+      // Use direct pool queries since Drizzle ORM's transaction support
+      // has compatibility issues with the current implementation
+      try {
+        console.log(`Using direct pool queries to delete super admin ${id}`);
+        
+        // Start a transaction
+        await this.pool.query('BEGIN');
+        
+        // Update blog posts to remove author reference
+        await this.pool.query(
+          `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1`,
+          [id]
+        );
+        
+        // Delete notifications
+        await this.pool.query(
+          `DELETE FROM notifications WHERE user_id = $1`,
+          [id]
+        );
+        
+        // Clear job assignments
+        await this.pool.query(
+          `UPDATE jobs SET assigned_to = NULL WHERE assigned_to = $1`,
+          [id]
+        );
+        
+        // Delete admin profile if exists
+        if (adminProfile) {
+          await this.pool.query(
+            `DELETE FROM admins WHERE id = $1`,
+            [adminProfile.id]
           );
-          
-          // Delete notifications
-          await tx.query(
-            `DELETE FROM notifications WHERE user_id = $1`,
-            [id]
-          );
-          
-          // Clear job assignments
-          await tx.query(
-            `UPDATE jobs SET assigned_to = NULL WHERE assigned_to = $1`,
-            [id]
-          );
-          
-          // Delete admin profile if exists
-          if (adminProfile) {
-            await tx.query(
-              `DELETE FROM admins WHERE id = $1`,
-              [adminProfile.id]
-            );
-          }
-          
-          // Finally delete the user
-          const result = await tx.query(
-            `DELETE FROM users WHERE id = $1 AND user_type = 'super_admin' RETURNING id`,
-            [id]
-          );
-          
-          if (result.rowCount === 0) {
-            return { success: false, message: "Failed to delete super admin user" };
-          }
-          
-          console.log(`Successfully deleted super admin user with ID ${id}`);
-          return { success: true, message: `Successfully deleted super admin with ID ${id}` };
-        } catch (error) {
-          console.error(`Error in transaction while deleting super admin ${id}:`, error);
-          throw error;
         }
-      });
+        
+        // Finally delete the user
+        const result = await this.pool.query(
+          `DELETE FROM users WHERE id = $1 AND user_type = 'super_admin' RETURNING id`,
+          [id]
+        );
+        
+        if (result.rowCount === 0) {
+          // Rollback transaction
+          await this.pool.query('ROLLBACK');
+          return { success: false, message: "Failed to delete super admin user" };
+        }
+        
+        // Commit transaction
+        await this.pool.query('COMMIT');
+        
+        console.log(`Successfully deleted super admin user with ID ${id}`);
+        return { success: true, message: `Successfully deleted super admin with ID ${id}` };
+      } catch (txError) {
+        // Rollback transaction on error
+        await this.pool.query('ROLLBACK');
+        console.error(`Transaction error while deleting super admin ${id}:`, txError);
+        return { 
+          success: false, 
+          message: txError instanceof Error ? txError.message : "Transaction failed" 
+        };
+      }
     } catch (error) {
       console.error(`Error deleting super admin ${id}:`, error);
       return { 
