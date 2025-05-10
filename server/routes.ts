@@ -2396,6 +2396,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Delete a user (admin only) - handles employers, job seekers, and admin accounts with simplified auth
+  // Get user by ID (admin only) - for debugging
+  app.get("/api/users/:id", async (req, res) => {
+    try {
+      // Authentication check
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized - not logged in" });
+      }
+      
+      // Authorization check
+      const user = req.user as Express.User;
+      if (user.userType !== 'admin' && user.userType !== 'super_admin') {
+        return res.status(403).json({ message: "Forbidden - admin access required" });
+      }
+      
+      // Get user ID from params
+      const userId = parseInt(req.params.id, 10);
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID format" });
+      }
+      
+      // Get user by ID
+      console.log(`Server: Looking up user with ID ${userId} for debug`);
+      const userToView = await storage.getUser(userId);
+      
+      if (!userToView) {
+        console.log(`Server: User with ID ${userId} not found`);
+        return res.status(404).json({ 
+          message: "User not found",
+          requestedId: userId
+        });
+      }
+      
+      console.log(`Server: Found user with ID ${userId}, type: ${userToView.userType}`);
+      
+      // Return user data
+      return res.json(userToView);
+    } catch (error) {
+      console.error("Error getting user by ID:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   app.delete("/api/users/:id", async (req, res) => {
     try {
       const isDebug = req.headers['x-request-debug'] === 'true';
@@ -2475,10 +2517,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only administrators can delete users" });
       }
       
-      const userId = parseInt(req.params.id, 10);
+      // Parse and validate the user ID from the URL parameter
+      const userIdParam = req.params.id;
+      console.log(`Server: Raw user ID from request params: "${userIdParam}"`);
+      
+      const userId = parseInt(userIdParam, 10);
       if (isNaN(userId)) {
-        console.log("Invalid user ID format");
-        return res.status(400).json({ message: "Invalid user ID" });
+        console.log(`Server: Invalid user ID format: "${userIdParam}" parsed as NaN`);
+        return res.status(400).json({ 
+          message: "Invalid user ID", 
+          detail: `The provided ID "${userIdParam}" is not a valid number` 
+        });
+      }
+      
+      console.log(`Server: Valid user ID parsed: ${userId}`);
+      
+      // Verify that the admin ID from the authenticated user is also valid
+      console.log(`Server: Admin user ID (from auth): ${user.id}, type: ${typeof user.id}`);
+      if (typeof user.id !== 'number' || isNaN(user.id)) {
+        console.log(`Server: WARNING - Authenticated admin has invalid ID: ${user.id}`);
       }
       
       // Check if user is trying to delete themselves

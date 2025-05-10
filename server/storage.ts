@@ -490,13 +490,17 @@ export class DatabaseStorage implements IStorage {
           console.log(`Database Storage: Starting transaction to delete user ID: ${userId}`);
           
           // 1. Check if user exists
-          const [user] = await tx.select().from(users).where(eq(users.id, userId));
-          if (!user) {
-            console.log(`Database Storage: User with ID ${userId} not found`);
+          console.log(`Database Storage: Checking if user ${userId} exists`);
+          const userResults = await tx.select().from(users).where(eq(users.id, userId));
+          console.log(`Database Storage: User query results:`, userResults);
+          
+          if (!userResults || userResults.length === 0) {
+            console.log(`Database Storage: User with ID ${userId} not found in database`);
             return false; // Return false instead of throwing an error for consistent behavior
           }
           
-          console.log(`Database Storage: Found user ${userId} to delete, userType: ${user.userType}`);
+          const user = userResults[0];
+          console.log(`Database Storage: Found user ${userId} to delete, userType: ${user.userType}, email: ${user.email}`);
 
           // 2. Delete admin record if exists
           await tx.delete(admins).where(eq(admins.userId, userId));
@@ -535,13 +539,28 @@ export class DatabaseStorage implements IStorage {
           await tx.delete(notifications).where(eq(notifications.userId, userId));
           
           // 7. Finally delete the user
+          console.log(`Database Storage: About to delete user ${userId} from users table`);
           const result = await tx.delete(users).where(eq(users.id, userId));
+          console.log(`Database Storage: Delete operation results:`, result);
           
           const success = result.rowCount > 0;
           console.log(`Database Storage: User deletion result - rowCount: ${result.rowCount}, success: ${success}`);
           return success;
         } catch (txError) {
           console.error(`Database Storage: Transaction error while deleting user ${userId}:`, txError);
+          
+          // Log specific details for SQL errors
+          if (txError.code) {
+            console.error(`Database Storage: SQL Error code: ${txError.code}, constraint: ${txError.constraint || 'none'}`);
+          }
+          
+          if (txError instanceof Error) {
+            console.error(`Database Storage: Error type: ${txError.name}, message: ${txError.message}`);
+            if (txError.stack) {
+              console.error(`Database Storage: Error stack: ${txError.stack}`);
+            }
+          }
+          
           return false; // Return false instead of rethrowing to provide consistent return values
         }
       });
