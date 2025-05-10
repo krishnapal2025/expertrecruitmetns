@@ -1394,6 +1394,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to download CV" });
     }
   });
+  
+  // Resume endpoint - allows for viewing in browser
+  app.get("/api/applications/:id/resume", async (req, res) => {
+    try {
+      // Use the same handler but with inline content disposition
+      await handleCvDownload(req, res, storage, true);
+    } catch (error) {
+      console.error("Error viewing resume:", error);
+      res.status(500).json({ message: "Failed to view resume" });
+    }
+  });
+  
+  // PDF download endpoint - specifically for PDF format
+  app.get("/api/applications/:id/download-pdf", async (req, res) => {
+    try {
+      // Use PDF service to convert and sanitize if needed
+      await handleCvDownload(req, res, storage, false, "pdf");
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      res.status(500).json({ message: "Failed to download PDF" });
+    }
+  });
 
   // Update application status (employers and admins only)
   app.patch("/api/applications/:id/status", async (req, res) => {
