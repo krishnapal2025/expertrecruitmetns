@@ -32,14 +32,20 @@ export function AdminsList({ user }: { user: User | null }) {
   });
 
   // Admin delete mutation
-  const deleteAdminMutation = useMutation({
-    mutationFn: async (adminId: number) => {
-      const res = await apiRequest("DELETE", `/api/admin/${adminId}`);
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Failed to delete admin");
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      try {
+        console.log(`Deleting user with ID: ${userId}`);
+        const res = await apiRequest("DELETE", `/api/users/${userId}`);
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || "Failed to delete admin account");
+        }
+        return await res.json();
+      } catch (error: any) {
+        console.error("Error in deleteUserMutation:", error);
+        throw error;
       }
-      return await res.json();
     },
     onSuccess: () => {
       toast({
@@ -58,9 +64,19 @@ export function AdminsList({ user }: { user: User | null }) {
   });
 
   // Handle admin deletion
-  const handleDeleteAdmin = (adminId: number) => {
-    if (window.confirm("Are you sure you want to delete this admin account?")) {
-      deleteAdminMutation.mutate(adminId);
+  const handleDeleteAdmin = (admin: any) => {
+    if (!admin.user || !admin.user.id) {
+      toast({
+        title: "Error",
+        description: "Cannot identify user account for this admin",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (window.confirm(`Are you sure you want to delete the admin account for ${admin.firstName} ${admin.lastName}?`)) {
+      console.log(`Attempting to delete admin user with ID: ${admin.user.id}`);
+      deleteUserMutation.mutate(admin.user.id);
     }
   };
   
@@ -111,7 +127,7 @@ export function AdminsList({ user }: { user: User | null }) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => handleDeleteAdmin(admin.id)}
+                    onClick={() => handleDeleteAdmin(admin)}
                     disabled={user?.id === admin.user?.id}
                     title={user?.id === admin.user?.id ? "Cannot delete your own account" : "Delete admin"}
                   >
