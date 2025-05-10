@@ -36,10 +36,22 @@ export function AdminsList({ user }: { user: User | null }) {
     mutationFn: async (userId: number) => {
       try {
         console.log(`Deleting user with ID: ${userId}`);
+        // Log the session cookie for debugging
+        const cookies = document.cookie;
+        console.log(`Session cookies available: ${cookies ? 'Yes' : 'No'}`);
+        
         const res = await apiRequest("DELETE", `/api/users/${userId}`);
+        console.log(`Delete response status: ${res.status}`);
+        
         if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || "Failed to delete admin account");
+          let errorMessage = "Failed to delete admin account";
+          try {
+            const errorData = await res.json();
+            errorMessage = errorData.message || errorMessage;
+          } catch (e) {
+            console.error("Error parsing error response:", e);
+          }
+          throw new Error(errorMessage);
         }
         return await res.json();
       } catch (error: any) {
