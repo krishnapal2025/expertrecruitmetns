@@ -740,62 +740,88 @@ export class DatabaseStorage implements IStorage {
       
       // Handle specific profile records based on user type
       if (userType === 'employer') {
-        // Get employer profile
-        const employer = await this.getEmployerByUserId(userId);
-        if (employer) {
-          // Handle employer-specific related records
-          console.log(`Found employer profile ID ${employer.id} for user ID ${userId}`);
-          
-          // Update jobs to remove employer reference
-          await db.query(
-            `UPDATE jobs SET employer_id = NULL WHERE employer_id = $1`,
-            [employer.id]
-          );
-          
-          // Delete employer profile
-          await db.delete(employers).where(eq(employers.id, employer.id));
-          console.log(`Deleted employer profile ID ${employer.id}`);
+        try {
+          // Get employer profile
+          const employer = await this.getEmployerByUserId(userId);
+          if (employer) {
+            // Handle employer-specific related records
+            console.log(`Found employer profile ID ${employer.id} for user ID ${userId}`);
+            
+            // Update jobs to remove employer reference
+            await db.query(
+              `UPDATE jobs SET employer_id = NULL WHERE employer_id = $1`,
+              [employer.id]
+            );
+            
+            // Delete employer profile
+            await db.delete(employers).where(eq(employers.id, employer.id));
+            console.log(`Deleted employer profile ID ${employer.id}`);
+          } else {
+            console.log(`No employer profile found for user ID ${userId}`);
+          }
+        } catch (err) {
+          console.error(`Error handling employer data for user ${userId}:`, err);
+          // Continue with deletion even if employer data handling fails
         }
       } else if (userType === 'jobseeker') {
-        // Get job seeker profile
-        const jobSeeker = await this.getJobSeekerByUserId(userId);
-        if (jobSeeker) {
-          console.log(`Found job seeker profile ID ${jobSeeker.id} for user ID ${userId}`);
-          
-          // Delete applications by this job seeker
-          await db.query(
-            `DELETE FROM applications WHERE job_seeker_id = $1`,
-            [jobSeeker.id]
-          );
-          
-          // Delete job seeker profile
-          await db.delete(jobSeekers).where(eq(jobSeekers.id, jobSeeker.id));
-          console.log(`Deleted job seeker profile ID ${jobSeeker.id}`);
+        try {
+          // Get job seeker profile
+          const jobSeeker = await this.getJobSeekerByUserId(userId);
+          if (jobSeeker) {
+            console.log(`Found job seeker profile ID ${jobSeeker.id} for user ID ${userId}`);
+            
+            // Delete applications by this job seeker
+            await db.query(
+              `DELETE FROM applications WHERE job_seeker_id = $1`,
+              [jobSeeker.id]
+            );
+            
+            // Delete job seeker profile
+            await db.delete(jobSeekers).where(eq(jobSeekers.id, jobSeeker.id));
+            console.log(`Deleted job seeker profile ID ${jobSeeker.id}`);
+          } else {
+            console.log(`No job seeker profile found for user ID ${userId}`);
+          }
+        } catch (err) {
+          console.error(`Error handling job seeker data for user ${userId}:`, err);
+          // Continue with deletion even if job seeker data handling fails
         }
       } else if (userType === 'admin' || userType === 'super_admin') {
-        // Get admin profile
-        const admin = await this.getAdminByUserId(userId);
-        if (admin) {
-          console.log(`Found admin profile ID ${admin.id} for user ID ${userId}`);
-          
-          // Update blog posts to remove admin reference
-          await db.query(
-            `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1`,
-            [userId]
-          );
-          
-          // Delete admin profile
-          await db.delete(admins).where(eq(admins.id, admin.id));
-          console.log(`Deleted admin profile ID ${admin.id}`);
+        try {
+          // Get admin profile
+          const admin = await this.getAdminByUserId(userId);
+          if (admin) {
+            console.log(`Found admin profile ID ${admin.id} for user ID ${userId}`);
+            
+            // Update blog posts to remove admin reference
+            await db.query(
+              `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1`,
+              [userId]
+            );
+            
+            // Delete admin profile
+            await db.delete(admins).where(eq(admins.id, admin.id));
+            console.log(`Deleted admin profile ID ${admin.id}`);
+          } else {
+            console.log(`No admin profile found for user ID ${userId}`);
+          }
+        } catch (err) {
+          console.error(`Error handling admin data for user ${userId}:`, err);
+          // Continue with deletion even if admin data handling fails
         }
       }
       
-      // Delete notifications for this user
-      await db.query(
-        `DELETE FROM notifications WHERE user_id = $1`,
-        [userId]
-      );
-      console.log(`Deleted notifications for user ID ${userId}`);
+      try {
+        // Delete notifications for this user
+        await db.query(
+          `DELETE FROM notifications WHERE user_id = $1`,
+          [userId]
+        );
+        console.log(`Deleted notifications for user ID ${userId}`);
+      } catch (err) {
+        console.error(`Error deleting notifications for user ${userId}:`, err);
+        // Continue with deletion even if notification deletion fails
+      }
       
       // Finally delete the user account
       await db.delete(users).where(eq(users.id, userId));
