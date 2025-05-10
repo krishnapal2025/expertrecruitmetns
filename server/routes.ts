@@ -725,8 +725,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Job not found" });
       }
 
-      // Get the employer details for the job
-      const employer = await storage.getEmployer(job.employerId);
+      // Get the employer details for the job if employerId exists
+      let employer = null;
+      if (job.employerId) {
+        employer = await storage.getEmployer(job.employerId);
+      }
 
       res.json({ job, employer });
     } catch (error) {
