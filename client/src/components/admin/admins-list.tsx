@@ -41,67 +41,7 @@ export function AdminsList({ user }: { user: User | null }) {
     enabled: !!user && (user.userType === "admin" || user.userType === "super_admin")
   });
 
-  // Super admin delete mutation - uses specialized endpoint for super admins
-  const deleteSuperAdminMutation = useMutation({
-    mutationFn: async (userId: number) => {
-      console.log("Deleting super admin with ID:", userId);
-      
-      try {
-        // Use specialized endpoint for super admin deletion
-        const res = await apiRequest(
-          "DELETE", 
-          `/api/admin/super-admins/${userId}`
-        );
-        
-        if (!res.ok) {
-          const errorData = await res.json();
-          console.error("Delete super admin error:", errorData);
-          
-          // Even if there's a 404, we'll still consider it a success
-          if (res.status === 404) {
-            return { success: true, message: "Super admin account already deleted or not found" };
-          }
-          
-          throw new Error(errorData.message || "Failed to delete super admin account");
-        }
-        
-        // Parse response JSON
-        try {
-          return await res.json();
-        } catch (e) {
-          // If no valid JSON, still return success
-          return { success: true, message: "Super admin deleted successfully" };
-        }
-      } catch (error) {
-        console.error("Delete super admin error:", error);
-        throw error;
-      }
-    },
-    onSuccess: () => {
-      toast({
-        title: "Super admin deleted",
-        description: "The super admin account has been deleted successfully",
-      });
-      
-      // Refresh admin list after successful deletion
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/all"] });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Failed to delete super admin",
-        description: error.message || "An unexpected error occurred",
-        variant: "destructive",
-      });
-      
-      console.error("Delete super admin operation failed:", error);
-      
-      // Close dialog even on error
-      setShowDeleteDialog(false);
-      setAdminToDelete(null);
-    },
-  });
-
-  // Regular admin delete mutation - using the same pattern as vacancy deletion
+  // Admin delete mutation - using the same pattern as vacancy deletion
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: number) => {
       console.log("Deleting admin user with ID:", userId);
@@ -176,22 +116,8 @@ export function AdminsList({ user }: { user: User | null }) {
   
   const handleDeleteConfirm = () => {
     if (adminToDelete && adminToDelete.user && adminToDelete.user.id) {
-      const userId = adminToDelete.user.id;
-      const userType = adminToDelete.user.userType;
-      
-      console.log(`Attempting to delete admin user with ID: ${userId}, type: ${userType}`);
-      
-      // Use different deletion methods based on user type
-      if (userType === 'super_admin' && user?.userType === 'super_admin') {
-        // For super_admin accounts, use the specialized endpoint
-        console.log(`Using specialized super admin deletion endpoint for ID: ${userId}`);
-        deleteSuperAdminMutation.mutate(userId);
-      } else {
-        // For regular admin accounts, use the standard users endpoint
-        console.log(`Using standard user deletion endpoint for ID: ${userId}`);
-        deleteUserMutation.mutate(userId);
-      }
-      
+      console.log(`Attempting to delete admin user with ID: ${adminToDelete.user.id}`);
+      deleteUserMutation.mutate(adminToDelete.user.id);
       setShowDeleteDialog(false);
       setAdminToDelete(null);
     }
@@ -280,23 +206,15 @@ export function AdminsList({ user }: { user: User | null }) {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {adminToDelete?.user?.userType === 'super_admin' ? 'Delete Super Admin Account' : 'Delete Admin Account'}
-            </AlertDialogTitle>
+            <AlertDialogTitle>Delete Admin Account</AlertDialogTitle>
             <AlertDialogDescription>
               {adminToDelete && (
                 <>
-                  Are you sure you want to delete the {adminToDelete?.user?.userType === 'super_admin' ? 'super admin' : 'admin'} account for{" "}
+                  Are you sure you want to delete the admin account for{" "}
                   <strong>
                     {adminToDelete.firstName} {adminToDelete.lastName}
                   </strong>
                   ? This action cannot be undone.
-                  
-                  {adminToDelete?.user?.userType === 'super_admin' && (
-                    <div className="mt-2 text-destructive font-medium">
-                      Warning: Deleting a super admin account will remove all associated data and permissions.
-                    </div>
-                  )}
                 </>
               )}
             </AlertDialogDescription>
