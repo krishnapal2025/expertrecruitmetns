@@ -65,6 +65,7 @@ function AdminDashboard() {
   
   // State for tabs and filters
   const [reportTimeframe, setReportTimeframe] = useState("weekly");
+  const [searchAdmins, setSearchAdmins] = useState("");
   const [searchEmployers, setSearchEmployers] = useState("");
   const [searchJobSeekers, setSearchJobSeekers] = useState("");
   const [vacancyStatusFilter, setVacancyStatusFilter] = useState("all");
@@ -416,6 +417,18 @@ function AdminDashboard() {
     },
   });
   
+  const filteredAdmins = users
+    ? users
+        .filter((u: User) => u.userType === "admin" || u.userType === "super_admin")
+        .filter((admin: any) => {
+          if (!searchAdmins) return true;
+          const searchLower = searchAdmins.toLowerCase();
+          return (
+            admin.email?.toLowerCase().includes(searchLower) ||
+            admin.username?.toLowerCase().includes(searchLower)
+          );
+        })
+    : [];
   // Filter functions
   const filteredEmployers = users
     ? users
@@ -1065,6 +1078,81 @@ function AdminDashboard() {
                           <SelectItem value="weekly">Weekly Report</SelectItem>
                           <SelectItem value="monthly">Monthly Report</SelectItem>
                           <SelectItem value="yearly">Yearly Report</SelectItem>
+        {/* Admins Tab */}
+        <TabsContent value="admins" className="space-y-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                <div>
+                  <CardTitle>Admin Accounts</CardTitle>
+                  <CardDescription>
+                    Manage administrator accounts and permissions
+                  </CardDescription>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Search className="h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search admins..."
+                    value={searchAdmins}
+                    onChange={(e) => setSearchAdmins(e.target.value)}
+                    className="h-8 w-[150px] lg:w-[250px]"
+                  />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {usersLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <ScrollArea className="h-[400px]">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[50px]">#</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Username</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredAdmins.map((admin: User, index: number) => (
+                        <TableRow key={admin.id}>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{admin.email}</TableCell>
+                          <TableCell>{admin.username}</TableCell>
+                          <TableCell>
+                            <Badge variant={admin.userType === "super_admin" ? "default" : "outline"}>
+                              {admin.userType === "super_admin" ? "Super Admin" : "Admin"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDeleteUser(admin.id)}
+                              disabled={admin.id === user?.id || admin.userType === "super_admin"}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              <span className="sr-only">Delete</span>
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              )}
+            </CardContent>
+            <CardFooter className="border-t px-6 py-4">
+              <div className="text-sm text-muted-foreground">
+                {filteredAdmins.length} admin account(s) found
+              </div>
+            </CardFooter>
+          </Card>
+        </TabsContent>
                         </SelectContent>
                       </Select>
                       <Button variant="outline" size="sm" className="w-full">
