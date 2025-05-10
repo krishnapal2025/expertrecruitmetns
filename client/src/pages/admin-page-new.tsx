@@ -1635,6 +1635,112 @@ function AdminDashboard() {
             </TabsContent>
             
             {/* Resumes Tab */}
+            <TabsContent value="resumes" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Received Resumes</CardTitle>
+                  <CardDescription>
+                    View and manage submitted resumes and job applications
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {applicationsLoading ? (
+                      <div className="flex items-center justify-center p-8">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                      </div>
+                    ) : !applications || applications.length === 0 ? (
+                      <div className="text-center py-8">
+                        <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-3" />
+                        <h3 className="text-lg font-medium">No Resumes Found</h3>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Job applications and resumes will appear here when submitted.
+                        </p>
+                      </div>
+                    ) : (
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Applicant</TableHead>
+                            <TableHead>Job Position</TableHead>
+                            <TableHead>Date</TableHead>
+                            <TableHead>Resume</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {applications.map((application: any) => (
+                            <TableRow key={application.id}>
+                              <TableCell>
+                                <div className="font-medium">{application.jobSeeker?.firstName} {application.jobSeeker?.lastName}</div>
+                                <div className="text-sm text-muted-foreground">{application.email}</div>
+                              </TableCell>
+                              <TableCell>{application.job?.title || "N/A"}</TableCell>
+                              <TableCell>{formatDate(application.createdAt)}</TableCell>
+                              <TableCell>
+                                {application.resumePath ? (
+                                  <a 
+                                    href={`/api/applications/${application.id}/resume`} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="text-primary hover:text-primary/80 flex items-center"
+                                  >
+                                    <Download className="h-4 w-4 mr-1" />
+                                    Download
+                                  </a>
+                                ) : (
+                                  <span className="text-muted-foreground">No Resume</span>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <Badge 
+                                  variant={
+                                    application.status === "pending" ? "outline" : 
+                                    application.status === "reviewed" ? "secondary" :
+                                    application.status === "interviewed" ? "default" :
+                                    application.status === "hired" ? "success" : 
+                                    "destructive"
+                                  }
+                                >
+                                  {application.status === "pending" ? "Pending" : 
+                                   application.status === "reviewed" ? "Reviewed" :
+                                   application.status === "interviewed" ? "Interviewed" :
+                                   application.status === "hired" ? "Hired" : 
+                                   "Rejected"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <Select 
+                                  defaultValue={application.status}
+                                  onValueChange={(value) => {
+                                    updateApplicationStatusMutation.mutate({
+                                      id: application.id,
+                                      status: value
+                                    });
+                                  }}
+                                >
+                                  <SelectTrigger className="h-8 w-32">
+                                    <SelectValue placeholder="Update Status" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="reviewed">Reviewed</SelectItem>
+                                    <SelectItem value="interviewed">Interviewed</SelectItem>
+                                    <SelectItem value="hired">Hired</SelectItem>
+                                    <SelectItem value="rejected">Rejected</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
             
             {/* General Inquiries Tab */}
             <TabsContent value="inquiries" className="mt-6">

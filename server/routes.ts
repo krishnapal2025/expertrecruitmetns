@@ -1040,7 +1040,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
 
         res.json(applicationsWithJobs);
-      } else if (user.userType === "employer" || user.userType === "admin") {
+      } else if (user.userType === "employer" || user.userType === "admin" || user.userType === "super_admin") {
         let jobs = [];
 
         if (user.userType === "employer") {
@@ -1053,7 +1053,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Get all jobs for this employer
           const allJobs = await storage.getJobs();
           jobs = allJobs.filter(job => job.employerId && job.employerId === employer.id);
-        } else {
+        } else if (user.userType === "admin" || user.userType === "super_admin") {
           // Admin gets access to all jobs
           jobs = await storage.getJobs();
         }
