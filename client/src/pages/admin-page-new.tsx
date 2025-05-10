@@ -1041,75 +1041,83 @@ function AdminDashboard() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {applications.map((application: any) => {
-                          const applicant = users?.find((u: any) => u.id === application.userId);
-                          const job = jobs?.find((j: any) => j.id === application.jobId);
-                          const company = users?.find((u: any) => u.id === job?.employer_id);
-                          
-                          return (
-                            <TableRow key={application.id}>
-                              <TableCell className="font-medium">
-                                {applicant?.name || applicant?.email || "Unknown Applicant"}
-                              </TableCell>
-                              <TableCell>{job?.title || "Unknown Position"}</TableCell>
-                              <TableCell>{company?.name || "Unknown Company"}</TableCell>
-                              <TableCell>{formatDate(application.createdAt)}</TableCell>
-                              <TableCell>
-                                <Badge
-                                  variant={
-                                    application.status === "pending"
-                                      ? "outline"
-                                      : application.status === "approved"
-                                      ? "default"
-                                      : application.status === "rejected"
-                                      ? "destructive"
-                                      : "secondary"
-                                  }
-                                >
-                                  {application.status}
-                                </Badge>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex items-center space-x-2">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="h-8 px-2"
-                                    onClick={() => handleViewApplication(application)}
+                        {applications && applications.length > 0 ? (
+                          applications.map((application: any) => {
+                            const applicant = users?.find((u: any) => u.id === application.userId);
+                            const job = jobs?.find((j: any) => j.id === application.jobId);
+                            const company = users?.find((u: any) => u.id === job?.employer_id);
+                            
+                            return (
+                              <TableRow key={application.id}>
+                                <TableCell className="font-medium">
+                                  {applicant?.name || applicant?.email || "Unknown Applicant"}
+                                </TableCell>
+                                <TableCell>{job?.title || "Unknown Position"}</TableCell>
+                                <TableCell>{company?.name || "Unknown Company"}</TableCell>
+                                <TableCell>{formatDate(application.createdAt)}</TableCell>
+                                <TableCell>
+                                  <Badge
+                                    variant={
+                                      application.status === "pending"
+                                        ? "outline"
+                                        : application.status === "approved"
+                                        ? "default"
+                                        : application.status === "rejected"
+                                        ? "destructive"
+                                        : "secondary"
+                                    }
                                   >
-                                    <Download className="h-4 w-4" />
-                                  </Button>
-                                  
-                                  {application.status === "pending" && (
-                                    <>
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="h-8 px-2 bg-green-50 hover:bg-green-100 border-green-200"
-                                        onClick={() => 
-                                          handleUpdateApplicationStatus(application.id, "approved")
-                                        }
-                                      >
-                                        <CheckCircle className="h-4 w-4 text-green-500" />
-                                      </Button>
-                                      
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="h-8 px-2 bg-red-50 hover:bg-red-100 border-red-200"
-                                        onClick={() => 
-                                          handleUpdateApplicationStatus(application.id, "rejected")
-                                        }
-                                      >
-                                        <XCircle className="h-4 w-4 text-red-500" />
-                                      </Button>
-                                    </>
-                                  )}
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
+                                    {application.status}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex items-center space-x-2">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="h-8 px-2"
+                                      onClick={() => handleViewApplication(application)}
+                                    >
+                                      <Download className="h-4 w-4" />
+                                    </Button>
+                                    
+                                    {application.status === "pending" && (
+                                      <>
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          className="h-8 px-2 bg-green-50 hover:bg-green-100 border-green-200"
+                                          onClick={() => 
+                                            handleUpdateApplicationStatus(application.id, "approved")
+                                          }
+                                        >
+                                          <CheckCircle className="h-4 w-4 text-green-500" />
+                                        </Button>
+                                        
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          className="h-8 px-2 bg-red-50 hover:bg-red-100 border-red-200"
+                                          onClick={() => 
+                                            handleUpdateApplicationStatus(application.id, "rejected")
+                                          }
+                                        >
+                                          <XCircle className="h-4 w-4 text-red-500" />
+                                        </Button>
+                                      </>
+                                    )}
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={6} className="text-center py-6">
+                              No applications found
+                            </TableCell>
+                          </TableRow>
+                        )}
                       </TableBody>
                     </Table>
                   </div>
