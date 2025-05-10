@@ -15,6 +15,13 @@
       "when": 1746392733151,
       "tag": "0001_graceful_payback",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1746908021000,
+      "tag": "0002_fix_employer_id_constraint",
+      "breakpoints": true
     }
   ]
 }
