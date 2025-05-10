@@ -956,14 +956,14 @@ export class DatabaseStorage implements IStorage {
           console.log(`DEBUG: Employer profile check result: ${employer ? `Found ID=${employer.id}` : 'Not found'}`);
           
           // Step 2: Count related jobs
-          const jobsCount = await pool.query(
+          const jobsCount = await pgPool.query(
             `SELECT COUNT(*) FROM jobs WHERE employer_id = $1`,
             [employer ? employer.id : -1]
           );
           console.log(`DEBUG: Found ${jobsCount.rows[0].count || 0} jobs posted by this employer`);
           
           // Step 3: Count notifications
-          const notificationCount = await db.query(
+          const notificationCount = await pgPool.query(
             `SELECT COUNT(*) FROM notifications WHERE user_id = $1`,
             [userId]
           );
@@ -974,7 +974,7 @@ export class DatabaseStorage implements IStorage {
           // Step 4: Update jobs to remove employer reference
           if (employer) {
             try {
-              const jobsUpdate = await db.query(
+              const jobsUpdate = await pgPool.query(
                 `UPDATE jobs SET employer_id = NULL WHERE employer_id = $1 RETURNING id`,
                 [employer.id]
               );
