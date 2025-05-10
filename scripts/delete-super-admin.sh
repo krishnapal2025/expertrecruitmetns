@@ -15,57 +15,58 @@ SUPER_ADMIN_ID=$1
 
 echo "Attempting to delete super admin with ID: $SUPER_ADMIN_ID"
 
-# Begin transaction
-echo "BEGIN;" > /tmp/delete-super-admin-temp.sql
+# Use direct SQL commands for simplicity and reliability
+psql "$DATABASE_URL" << EOF
+-- Run a simpler SQL command for direct deletion
+BEGIN;
 
-# Check user exists and is a super_admin
-echo "DO \$\$
+-- First, save the user type to check if it's a super_admin
+DO \$\$
 DECLARE
-    user_exists boolean;
-    user_type text;
+    user_exists BOOLEAN;
+    user_type_value TEXT;
+    admin_profile_id INTEGER;
 BEGIN
     -- Check if user exists
     SELECT EXISTS(SELECT 1 FROM users WHERE id = $SUPER_ADMIN_ID) INTO user_exists;
     
     IF NOT user_exists THEN
-        RAISE EXCEPTION 'No user found with ID %', $SUPER_ADMIN_ID;
+        RAISE EXCEPTION 'User with ID % does not exist', $SUPER_ADMIN_ID;
     END IF;
     
-    -- Check if user is a super_admin
-    SELECT user_type INTO user_type FROM users WHERE id = $SUPER_ADMIN_ID;
+    -- Check if it's a super_admin
+    SELECT user_type INTO user_type_value FROM users WHERE id = $SUPER_ADMIN_ID;
     
-    IF user_type <> 'super_admin' THEN
-        RAISE EXCEPTION 'User with ID % is not a super_admin (type: %)', $SUPER_ADMIN_ID, user_type;
+    IF user_type_value <> 'super_admin' THEN
+        RAISE EXCEPTION 'User with ID % is not a super_admin (current type: %)', 
+            $SUPER_ADMIN_ID, user_type_value;
     END IF;
     
-    -- Update blog posts to remove author reference
-    UPDATE blog_posts SET author_id = NULL WHERE author_id = $SUPER_ADMIN_ID;
+    -- Get admin profile ID if exists
+    SELECT id INTO admin_profile_id FROM admins WHERE user_id = $SUPER_ADMIN_ID;
     
-    -- Delete notifications
-    DELETE FROM notifications WHERE user_id = $SUPER_ADMIN_ID;
-    
-    -- Clear job assignments
-    UPDATE jobs SET assigned_to = NULL WHERE assigned_to = $SUPER_ADMIN_ID;
-    
-    -- Delete admin profile if exists
-    DELETE FROM admins WHERE user_id = $SUPER_ADMIN_ID;
-    
-    -- Delete the user
-    DELETE FROM users WHERE id = $SUPER_ADMIN_ID;
-    
-    RAISE NOTICE 'Successfully deleted super admin with ID %', $SUPER_ADMIN_ID;
-END \$\$;" >> /tmp/delete-super-admin-temp.sql
+    -- Display info message
+    RAISE NOTICE 'Found super_admin account with ID % and admin profile ID %', 
+        $SUPER_ADMIN_ID, admin_profile_id;
+END \$\$;
 
-# Commit transaction
-echo "COMMIT;" >> /tmp/delete-super-admin-temp.sql
+-- Update blog posts to remove author reference
+UPDATE blog_posts SET author_id = NULL WHERE author_id = $SUPER_ADMIN_ID;
 
-# Execute the SQL
-if psql "$DATABASE_URL" -f /tmp/delete-super-admin-temp.sql; then
-    echo "Super admin account with ID $SUPER_ADMIN_ID successfully deleted"
-else
-    echo "Failed to delete super admin account with ID $SUPER_ADMIN_ID"
-    exit 1
-fi
+-- Delete notifications
+DELETE FROM notifications WHERE user_id = $SUPER_ADMIN_ID;
 
-# Clean up
-rm /tmp/delete-super-admin-temp.sql
+-- Clear job assignments
+UPDATE jobs SET assigned_to = NULL WHERE assigned_to = $SUPER_ADMIN_ID;
+
+-- Delete admin profile
+DELETE FROM admins WHERE user_id = $SUPER_ADMIN_ID;
+
+-- Delete the user
+DELETE FROM users WHERE id = $SUPER_ADMIN_ID;
+
+COMMIT;
+EOF
+
+# Show a completion message
+echo "Script completed."
