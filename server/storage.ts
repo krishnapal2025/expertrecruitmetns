@@ -861,14 +861,14 @@ export class DatabaseStorage implements IStorage {
           console.log(`DEBUG: Admin profile check result: ${admin ? `Found ID=${admin.id}` : 'Not found'}`);
           
           // Step 2: Count references in blog posts
-          const blogPostCount = await db.query(
+          const blogPostCount = await pgPool.query(
             `SELECT COUNT(*) FROM blog_posts WHERE author_id = $1`,
             [userId]
           );
           console.log(`DEBUG: Found ${blogPostCount.rows[0].count || 0} blog posts authored by this admin`);
           
           // Step 3: Count notifications
-          const notificationCount = await db.query(
+          const notificationCount = await pgPool.query(
             `SELECT COUNT(*) FROM notifications WHERE user_id = $1`,
             [userId]
           );
@@ -882,7 +882,7 @@ export class DatabaseStorage implements IStorage {
           
           // Step 5: First, null out any references in blog posts
           try {
-            const blogPostUpdate = await db.query(
+            const blogPostUpdate = await pgPool.query(
               `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1 RETURNING id`,
               [userId]
             );
@@ -894,7 +894,7 @@ export class DatabaseStorage implements IStorage {
           
           // Step 6: Delete notifications
           try {
-            const notificationDelete = await db.query(
+            const notificationDelete = await pgPool.query(
               `DELETE FROM notifications WHERE user_id = $1 RETURNING id`,
               [userId]
             );
@@ -910,7 +910,7 @@ export class DatabaseStorage implements IStorage {
           // Step 8: Get and delete admin profile
           if (admin) {
             try {
-              const adminDelete = await db.query(
+              const adminDelete = await pgPool.query(
                 `DELETE FROM admins WHERE id = $1 RETURNING id`,
                 [admin.id]
               );
@@ -923,7 +923,7 @@ export class DatabaseStorage implements IStorage {
           
           // Step 9: Finally delete the user
           try {
-            const userDelete = await db.query(
+            const userDelete = await pgPool.query(
               `DELETE FROM users WHERE id = $1 RETURNING id`,
               [userId]
             );
@@ -987,7 +987,7 @@ export class DatabaseStorage implements IStorage {
           
           // Step 5: Delete notifications
           try {
-            const notificationDelete = await db.query(
+            const notificationDelete = await pgPool.query(
               `DELETE FROM notifications WHERE user_id = $1 RETURNING id`,
               [userId]
             );
@@ -1000,7 +1000,7 @@ export class DatabaseStorage implements IStorage {
           // Step 6: Delete employer profile
           if (employer) {
             try {
-              const employerDelete = await db.query(
+              const employerDelete = await pgPool.query(
                 `DELETE FROM employers WHERE id = $1 RETURNING id`,
                 [employer.id]
               );
@@ -1013,7 +1013,7 @@ export class DatabaseStorage implements IStorage {
           
           // Step 7: Finally delete the user
           try {
-            const userDelete = await db.query(
+            const userDelete = await pgPool.query(
               `DELETE FROM users WHERE id = $1 RETURNING id`,
               [userId]
             );
@@ -1045,14 +1045,14 @@ export class DatabaseStorage implements IStorage {
           console.log(`DEBUG: Job seeker profile check result: ${jobSeeker ? `Found ID=${jobSeeker.id}` : 'Not found'}`);
           
           // Step 2: Count related applications
-          const applicationsCount = await db.query(
+          const applicationsCount = await pgPool.query(
             `SELECT COUNT(*) FROM applications WHERE job_seeker_id = $1`,
             [jobSeeker ? jobSeeker.id : -1]
           );
           console.log(`DEBUG: Found ${applicationsCount.rows[0].count || 0} applications by this job seeker`);
           
           // Step 3: Count notifications
-          const notificationCount = await db.query(
+          const notificationCount = await pgPool.query(
             `SELECT COUNT(*) FROM notifications WHERE user_id = $1`,
             [userId]
           );
@@ -1063,7 +1063,7 @@ export class DatabaseStorage implements IStorage {
           // Step 4: Delete job applications by this job seeker
           if (jobSeeker) {
             try {
-              const applicationsDelete = await db.query(
+              const applicationsDelete = await pgPool.query(
                 `DELETE FROM applications WHERE job_seeker_id = $1 RETURNING id`,
                 [jobSeeker.id]
               );
@@ -1076,7 +1076,7 @@ export class DatabaseStorage implements IStorage {
           
           // Step 5: Delete notifications
           try {
-            const notificationDelete = await db.query(
+            const notificationDelete = await pgPool.query(
               `DELETE FROM notifications WHERE user_id = $1 RETURNING id`,
               [userId]
             );
@@ -1089,7 +1089,7 @@ export class DatabaseStorage implements IStorage {
           // Step 6: Delete job seeker profile
           if (jobSeeker) {
             try {
-              const jobSeekerDelete = await db.query(
+              const jobSeekerDelete = await pgPool.query(
                 `DELETE FROM job_seekers WHERE id = $1 RETURNING id`,
                 [jobSeeker.id]
               );
@@ -1102,7 +1102,7 @@ export class DatabaseStorage implements IStorage {
           
           // Step 7: Finally delete the user
           try {
-            const userDelete = await db.query(
+            const userDelete = await pgPool.query(
               `DELETE FROM users WHERE id = $1 RETURNING id`,
               [userId]
             );
