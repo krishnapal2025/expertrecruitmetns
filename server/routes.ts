@@ -3195,6 +3195,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  // Remove all admin accounts (both admin and super_admin types)
+  // This is a dangerous operation and should be protected
+  app.post("/api/system/remove-all-admins", async (req, res) => {
+    try {
+      console.log("Request to remove all admin accounts received");
+      
+      // 1. Find all admin users
+      const adminUsers = await db
+        .select()
+        .from(users)
+        .where(
+          eq(users.userType, "admin").or(eq(users.userType, "super_admin"))
+        );
+      
+      if (adminUsers.length === 0) {
+        console.log("No admin users found");
+        return res.status(200).json({
+          success: true,
+          message: "No admin accounts found to remove",
+          removedCount: 0,
+          removedIds: []
+        });
+      }
+
+      const adminIds = adminUsers.map(user => user.id);
+      console.log(`Found ${adminIds.length} admin users with IDs: ${adminIds.join(', ')}`);
+
+      // 2. Update blog posts to remove references to admin users
+      console.log("Updating blog posts to remove admin authors...");
+      const updateResult = await db
+        .update(blogPosts)
+        .set({ authorId: null })
+        .where(inArray(blogPosts.authorId, adminIds));
+      
+      console.log(`Updated blog posts that referenced admin authors`);
+
+      // 3. Delete notifications for admin users
+      console.log("Deleting notifications for admin users...");
+      await db
+        .delete(notifications)
+        .where(inArray(notifications.userId, adminIds));
+      
+      console.log("Deleted notifications for admin users");
+
+      // 4. Delete admin profiles
+      console.log("Deleting admin profiles...");
+      await db
+        .delete(admins)
+        .where(inArray(admins.userId, adminIds));
+      
+      console.log("Deleted admin profiles");
+
+      // 5. Finally delete the admin user accounts
+      console.log("Deleting admin user accounts...");
+      await db
+        .delete(users)
+        .where(inArray(users.id, adminIds));
+      
+      console.log("Deleted admin user accounts");
+      
+      // Return details about the operation
+      res.status(200).json({
+        success: true,
+        message: `Successfully removed ${adminIds.length} admin account(s)`,
+        removedCount: adminIds.length,
+        removedIds: adminIds
+      });
+    } catch (error) {
+      console.error("Error removing admin accounts:", error);
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to remove admin accounts",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
