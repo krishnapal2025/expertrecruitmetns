@@ -197,7 +197,7 @@ export default function BlogsPage() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {apiBlogs
                 .filter(post => post.published)
-                .sort((a, b) => new Date(a.publishDate || "").getTime() - new Date(b.publishDate || "").getTime())
+                .sort((a, b) => new Date(b.publishDate || "").getTime() - new Date(a.publishDate || "").getTime())
                 .slice(0, 3)
                 .map(post => (
                   <Card key={`api-blog-${post.id}`} className="overflow-hidden flex flex-col h-full border-t-4 border-t-primary shadow-md">
