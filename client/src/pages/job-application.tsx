@@ -449,7 +449,7 @@ export default function JobApplicationPage() {
                                     <p className="mb-2 text-sm text-gray-500">
                                       <span className="font-semibold">Click to upload</span> or drag and drop
                                     </p>
-                                    <p className="text-xs text-gray-500">PDF, DOCX (MAX. 5MB)</p>
+                                    <p className="text-xs text-gray-500">PDF or DOCX files only (MAX. 5MB)</p>
                                     {cvFileName && (
                                       <p className="mt-2 text-sm text-primary font-medium">{cvFileName}</p>
                                     )}
@@ -458,7 +458,7 @@ export default function JobApplicationPage() {
                                     id="cv"
                                     type="file"
                                     className="hidden"
-                                    accept=".pdf,.doc,.docx"
+                                    accept=".pdf,.docx"
                                     onChange={handleCvFileChange}
                                   />
                                 </label>
