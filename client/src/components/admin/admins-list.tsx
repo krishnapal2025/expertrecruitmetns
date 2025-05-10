@@ -43,14 +43,22 @@ export function AdminsList({ user }: { user: User | null }) {
 
   // Admin delete mutation - using the same pattern as vacancy deletion
   const deleteUserMutation = useMutation({
-    mutationFn: async (userId: number) => {
-      console.log("Deleting admin user with ID:", userId);
+    mutationFn: async ({ userId, userType }: { userId: number; userType: string }) => {
+      console.log(`Deleting ${userType} user with ID:`, userId);
       
       try {
+        let endpoint = `/api/users/${userId}`;
+        
+        // Use special endpoint for super admin deletion
+        if (userType === 'super_admin') {
+          console.log("Using dedicated super admin deletion endpoint");
+          endpoint = `/api/admin/super-admins/${userId}`;
+        }
+        
         // Use apiRequest from queryClient to handle auth properly
         const res = await apiRequest(
           "DELETE", 
-          `/api/users/${userId}`
+          endpoint
         );
         
         if (!res.ok) {
@@ -76,7 +84,7 @@ export function AdminsList({ user }: { user: User | null }) {
           return await res.json();
         } catch (e) {
           // If no valid JSON, still return success
-          return { success: true, message: "Admin deleted successfully" };
+          return { success: true, message: `${userType === 'super_admin' ? 'Super admin' : 'Admin'} deleted successfully` };
         }
       } catch (error) {
         console.error("Delete admin error:", error);
@@ -84,10 +92,16 @@ export function AdminsList({ user }: { user: User | null }) {
         throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (result, variables) => {
+      // Show a different toast message based on user type
+      const isSuperAdmin = variables.userType === 'super_admin';
+      
       toast({
-        title: "Admin deleted",
-        description: "The admin account has been deleted successfully",
+        title: isSuperAdmin ? "Super Admin deleted" : "Admin deleted",
+        description: isSuperAdmin 
+          ? "The super admin account has been successfully deleted using direct SQL operations" 
+          : "The admin account has been deleted successfully",
+        variant: isSuperAdmin ? "default" : "default",
       });
       
       // Refresh admin list after successful deletion
@@ -117,7 +131,16 @@ export function AdminsList({ user }: { user: User | null }) {
   const handleDeleteConfirm = () => {
     if (adminToDelete && adminToDelete.user && adminToDelete.user.id) {
       console.log(`Attempting to delete admin user with ID: ${adminToDelete.user.id}`);
-      deleteUserMutation.mutate(adminToDelete.user.id);
+      
+      // Determine if this is a super admin deletion
+      const userType = adminToDelete.user.userType || 'admin';
+      
+      // Call mutation with both userId and userType
+      deleteUserMutation.mutate({ 
+        userId: adminToDelete.user.id,
+        userType: userType
+      });
+      
       setShowDeleteDialog(false);
       setAdminToDelete(null);
     }
@@ -133,6 +156,7 @@ export function AdminsList({ user }: { user: User | null }) {
       return;
     }
     
+    // For super admin accounts, show a more specific confirmation dialog
     setAdminToDelete(admin);
     setShowDeleteDialog(true);
   };
@@ -206,15 +230,36 @@ export function AdminsList({ user }: { user: User | null }) {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Admin Account</AlertDialogTitle>
+            <AlertDialogTitle>
+              {adminToDelete?.user?.userType === 'super_admin' 
+                ? 'Delete Super Admin Account' 
+                : 'Delete Admin Account'}
+            </AlertDialogTitle>
             <AlertDialogDescription>
               {adminToDelete && (
                 <>
-                  Are you sure you want to delete the admin account for{" "}
-                  <strong>
-                    {adminToDelete.firstName} {adminToDelete.lastName}
-                  </strong>
-                  ? This action cannot be undone.
+                  {adminToDelete?.user?.userType === 'super_admin' ? (
+                    <>
+                      <span className="text-destructive font-semibold">WARNING:</span> You are about to delete a super admin account for{" "}
+                      <strong>
+                        {adminToDelete.firstName} {adminToDelete.lastName}
+                      </strong>
+                      . This is a critical system account with the highest privileges.
+                      <div className="mt-2 bg-muted p-2 rounded-md text-sm">
+                        Super admin accounts are used for application management and system maintenance.
+                        Deleting this account will permanently remove all associated access and permissions.
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      Are you sure you want to delete the admin account for{" "}
+                      <strong>
+                        {adminToDelete.firstName} {adminToDelete.lastName}
+                      </strong>
+                      ?
+                    </>
+                  )}
+                  <div className="mt-2 text-destructive">This action cannot be undone.</div>
                 </>
               )}
             </AlertDialogDescription>
@@ -225,7 +270,9 @@ export function AdminsList({ user }: { user: User | null }) {
               onClick={handleDeleteConfirm}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete
+              {adminToDelete?.user?.userType === 'super_admin' 
+                ? 'Delete Super Admin' 
+                : 'Delete Admin'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

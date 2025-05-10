@@ -3565,6 +3565,122 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  // Special endpoint for direct super admin deletion via SQL
+  app.delete("/api/admin/super-admins/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const superAdminId = parseInt(id, 10);
+      
+      if (isNaN(superAdminId)) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid super admin ID" 
+        });
+      }
+      
+      console.log(`Received DELETE request for super admin ID: ${superAdminId}`);
+      
+      // Check authentication
+      if (!req.isAuthenticated()) {
+        console.log("User is not authenticated, denying super admin delete request");
+        return res.status(401).json({ 
+          success: false, 
+          message: "Authentication required" 
+        });
+      }
+      
+      // Ensure the user making the request is a super_admin
+      if (!req.user || req.user.userType !== 'super_admin') {
+        console.log(`User ${req.user?.id} with type ${req.user?.userType} attempted to delete a super admin`);
+        return res.status(403).json({ 
+          success: false, 
+          message: "Only super admins can delete other super admin accounts" 
+        });
+      }
+      
+      // Don't allow deleting your own account
+      if (req.user.id === superAdminId) {
+        console.log("Super admin attempted to delete their own account");
+        return res.status(403).json({ 
+          success: false, 
+          message: "Cannot delete your own account" 
+        });
+      }
+      
+      // Verify target user is a super admin
+      const targetUser = await storage.getUser(superAdminId);
+      if (!targetUser) {
+        return res.status(404).json({
+          success: false,
+          message: "Super admin not found"
+        });
+      }
+      
+      if (targetUser.userType !== 'super_admin') {
+        return res.status(400).json({
+          success: false,
+          message: "User is not a super admin"
+        });
+      }
+      
+      console.log(`Executing direct SQL deletion for super admin ID ${superAdminId}`);
+      
+      // Execute a direct SQL query for reliable deletion
+      try {
+        // First, update any related records to avoid constraint violations
+        await storage.pool.query(`
+          -- Update blog posts to remove author reference
+          UPDATE blog_posts SET author_id = NULL WHERE author_id = $1;
+          
+          -- Delete notifications
+          DELETE FROM notifications WHERE user_id = $1;
+          
+          -- Clear job assignments
+          UPDATE jobs SET assigned_to = NULL WHERE assigned_to = $1;
+        `, [superAdminId]);
+        
+        // Get admin profile to delete it if exists
+        const admin = await storage.getAdminByUserId(superAdminId);
+        if (admin) {
+          await storage.pool.query(`DELETE FROM admins WHERE id = $1`, [admin.id]);
+        }
+        
+        // Finally delete the user
+        const result = await storage.pool.query(`
+          DELETE FROM users 
+          WHERE id = $1 AND user_type = 'super_admin' 
+          RETURNING id
+        `, [superAdminId]);
+        
+        if (result.rowCount === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "Super admin not found or could not be deleted"
+          });
+        }
+        
+        console.log(`Successfully deleted super admin ID ${superAdminId} using direct SQL`);
+        return res.status(200).json({
+          success: true,
+          message: "Super admin deleted successfully",
+          userId: superAdminId
+        });
+      } catch (sqlError) {
+        console.error(`SQL error during super admin deletion for ID ${superAdminId}:`, sqlError);
+        return res.status(500).json({ 
+          success: false, 
+          message: `Database error: ${sqlError.message}`
+        });
+      }
+    } catch (error) {
+      console.error("Error in super admin deletion endpoint:", error);
+      return res.status(500).json({
+        success: false,
+        message: `Error: ${error.message}`
+      });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
