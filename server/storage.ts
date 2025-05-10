@@ -956,7 +956,7 @@ export class DatabaseStorage implements IStorage {
           console.log(`DEBUG: Employer profile check result: ${employer ? `Found ID=${employer.id}` : 'Not found'}`);
           
           // Step 2: Count related jobs
-          const jobsCount = await db.query(
+          const jobsCount = await pool.query(
             `SELECT COUNT(*) FROM jobs WHERE employer_id = $1`,
             [employer ? employer.id : -1]
           );
