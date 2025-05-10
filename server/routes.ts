@@ -3168,6 +3168,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete specific admin account
+  app.delete("/api/admin/:id", async (req, res) => {
+    try {
+      // Check if user is authenticated and is an admin
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = req.user;
+
+      // Check if user is an admin or super_admin
+      if (user.userType !== "admin" && user.userType !== "super_admin") {
+        return res.status(403).json({ 
+          message: "Access denied. This endpoint is for administrators only." 
+        });
+      }
+      
+      const adminId = parseInt(req.params.id, 10);
+      
+      if (isNaN(adminId)) {
+        return res.status(400).json({ message: "Invalid admin ID" });
+      }
+      
+      // Get the admin record
+      const admin = await storage.getAdmin(adminId);
+      
+      if (!admin) {
+        return res.status(404).json({ message: "Admin not found" });
+      }
+      
+      // Check if user is trying to delete their own account
+      if (admin.userId === user.id) {
+        return res.status(403).json({ message: "Cannot delete your own account" });
+      }
+      
+      // Find the user ID for this admin
+      const adminUserId = admin.userId;
+      
+      // Begin deletion process with proper constraints handling
+      
+      // 1. Update blog posts to remove author reference
+      await storage.db.query(
+        `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1`,
+        [adminUserId]
+      );
+      
+      // 2. Delete notifications for this admin
+      await storage.db.query(
+        `DELETE FROM notifications WHERE user_id = $1`,
+        [adminUserId]
+      );
+      
+      // 3. Delete admin profile
+      await storage.db.query(
+        `DELETE FROM admins WHERE id = $1`,
+        [adminId]
+      );
+      
+      // 4. Delete user account
+      await storage.db.query(
+        `DELETE FROM users WHERE id = $1`,
+        [adminUserId]
+      );
+      
+      res.status(200).json({ 
+        success: true, 
+        message: "Admin account deleted successfully" 
+      });
+    } catch (error) {
+      console.error("Error deleting admin account:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to delete admin account",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // Remove all super admin accounts
   // This is a dangerous operation and should be protected
   app.post("/api/system/remove-super-admins", async (req, res) => {
