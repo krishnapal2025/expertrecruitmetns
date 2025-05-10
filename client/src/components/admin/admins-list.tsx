@@ -124,86 +124,87 @@ export function AdminsList({ user }: { user: User | null }) {
   };
 
   return (
-    <div className="space-y-4">
-      {adminsLoading ? (
-        <div className="flex justify-center p-4">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      ) : admins && admins.length > 0 ? (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Last Login</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {admins.map((admin: any) => (
-              <TableRow key={admin.id}>
-                <TableCell>
-                  {admin.firstName} {admin.lastName}
-                </TableCell>
-                <TableCell>{admin.user?.email || "N/A"}</TableCell>
-                <TableCell>{admin.role || "N/A"}</TableCell>
-                <TableCell>
-                  <Badge variant={admin.user?.userType === "super_admin" ? "destructive" : "default"}>
-                    {admin.user?.userType === "super_admin" ? "Super Admin" : "Admin"}
-                  </Badge>
-                </TableCell>
-                <TableCell>{formatDate(admin.lastLogin)}</TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteAdmin(admin)}
-                    disabled={user?.id === admin.user?.id}
-                    title={user?.id === admin.user?.id ? "Cannot delete your own account" : "Delete admin"}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </TableCell>
+    <>
+      <div className="space-y-4">
+        {adminsLoading ? (
+          <div className="flex justify-center p-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : admins && admins.length > 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Last Login</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      ) : (
-        <div className="text-center py-4">
-          <p className="text-muted-foreground">No admin accounts found.</p>
-        </div>
-      )}
-    </div>
+            </TableHeader>
+            <TableBody>
+              {admins.map((admin: any) => (
+                <TableRow key={admin.id}>
+                  <TableCell>
+                    {admin.firstName} {admin.lastName}
+                  </TableCell>
+                  <TableCell>{admin.user?.email || "N/A"}</TableCell>
+                  <TableCell>{admin.role || "N/A"}</TableCell>
+                  <TableCell>
+                    <Badge variant={admin.user?.userType === "super_admin" ? "destructive" : "default"}>
+                      {admin.user?.userType === "super_admin" ? "Super Admin" : "Admin"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{formatDate(admin.lastLogin)}</TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteAdmin(admin)}
+                      disabled={user?.id === admin.user?.id}
+                      title={user?.id === admin.user?.id ? "Cannot delete your own account" : "Delete admin"}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <div className="text-center py-4">
+            <p className="text-muted-foreground">No admin accounts found.</p>
+          </div>
+        )}
+      </div>
 
-    {/* Delete Admin Confirmation Dialog */}
-    <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Delete Admin Account</AlertDialogTitle>
-          <AlertDialogDescription>
-            {adminToDelete && (
-              <>
-                Are you sure you want to delete the admin account for{" "}
-                <strong>
-                  {adminToDelete.firstName} {adminToDelete.lastName}
-                </strong>
-                ? This action cannot be undone.
-              </>
-            )}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction 
-            onClick={handleDeleteConfirm}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-          >
-            Delete
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Admin Account</AlertDialogTitle>
+            <AlertDialogDescription>
+              {adminToDelete && (
+                <>
+                  Are you sure you want to delete the admin account for{" "}
+                  <strong>
+                    {adminToDelete.firstName} {adminToDelete.lastName}
+                  </strong>
+                  ? This action cannot be undone.
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteConfirm}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
