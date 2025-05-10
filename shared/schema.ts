@@ -40,7 +40,7 @@ export const employers = pgTable("employers", {
 // Job listings table
 export const jobs = pgTable("jobs", {
   id: serial("id").primaryKey(),
-  employerId: integer("employer_id").references(() => employers.id), // Made optional by removing notNull()
+  employerId: integer("employer_id").references(() => employers.id), // Completely optional field now 
   title: text("title").notNull(),
   company: text("company").notNull(),
   description: text("description").notNull(),

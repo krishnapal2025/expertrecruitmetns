@@ -707,8 +707,8 @@ export default function PostJobPage() {
           // Optional fields with null safety - we won't allow null values for now to prevent errors
           specialization: data.specialization?.trim() || "",
           
-          // If we're admin posting on behalf of company, we don't need employerId
-          employerId: currentUser?.user.userType === "employer" ? currentUser?.user.id : null
+          // We no longer need to include employerId as we're using company name directly
+          employerId: null
         };
         
         console.log("Submitting job with clean payload:", payload);
@@ -922,7 +922,7 @@ export default function PostJobPage() {
       contactEmail: data.contactEmail?.trim() || "",
       experience: data.experience?.trim() || "Entry Level (0-1 years)",
       specialization: data.specialization?.trim() || null,
-      employerId: currentUser?.user.userType === "employer" ? currentUser?.user.id : null
+      employerId: null // We use the company name directly instead of linking to an employer ID
     };
     
     console.log("Clean data to be sent to server:", JSON.stringify(cleanData, null, 2));

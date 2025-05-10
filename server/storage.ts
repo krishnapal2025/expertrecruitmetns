@@ -556,12 +556,9 @@ export class DatabaseStorage implements IStorage {
         applicationCount: 0
       };
       
-      // Handle the employerId field separately to prevent null constraint errors
-      // Only include employerId in the insert if it's a valid number
-      if (insertJob.employerId != null && !isNaN(Number(insertJob.employerId))) {
-        // We know this is valid, so add it to the jobData object
-        (jobData as any).employerId = Number(insertJob.employerId);
-      }
+      // Since we're now using company name directly instead of employerId, 
+      // we always set employerId to null
+      (jobData as any).employerId = null;
       
       console.log("Inserting job with strictly typed data:", JSON.stringify(jobData, null, 2));
       
