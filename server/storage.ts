@@ -1,40 +1,47 @@
-import {
-  users, User, InsertUser,
-  jobSeekers, JobSeeker, InsertJobSeeker,
-  employers, Employer, InsertEmployer,
-  jobs, Job, InsertJob,
-  applications, Application, InsertApplication,
-  testimonials, Testimonial, InsertTestimonial,
-  admins, Admin, InsertAdmin,
-  invitationCodes, InvitationCode, InsertInvitationCode,
-  vacancies, Vacancy, InsertVacancy,
-  staffingInquiries, StaffingInquiry, InsertStaffingInquiry,
-  blogPosts, BlogPost, InsertBlogPost,
-  notifications, Notification, InsertNotification
-} from "@shared/schema";
+import { and, eq, gt, lt, ilike, or, sql, isNull, not } from "drizzle-orm";
 import session from "express-session";
-import createMemoryStore from "memorystore";
 import connectPg from "connect-pg-simple";
-import { db, type DatabaseInstance } from "./db";
-import { eq, like, gte, lte, or, and, sql, desc, inArray } from "drizzle-orm";
-import pkg from 'pg';
-const { Pool } = pkg;
-import type { Pool as PgPool } from 'pg';
-
-const MemoryStore = createMemoryStore(session);
-const PostgresSessionStore = connectPg(session);
-
-// For session store - get connection configuration from environment
-let pgPool: PgPool | undefined;
-try {
-  // Only import pool if we're using a database
-  if (process.env.DATABASE_URL) {
-    pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
-  }
-} catch (error) {
-  console.error("Error setting up database pool for session store:", error);
-  // Will fallback to memory store if this fails
-}
+import createMemoryStore from "memorystore";
+import * as schema from "@shared/schema";
+import { db, pool } from "./db";
+import {
+  type User,
+  type InsertUser,
+  users,
+  type JobSeeker,
+  type InsertJobSeeker,
+  jobSeekers,
+  type Employer,
+  type InsertEmployer,
+  employers,
+  type Job,
+  type InsertJob,
+  jobs,
+  type Application,
+  type InsertApplication,
+  applications,
+  type Testimonial,
+  type InsertTestimonial,
+  testimonials,
+  type Admin,
+  type InsertAdmin,
+  admins,
+  type InvitationCode,
+  type InsertInvitationCode,
+  invitationCodes,
+  type Vacancy,
+  type InsertVacancy,
+  vacancies,
+  type StaffingInquiry,
+  type InsertStaffingInquiry,
+  staffingInquiries,
+  type BlogPost,
+  type InsertBlogPost,
+  type Notification,
+  type InsertNotification,
+  blogPosts,
+  notifications
+} from "@shared/schema";
 
 export interface IStorage {
   // User methods
@@ -144,184 +151,139 @@ export interface IStorage {
   sessionStore: session.Store;
 }
 
-// Database storage using PostgreSQL
+// Use the db and pool imported from ./db
+type DatabaseInstance = typeof db;
+
+const PostgresSessionStore = connectPg(session);
+
 export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
   db: DatabaseInstance;
 
   constructor() {
     this.db = db;
-    if (pgPool) {
-      try {
-        this.sessionStore = new PostgresSessionStore({
-          pool: pgPool,
-          createTableIfMissing: true,
-          tableName: 'sessions'
-        });
-        console.log("Using PostgreSQL session store");
-      } catch (error) {
-        console.error("Failed to initialize PostgreSQL session store, falling back to memory store:", error);
-        this.sessionStore = new MemoryStore({
-          checkPeriod: 86400000 // prune expired entries every 24h
-        });
-      }
-    } else {
-      console.log("No database pool available, using memory session store");
-      this.sessionStore = new MemoryStore({
-        checkPeriod: 86400000 // prune expired entries every 24h
-      });
-    }
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true
+    });
   }
 
-  // User methods
-  async getUser(id: number): Promise<User | undefined> {
+  async getUser(id: number) {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
 
-  async getUserByEmail(email: string): Promise<User | undefined> {
+  async getUserByEmail(email: string) {
     const [user] = await db.select().from(users).where(eq(users.email, email));
     return user;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
+  async createUser(insertUser: InsertUser) {
     const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
 
-  async getAllUsers(): Promise<User[]> {
+  async getAllUsers() {
     return await db.select().from(users);
   }
 
-  async getUserByEmployerId(employerId: number): Promise<User | undefined> {
+  async getUserByEmployerId(employerId: number) {
     const [employer] = await db.select().from(employers).where(eq(employers.id, employerId));
     if (!employer) return undefined;
-
     return this.getUser(employer.userId);
   }
 
-  async getUserByJobSeekerId(jobSeekerId: number): Promise<User | undefined> {
+  async getUserByJobSeekerId(jobSeekerId: number) {
     const [jobSeeker] = await db.select().from(jobSeekers).where(eq(jobSeekers.id, jobSeekerId));
     if (!jobSeeker) return undefined;
-
     return this.getUser(jobSeeker.userId);
   }
-  
-  // Special method to remove super admin users
-  async removeSuperAdminUsers(): Promise<{ count: number; removedUserIds: number[] }> {
-    console.log("Removing all super_admin users from the database");
-    
-    try {
-      // First, find all super_admin users
-      const superAdminUsers = await db
-        .select()
-        .from(users)
-        .where(eq(users.userType, "super_admin"));
-      
-      if (superAdminUsers.length === 0) {
-        console.log("No super_admin users found to remove");
-        return { count: 0, removedUserIds: [] };
+
+  async removeSuperAdminUsers() {
+    const removedUserIds: number[] = [];
+    const superAdminUsers = await db
+      .select()
+      .from(users)
+      .where(eq(users.role, "super_admin"));
+
+    let count = 0;
+    for (const user of superAdminUsers) {
+      try {
+        // Delete the user
+        const deleted = await this.deleteUser(user.id);
+        if (deleted) {
+          count++;
+          removedUserIds.push(user.id);
+        }
+      } catch (error) {
+        console.error(`Error deleting super_admin user ${user.id}:`, error);
       }
-      
-      // Get the IDs of all super admins
-      const superAdminIds = superAdminUsers.map(user => user.id);
-      console.log(`Found ${superAdminIds.length} super_admin users with IDs:`, superAdminIds);
-      
-      // Find the corresponding admin profile IDs for these users
-      const adminProfiles = await db
-        .select()
-        .from(admins)
-        .where(inArray(admins.userId, superAdminIds));
-      
-      const adminProfileIds = adminProfiles.map(admin => admin.id);
-      
-      // Delete admin profiles first due to foreign key constraints
-      if (adminProfileIds.length > 0) {
-        console.log(`Deleting ${adminProfileIds.length} admin profiles...`);
-        await db
-          .delete(admins)
-          .where(inArray(admins.id, adminProfileIds));
-      }
-      
-      // Delete the user records
-      console.log(`Deleting ${superAdminIds.length} super_admin user accounts...`);
-      await db
-        .delete(users)
-        .where(inArray(users.id, superAdminIds));
-      
-      console.log(`Successfully removed ${superAdminIds.length} super_admin users`);
-      return { 
-        count: superAdminIds.length, 
-        removedUserIds: superAdminIds 
-      };
-    } catch (error) {
-      console.error("Error removing super_admin users:", error);
-      throw error;
     }
-  }
-  
-  // Alias for getUser - used by CV endpoint
-  async getUserById(id: number): Promise<User | undefined> {
-    return this.getUser(id);
+
+    return { count, removedUserIds };
   }
 
-  // JobSeeker methods
-  async getJobSeeker(id: number): Promise<JobSeeker | undefined> {
+  async getUserById(id: number) {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getJobSeeker(id: number) {
     const [jobSeeker] = await db.select().from(jobSeekers).where(eq(jobSeekers.id, id));
     return jobSeeker;
   }
 
-  async getJobSeekerByUserId(userId: number): Promise<JobSeeker | undefined> {
+  async getJobSeekerByUserId(userId: number) {
     const [jobSeeker] = await db.select().from(jobSeekers).where(eq(jobSeekers.userId, userId));
     return jobSeeker;
   }
 
-  async createJobSeeker(insertJobSeeker: InsertJobSeeker): Promise<JobSeeker> {
+  async createJobSeeker(insertJobSeeker: InsertJobSeeker) {
     const [jobSeeker] = await db.insert(jobSeekers).values(insertJobSeeker).returning();
     return jobSeeker;
   }
 
-  async updateJobSeeker(updatedJobSeeker: JobSeeker): Promise<JobSeeker> {
+  async updateJobSeeker(updatedJobSeeker: JobSeeker) {
+    const { id, ...updateValues } = updatedJobSeeker;
     const [jobSeeker] = await db
       .update(jobSeekers)
-      .set(updatedJobSeeker)
-      .where(eq(jobSeekers.id, updatedJobSeeker.id))
+      .set(updateValues)
+      .where(eq(jobSeekers.id, id))
       .returning();
     return jobSeeker;
   }
 
-  // Employer methods
-  async getEmployer(id: number): Promise<Employer | undefined> {
+  async getEmployer(id: number) {
     const [employer] = await db.select().from(employers).where(eq(employers.id, id));
     return employer;
   }
 
-  async getEmployerByUserId(userId: number): Promise<Employer | undefined> {
+  async getEmployerByUserId(userId: number) {
     const [employer] = await db.select().from(employers).where(eq(employers.userId, userId));
     return employer;
   }
-  
-  async getEmployerByCompanyName(companyName: string): Promise<Employer | undefined> {
+
+  async getEmployerByCompanyName(companyName: string) {
     const [employer] = await db.select().from(employers).where(eq(employers.companyName, companyName));
     return employer;
   }
 
-  async createEmployer(insertEmployer: InsertEmployer): Promise<Employer> {
+  async createEmployer(insertEmployer: InsertEmployer) {
     const [employer] = await db.insert(employers).values(insertEmployer).returning();
     return employer;
   }
 
-  async updateEmployer(updatedEmployer: Employer): Promise<Employer> {
+  async updateEmployer(updatedEmployer: Employer) {
+    const { id, ...updateValues } = updatedEmployer;
     const [employer] = await db
       .update(employers)
-      .set(updatedEmployer)
-      .where(eq(employers.id, updatedEmployer.id))
+      .set(updateValues)
+      .where(eq(employers.id, id))
       .returning();
     return employer;
   }
 
-  // Job methods
-  async getJob(id: number): Promise<Job | undefined> {
+  async getJob(id: number) {
     const [job] = await db.select().from(jobs).where(eq(jobs.id, id));
     return job;
   }
@@ -335,378 +297,167 @@ export class DatabaseStorage implements IStorage {
     minSalary?: number;
     maxSalary?: number;
     keyword?: string;
-  }): Promise<Job[]> {
-    let query = db.select().from(jobs).where(eq(jobs.isActive, true));
+  }) {
+    let query = db.select().from(jobs);
 
     if (filters) {
-      if (filters.category && filters.category !== "All Categories") {
-        query = query.where(eq(jobs.category, filters.category));
+      const conditions = [];
+
+      if (filters.category) {
+        conditions.push(eq(jobs.category, filters.category));
       }
 
-      if (filters.location && filters.location !== "All Locations") {
-        query = query.where(like(jobs.location, `%${filters.location}%`));
+      if (filters.location) {
+        conditions.push(ilike(jobs.location, `%${filters.location}%`));
       }
 
-      if (filters.jobType && filters.jobType !== "All Types") {
-        query = query.where(eq(jobs.jobType, filters.jobType));
+      if (filters.jobType) {
+        conditions.push(eq(jobs.jobType, filters.jobType));
       }
 
-      if (filters.specialization && filters.specialization !== "All Specializations") {
-        query = query.where(like(jobs.description, `%${filters.specialization}%`));
+      if (filters.specialization) {
+        conditions.push(ilike(jobs.specialization, `%${filters.specialization}%`));
       }
 
       if (filters.experience) {
-        query = query.where(eq(jobs.experience, filters.experience));
+        conditions.push(eq(jobs.experience, filters.experience));
       }
 
-      if (filters.minSalary !== undefined) {
-        query = query.where(gte(jobs.minSalary, filters.minSalary));
+      if (filters.minSalary) {
+        conditions.push(gt(jobs.maxSalary, filters.minSalary));
       }
 
-      if (filters.maxSalary !== undefined) {
-        query = query.where(lte(jobs.maxSalary, filters.maxSalary));
+      if (filters.maxSalary) {
+        conditions.push(lt(jobs.minSalary, filters.maxSalary));
       }
 
       if (filters.keyword) {
-        const keyword = `%${filters.keyword}%`;
-        query = query.where(
+        conditions.push(
           or(
-            like(jobs.title, keyword),
-            like(jobs.description, keyword)
+            ilike(jobs.title, `%${filters.keyword}%`),
+            ilike(jobs.description, `%${filters.keyword}%`),
+            ilike(jobs.company, `%${filters.keyword}%`),
+            ilike(jobs.requirements, `%${filters.keyword}%`)
           )
         );
       }
+
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions));
+      }
     }
 
-    return await query;
+    return await query.orderBy(sql`${jobs.createdAt} DESC`);
   }
 
-  async getJobsByEmployerId(employerId: number): Promise<Job[]> {
+  async getJobsByEmployerId(employerId: number) {
     return await db.select().from(jobs).where(eq(jobs.employerId, employerId));
   }
 
-  async createJob(insertJob: InsertJob): Promise<Job> {
-    try {
-      console.log("Creating job with data:", JSON.stringify(insertJob, null, 2));
-      
-      // Add detailed validation logging for debugging
-      console.log("Validating required fields:");
-      console.log("- title:", insertJob.title, typeof insertJob.title);
-      console.log("- company:", insertJob.company, typeof insertJob.company);
-      console.log("- description:", insertJob.description, typeof insertJob.description);
-      console.log("- requirements:", insertJob.requirements, typeof insertJob.requirements);
-      console.log("- benefits:", insertJob.benefits, typeof insertJob.benefits);
-      console.log("- category:", insertJob.category, typeof insertJob.category);
-      console.log("- location:", insertJob.location, typeof insertJob.location);
-      console.log("- jobType:", insertJob.jobType, typeof insertJob.jobType);
-      console.log("- experience:", insertJob.experience, typeof insertJob.experience);
-      console.log("- contactEmail:", insertJob.contactEmail, typeof insertJob.contactEmail);
-      console.log("- minSalary:", insertJob.minSalary, typeof insertJob.minSalary);
-      console.log("- maxSalary:", insertJob.maxSalary, typeof insertJob.maxSalary);
-      console.log("- applicationDeadline:", insertJob.applicationDeadline, typeof insertJob.applicationDeadline);
-      
-      // Use strict typing for job data to match the database schema exactly
-      // This avoids any type mismatches or missing fields
-      const jobData = {
-        // Required string fields - ensure they are never empty strings
-        title: String(insertJob.title || "Untitled Position").trim() || "Untitled Position",
-        company: String(insertJob.company || "Unknown Company").trim() || "Unknown Company",
-        description: String(insertJob.description || "No description provided").trim() || "No description provided",
-        requirements: String(insertJob.requirements || "Please contact for details").trim() || "Please contact for details",
-        benefits: String(insertJob.benefits || "Please contact for details").trim() || "Please contact for details",
-        category: String(insertJob.category || "General").trim() || "General",
-        location: String(insertJob.location || "Unspecified").trim() || "Unspecified",
-        jobType: String(insertJob.jobType || "Full-time").trim() || "Full-time",
-        experience: String(insertJob.experience || "Not specified").trim() || "Not specified",
-        contactEmail: String(insertJob.contactEmail || "contact@expertrecruitments.com").trim() || "contact@expertrecruitments.com",
-        
-        // Integer fields - ensure they are valid numbers
-        minSalary: isNaN(Number(insertJob.minSalary)) ? 0 : Number(insertJob.minSalary),
-        maxSalary: isNaN(Number(insertJob.maxSalary)) ? 0 : Number(insertJob.maxSalary),
-        
-        // Date handling - ensure we have a valid date
-        applicationDeadline: insertJob.applicationDeadline instanceof Date 
-          ? insertJob.applicationDeadline 
-          : (typeof insertJob.applicationDeadline === 'string' && insertJob.applicationDeadline.trim()
-              ? new Date(insertJob.applicationDeadline)
-              : new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)), // Default to 30 days from now
-                    
-        // Boolean fields with defaults
-        isActive: true,
-        
-        // Optional fields
-        specialization: insertJob.specialization || null,
-        salary: insertJob.salary || null,
-        
-        // Default system fields
-        postedDate: new Date(),
-        applicationCount: 0
-      };
-      
-      // Handle the employerId field separately to prevent null constraint errors
-      // Only include employerId in the insert if it's a valid number
-      if (insertJob.employerId != null && !isNaN(Number(insertJob.employerId))) {
-        // We know this is valid, so add it to the jobData object
-        (jobData as any).employerId = Number(insertJob.employerId);
-      }
-      
-      console.log("Inserting job with strictly typed data:", JSON.stringify(jobData, null, 2));
-      
-      // Validate all required fields are present and not empty
-      if (!jobData.title || !jobData.company || !jobData.description || 
-          !jobData.requirements || !jobData.benefits || !jobData.category || 
-          !jobData.location || !jobData.jobType || !jobData.experience || 
-          !jobData.contactEmail) {
-        throw new Error("Missing required fields in job data. Check server logs for details.");
-      }
-      
-      // Insert the job with properly formatted data
-      const [job] = await db.insert(jobs).values(jobData as any).returning();
-      console.log("Job created successfully, ID:", job.id);
-      return job;
-    } catch (error) {
-      console.error("Error in createJob:", error);
-      console.error("Error details:", error instanceof Error ? error.message : String(error));
-      console.error("Error stack:", error instanceof Error ? error.stack : "No stack trace");
-      
-      // Rethrow with more informative message
-      if (error instanceof Error) {
-        const enhancedError = new Error(`Failed to create job: ${error.message}`);
-        enhancedError.stack = error.stack;
-        throw enhancedError;
-      }
-      throw error;
-    }
-  }
-
-  async updateJob(updatedJob: Job): Promise<Job> {
-    const [job] = await db
-      .update(jobs)
-      .set({ ...updatedJob, updatedAt: new Date() })
-      .where(eq(jobs.id, updatedJob.id))
-      .returning();
+  async createJob(insertJob: InsertJob) {
+    const [job] = await db.insert(jobs).values(insertJob).returning();
     return job;
   }
 
-  async deleteJob(id: number): Promise<boolean> {
-    // If pgPool is available, use a transaction
-    if (pgPool) {
-      const client = await pgPool.connect();
-      try {
-        await client.query('BEGIN');
-        
-        // First delete all applications for this job
-        await client.query('DELETE FROM applications WHERE job_id = $1', [id]);
-        
-        // Then delete the job
-        const result = await client.query('DELETE FROM jobs WHERE id = $1', [id]);
-        
-        if (result.rowCount === 0) {
-          await client.query('ROLLBACK');
-          return false;
-        }
-        
-        await client.query('COMMIT');
-        return true;
-      } catch (error) {
-        await client.query('ROLLBACK');
-        console.error("Error in deleteJob transaction:", error);
-        throw error;
-      } finally {
-        client.release();
-      }
-    } else {
-      // Fallback to direct delete if no transaction support
-      try {
-        // First delete all applications via Drizzle ORM
-        await db.delete(applications).where(eq(applications.jobId, id));
-        
-        // Then delete the job
-        const result = await db.delete(jobs).where(eq(jobs.id, id));
-        return result.rowCount > 0;
-      } catch (error) {
-        console.error("Error in deleteJob without transaction:", error);
-        throw error;
-      }
+  async updateJob(updatedJob: Job) {
+    const { id, ...updateValues } = updatedJob;
+    const [job] = await db.update(jobs).set(updateValues).where(eq(jobs.id, id)).returning();
+    return job;
+  }
+
+  async deleteJob(id: number) {
+    try {
+      // First, delete associated applications
+      await db.delete(applications).where(eq(applications.jobId, id));
+      
+      // Then delete the job itself
+      const result = await db.delete(jobs).where(eq(jobs.id, id));
+      return result.rowCount > 0;
+    } catch (error) {
+      console.error("Error deleting job:", error);
+      return false;
     }
   }
 
-  // Application methods
-  async getApplication(id: number): Promise<Application | undefined> {
+  async getApplication(id: number) {
     const [application] = await db.select().from(applications).where(eq(applications.id, id));
     return application;
   }
 
-  async getApplicationsByJobId(jobId: number): Promise<Application[]> {
+  async getApplicationsByJobId(jobId: number) {
     return await db.select().from(applications).where(eq(applications.jobId, jobId));
   }
 
-  async getApplicationsByJobSeekerId(jobSeekerId: number): Promise<Application[]> {
+  async getApplicationsByJobSeekerId(jobSeekerId: number) {
     return await db.select().from(applications).where(eq(applications.jobSeekerId, jobSeekerId));
   }
 
-  async createApplication(insertApplication: InsertApplication): Promise<Application> {
-    // If pgPool is available, use a transaction
-    if (pgPool) {
-      const client = await pgPool.connect();
-      try {
-        await client.query('BEGIN');
-
-        // Insert application
-        const [application] = await db.insert(applications).values(insertApplication).returning();
-
-        // Update job application count
-        await db
-          .update(jobs)
-          .set({
-            applicationCount: sql`${jobs.applicationCount} + 1`
-          })
-          .where(eq(jobs.id, insertApplication.jobId));
-
-        await client.query('COMMIT');
-
-        return application;
-      } catch (error) {
-        await client.query('ROLLBACK');
-        throw error;
-      } finally {
-        client.release();
-      }
-    } else {
-      // If no transaction support, just do the operations sequentially
-      const [application] = await db.insert(applications).values(insertApplication).returning();
-
-      await db
-        .update(jobs)
-        .set({
-          applicationCount: sql`${jobs.applicationCount} + 1`
-        })
-        .where(eq(jobs.id, insertApplication.jobId));
-
-      return application;
-    }
+  async createApplication(insertApplication: InsertApplication) {
+    const [application] = await db.insert(applications).values(insertApplication).returning();
+    return application;
   }
 
-  async deleteApplication(id: number): Promise<boolean> {
-    // If pgPool is available, use a transaction
-    if (pgPool) {
-      const client = await pgPool.connect();
-      try {
-        await client.query('BEGIN');
-
-        // Get the application
-        const [application] = await db.select().from(applications).where(eq(applications.id, id));
-
-        if (!application) {
-          await client.query('ROLLBACK');
-          return false;
-        }
-
-        // Delete application
-        const result = await db.delete(applications).where(eq(applications.id, id));
-
-        if (result.rowCount === 0) {
-          await client.query('ROLLBACK');
-          return false;
-        }
-
-        // Update job application count
-        await db
-          .update(jobs)
-          .set({
-            applicationCount: sql`${jobs.applicationCount} - 1`
-          })
-          .where(eq(jobs.id, application.jobId));
-
-        await client.query('COMMIT');
-        return true;
-      } catch (error) {
-        await client.query('ROLLBACK');
-        throw error;
-      } finally {
-        client.release();
-      }
-    } else {
-      // If no transaction support, just do the operations sequentially
-      // Get the application
-      const [application] = await db.select().from(applications).where(eq(applications.id, id));
-
-      if (!application) {
-        return false;
-      }
-
-      // Delete application
+  async deleteApplication(id: number) {
+    try {
       const result = await db.delete(applications).where(eq(applications.id, id));
-
-      if (result.rowCount === 0) {
-        return false;
-      }
-
-      // Update job application count
-      await db
-        .update(jobs)
-        .set({
-          applicationCount: sql`${jobs.applicationCount} - 1`
-        })
-        .where(eq(jobs.id, application.jobId));
-
-      return true;
+      return result.rowCount > 0;
+    } catch (error) {
+      console.error("Error deleting application:", error);
+      return false;
     }
   }
 
-  async updateApplicationStatus(id: number, status: string): Promise<Application | undefined> {
-    // Validate status
-    if (!["new", "viewed", "shortlisted", "rejected"].includes(status)) {
-      throw new Error("Invalid status value");
+  async updateApplicationStatus(id: number, status: string) {
+    try {
+      const [application] = await db
+        .update(applications)
+        .set({ status })
+        .where(eq(applications.id, id))
+        .returning();
+      return application;
+    } catch (error) {
+      console.error("Error updating application status:", error);
+      return undefined;
     }
-
-    // Update the application status
-    const [updatedApplication] = await db
-      .update(applications)
-      .set({ status })
-      .where(eq(applications.id, id))
-      .returning();
-
-    return updatedApplication;
   }
 
-  // Testimonial methods
-  async getTestimonial(id: number): Promise<Testimonial | undefined> {
+  async getTestimonial(id: number) {
     const [testimonial] = await db.select().from(testimonials).where(eq(testimonials.id, id));
     return testimonial;
   }
 
-  async getTestimonials(): Promise<Testimonial[]> {
+  async getTestimonials() {
     return await db.select().from(testimonials);
   }
 
-  async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
-    const [testimonial] = await db.insert(testimonials).values(insertTestimonial).returning();
+  async createTestimonial(insertTestimonial: InsertTestimonial) {
+    const [testimonial] = await db
+      .insert(testimonials)
+      .values(insertTestimonial)
+      .returning();
     return testimonial;
   }
 
-  // Admin methods
-  async getAdmin(id: number): Promise<Admin | undefined> {
+  async getAdmin(id: number) {
     const [admin] = await db.select().from(admins).where(eq(admins.id, id));
     return admin;
   }
 
-  async getAdminByUserId(userId: number): Promise<Admin | undefined> {
+  async getAdminByUserId(userId: number) {
     const [admin] = await db.select().from(admins).where(eq(admins.userId, userId));
     return admin;
   }
-  
-  // Get all admin users
-  async getAdminUsers(): Promise<Admin[]> {
+
+  async getAdminUsers() {
     return await db.select().from(admins);
   }
 
-  async createAdmin(insertAdmin: InsertAdmin): Promise<Admin> {
+  async createAdmin(insertAdmin: InsertAdmin) {
     const [admin] = await db.insert(admins).values(insertAdmin).returning();
     return admin;
   }
 
-  async updateAdminLastLogin(id: number): Promise<Admin> {
+  async updateAdminLastLogin(id: number) {
     const [admin] = await db
       .update(admins)
       .set({ lastLogin: new Date() })
@@ -715,229 +466,71 @@ export class DatabaseStorage implements IStorage {
     return admin;
   }
 
-  async updateUserPassword(userId: number, password: string): Promise<User | undefined> {
-    const [user] = await db
-      .update(users)
-      .set({ password })
-      .where(eq(users.id, userId))
-      .returning();
-    return user;
-  }
-  
-  async deleteUser(userId: number): Promise<boolean> {
+  async updateUserPassword(userId: number, password: string) {
     try {
-      console.log(`Starting deletion process for user ID ${userId}`);
-      
-      // First get the user type to determine what related records to delete
-      const user = await this.getUser(userId);
-      if (!user) {
-        console.log(`User with ID ${userId} not found`);
-        return false;
-      }
-      
-      const userType = user.userType;
-      console.log(`User type for ID ${userId}: ${userType}`);
-      
-      // Enhanced shortcut for direct deletion - much simpler approach to avoid cascading issues
-      if (userType === 'admin' || userType === 'super_admin') {
-        try {
-          console.log(`DEBUG: Starting enhanced direct SQL deletion for admin user ${userId}`);
-          
-          // Step 1: Check for admin profile existence
-          const admin = await this.getAdminByUserId(userId);
-          console.log(`DEBUG: Admin profile check result: ${admin ? `Found ID=${admin.id}` : 'Not found'}`);
-          
-          // Step 2: Count references in blog posts
-          const blogPostCount = await db.query(
-            `SELECT COUNT(*) FROM blog_posts WHERE author_id = $1`,
-            [userId]
-          );
-          console.log(`DEBUG: Found ${blogPostCount.rows[0].count || 0} blog posts authored by this admin`);
-          
-          // Step 3: Count notifications
-          const notificationCount = await db.query(
-            `SELECT COUNT(*) FROM notifications WHERE user_id = $1`,
-            [userId]
-          );
-          console.log(`DEBUG: Found ${notificationCount.rows[0].count || 0} notifications for this admin`);
-          
-          // Step 4: Check for any additional references in other tables (job assignments, etc.)
-          const jobAssignmentCount = await db.query(
-            `SELECT COUNT(*) FROM jobs WHERE assigned_to = $1`,
-            [userId]
-          );
-          console.log(`DEBUG: Found ${jobAssignmentCount.rows[0].count || 0} job assignments to this admin`);
-          
-          console.log("Starting direct SQL deletion operations with proper error handling");
-          
-          // Step 5: First, null out any references in blog posts
-          try {
-            const blogPostUpdate = await db.query(
-              `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1 RETURNING id`,
-              [userId]
-            );
-            console.log(`DEBUG: Updated ${blogPostUpdate.rowCount} blog posts to remove author reference`);
-          } catch (blogError) {
-            console.error("ERROR in blog post update step:", blogError);
-            throw new Error(`Failed to update blog posts: ${blogError.message}`);
-          }
-          
-          // Step 6: Delete notifications
-          try {
-            const notificationDelete = await db.query(
-              `DELETE FROM notifications WHERE user_id = $1 RETURNING id`,
-              [userId]
-            );
-            console.log(`DEBUG: Deleted ${notificationDelete.rowCount} notifications`);
-          } catch (notifError) {
-            console.error("ERROR in notification deletion step:", notifError);
-            throw new Error(`Failed to delete notifications: ${notifError.message}`);
-          }
-          
-          // Step 7: Clear job assignments if any
-          try {
-            const jobAssignmentUpdate = await db.query(
-              `UPDATE jobs SET assigned_to = NULL WHERE assigned_to = $1 RETURNING id`,
-              [userId]
-            );
-            console.log(`DEBUG: Cleared ${jobAssignmentUpdate.rowCount} job assignments`);
-          } catch (jobError) {
-            console.error("ERROR in job assignment update step:", jobError);
-            throw new Error(`Failed to update job assignments: ${jobError.message}`);
-          }
-          
-          // Step 8: Get and delete admin profile
-          if (admin) {
-            try {
-              const adminDelete = await db.query(
-                `DELETE FROM admins WHERE id = $1 RETURNING id`,
-                [admin.id]
-              );
-              console.log(`DEBUG: Deleted admin profile: ${adminDelete.rowCount} rows affected`);
-            } catch (adminError) {
-              console.error("ERROR in admin profile deletion step:", adminError);
-              throw new Error(`Failed to delete admin profile: ${adminError.message}`);
-            }
-          }
-          
-          // Step 9: Finally delete the user
-          try {
-            const userDelete = await db.query(
-              `DELETE FROM users WHERE id = $1 RETURNING id`,
-              [userId]
-            );
-            console.log(`DEBUG: Deleted user: ${userDelete.rowCount} rows affected`);
-            
-            if (userDelete.rowCount === 0) {
-              throw new Error("User deletion did not affect any rows - user may not exist");
-            }
-          } catch (userError) {
-            console.error("ERROR in user deletion step:", userError);
-            throw new Error(`Failed to delete user: ${userError.message}`);
-          }
-          
-          console.log(`Successfully deleted admin user ID ${userId} using enhanced direct approach`);
-          return true;
-        } catch (directError) {
-          console.error(`Direct deletion error for admin ${userId}:`, directError);
-          // Return the error message rather than falling back to transaction approach
-          throw new Error(`Failed to delete admin user: ${directError.message}`);
-        }
-      }
-      
-      // Use transaction to ensure all operations succeed or fail together
+      const [user] = await db
+        .update(users)
+        .set({ password })
+        .where(eq(users.id, userId))
+        .returning();
+      return user;
+    } catch (error) {
+      console.error("Error updating user password:", error);
+      return undefined;
+    }
+  }
+
+  async deleteUser(userId: number) {
+    try {
+      // We need to use a transaction to handle referential integrity
       return await db.transaction(async (tx) => {
         try {
-          // Handle specific profile records based on user type
-          if (userType === 'employer') {
-            try {
-              // Get employer profile
-              const employer = await this.getEmployerByUserId(userId);
-              if (employer) {
-                // Handle employer-specific related records
-                console.log(`Found employer profile ID ${employer.id} for user ID ${userId}`);
-                
-                // Update jobs to remove employer reference
-                await tx.query(
-                  `UPDATE jobs SET employer_id = NULL WHERE employer_id = $1`,
-                  [employer.id]
-                );
-                
-                // Delete employer profile
-                await tx.delete(employers).where(eq(employers.id, employer.id));
-                console.log(`Deleted employer profile ID ${employer.id}`);
-              } else {
-                console.log(`No employer profile found for user ID ${userId}`);
-              }
-            } catch (err) {
-              console.error(`Error handling employer data for user ${userId}:`, err);
-              throw err; // Rethrow to trigger transaction rollback
+          // 1. Check if user exists
+          const [user] = await tx.select().from(users).where(eq(users.id, userId));
+          if (!user) {
+            throw new Error(`User with ID ${userId} not found`);
+          }
+
+          // 2. Delete admin record if exists
+          await tx.delete(admins).where(eq(admins.userId, userId));
+
+          // 3. Delete jobSeeker record if exists
+          const [jobSeeker] = await tx.select().from(jobSeekers).where(eq(jobSeekers.userId, userId));
+          if (jobSeeker) {
+            // Delete applications associated with this job seeker
+            await tx.delete(applications).where(eq(applications.jobSeekerId, jobSeeker.id));
+            // Delete the job seeker
+            await tx.delete(jobSeekers).where(eq(jobSeekers.id, jobSeeker.id));
+          }
+
+          // 4. Delete employer record if exists
+          const [employer] = await tx.select().from(employers).where(eq(employers.userId, userId));
+          if (employer) {
+            // Get jobs for this employer
+            const employerJobs = await tx.select().from(jobs).where(eq(jobs.employerId, employer.id));
+            
+            // Delete applications for all jobs of this employer
+            for (const job of employerJobs) {
+              await tx.delete(applications).where(eq(applications.jobId, job.id));
             }
-          } else if (userType === 'jobseeker') {
-            try {
-              // Get job seeker profile
-              const jobSeeker = await this.getJobSeekerByUserId(userId);
-              if (jobSeeker) {
-                console.log(`Found job seeker profile ID ${jobSeeker.id} for user ID ${userId}`);
-                
-                // Delete applications by this job seeker
-                await tx.query(
-                  `DELETE FROM applications WHERE job_seeker_id = $1`,
-                  [jobSeeker.id]
-                );
-                
-                // Delete job seeker profile
-                await tx.delete(jobSeekers).where(eq(jobSeekers.id, jobSeeker.id));
-                console.log(`Deleted job seeker profile ID ${jobSeeker.id}`);
-              } else {
-                console.log(`No job seeker profile found for user ID ${userId}`);
-              }
-            } catch (err) {
-              console.error(`Error handling job seeker data for user ${userId}:`, err);
-              throw err; // Rethrow to trigger transaction rollback
-            }
-          } else if (userType === 'admin' || userType === 'super_admin') {
-            try {
-              // Get admin profile
-              const admin = await this.getAdminByUserId(userId);
-              if (admin) {
-                console.log(`Found admin profile ID ${admin.id} for user ID ${userId}`);
-                
-                // Update blog posts to remove admin reference
-                await tx.query(
-                  `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1`,
-                  [userId]
-                );
-                
-                // Delete admin profile
-                await tx.delete(admins).where(eq(admins.id, admin.id));
-                console.log(`Deleted admin profile ID ${admin.id}`);
-              } else {
-                console.log(`No admin profile found for user ID ${userId}`);
-              }
-            } catch (err) {
-              console.error(`Error handling admin data for user ${userId}:`, err);
-              throw err; // Rethrow to trigger transaction rollback
-            }
+            
+            // Delete all jobs of this employer
+            await tx.delete(jobs).where(eq(jobs.employerId, employer.id));
+            
+            // Delete the employer
+            await tx.delete(employers).where(eq(employers.id, employer.id));
           }
           
-          try {
-            // Delete notifications for this user
-            await tx.query(
-              `DELETE FROM notifications WHERE user_id = $1`,
-              [userId]
-            );
-            console.log(`Deleted notifications for user ID ${userId}`);
-          } catch (err) {
-            console.error(`Error deleting notifications for user ${userId}:`, err);
-            throw err; // Rethrow to trigger transaction rollback
-          }
+          // 5. Delete blog posts by this user
+          await tx.delete(blogPosts).where(eq(blogPosts.authorId, userId));
           
-          // Finally delete the user account
-          await tx.delete(users).where(eq(users.id, userId));
-          console.log(`Successfully deleted user with ID ${userId}`);
+          // 6. Delete notifications related to this user
+          await tx.delete(notifications).where(eq(notifications.userId, userId));
           
-          return true;
+          // 7. Finally delete the user
+          const result = await tx.delete(users).where(eq(users.id, userId));
+          
+          return result.rowCount > 0;
         } catch (txError) {
           console.error(`Transaction error while deleting user ${userId}:`, txError);
           throw txError; // Rethrow to trigger transaction rollback
@@ -945,11 +538,12 @@ export class DatabaseStorage implements IStorage {
       });
     } catch (error) {
       console.error(`Error deleting user ${userId}:`, error);
-      return false;
+      throw error; // Rethrow the error for proper error handling
     }
   }
 
-  async updateAdminRecoveryEmail(id: number, recoveryEmail: string): Promise<Admin> {
+  // Method to update admin recovery email in the database
+  async updateAdminRecoveryEmail(id: number, recoveryEmail: string) {
     const [admin] = await db
       .update(admins)
       .set({ recoveryEmail })
@@ -958,7 +552,7 @@ export class DatabaseStorage implements IStorage {
     return admin;
   }
 
-  async setPasswordResetToken(adminId: number, token: string, expiryDate: Date): Promise<Admin> {
+  async setPasswordResetToken(adminId: number, token: string, expiryDate: Date) {
     const [admin] = await db
       .update(admins)
       .set({
@@ -970,16 +564,20 @@ export class DatabaseStorage implements IStorage {
     return admin;
   }
 
-  async getAdminByResetToken(token: string): Promise<Admin | undefined> {
+  async getAdminByResetToken(token: string) {
     const [admin] = await db
       .select()
       .from(admins)
-      .where(eq(admins.resetToken, token))
-      .where(gt(admins.resetTokenExpires as any, new Date()));
+      .where(
+        and(
+          eq(admins.resetToken, token),
+          gt(admins.resetTokenExpires, new Date())
+        )
+      );
     return admin;
   }
 
-  async clearPasswordResetToken(adminId: number): Promise<Admin> {
+  async clearPasswordResetToken(adminId: number) {
     const [admin] = await db
       .update(admins)
       .set({
@@ -991,76 +589,69 @@ export class DatabaseStorage implements IStorage {
     return admin;
   }
 
-  async getAllAdmins(): Promise<Admin[]> {
+  async getAllAdmins() {
     return await db.select().from(admins);
   }
 
-  // Invitation code methods
-  async getInvitationCode(code: string): Promise<InvitationCode | undefined> {
-    const [invitationCode] = await db.select().from(invitationCodes).where(eq(invitationCodes.code, code));
+  async getInvitationCode(code: string) {
+    const [invitationCode] = await db
+      .select()
+      .from(invitationCodes)
+      .where(eq(invitationCodes.code, code));
     return invitationCode;
   }
 
-  async getInvitationCodes(): Promise<InvitationCode[]> {
+  async getInvitationCodes() {
     return await db.select().from(invitationCodes);
   }
 
-  async createInvitationCode(insertInvitationCode: InsertInvitationCode): Promise<InvitationCode> {
-    const [invitationCode] = await db.insert(invitationCodes).values(insertInvitationCode).returning();
+  async createInvitationCode(insertInvitationCode: InsertInvitationCode) {
+    const [invitationCode] = await db
+      .insert(invitationCodes)
+      .values(insertInvitationCode)
+      .returning();
     return invitationCode;
   }
 
-  async verifyInvitationCode(code: string, email: string): Promise<boolean> {
-    const invitationCode = await this.getInvitationCode(code);
-
-    if (!invitationCode) {
-      return false;
-    }
-
-    // Check if the code is for the specific email
-    if (invitationCode.email !== email) {
-      return false;
-    }
-
-    // Check if the code is already used
-    if (invitationCode.isUsed) {
-      return false;
-    }
-
-    // Check if the code has expired
-    if (new Date() > invitationCode.expiresAt) {
-      return false;
-    }
-
-    return true;
+  async verifyInvitationCode(code: string, email: string) {
+    const [invitationCode] = await db
+      .select()
+      .from(invitationCodes)
+      .where(
+        and(
+          eq(invitationCodes.code, code),
+          eq(invitationCodes.email, email),
+          eq(invitationCodes.isUsed, false),
+          gt(invitationCodes.expiresAt, new Date())
+        )
+      );
+    return !!invitationCode;
   }
 
-  async markInvitationCodeAsUsed(code: string): Promise<InvitationCode | undefined> {
+  async markInvitationCodeAsUsed(code: string) {
     const [invitationCode] = await db
       .update(invitationCodes)
       .set({ isUsed: true })
       .where(eq(invitationCodes.code, code))
       .returning();
-
     return invitationCode;
   }
 
-  // Vacancy methods
-  async getVacancy(id: number): Promise<Vacancy | undefined> {
+  async getVacancy(id: number) {
     const [vacancy] = await db.select().from(vacancies).where(eq(vacancies.id, id));
     return vacancy;
   }
 
-  async getVacancies(): Promise<Vacancy[]> {
-    return await db.select().from(vacancies).orderBy(vacancies.submittedAt);
+  async getVacancies() {
+    return await db.select().from(vacancies);
   }
 
-  async createVacancy(insertVacancy: InsertVacancy): Promise<Vacancy> {
+  async createVacancy(insertVacancy: InsertVacancy) {
     const [vacancy] = await db.insert(vacancies).values(insertVacancy).returning();
     return vacancy;
   }
 
-  async updateVacancyStatus(id: number, status: string): Promise<Vacancy | undefined> {
+  async updateVacancyStatus(id: number, status: string) {
     const [vacancy] = await db
       .update(vacancies)
       .set({ status })
@@ -1068,290 +659,142 @@ export class DatabaseStorage implements IStorage {
       .returning();
     return vacancy;
   }
-  
+
   async assignVacancyToRecruiter(
-    id: number, 
-    recruiterEmail: string, 
+    id: number,
+    recruiterEmail: string,
     recruiterName: string
-  ): Promise<Vacancy | undefined> {
-    // Get the current status of the vacancy
-    const [vacancy] = await db.select().from(vacancies).where(eq(vacancies.id, id));
-    if (!vacancy) {
-      console.error(`Vacancy with ID ${id} not found`);
-      return undefined;
-    }
-    
-    const now = new Date();
-    
-    // Update status to 'assigned' if it's 'new' or 'pending'
-    const newStatus = vacancy.status === 'new' || vacancy.status === 'pending' ? 'assigned' : vacancy.status;
-    
-    console.log(`Assigning vacancy ID ${id} to ${recruiterName} (${recruiterEmail}), changing status from ${vacancy.status} to ${newStatus}`);
-    
-    try {
-      const [updatedVacancy] = await db
-        .update(vacancies)
-        .set({ 
-          assignedTo: recruiterEmail,
-          assignedName: recruiterName,
-          assignedAt: now,
-          status: newStatus
-        })
-        .where(eq(vacancies.id, id))
-        .returning();
-      
-      console.log(`Successfully updated vacancy ID ${id} in database`);
-      return updatedVacancy;
-    } catch (error) {
-      console.error(`Error assigning vacancy to recruiter:`, error);
-      return undefined;
-    }
+  ) {
+    const [vacancy] = await db
+      .update(vacancies)
+      .set({
+        recruiterEmail,
+        recruiterName,
+        assignedAt: new Date()
+      })
+      .where(eq(vacancies.id, id))
+      .returning();
+    return vacancy;
   }
-  
-  async deleteVacancy(id: number): Promise<boolean> {
+
+  async deleteVacancy(id: number) {
     try {
-      console.log(`Attempting to delete vacancy with ID ${id}`);
       const result = await db.delete(vacancies).where(eq(vacancies.id, id));
-      const success = result.rowCount > 0;
-      
-      if (success) {
-        console.log(`Successfully deleted vacancy ID ${id}`);
-      } else {
-        console.log(`No vacancy found with ID ${id} to delete`);
-      }
-      
-      return success;
+      return result.rowCount > 0;
     } catch (error) {
-      console.error(`Error deleting vacancy:`, error);
+      console.error("Error deleting vacancy:", error);
       return false;
     }
   }
 
-  // Staffing Inquiry methods
-  async getStaffingInquiry(id: number): Promise<StaffingInquiry | undefined> {
-    // Use direct SQL to avoid column name issues
-    const result = await db.execute(`
-      SELECT 
-        id, 
-        name, 
-        email, 
-        phone, 
-        company, 
-        inquirytype as "inquiryType", 
-        message, 
-        marketing, 
-        status, 
-        submittedat as "submittedAt"
-      FROM staffing_inquiries 
-      WHERE id = ${id}
-      LIMIT 1
-    `);
-    
-    console.log("Single inquiry result:", JSON.stringify(result, null, 2));
-    
-    // Handle both possible API return formats
-    if (Array.isArray(result)) {
-      return result.length > 0 ? result[0] : undefined;
-    } else if (result && typeof result === 'object' && 'rows' in result) {
-      return (result as any).rows.length > 0 ? (result as any).rows[0] : undefined;
-    }
-    return undefined;
-  }
-
-  async getStaffingInquiries(): Promise<StaffingInquiry[]> {
-    // Use direct SQL to avoid column name issues
-    const result = await db.execute(`
-      SELECT 
-        id, 
-        name, 
-        email, 
-        phone, 
-        company, 
-        inquirytype as "inquiryType", 
-        message, 
-        marketing, 
-        status, 
-        submittedat as "submittedAt"
-      FROM staffing_inquiries 
-      ORDER BY submittedat DESC
-    `);
-    
-    console.log("Staffing inquiries SQL result:", JSON.stringify(result, null, 2));
-    
-    // In newer drizzle-orm versions, the result is the rows array directly
-    if (Array.isArray(result)) {
-      console.log("Found inquiries:", result.length);
-      return result;
-    } else if (result && 'rows' in result) {
-      // For backwards compatibility with older drizzle-orm versions
-      console.log("Found inquiries (in rows property):", (result as any).rows.length);
-      return (result as any).rows;
-    } else {
-      console.log("No valid result format");
-      return [];
-    }
-  }
-
-  async createStaffingInquiry(insertInquiry: InsertStaffingInquiry): Promise<StaffingInquiry> {
-    const now = new Date();
-    
-    // Add default values
-    const inquiryData = {
-      ...insertInquiry,
-      status: "new",
-      submittedAt: now
-    };
-    
-    const [inquiry] = await db.insert(staffingInquiries).values(inquiryData).returning();
+  async getStaffingInquiry(id: number) {
+    const [inquiry] = await db
+      .select()
+      .from(staffingInquiries)
+      .where(eq(staffingInquiries.id, id));
     return inquiry;
   }
 
-  async updateStaffingInquiryStatus(id: number, status: string): Promise<StaffingInquiry | undefined> {
-    // Use direct SQL to avoid column name issues
-    const result = await db.execute(`
-      UPDATE staffing_inquiries 
-      SET status = '${status}' 
-      WHERE id = ${id}
-      RETURNING id, name, email, phone, company, inquirytype as "inquiryType", message, marketing, status, submittedat as "submittedAt"
-    `);
-    
-    console.log("Update inquiry status result:", JSON.stringify(result, null, 2));
-    
-    // Handle both possible API return formats
-    if (Array.isArray(result)) {
-      return result.length > 0 ? result[0] : undefined;
-    } else if (result && typeof result === 'object' && 'rows' in result) {
-      return (result as any).rows.length > 0 ? (result as any).rows[0] : undefined;
-    }
-    return undefined;
+  async getStaffingInquiries() {
+    return await db.select().from(staffingInquiries);
   }
 
-  // Blog post methods
-  async getBlogPost(id: number): Promise<BlogPost | undefined> {
+  async createStaffingInquiry(insertInquiry: InsertStaffingInquiry) {
+    const [inquiry] = await db
+      .insert(staffingInquiries)
+      .values(insertInquiry)
+      .returning();
+    return inquiry;
+  }
+
+  async updateStaffingInquiryStatus(id: number, status: string) {
+    const [inquiry] = await db
+      .update(staffingInquiries)
+      .set({ status })
+      .where(eq(staffingInquiries.id, id))
+      .returning();
+    return inquiry;
+  }
+
+  async getBlogPost(id: number) {
     const [post] = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
     return post;
   }
 
-  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+  async getBlogPostBySlug(slug: string) {
     const [post] = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
     return post;
   }
 
-  async getBlogPosts(filters?: { category?: string; published?: boolean }): Promise<BlogPost[]> {
+  async getBlogPosts(filters?: { category?: string; published?: boolean }) {
     let query = db.select().from(blogPosts);
-    
+
     if (filters) {
+      const conditions = [];
+
       if (filters.category) {
-        query = query.where(eq(blogPosts.category, filters.category));
+        conditions.push(eq(blogPosts.category, filters.category));
       }
-      
+
       if (filters.published !== undefined) {
-        query = query.where(eq(blogPosts.published, filters.published));
+        conditions.push(eq(blogPosts.published, filters.published));
+      }
+
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions));
       }
     }
-    
-    // Sort by publish date descending (newest first)
-    query = query.orderBy(desc(blogPosts.publishDate));
-    
-    return await query;
+
+    const posts = await query.orderBy(sql`${blogPosts.createdAt} DESC`);
+    return posts;
   }
 
-  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
-    // Generate a slug from the title if none is provided
-    if (!post.slug) {
-      post.slug = post.title
-        .toLowerCase()
-        .replace(/[^\w\s]/gi, '')
-        .replace(/\s+/g, '-');
-        
-      // Check if slug exists and append a number if necessary
-      let suffix = 1;
-      let newSlug = post.slug;
-      let existingPost = await this.getBlogPostBySlug(newSlug);
-      
-      while (existingPost) {
-        newSlug = `${post.slug}-${suffix}`;
-        suffix++;
-        existingPost = await this.getBlogPostBySlug(newSlug);
-      }
-      
-      post.slug = newSlug;
-    }
-    
-    const [createdPost] = await db.insert(blogPosts).values(post).returning();
-    return createdPost;
+  async createBlogPost(post: InsertBlogPost) {
+    const [blogPost] = await db.insert(blogPosts).values(post).returning();
+    return blogPost;
   }
 
-  async updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
-    // Check if post exists
-    const existingPost = await this.getBlogPost(id);
-    if (!existingPost) {
-      return undefined;
-    }
-    
-    // If slug is being updated, check for uniqueness
-    if (post.slug && post.slug !== existingPost.slug) {
-      const slugExists = await this.getBlogPostBySlug(post.slug);
-      if (slugExists) {
-        throw new Error("Slug already exists");
-      }
-    }
-    
-    const [updatedPost] = await db
+  async updateBlogPost(id: number, post: Partial<InsertBlogPost>) {
+    const [blogPost] = await db
       .update(blogPosts)
       .set(post)
       .where(eq(blogPosts.id, id))
       .returning();
-      
-    return updatedPost;
+    return blogPost;
   }
 
-  async deleteBlogPost(id: number): Promise<boolean> {
+  async deleteBlogPost(id: number) {
     try {
-      // First check if the blog post exists
-      const post = await this.getBlogPost(id);
-      if (!post) {
-        return false;
-      }
-      
-      // If it exists, delete it
-      await db.delete(blogPosts).where(eq(blogPosts.id, id));
-      
-      // Verify deletion was successful
-      const checkPost = await this.getBlogPost(id);
-      return checkPost === undefined;
+      const result = await db.delete(blogPosts).where(eq(blogPosts.id, id));
+      return result.rowCount > 0;
     } catch (error) {
-      console.error("Error in deleteBlogPost:", error);
+      console.error("Error deleting blog post:", error);
       return false;
     }
   }
-  
-  // Notification methods
-  async getNotifications(userId?: number, limit: number = 50): Promise<Notification[]> {
-    let query = db.select().from(notifications).orderBy(desc(notifications.createdAt));
+
+  async getNotifications(userId?: number, limit: number = 50) {
+    let query = db.select().from(notifications);
     
-    if (userId) {
+    if (userId !== undefined) {
       query = query.where(eq(notifications.userId, userId));
     }
     
-    if (limit > 0) {
-      query = query.limit(limit);
-    }
-    
-    return await query;
+    const results = await query.orderBy(sql`${notifications.createdAt} DESC`).limit(limit);
+    return results;
   }
-  
-  async getNotification(id: number): Promise<Notification | undefined> {
+
+  async getNotification(id: number) {
     const [notification] = await db.select().from(notifications).where(eq(notifications.id, id));
     return notification;
   }
-  
-  async createNotification(insertNotification: InsertNotification): Promise<Notification> {
+
+  async createNotification(insertNotification: InsertNotification) {
     const [notification] = await db.insert(notifications).values(insertNotification).returning();
     return notification;
   }
-  
-  async markNotificationAsRead(id: number): Promise<Notification | undefined> {
+
+  async markNotificationAsRead(id: number) {
     const [notification] = await db
       .update(notifications)
       .set({ read: true })
@@ -1359,29 +802,20 @@ export class DatabaseStorage implements IStorage {
       .returning();
     return notification;
   }
-  
-  async markAllNotificationsAsRead(userId: number): Promise<boolean> {
-    try {
-      await db
-        .update(notifications)
-        .set({ read: true })
-        .where(eq(notifications.userId, userId));
-      return true;
-    } catch (error) {
-      console.error("Error marking all notifications as read:", error);
-      return false;
-    }
+
+  async markAllNotificationsAsRead(userId: number) {
+    const result = await db
+      .update(notifications)
+      .set({ read: true })
+      .where(and(eq(notifications.userId, userId), eq(notifications.read, false)));
+    return result.rowCount > 0;
   }
-  
-  async getUnreadNotificationCount(userId: number): Promise<number> {
+
+  async getUnreadNotificationCount(userId: number) {
     const result = await db
       .select({ count: sql<number>`count(*)` })
       .from(notifications)
-      .where(and(
-        eq(notifications.userId, userId),
-        eq(notifications.read, false)
-      ));
-    
+      .where(and(eq(notifications.userId, userId), eq(notifications.read, false)));
     return result[0]?.count || 0;
   }
 }
@@ -1399,10 +833,9 @@ export class MemStorage implements IStorage {
   private staffingInquiries: Map<number, StaffingInquiry>;
   private blogPosts: Map<number, BlogPost>;
   private notifications: Map<number, Notification>;
-
+  
   sessionStore: session.Store;
-
-  // ID counters
+  
   private userIdCounter: number;
   private jobSeekerIdCounter: number;
   private employerIdCounter: number;
@@ -1414,7 +847,7 @@ export class MemStorage implements IStorage {
   private staffingInquiryIdCounter: number;
   private blogPostIdCounter: number;
   private notificationIdCounter: number;
-
+  
   constructor() {
     this.users = new Map();
     this.jobSeekers = new Map();
@@ -1428,7 +861,7 @@ export class MemStorage implements IStorage {
     this.staffingInquiries = new Map();
     this.blogPosts = new Map();
     this.notifications = new Map();
-
+    
     this.userIdCounter = 1;
     this.jobSeekerIdCounter = 1;
     this.employerIdCounter = 1;
@@ -1440,750 +873,768 @@ export class MemStorage implements IStorage {
     this.staffingInquiryIdCounter = 1;
     this.blogPostIdCounter = 1;
     this.notificationIdCounter = 1;
-
+    
+    // Create an in-memory session store
+    const MemoryStore = createMemoryStore(session);
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // prune expired entries every 24h
     });
-
-    // Add some demo testimonials
-    this.createTestimonial({
-      userId: null,
-      name: "John Smith",
-      role: "Software Developer",
-      content: "Found my dream job through this platform. The process was smooth and professional.",
-      rating: 5
-    });
-
-    this.createTestimonial({
-      userId: null,
-      name: "Sarah Johnson",
-      role: "Marketing Manager",
-      content: "As an employer, I've found exceptional talent here. The quality of candidates is outstanding.",
-      rating: 5
-    });
-
-    this.createTestimonial({
-      userId: null,
-      name: "David Chen",
-      role: "HR Director",
-      content: "This platform has transformed our hiring process. Highly recommended for all businesses.",
-      rating: 4
-    });
   }
-
-  // User methods
-  async getUser(id: number): Promise<User | undefined> {
+  
+  async getUser(id: number) {
     return this.users.get(id);
   }
-
-  async getUserByEmail(email: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.email.toLowerCase() === email.toLowerCase()
-    );
+  
+  async getUserByEmail(email: string) {
+    for (const user of this.users.values()) {
+      if (user.email === email) {
+        return user;
+      }
+    }
+    return undefined;
   }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
+  
+  async createUser(insertUser: InsertUser) {
     const id = this.userIdCounter++;
     const now = new Date();
     const user: User = { ...insertUser, id, createdAt: now };
     this.users.set(id, user);
     return user;
   }
-
-  async getAllUsers(): Promise<User[]> {
+  
+  async getAllUsers() {
     return Array.from(this.users.values());
   }
-
-  async getUserByEmployerId(employerId: number): Promise<User | undefined> {
+  
+  async getUserByEmployerId(employerId: number) {
     const employer = await this.getEmployer(employerId);
     if (!employer) return undefined;
-
-    return this.users.get(employer.userId);
+    return this.getUser(employer.userId);
   }
-
-  async getUserByJobSeekerId(jobSeekerId: number): Promise<User | undefined> {
+  
+  async getUserByJobSeekerId(jobSeekerId: number) {
     const jobSeeker = await this.getJobSeeker(jobSeekerId);
     if (!jobSeeker) return undefined;
-
-    return this.users.get(jobSeeker.userId);
+    return this.getUser(jobSeeker.userId);
   }
-
-  // JobSeeker methods
-  async getJobSeeker(id: number): Promise<JobSeeker | undefined> {
+  
+  async removeSuperAdminUsers() {
+    const removedUserIds: number[] = [];
+    let count = 0;
+    
+    for (const [id, user] of this.users.entries()) {
+      if (user.role === "super_admin") {
+        try {
+          await this.deleteUser(id);
+          count++;
+          removedUserIds.push(id);
+        } catch (error) {
+          console.error(`Error deleting super_admin user ${id}:`, error);
+        }
+      }
+    }
+    
+    return { count, removedUserIds };
+  }
+  
+  async getUserById(id: number) {
+    return this.users.get(id);
+  }
+  
+  async getJobSeeker(id: number) {
     return this.jobSeekers.get(id);
   }
-
-  async getJobSeekerByUserId(userId: number): Promise<JobSeeker | undefined> {
-    return Array.from(this.jobSeekers.values()).find(
-      (jobSeeker) => jobSeeker.userId === userId
-    );
+  
+  async getJobSeekerByUserId(userId: number) {
+    for (const jobSeeker of this.jobSeekers.values()) {
+      if (jobSeeker.userId === userId) {
+        return jobSeeker;
+      }
+    }
+    return undefined;
   }
-
-  async createJobSeeker(insertJobSeeker: InsertJobSeeker): Promise<JobSeeker> {
+  
+  async createJobSeeker(insertJobSeeker: InsertJobSeeker) {
     const id = this.jobSeekerIdCounter++;
     const jobSeeker: JobSeeker = {
       ...insertJobSeeker,
-      id,
-      cvPath: null
+      id
     };
     this.jobSeekers.set(id, jobSeeker);
     return jobSeeker;
   }
-
-  async updateJobSeeker(jobSeeker: JobSeeker): Promise<JobSeeker> {
-    // Check if the job seeker exists
-    if (!this.jobSeekers.has(jobSeeker.id)) {
-      throw new Error('Job seeker not found');
-    }
-
-    // Update in the Map
+  
+  async updateJobSeeker(jobSeeker: JobSeeker) {
     this.jobSeekers.set(jobSeeker.id, jobSeeker);
     return jobSeeker;
   }
-
-  // Employer methods
-  async getEmployer(id: number): Promise<Employer | undefined> {
+  
+  async getEmployer(id: number) {
     return this.employers.get(id);
   }
-
-  async getEmployerByUserId(userId: number): Promise<Employer | undefined> {
-    return Array.from(this.employers.values()).find(
-      (employer) => employer.userId === userId
-    );
+  
+  async getEmployerByUserId(userId: number) {
+    for (const employer of this.employers.values()) {
+      if (employer.userId === userId) {
+        return employer;
+      }
+    }
+    return undefined;
   }
-
-  async createEmployer(insertEmployer: InsertEmployer): Promise<Employer> {
+  
+  async createEmployer(insertEmployer: InsertEmployer) {
     const id = this.employerIdCounter++;
     const employer: Employer = { ...insertEmployer, id };
     this.employers.set(id, employer);
     return employer;
   }
-
-  async updateEmployer(employer: Employer): Promise<Employer> {
-    // Check if the employer exists
-    if (!this.employers.has(employer.id)) {
-      throw new Error('Employer not found');
-    }
-
-    // Update in the Map
+  
+  async updateEmployer(employer: Employer) {
     this.employers.set(employer.id, employer);
     return employer;
   }
-
-  // Job methods
-  async getJob(id: number): Promise<Job | undefined> {
+  
+  async getJob(id: number) {
     return this.jobs.get(id);
   }
-
+  
   async getJobs(filters?: {
     category?: string;
     location?: string;
     jobType?: string;
     specialization?: string;
+    experience?: string;
     minSalary?: number;
     maxSalary?: number;
     keyword?: string;
-  }): Promise<Job[]> {
-    let allJobs = Array.from(this.jobs.values()).filter(job => job.isActive);
-
-    if (!filters) return allJobs;
-
-    return allJobs.filter(job => {
-      // Filter by category
-      if (filters.category && filters.category !== "All Categories" && job.category !== filters.category) return false;
-
-      // Filter by location
-      if (filters.location && filters.location !== "All Locations") {
-        // Allow partial match on location
-        if (!job.location.includes(filters.location)) return false;
+  }) {
+    let jobs = Array.from(this.jobs.values());
+    
+    if (filters) {
+      if (filters.category) {
+        jobs = jobs.filter(job => job.category === filters.category);
       }
-
-      // Filter by job type
-      if (filters.jobType && filters.jobType !== "All Types" && job.jobType !== filters.jobType) return false;
-
-      // Filter by specialization (checking in description)
-      if (filters.specialization && filters.specialization !== "All Specializations") {
-        if (!job.description.includes(filters.specialization)) return false;
+      if (filters.location) {
+        jobs = jobs.filter(job => job.location.toLowerCase().includes(filters.location!.toLowerCase()));
       }
-
-      // Filter by salary range
-      if (filters.minSalary || filters.maxSalary) {
-        // Extract numeric salary from string like "$120,000 - $150,000"
-        const salaryMatch = job.salary?.match(/[\d,]+/g);
-        if (salaryMatch && salaryMatch.length >= 1) {
-          const minSalaryStr = salaryMatch[0].replace(/,/g, '');
-          const minSalaryValue = parseInt(minSalaryStr);
-
-          if (filters.minSalary && !isNaN(minSalaryValue) && minSalaryValue < filters.minSalary) {
-            return false;
-          }
-
-          if (filters.maxSalary && salaryMatch.length >= 2) {
-            const maxSalaryStr = salaryMatch[1].replace(/,/g, '');
-            const maxSalaryValue = parseInt(maxSalaryStr);
-
-            if (!isNaN(maxSalaryValue) && maxSalaryValue > filters.maxSalary) {
-              return false;
-            }
-          }
-        }
+      if (filters.jobType) {
+        jobs = jobs.filter(job => job.jobType === filters.jobType);
       }
-
-      // Filter by keyword (search in title and description)
+      if (filters.specialization) {
+        jobs = jobs.filter(job => job.specialization?.toLowerCase().includes(filters.specialization!.toLowerCase()));
+      }
+      if (filters.experience) {
+        jobs = jobs.filter(job => job.experience === filters.experience);
+      }
+      if (filters.minSalary) {
+        jobs = jobs.filter(job => job.maxSalary >= filters.minSalary!);
+      }
+      if (filters.maxSalary) {
+        jobs = jobs.filter(job => job.minSalary <= filters.maxSalary!);
+      }
       if (filters.keyword) {
         const keyword = filters.keyword.toLowerCase();
-        if (!job.title.toLowerCase().includes(keyword) &&
-            !job.description.toLowerCase().includes(keyword)) {
-          return false;
-        }
+        jobs = jobs.filter(job => {
+          return (
+            job.title.toLowerCase().includes(keyword) ||
+            job.description.toLowerCase().includes(keyword) ||
+            job.company.toLowerCase().includes(keyword) ||
+            job.requirements.toLowerCase().includes(keyword)
+          );
+        });
       }
-
-      return true;
+    }
+    
+    return jobs.sort((a, b) => {
+      const aDate = a.createdAt || new Date(0);
+      const bDate = b.createdAt || new Date(0);
+      return bDate.getTime() - aDate.getTime();
     });
   }
-
-  async createJob(insertJob: InsertJob): Promise<Job> {
+  
+  async createJob(insertJob: InsertJob) {
     const id = this.jobIdCounter++;
     const now = new Date();
-
-    // Extract company name from title if not provided
-    let company = insertJob.company;
-    if (!company && insertJob.title?.includes("at ")) {
-      const parts = insertJob.title.split(" at ");
-      if (parts.length >= 2) {
-        company = parts[1];
-      }
-    }
-
-    // Build default requirements and benefits from description if not provided
-    const description = insertJob.description || "";
-    let requirements = insertJob.requirements;
-    let benefits = insertJob.benefits;
-
-    if (!requirements && description.includes("Requirements:")) {
-      const reqParts = description.split("Requirements:");
-      if (reqParts.length >= 2) {
-        const reqSection = reqParts[1].split("\n\n")[0];
-        requirements = reqSection.trim();
-      }
-    }
-
-    if (!benefits && description.includes("Benefits:")) {
-      const benParts = description.split("Benefits:");
-      if (benParts.length >= 2) {
-        const benSection = benParts[1].split("\n\n")[0];
-        benefits = benSection.trim();
-      }
-    }
-
-    // Parse salary range from text format if minSalary/maxSalary not provided
-    let minSalary = insertJob.minSalary;
-    let maxSalary = insertJob.maxSalary;
-
-    if ((!minSalary || !maxSalary) && insertJob.salary) {
-      const salaryText = insertJob.salary;
-      const numbers = salaryText.match(/[\d,]+/g);
-      if (numbers && numbers.length >= 2) {
-        minSalary = parseInt(numbers[0].replace(/,/g, ''));
-        maxSalary = parseInt(numbers[1].replace(/,/g, ''));
-      } else if (numbers && numbers.length === 1) {
-        const value = parseInt(numbers[0].replace(/,/g, ''));
-        minSalary = value * 0.9;
-        maxSalary = value * 1.1;
-      }
-    }
-
-    const applicationDeadline = insertJob.applicationDeadline || new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-
-    // Create default job
     const job: Job = {
       ...insertJob,
       id,
-      company: company || "Unknown Company",
-      requirements: requirements || "Please contact employer for detailed requirements.",
-      benefits: benefits || "Please contact employer for detailed benefits information.",
-      experience: insertJob.experience || "Not specified",
-      minSalary: minSalary || 0,
-      maxSalary: maxSalary || 0,
-      contactEmail: insertJob.contactEmail || "contact@example.com",
-      applicationDeadline: applicationDeadline,
-      specialization: insertJob.specialization || null,
-      salary: insertJob.salary || null,
-      postedDate: now,
-      isActive: true,
-      applicationCount: 0,
-      createdAt: now
+      createdAt: now,
+      applicationCount: 0
     };
-
     this.jobs.set(id, job);
     return job;
   }
-
-  async getJobsByEmployerId(employerId: number): Promise<Job[]> {
-    return Array.from(this.jobs.values()).filter(
-      (job) => job.employerId === employerId
-    );
+  
+  async getJobsByEmployerId(employerId: number) {
+    return Array.from(this.jobs.values()).filter(job => job.employerId === employerId);
   }
-
-  async updateJob(job: Job): Promise<Job> {
-    // Check if the job exists
-    if (!this.jobs.has(job.id)) {
-      throw new Error('Job not found');
-    }
-
-    // Update in the Map
+  
+  async updateJob(job: Job) {
     this.jobs.set(job.id, job);
     return job;
   }
-
-  async deleteJob(id: number): Promise<boolean> {
-    // Check if the job exists
-    if (!this.jobs.has(id)) {
+  
+  async deleteJob(id: number) {
+    try {
+      // Delete all applications for this job
+      const applications = Array.from(this.applications.values()).filter(app => app.jobId === id);
+      for (const app of applications) {
+        this.applications.delete(app.id);
+      }
+      
+      // Delete the job
+      return this.jobs.delete(id);
+    } catch (error) {
+      console.error("Error deleting job:", error);
       return false;
     }
-
-    // Delete the job
-    return this.jobs.delete(id);
   }
-
-  // Application methods
-  async getApplication(id: number): Promise<Application | undefined> {
+  
+  async getApplication(id: number) {
     return this.applications.get(id);
   }
-
-  async getApplicationsByJobId(jobId: number): Promise<Application[]> {
-    return Array.from(this.applications.values()).filter(
-      (application) => application.jobId === jobId
-    );
+  
+  async getApplicationsByJobId(jobId: number) {
+    return Array.from(this.applications.values()).filter(app => app.jobId === jobId);
   }
-
-  async getApplicationsByJobSeekerId(jobSeekerId: number): Promise<Application[]> {
-    return Array.from(this.applications.values()).filter(
-      (application) => application.jobSeekerId === jobSeekerId
-    );
+  
+  async getApplicationsByJobSeekerId(jobSeekerId: number) {
+    return Array.from(this.applications.values()).filter(app => app.jobSeekerId === jobSeekerId);
   }
-
-  async createApplication(insertApplication: InsertApplication): Promise<Application> {
+  
+  async createApplication(insertApplication: InsertApplication) {
     const id = this.applicationIdCounter++;
     const now = new Date();
     const application: Application = {
       ...insertApplication,
       id,
-      appliedDate: now,
-      coverLetter: insertApplication.coverLetter || null,
-      status: "pending"
+      createdAt: now
     };
     this.applications.set(id, application);
-
+    
     // Update job application count
     const job = this.jobs.get(application.jobId);
     if (job) {
-      job.applications = (job.applications || 0) + 1;
+      job.applicationCount = (job.applicationCount || 0) + 1;
       this.jobs.set(job.id, job);
     }
-
+    
     return application;
   }
-
-  async deleteApplication(id: number): Promise<boolean> {
-    const application = this.applications.get(id);
-    if (!application) {
+  
+  async deleteApplication(id: number) {
+    try {
+      const application = this.applications.get(id);
+      if (application) {
+        // Update job application count
+        const job = this.jobs.get(application.jobId);
+        if (job) {
+          job.applicationCount = Math.max(0, (job.applicationCount || 0) - 1);
+          this.jobs.set(job.id, job);
+        }
+        
+        return this.applications.delete(id);
+      }
+      return false;
+    } catch (error) {
+      console.error("Error deleting application:", error);
       return false;
     }
-
-    // First reduce the job application count
-    const job = this.jobs.get(application.jobId);
-    if (job && job.applications > 0) {
-      job.applications -= 1;
-      this.jobs.set(job.id, job);
-    }
-
-    // Then delete the application
-    return this.applications.delete(id);
   }
-
-  async updateApplicationStatus(id: number, status: string): Promise<Application | undefined> {
-    // Validate status
-    if (!["new", "viewed", "shortlisted", "rejected"].includes(status)) {
-      throw new Error("Invalid status value");
-    }
-
-    // Check if the application exists
-    const application = this.applications.get(id);
-    if (!application) {
+  
+  async updateApplicationStatus(id: number, status: string) {
+    try {
+      const application = this.applications.get(id);
+      if (!application) return undefined;
+      
+      const updatedApplication: Application = {
+        ...application,
+        status
+      };
+      
+      this.applications.set(id, updatedApplication);
+      return updatedApplication;
+    } catch (error) {
+      console.error("Error updating application status:", error);
       return undefined;
     }
-
-    // Update the status
-    const updatedApplication = { ...application, status };
-
-    // Save back to the Map
-    this.applications.set(id, updatedApplication);
-
-    return updatedApplication;
   }
-
-  // Testimonial methods
-  async getTestimonial(id: number): Promise<Testimonial | undefined> {
+  
+  async getTestimonial(id: number) {
     return this.testimonials.get(id);
   }
-
-  async getTestimonials(): Promise<Testimonial[]> {
+  
+  async getTestimonials() {
     return Array.from(this.testimonials.values());
   }
-
-  async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
+  
+  async createTestimonial(insertTestimonial: InsertTestimonial) {
     const id = this.testimonialIdCounter++;
     const testimonial: Testimonial = {
       ...insertTestimonial,
-      id,
-      userId: insertTestimonial.userId !== undefined ? insertTestimonial.userId : null
+      id
     };
     this.testimonials.set(id, testimonial);
     return testimonial;
   }
-
-  // Admin methods
-  async getAdmin(id: number): Promise<Admin | undefined> {
+  
+  async getAdmin(id: number) {
     return this.admins.get(id);
   }
-
-  async getAdminByUserId(userId: number): Promise<Admin | undefined> {
-    return Array.from(this.admins.values()).find(
-      (admin) => admin.userId === userId
-    );
+  
+  async getAdminByUserId(userId: number) {
+    for (const admin of this.admins.values()) {
+      if (admin.userId === userId) {
+        return admin;
+      }
+    }
+    return undefined;
   }
-
-  async createAdmin(insertAdmin: InsertAdmin): Promise<Admin> {
+  
+  async createAdmin(insertAdmin: InsertAdmin) {
     const id = this.adminIdCounter++;
     const admin: Admin = {
       ...insertAdmin,
       id,
-      lastLogin: null
+      lastLogin: null,
+      recoveryEmail: null,
+      resetToken: null,
+      resetTokenExpires: null
     };
     this.admins.set(id, admin);
     return admin;
   }
-
-  async updateAdminLastLogin(id: number): Promise<Admin> {
+  
+  async updateAdminLastLogin(id: number) {
     const admin = this.admins.get(id);
     if (!admin) {
-      throw new Error('Admin not found');
+      throw new Error("Admin not found");
     }
-
+    
     const updatedAdmin: Admin = {
       ...admin,
       lastLogin: new Date()
     };
-
+    
     this.admins.set(id, updatedAdmin);
     return updatedAdmin;
   }
-
-  async getAllAdmins(): Promise<Admin[]> {
+  
+  async getAllAdmins() {
     return Array.from(this.admins.values());
   }
-
-  // Invitation code methods
-  async getInvitationCode(code: string): Promise<InvitationCode | undefined> {
+  
+  async getInvitationCode(code: string) {
     return this.invitationCodes.get(code);
   }
-
-  async getInvitationCodes(): Promise<InvitationCode[]> {
+  
+  async getInvitationCodes() {
     return Array.from(this.invitationCodes.values());
   }
-
-  async createInvitationCode(insertInvitationCode: InsertInvitationCode): Promise<InvitationCode> {
+  
+  async createInvitationCode(insertInvitationCode: InsertInvitationCode) {
     const invitationCode: InvitationCode = {
       ...insertInvitationCode,
-      id: this.invitationCodes.size + 1,
-      isUsed: false,
       createdAt: new Date()
     };
-
     this.invitationCodes.set(invitationCode.code, invitationCode);
     return invitationCode;
   }
-
-  async verifyInvitationCode(code: string, email: string): Promise<boolean> {
-    const invitationCode = await this.getInvitationCode(code);
-
-    if (!invitationCode) {
-      return false;
-    }
-
-    // Check if the code is for the specific email
-    if (invitationCode.email !== email) {
-      return false;
-    }
-
-    // Check if the code is already used
-    if (invitationCode.isUsed) {
-      return false;
-    }
-
-    // Check if the code has expired
-    if (new Date() > invitationCode.expiresAt) {
-      return false;
-    }
-
-    return true;
+  
+  async verifyInvitationCode(code: string, email: string) {
+    const invitationCode = this.invitationCodes.get(code);
+    if (!invitationCode) return false;
+    
+    return (
+      invitationCode.email === email &&
+      !invitationCode.isUsed &&
+      invitationCode.expiresAt > new Date()
+    );
   }
-
-  async markInvitationCodeAsUsed(code: string): Promise<InvitationCode | undefined> {
-    const invitationCode = await this.getInvitationCode(code);
-
-    if (!invitationCode) {
-      return undefined;
-    }
-
+  
+  async markInvitationCodeAsUsed(code: string) {
+    const invitationCode = this.invitationCodes.get(code);
+    if (!invitationCode) return undefined;
+    
     const updatedInvitationCode: InvitationCode = {
       ...invitationCode,
       isUsed: true
     };
-
+    
     this.invitationCodes.set(code, updatedInvitationCode);
     return updatedInvitationCode;
   }
-
-  // Admin password reset methods
-
-  async updateUserPassword(userId: number, password: string): Promise<User | undefined> {
+  
+  async updateUserPassword(userId: number, password: string) {
     const user = this.users.get(userId);
-    if (!user) return undefined;
-
+    if (!user) {
+      return undefined;
+    }
+    
     const updatedUser: User = {
       ...user,
       password
     };
-
+    
     this.users.set(userId, updatedUser);
     return updatedUser;
   }
-
-  async updateAdminRecoveryEmail(id: number, recoveryEmail: string): Promise<Admin> {
-    const admin = this.admins.get(id);
-    if (!admin) {
-      throw new Error("Admin not found");
-    }
-
-    const updatedAdmin: Admin = {
-      ...admin,
-      recoveryEmail
-    };
-
-    this.admins.set(id, updatedAdmin);
-    return updatedAdmin;
-  }
-
-  async setPasswordResetToken(adminId: number, token: string, expiryDate: Date): Promise<Admin> {
+  
+  async setPasswordResetToken(adminId: number, token: string, expiryDate: Date) {
     const admin = this.admins.get(adminId);
     if (!admin) {
       throw new Error("Admin not found");
     }
-
+    
     const updatedAdmin: Admin = {
       ...admin,
       resetToken: token,
       resetTokenExpires: expiryDate
     };
-
+    
     this.admins.set(adminId, updatedAdmin);
     return updatedAdmin;
   }
-
-  async getAdminByResetToken(token: string): Promise<Admin | undefined> {
-    const now = new Date();
-
-    // Find admin with matching token and non-expired timestamp
+  
+  async getAdminByResetToken(token: string) {
     for (const admin of this.admins.values()) {
       if (
         admin.resetToken === token &&
         admin.resetTokenExpires &&
-        admin.resetTokenExpires > now
+        admin.resetTokenExpires > new Date()
       ) {
         return admin;
       }
     }
-
     return undefined;
   }
-
-  async clearPasswordResetToken(adminId: number): Promise<Admin> {
+  
+  async clearPasswordResetToken(adminId: number) {
     const admin = this.admins.get(adminId);
     if (!admin) {
       throw new Error("Admin not found");
     }
-
+    
     const updatedAdmin: Admin = {
       ...admin,
       resetToken: null,
       resetTokenExpires: null
     };
-
+    
     this.admins.set(adminId, updatedAdmin);
     return updatedAdmin;
   }
+  
+  async deleteUser(userId: number) {
+    try {
+      // Check if user exists
+      const user = this.users.get(userId);
+      if (!user) {
+        throw new Error(`User with ID ${userId} not found`);
+      }
 
-  // Vacancy methods
-  async getVacancy(id: number): Promise<Vacancy | undefined> {
+      // Delete admin record if exists
+      for (const [adminId, admin] of this.admins.entries()) {
+        if (admin.userId === userId) {
+          this.admins.delete(adminId);
+          break;
+        }
+      }
+
+      // Delete jobSeeker record if exists
+      let jobSeekerId: number | undefined;
+      for (const [id, jobSeeker] of this.jobSeekers.entries()) {
+        if (jobSeeker.userId === userId) {
+          jobSeekerId = id;
+          this.jobSeekers.delete(id);
+          break;
+        }
+      }
+
+      // Delete applications for job seeker
+      if (jobSeekerId) {
+        for (const [id, application] of this.applications.entries()) {
+          if (application.jobSeekerId === jobSeekerId) {
+            this.applications.delete(id);
+          }
+        }
+      }
+
+      // Delete employer record if exists
+      let employerId: number | undefined;
+      for (const [id, employer] of this.employers.entries()) {
+        if (employer.userId === userId) {
+          employerId = id;
+          this.employers.delete(id);
+          break;
+        }
+      }
+
+      // Delete jobs and their applications for employer
+      if (employerId) {
+        const jobIds: number[] = [];
+        for (const [id, job] of this.jobs.entries()) {
+          if (job.employerId === employerId) {
+            jobIds.push(id);
+            this.jobs.delete(id);
+          }
+        }
+
+        for (const [id, application] of this.applications.entries()) {
+          if (jobIds.includes(application.jobId)) {
+            this.applications.delete(id);
+          }
+        }
+      }
+
+      // Delete blog posts by this user
+      for (const [id, post] of this.blogPosts.entries()) {
+        if (post.authorId === userId) {
+          this.blogPosts.delete(id);
+        }
+      }
+
+      // Delete notifications for this user
+      for (const [id, notification] of this.notifications.entries()) {
+        if (notification.userId === userId) {
+          this.notifications.delete(id);
+        }
+      }
+
+      // Finally delete the user
+      return this.users.delete(userId);
+    } catch (error) {
+      console.error(`Error deleting user ${userId}:`, error);
+      throw error; // Rethrow the error for proper error handling
+    }
+  }
+  
+  async updateAdminRecoveryEmail(id: number, recoveryEmail: string) {
+    const admin = this.admins.get(id);
+    if (!admin) {
+      throw new Error("Admin not found");
+    }
+    
+    const updatedAdmin: Admin = {
+      ...admin,
+      recoveryEmail
+    };
+    
+    this.admins.set(id, updatedAdmin);
+    return updatedAdmin;
+  }
+  
+  async getVacancy(id: number) {
     return this.vacancies.get(id);
   }
-
-  async getVacancies(): Promise<Vacancy[]> {
+  
+  async getVacancies() {
     return Array.from(this.vacancies.values());
   }
-
-  async createVacancy(insertVacancy: InsertVacancy): Promise<Vacancy> {
+  
+  async createVacancy(insertVacancy: InsertVacancy) {
     const id = this.vacancyIdCounter++;
     const now = new Date();
     
     const vacancy: Vacancy = {
       ...insertVacancy,
       id,
-      status: insertVacancy.status || "pending",
-      submittedAt: insertVacancy.submittedAt || now,
-      reviewedAt: null,
-      reviewedBy: null,
-      notes: null
+      submittedAt: now,
+      status: insertVacancy.status || "new",
+      assignedAt: null,
+      reviewedAt: null
     };
     
     this.vacancies.set(id, vacancy);
     return vacancy;
   }
-
-  async updateVacancyStatus(id: number, status: string): Promise<Vacancy | undefined> {
+  
+  async updateVacancyStatus(id: number, status: string) {
     const vacancy = this.vacancies.get(id);
-    if (!vacancy) {
-      return undefined;
-    }
-
-    const now = new Date();
+    if (!vacancy) return undefined;
+    
     const updatedVacancy: Vacancy = {
       ...vacancy,
       status,
-      reviewedAt: now
+      reviewedAt: new Date()
     };
-
+    
     this.vacancies.set(id, updatedVacancy);
     return updatedVacancy;
   }
   
   async assignVacancyToRecruiter(
-    id: number, 
-    recruiterEmail: string, 
+    id: number,
+    recruiterEmail: string,
     recruiterName: string
-  ): Promise<Vacancy | undefined> {
+  ) {
     const vacancy = this.vacancies.get(id);
-    if (!vacancy) {
-      return undefined;
-    }
-
-    const now = new Date();
+    if (!vacancy) return undefined;
+    
     const updatedVacancy: Vacancy = {
       ...vacancy,
-      assignedTo: recruiterEmail,
-      assignedName: recruiterName,
-      assignedAt: now,
-      // If the vacancy is still in 'new' or 'pending' status, update it to 'assigned'
-      status: vacancy.status === 'new' || vacancy.status === 'pending' ? 'assigned' : vacancy.status
+      recruiterEmail,
+      recruiterName,
+      assignedAt: new Date()
     };
-
+    
     this.vacancies.set(id, updatedVacancy);
     return updatedVacancy;
   }
   
-  async deleteVacancy(id: number): Promise<boolean> {
-    if (!this.vacancies.has(id)) {
-      return false;
-    }
-    
+  async deleteVacancy(id: number) {
     return this.vacancies.delete(id);
   }
   
-  // Staffing Inquiry methods
-  async getStaffingInquiry(id: number): Promise<StaffingInquiry | undefined> {
+  async getStaffingInquiry(id: number) {
     return this.staffingInquiries.get(id);
   }
-
-  async getStaffingInquiries(): Promise<StaffingInquiry[]> {
+  
+  async getStaffingInquiries() {
     return Array.from(this.staffingInquiries.values());
   }
-
-  async createStaffingInquiry(insertInquiry: InsertStaffingInquiry): Promise<StaffingInquiry> {
+  
+  async createStaffingInquiry(insertInquiry: InsertStaffingInquiry) {
     const id = this.staffingInquiryIdCounter++;
     const now = new Date();
     
     const inquiry: StaffingInquiry = {
-      ...insertInquiry,
       id,
       status: "new",
-      submittedAt: now
+      submittedAt: now,
+      email: insertInquiry.email,
+      name: insertInquiry.name,
+      message: insertInquiry.message,
+      inquiry_type: insertInquiry.inquiry_type,
+      company: insertInquiry.company ?? null,
+      phone: insertInquiry.phone ?? null,
+      marketing: insertInquiry.marketing ?? false
     };
     
     this.staffingInquiries.set(id, inquiry);
     return inquiry;
   }
-
-  async updateStaffingInquiryStatus(id: number, status: string): Promise<StaffingInquiry | undefined> {
+  
+  async updateStaffingInquiryStatus(id: number, status: string) {
     const inquiry = this.staffingInquiries.get(id);
-    if (!inquiry) {
-      return undefined;
-    }
-
+    if (!inquiry) return undefined;
+    
     const updatedInquiry: StaffingInquiry = {
       ...inquiry,
       status
     };
-
+    
     this.staffingInquiries.set(id, updatedInquiry);
     return updatedInquiry;
   }
   
-  // Notification methods
-  async getNotifications(userId?: number, limit: number = 50): Promise<Notification[]> {
+  async getBlogPost(id: number) {
+    return this.blogPosts.get(id);
+  }
+  
+  async getBlogPostBySlug(slug: string) {
+    for (const post of this.blogPosts.values()) {
+      if (post.slug === slug) {
+        return post;
+      }
+    }
+    return undefined;
+  }
+  
+  async getBlogPosts(filters?: { category?: string; published?: boolean }) {
+    let posts = Array.from(this.blogPosts.values());
+    
+    if (filters) {
+      if (filters.category) {
+        posts = posts.filter(post => post.category === filters.category);
+      }
+      
+      if (filters.published !== undefined) {
+        posts = posts.filter(post => post.published === filters.published);
+      }
+    }
+    
+    return posts.sort((a, b) => {
+      const aDate = a.createdAt || new Date(0);
+      const bDate = b.createdAt || new Date(0);
+      return bDate.getTime() - aDate.getTime();
+    });
+  }
+  
+  async createBlogPost(post: InsertBlogPost) {
+    const id = this.blogPostIdCounter++;
+    const now = new Date();
+    
+    const blogPost: BlogPost = {
+      ...post,
+      id,
+      createdAt: now,
+      updatedAt: now
+    };
+    
+    this.blogPosts.set(id, blogPost);
+    return blogPost;
+  }
+  
+  async updateBlogPost(id: number, post: Partial<InsertBlogPost>) {
+    const existingPost = this.blogPosts.get(id);
+    if (!existingPost) return undefined;
+    
+    const updatedPost: BlogPost = {
+      ...existingPost,
+      ...post,
+      updatedAt: new Date()
+    };
+    
+    this.blogPosts.set(id, updatedPost);
+    return updatedPost;
+  }
+  
+  async deleteBlogPost(id: number) {
+    return this.blogPosts.delete(id);
+  }
+  
+  async getNotifications(userId?: number, limit: number = 50) {
     let notifications = Array.from(this.notifications.values());
     
-    // Filter by userId if provided
     if (userId !== undefined) {
       notifications = notifications.filter(n => n.userId === userId);
     }
     
-    // Sort by createdAt in descending order (newest first)
-    notifications.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-    
-    // Apply limit if provided
-    if (limit > 0 && notifications.length > limit) {
-      notifications = notifications.slice(0, limit);
-    }
-    
-    return notifications;
+    return notifications
+      .sort((a, b) => {
+        const aDate = a.createdAt || new Date(0);
+        const bDate = b.createdAt || new Date(0);
+        return bDate.getTime() - aDate.getTime();
+      })
+      .slice(0, limit);
   }
   
-  async getNotification(id: number): Promise<Notification | undefined> {
+  async getNotification(id: number) {
     return this.notifications.get(id);
   }
   
-  async createNotification(insertNotification: InsertNotification): Promise<Notification> {
+  async createNotification(insertNotification: InsertNotification) {
     const id = this.notificationIdCounter++;
     const now = new Date();
     
     const notification: Notification = {
-      ...insertNotification,
       id,
       createdAt: now,
-      read: false
+      read: false,
+      message: insertNotification.message,
+      type: insertNotification.type,
+      userId: insertNotification.userId ?? null,
+      entityId: insertNotification.entityId ?? null
     };
     
     this.notifications.set(id, notification);
     return notification;
   }
   
-  async markNotificationAsRead(id: number): Promise<Notification | undefined> {
+  async markNotificationAsRead(id: number) {
     const notification = this.notifications.get(id);
-    if (!notification) {
-      return undefined;
-    }
+    if (!notification) return undefined;
     
     const updatedNotification: Notification = {
       ...notification,
@@ -2194,38 +1645,36 @@ export class MemStorage implements IStorage {
     return updatedNotification;
   }
   
-  async markAllNotificationsAsRead(userId: number): Promise<boolean> {
-    try {
-      const userNotifications = Array.from(this.notifications.values())
-        .filter(n => n.userId === userId);
-        
-      userNotifications.forEach(notification => {
-        this.notifications.set(notification.id, {
-          ...notification,
-          read: true
-        });
-      });
-      
-      return true;
-    } catch (error) {
-      console.error("Error marking all notifications as read:", error);
-      return false;
+  async markAllNotificationsAsRead(userId: number) {
+    let updated = false;
+    
+    for (const [id, notification] of this.notifications.entries()) {
+      if (notification.userId === userId && !notification.read) {
+        notification.read = true;
+        this.notifications.set(id, notification);
+        updated = true;
+      }
     }
+    
+    return updated;
   }
   
-  async getUnreadNotificationCount(userId: number): Promise<number> {
-    return Array.from(this.notifications.values())
-      .filter(n => n.userId === userId && !n.read)
-      .length;
+  async getUnreadNotificationCount(userId: number) {
+    let count = 0;
+    
+    for (const notification of this.notifications.values()) {
+      if (notification.userId === userId && !notification.read) {
+        count++;
+      }
+    }
+    
+    return count;
   }
 }
 
-// Use Database storage for persistent data
-console.log("Creating DatabaseStorage instance...");
+// Choose database or in-memory storage
 const dbStorage = new DatabaseStorage();
+const memStorage = new MemStorage();
 
-// Verify assignVacancyToRecruiter method exists
-console.log("Checking if assignVacancyToRecruiter method exists:", 
-  typeof dbStorage.assignVacancyToRecruiter === 'function' ? "YES" : "NO");
-
+// Export the storage implementation to use
 export const storage = dbStorage;
