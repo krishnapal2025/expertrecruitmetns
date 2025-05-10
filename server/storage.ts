@@ -1414,10 +1414,12 @@ export class MemStorage implements IStorage {
       }
 
       // Finally delete the user
-      return this.users.delete(userId);
+      const deleted = this.users.delete(userId);
+      console.log(`MemStorage: User deletion result - success: ${deleted}`);
+      return deleted;
     } catch (error) {
-      console.error(`Error deleting user ${userId}:`, error);
-      throw error; // Rethrow the error for proper error handling
+      console.error(`MemStorage: Error deleting user ${userId}:`, error);
+      return false; // Return false instead of rethrowing to maintain consistent error handling
     }
   }
   
