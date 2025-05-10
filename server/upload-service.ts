@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 // Create uploads directory if it doesn't exist
 const uploadDir = path.join(process.cwd(), "uploads");
 const blogUploadsDir = path.join(uploadDir, "blog-images");
+const resumeUploadsDir = path.join(uploadDir, "resumes");
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -14,6 +15,10 @@ if (!fs.existsSync(uploadDir)) {
 
 if (!fs.existsSync(blogUploadsDir)) {
   fs.mkdirSync(blogUploadsDir, { recursive: true });
+}
+
+if (!fs.existsSync(resumeUploadsDir)) {
+  fs.mkdirSync(resumeUploadsDir, { recursive: true });
 }
 
 // Configure storage for blog images
@@ -75,10 +80,70 @@ export const uploadBlogImage = (req: Request, res: Response, next: NextFunction)
   });
 };
 
+// Configure storage for resume/CV uploads
+const resumeStorage = multer.diskStorage({
+  destination: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) {
+    cb(null, resumeUploadsDir);
+  },
+  filename: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
+    // Generate a unique filename with original extension
+    const uniqueId = uuidv4();
+    const extension = path.extname(file.originalname);
+    const filename = `${uniqueId}${extension}`;
+    cb(null, filename);
+  }
+});
+
+// File filter to only allow PDF and DOCX files for resumes
+const resumeFileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  // Accept only PDF and DOCX files
+  if (!file.originalname.match(/\.(pdf|docx)$/i)) {
+    return cb(new Error("Only PDF and DOCX files are allowed for resumes!"));
+  }
+  cb(null, true);
+};
+
+// Create multer upload instance for resume files
+export const resumeUpload = multer({
+  storage: resumeStorage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB
+  },
+  fileFilter: resumeFileFilter,
+});
+
+// Middleware to handle resume uploads
+export const uploadResume = (req: Request, res: Response, next: NextFunction) => {
+  // Use .single for a single file upload with field name 'resume'
+  const upload = resumeUpload.single("resume");
+
+  upload(req, res, function (err: any) {
+    if (err instanceof multer.MulterError) {
+      // A Multer error occurred when uploading
+      console.error("Multer error during resume upload:", err.message);
+      return res.status(400).json({
+        success: false,
+        message: `Resume upload error: ${err.message}`,
+      });
+    } else if (err) {
+      // An unknown error occurred
+      console.error("Unknown resume upload error:", err);
+      return res.status(500).json({
+        success: false,
+        message: `Resume upload failed: ${err.message}`,
+      });
+    }
+
+    // Everything went fine, proceed
+    next();
+  });
+};
+
 // Function to get URL path for an uploaded file
-export const getUploadedFilePath = (filename: string, type: 'blog-image') => {
+export const getUploadedFilePath = (filename: string, type: 'blog-image' | 'resume') => {
   if (!filename) return null;
   
-  const baseDir = type === 'blog-image' ? 'blog-images' : '';
+  const baseDir = type === 'blog-image' ? 'blog-images' : 
+                 type === 'resume' ? 'resumes' : '';
   return `/uploads/${baseDir}/${filename}`;
 };
