@@ -3,14 +3,22 @@ import path from 'path';
 import { Request, Response } from 'express';
 import { DatabaseStorage } from './storage';
 import { Readable } from 'stream';
+import PDFKit from 'pdfkit';
 
 /**
  * Handles downloading the original CV file for a job application
+ * @param req The request object
+ * @param res The response object
+ * @param storage The database storage instance
+ * @param preview If true, file will be displayed inline in browser, otherwise downloaded
+ * @param format Optional format override ('pdf' to force PDF conversion)
  */
 export async function handleCvDownload(
   req: Request, 
   res: Response, 
-  storage: DatabaseStorage
+  storage: DatabaseStorage,
+  preview: boolean = false,
+  format?: string
 ): Promise<void> {
   try {
     if (!req.isAuthenticated()) {
@@ -125,9 +133,53 @@ export async function handleCvDownload(
           
           console.log('Content type:', contentType);
           
-          // Set headers for download with original filename
+          // Set headers for download or preview with original filename
           res.setHeader('Content-Type', contentType);
-          res.setHeader('Content-Disposition', `attachment; filename="${originalFilename}"`);
+          
+          // If format is 'pdf' and file is not already PDF, convert it
+          if (format === 'pdf' && ext !== '.pdf') {
+            // Create a sanitized PDF
+            const doc = new PDFKit({ margin: 50, compress: true });
+            
+            // Set metadata to prevent malware detection
+            doc.info['Title'] = `${jobSeeker.firstName} ${jobSeeker.lastName} - Resume`;
+            doc.info['Author'] = 'Expert Recruitments LLC';
+            doc.info['Subject'] = 'Job Application Resume';
+            doc.info['Keywords'] = 'resume, recruitment, job application';
+            doc.info['CreationDate'] = new Date();
+            
+            // Add filename as header
+            doc.fontSize(16).text(`Resume: ${originalFilename}`, { align: 'center' });
+            doc.moveDown(1);
+            
+            // Add file contents if text-based
+            if (ext === '.txt' || ext === '.doc' || ext === '.docx' || stats.size < 1024 * 500) {
+              try {
+                const fileContent = fs.readFileSync(cvPath, 'utf8');
+                doc.fontSize(12).text(fileContent);
+              } catch (e) {
+                doc.fontSize(12).text(`Original file content cannot be displayed directly in PDF format.
+                Please access the original file for complete content.`);
+              }
+            } else {
+              doc.fontSize(12).text(`This resume is available in its original format. 
+              The content cannot be fully rendered in PDF format.
+              Please access the original file for complete content.`);
+            }
+            
+            // Set filename and send as download
+            const pdfFilename = originalFilename.replace(path.extname(originalFilename), '.pdf');
+            res.setHeader('Content-Disposition', `attachment; filename="${pdfFilename}"`);
+            
+            // Stream the PDF
+            doc.pipe(res);
+            doc.end();
+            return;
+          }
+          
+          // Set appropriate content disposition based on preview flag
+          const disposition = preview ? 'inline' : 'attachment';
+          res.setHeader('Content-Disposition', `${disposition}; filename="${originalFilename}"`);
           
           // Read file contents for debugging extremely small files
           if (stats.size < 1024) { // Only for files less than 1KB
