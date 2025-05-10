@@ -143,12 +143,12 @@ const BlogPostContent = ({
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                 <Avatar className="h-24 w-24">
                   <AvatarFallback className="text-3xl">
-                    {adminUser ? adminUser.firstName.charAt(0) : "A"}
+                    {adminUser && adminUser.firstName ? adminUser.firstName.charAt(0) : "A"}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <h3 className="text-xl font-bold mb-2">
-                    About {adminUser ? `${adminUser.firstName} ${adminUser.lastName}` : "Our Expert"}
+                    About {adminUser && adminUser.firstName && adminUser.lastName ? `${adminUser.firstName} ${adminUser.lastName}` : "Our Expert"}
                   </h3>
                   <p className="text-gray-700 mb-4">
                     Recruitment Specialist at Expert Recruitments LLC with expertise in talent acquisition and executive search. Passionate about connecting organizations with exceptional leadership talent.
