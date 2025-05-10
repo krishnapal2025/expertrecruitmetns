@@ -41,55 +41,16 @@ export function AdminsList({ user }: { user: User | null }) {
     enabled: !!user && (user.userType === "admin" || user.userType === "super_admin")
   });
 
-  // Admin delete mutation with enhanced authentication handling
+  // Admin delete mutation
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: number) => {
       try {
-        console.log(`Preparing to delete user with ID: ${userId}`);
+        console.log(`Deleting user with ID: ${userId}`);
         
-        // Log the session cookie for debugging
-        const cookies = document.cookie;
-        console.log(`Session cookies available: ${cookies ? 'Yes' : 'No'}`);
-        
-        // First, verify authentication state by making a call to /api/user
-        console.log("Verifying authentication state before delete operation...");
-        const authCheck = await fetch('/api/user', { 
-          credentials: 'include',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-          }
-        });
-        
-        if (!authCheck.ok) {
-          console.error("Authentication verification failed. Status:", authCheck.status);
-          throw new Error("You must be logged in to delete an admin account. Please refresh the page and try again.");
-        }
-        
-        console.log("Authentication confirmed, proceeding with delete operation");
-        
-        // Now perform the actual delete operation
-        const res = await fetch(`/api/users/${userId}`, {
-          method: 'DELETE',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-          }
-        });
-        
-        console.log(`Delete response status: ${res.status}`);
+        const res = await apiRequest("DELETE", `/api/users/${userId}`);
         
         if (!res.ok) {
-          let errorMessage = "Failed to delete admin account";
-          try {
-            const errorData = await res.json();
-            errorMessage = errorData.message || errorMessage;
-          } catch (e) {
-            console.error("Error parsing error response:", e);
-          }
-          throw new Error(errorMessage);
+          throw new Error("Failed to delete admin account");
         }
         
         return await res.json();
