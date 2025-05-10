@@ -738,44 +738,110 @@ export class DatabaseStorage implements IStorage {
       const userType = user.userType;
       console.log(`User type for ID ${userId}: ${userType}`);
       
-      // Shortcut for direct deletion - much simpler approach to avoid cascading issues
+      // Enhanced shortcut for direct deletion - much simpler approach to avoid cascading issues
       if (userType === 'admin' || userType === 'super_admin') {
         try {
-          console.log("Using direct SQL deletion for admin user to avoid cascade issues");
+          console.log(`DEBUG: Starting enhanced direct SQL deletion for admin user ${userId}`);
           
-          // First, null out any references in blog posts
-          await db.query(
-            `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1`,
-            [userId]
-          );
-          
-          // Delete notifications
-          await db.query(
-            `DELETE FROM notifications WHERE user_id = $1`,
-            [userId]
-          );
-          
-          // Get and delete admin profile
+          // Step 1: Check for admin profile existence
           const admin = await this.getAdminByUserId(userId);
-          if (admin) {
-            await db.query(
-              `DELETE FROM admins WHERE id = $1`,
-              [admin.id]
+          console.log(`DEBUG: Admin profile check result: ${admin ? `Found ID=${admin.id}` : 'Not found'}`);
+          
+          // Step 2: Count references in blog posts
+          const blogPostCount = await db.query(
+            `SELECT COUNT(*) FROM blog_posts WHERE author_id = $1`,
+            [userId]
+          );
+          console.log(`DEBUG: Found ${blogPostCount.rows[0].count || 0} blog posts authored by this admin`);
+          
+          // Step 3: Count notifications
+          const notificationCount = await db.query(
+            `SELECT COUNT(*) FROM notifications WHERE user_id = $1`,
+            [userId]
+          );
+          console.log(`DEBUG: Found ${notificationCount.rows[0].count || 0} notifications for this admin`);
+          
+          // Step 4: Check for any additional references in other tables (job assignments, etc.)
+          const jobAssignmentCount = await db.query(
+            `SELECT COUNT(*) FROM jobs WHERE assigned_to = $1`,
+            [userId]
+          );
+          console.log(`DEBUG: Found ${jobAssignmentCount.rows[0].count || 0} job assignments to this admin`);
+          
+          console.log("Starting direct SQL deletion operations with proper error handling");
+          
+          // Step 5: First, null out any references in blog posts
+          try {
+            const blogPostUpdate = await db.query(
+              `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1 RETURNING id`,
+              [userId]
             );
+            console.log(`DEBUG: Updated ${blogPostUpdate.rowCount} blog posts to remove author reference`);
+          } catch (blogError) {
+            console.error("ERROR in blog post update step:", blogError);
+            throw new Error(`Failed to update blog posts: ${blogError.message}`);
           }
           
-          // Finally delete the user
-          await db.query(
-            `DELETE FROM users WHERE id = $1`,
-            [userId]
-          );
+          // Step 6: Delete notifications
+          try {
+            const notificationDelete = await db.query(
+              `DELETE FROM notifications WHERE user_id = $1 RETURNING id`,
+              [userId]
+            );
+            console.log(`DEBUG: Deleted ${notificationDelete.rowCount} notifications`);
+          } catch (notifError) {
+            console.error("ERROR in notification deletion step:", notifError);
+            throw new Error(`Failed to delete notifications: ${notifError.message}`);
+          }
           
-          console.log(`Successfully deleted admin user ID ${userId} using direct approach`);
+          // Step 7: Clear job assignments if any
+          try {
+            const jobAssignmentUpdate = await db.query(
+              `UPDATE jobs SET assigned_to = NULL WHERE assigned_to = $1 RETURNING id`,
+              [userId]
+            );
+            console.log(`DEBUG: Cleared ${jobAssignmentUpdate.rowCount} job assignments`);
+          } catch (jobError) {
+            console.error("ERROR in job assignment update step:", jobError);
+            throw new Error(`Failed to update job assignments: ${jobError.message}`);
+          }
+          
+          // Step 8: Get and delete admin profile
+          if (admin) {
+            try {
+              const adminDelete = await db.query(
+                `DELETE FROM admins WHERE id = $1 RETURNING id`,
+                [admin.id]
+              );
+              console.log(`DEBUG: Deleted admin profile: ${adminDelete.rowCount} rows affected`);
+            } catch (adminError) {
+              console.error("ERROR in admin profile deletion step:", adminError);
+              throw new Error(`Failed to delete admin profile: ${adminError.message}`);
+            }
+          }
+          
+          // Step 9: Finally delete the user
+          try {
+            const userDelete = await db.query(
+              `DELETE FROM users WHERE id = $1 RETURNING id`,
+              [userId]
+            );
+            console.log(`DEBUG: Deleted user: ${userDelete.rowCount} rows affected`);
+            
+            if (userDelete.rowCount === 0) {
+              throw new Error("User deletion did not affect any rows - user may not exist");
+            }
+          } catch (userError) {
+            console.error("ERROR in user deletion step:", userError);
+            throw new Error(`Failed to delete user: ${userError.message}`);
+          }
+          
+          console.log(`Successfully deleted admin user ID ${userId} using enhanced direct approach`);
           return true;
         } catch (directError) {
           console.error(`Direct deletion error for admin ${userId}:`, directError);
-          // Fall back to transaction approach if direct deletion fails
-          console.log("Falling back to transaction approach");
+          // Return the error message rather than falling back to transaction approach
+          throw new Error(`Failed to delete admin user: ${directError.message}`);
         }
       }
       

@@ -41,13 +41,14 @@ export function AdminsList({ user }: { user: User | null }) {
     enabled: !!user && (user.userType === "admin" || user.userType === "super_admin")
   });
 
-  // Direct admin delete mutation that doesn't rely on the queryClient
+  // Direct admin delete mutation with enhanced error logging
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: number) => {
       try {
-        console.log(`Deleting user with ID: ${userId} using direct approach`);
+        console.log(`Attempting to delete user ID: ${userId} with enhanced logging`);
         
-        // Get a fresh user token by checking user status
+        // Step 1: Get a fresh user token by checking user status
+        console.log("Step 1: Verifying authentication...");
         const userCheckResponse = await fetch('/api/user', {
           credentials: 'include',
           headers: {
@@ -57,12 +58,24 @@ export function AdminsList({ user }: { user: User | null }) {
         });
         
         if (!userCheckResponse.ok) {
+          console.error(`Authentication check failed with status: ${userCheckResponse.status}`);
           throw new Error("Authentication verification failed. Please refresh the page and try again.");
         }
         
+        // Log session info
+        const userData = await userCheckResponse.json();
+        console.log("Authentication verified. User data:", {
+          id: userData.id,
+          userType: userData.userType,
+          email: userData.email?.substring(0, 3) + '...' // Log only partial email for privacy
+        });
+        
         // Get cookies from the authentication check
         const cookies = document.cookie;
-        console.log("Authentication successful. Current cookies:", cookies ? "Cookie exists" : "No cookies");
+        console.log(`Step 2: Session cookies: ${cookies ? "Present" : "Missing"}`);
+        
+        // Step 3: Make the direct DELETE request with maximum authentication info
+        console.log(`Step 3: Sending DELETE request to /api/users/${userId}`);
         
         // Make the direct DELETE request with cookies and all possible headers for authentication
         const response = await fetch(`/api/users/${userId}`, {
@@ -71,6 +84,8 @@ export function AdminsList({ user }: { user: User | null }) {
           headers: {
             'Content-Type': 'application/json',
             'X-Admin-Session': 'true',
+            'X-Admin-Id': userData.id?.toString() || '',
+            'X-Admin-Type': userData.userType || '',
             'X-Requested-With': 'XMLHttpRequest',
             'Cache-Control': 'no-cache, no-store, must-revalidate',
             'Pragma': 'no-cache',
@@ -78,19 +93,38 @@ export function AdminsList({ user }: { user: User | null }) {
           }
         });
         
+        // Log response details
+        console.log(`Step 4: Received response with status: ${response.status}`);
+        
         // Handle response
         if (!response.ok) {
           console.error(`DELETE request failed with status: ${response.status}`);
-          const errorData = await response.json().catch(() => ({ message: "Unknown error occurred" }));
-          throw new Error(errorData.message || `Failed to delete admin account (Status: ${response.status})`);
+          let errorMessage = "Unknown error occurred";
+          
+          try {
+            const errorData = await response.json();
+            console.error("Error response details:", errorData);
+            errorMessage = errorData.message || errorMessage;
+          } catch (parseError) {
+            console.error("Failed to parse error response:", parseError);
+          }
+          
+          throw new Error(errorMessage);
         }
         
         // Parse and return response data
         const data = await response.json();
-        console.log("Delete operation successful:", data);
+        console.log("Step 5: Delete operation successful:", data);
         return data;
       } catch (error: any) {
         console.error("Error in admin delete operation:", error);
+        // Include detailed error info
+        const errorDetails = {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        };
+        console.error("Detailed error information:", errorDetails);
         throw error;
       }
     },
@@ -104,12 +138,20 @@ export function AdminsList({ user }: { user: User | null }) {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/all"] });
     },
     onError: (error: Error) => {
+      // Display more detailed error message in toast
       toast({
         title: "Failed to delete admin",
         description: error.message || "An unexpected error occurred during the delete operation",
         variant: "destructive",
+        duration: 7000, // Show longer for the detailed message
       });
+      
+      // Show more detailed error information in console for debugging
       console.error("Delete mutation error:", error);
+      
+      // Create a custom alert with more detailed information for visibility
+      // This will ensure the error is prominently displayed to the user
+      alert(`Error deleting admin account: ${error.message}\n\nPlease check the browser console for more details and contact technical support if this issue persists.`);
     },
   });
 
