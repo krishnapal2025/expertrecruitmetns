@@ -36,7 +36,6 @@ import SuperAdminSignupPage from "@/pages/super-admin-signup";
 import AdminLoginPage from "@/pages/admin-login";
 import AdminForgotPasswordPage from "@/pages/admin-forgot-password";
 import AdminResetPasswordPage from "@/pages/admin-reset-password";
-import AdminUserDebugPage from "@/pages/admin-user-debug";
 import ProfilePage from "@/pages/profile-page";
 import PostJobPage from "@/pages/post-job";
 import PostManagerPage from "@/pages/post-manager";
@@ -115,7 +114,6 @@ function Router() {
       <Route path="/admin-login" component={AdminLoginPage} />
       <Route path="/admin/forgot-password" component={AdminForgotPasswordPage} />
       <Route path="/admin/reset-password" component={AdminResetPasswordPage} />
-      <AdminProtectedRoute path="/admin-debug" component={AdminUserDebugPage} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
       <AdminProtectedRoute path="/post-job" component={PostJobPage} />
       <AdminProtectedRoute path="/post-manager" component={PostManagerPage} />

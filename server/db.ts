@@ -1,16 +1,52 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from 'ws';
-import * as schema from '@shared/schema';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import * as schema from "@shared/schema";
+import { type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import config from './config';
+import { ENV } from './config';
 
-// Configuring WebSocket for Neon DB
-neonConfig.webSocketConstructor = ws;
+// Export type for use in other files
+export type DatabaseInstance = PostgresJsDatabase<typeof schema>;
 
-// Initialize database connection
-if (!process.env.DATABASE_URL) {
-  console.error("DATABASE_URL not set");
-  process.exit(1);
+if (!config.database.url) {
+  throw new Error(
+    "DATABASE_URL must be set. Did you forget to provision a database?",
+  );
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle(pool, { schema });
+// Setup for PostgreSQL connection
+console.log(`Using PostgreSQL connection in ${config.ENV.NODE_ENV} environment`);
+
+// Modify the connection string to ensure SSL mode is properly set
+let connectionString = config.database.url;
+// Configure PostgreSQL client with optimal settings from environment config
+const connectionConfig: postgres.Options<{}> = {
+  // Max connections in the pool
+  max: config.database.poolConfig.max,
+
+  // Idle timeout for connections
+  idle_timeout: config.database.poolConfig.idleTimeout,
+
+  // Connection timeout
+  connect_timeout: config.database.poolConfig.connectionTimeout,
+
+  // Increase timeout values for more reliable connections on Fly.io
+  timeout: config.ENV.IS_FLY_IO ? 30 : undefined,
+
+  // Enable prepared statements for better performance
+  prepare: true,
+
+  // Set keep-alive settings, especially important for Fly.io deployments
+  keep_alive: 30, // Keep alive time in seconds
+};
+
+console.log(`Database SSL config: ${config.ENV.IS_PRODUCTION ? 'Production' : 'Development'} mode with SSL ${config.database.ssl.enabled ? 'enabled' : 'disabled'}`);
+
+// Create the database client with the updated connection string
+const client = postgres(connectionString, connectionConfig);
+
+// Initialize Drizzle ORM with the client
+const db = drizzle({ client, schema });
+
+// Export the configured database instance
+export { db };
