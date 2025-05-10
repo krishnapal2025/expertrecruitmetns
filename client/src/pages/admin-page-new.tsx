@@ -219,20 +219,42 @@ function AdminDashboard() {
   };
   
   // Mutations for actions
+
+  // Mutations for actions
+  // Mutations for actions
   const deleteUserMutation = useMutation({
-    mutationFn: async (userId: number) => {
-      const res = await apiRequest("DELETE", `/api/users/${userId}`);
+    mutationFn: async (params: { id: number; userType: string }) => {
+      console.log("Deleting user:", params);
+      const res = await apiRequest("DELETE", `/api/users/${params.id}?type=${encodeURIComponent(params.userType)}`);
       if (!res.ok) {
         const error = await res.json();
         throw new Error(error.message || "Failed to delete user");
       }
       return await res.json();
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       toast({
         title: "User deleted",
-        description: "The user has been deleted successfully.",
+        description: `The ${variables.userType} has been deleted successfully.`,
       });
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      // Also invalidate specific user type collections
+      if (variables.userType === 'employer') {
+        queryClient.invalidateQueries({ queryKey: ["/api/employers"] });
+      } else if (variables.userType === 'jobseeker') {
+        queryClient.invalidateQueries({ queryKey: ["/api/jobseekers"] });
+      } else if (variables.userType === 'admin') {
+        queryClient.invalidateQueries({ queryKey: ["/api/admins"] });
+      }
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to delete user",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
       queryClient.invalidateQueries({ queryKey: ["/api/users"] });
     },
     onError: (error: Error) => {
