@@ -624,40 +624,69 @@ function AdminDashboard() {
                         <TableHead>Username</TableHead>
                         <TableHead>Type</TableHead>
                         <TableHead>Created</TableHead>
+                        <TableHead>Status</TableHead>
                         <TableHead className="w-24">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredAdmins.map((admin: any) => (
-                        <TableRow key={admin.id} className={admin.id === user.id ? "bg-green-50 dark:bg-green-950" : ""}>
-                          <TableCell>
-                            <div className="font-medium">{admin.email}</div>
-                          </TableCell>
-                          <TableCell>{admin.username || 'N/A'}</TableCell>
-                          <TableCell>
-                            <Badge variant={admin.userType === "super_admin" ? "default" : "outline"}>
-                              {admin.userType === "super_admin" ? "Super Admin" : "Admin"}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{formatDate(admin.createdAt)}</TableCell>
-                          <TableCell>
-                            {admin.id !== user.id ? (
-                              <Button 
-                                variant="destructive" 
-                                size="sm"
-                                onClick={() => handleDeleteUser(admin.id, admin.userType)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            ) : (
-                              <div className="text-sm text-muted-foreground italic flex items-center">
-                                <ShieldCheck className="h-4 w-4 mr-1" />
-                                You
-                              </div>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {filteredAdmins.map((admin: any) => {
+                        const isSuperAdmin = admin.userType === "super_admin";
+                        const isCurrentUser = admin.id === user.id;
+                        const creationDate = formatDate(admin.createdAt);
+                        
+                        return (
+                          <TableRow 
+                            key={admin.id} 
+                            className={isCurrentUser ? "bg-green-50 dark:bg-green-950" : (isSuperAdmin ? "bg-blue-50 dark:bg-blue-950" : "")}
+                          >
+                            <TableCell>
+                              <div className="font-medium">{admin.email}</div>
+                            </TableCell>
+                            <TableCell>{admin.username || 'N/A'}</TableCell>
+                            <TableCell>
+                              <Badge variant={isSuperAdmin ? "default" : "outline"} className={isSuperAdmin ? "bg-blue-600" : ""}>
+                                {isSuperAdmin ? "Super Admin" : "Admin"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{creationDate}</TableCell>
+                            <TableCell>
+                              {isCurrentUser ? (
+                                <Badge variant="success">Current User</Badge>
+                              ) : isSuperAdmin ? (
+                                <Badge variant="outline" className="bg-blue-50 text-blue-600">Additional Super Admin</Badge>
+                              ) : (
+                                <Badge variant="outline">Standard Admin</Badge>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              {!isCurrentUser ? (
+                                <Button 
+                                  variant="destructive" 
+                                  size="sm"
+                                  onClick={() => {
+                                    const confirmMessage = isSuperAdmin 
+                                      ? `Are you sure you want to delete this Super Admin account (${admin.email})? This is a privileged account with full access.`
+                                      : `Are you sure you want to delete this Admin account (${admin.email})?`;
+                                    
+                                    if (window.confirm(confirmMessage)) {
+                                      handleDeleteUser(admin.id, admin.userType);
+                                    }
+                                  }}
+                                  className={isSuperAdmin ? "bg-orange-600 hover:bg-red-700" : ""}
+                                  title={isSuperAdmin ? "Delete Super Admin Account" : "Delete Admin Account"}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              ) : (
+                                <div className="text-sm text-green-600 font-medium flex items-center">
+                                  <ShieldCheck className="h-4 w-4 mr-1" />
+                                  Current Session
+                                </div>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </div>
