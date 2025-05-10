@@ -148,9 +148,20 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
   db: DatabaseInstance;
+  pool: PgPool;
 
   constructor() {
     this.db = db;
+    
+    // Initialize the pool for direct SQL queries
+    if (!process.env.DATABASE_URL) {
+      throw new Error('DATABASE_URL is required for DatabaseStorage');
+    }
+    
+    // Create a pool for our direct SQL operations
+    this.pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    
+    // Set up session store
     if (pgPool) {
       try {
         this.sessionStore = new PostgresSessionStore({
