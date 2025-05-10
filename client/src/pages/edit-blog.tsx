@@ -59,6 +59,29 @@ export default function EditBlogPage() {
     }
   }, [blogPost]);
   
+  // Add confirmation when navigating away with unsaved changes
+  useEffect(() => {
+    // Function to prompt the user before navigation
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isFormModified) {
+        // Standard for modern browsers
+        e.preventDefault();
+        // For older browsers
+        const message = "You have unsaved changes. Are you sure you want to leave?";
+        e.returnValue = message;
+        return message;
+      }
+    };
+
+    // Add the event listener
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Clean up the event listener when component unmounts
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isFormModified]);
+  
   // Function to create input change handlers that track modifications for string values
   const createStringChangeHandler = (
     setter: React.Dispatch<React.SetStateAction<string>>,
@@ -101,6 +124,9 @@ export default function EditBlogPage() {
         title: "Blog post updated",
         description: "Your blog post has been updated successfully.",
       });
+      // Reset form modification state
+      setIsFormModified(false);
+      // Invalidate queries to refresh data
       queryClient.invalidateQueries({ queryKey: [`/api/blog-posts/${id}`] });
       queryClient.invalidateQueries({ queryKey: ["/api/blog-posts"] });
     },
@@ -198,7 +224,19 @@ export default function EditBlogPage() {
       
       <div className="container mx-auto py-8 max-w-4xl">
         <div className="mb-8">
-          <Button variant="ghost" onClick={() => navigate("/blog-manager")} className="mb-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => {
+              if (isFormModified) {
+                if (window.confirm("You have unsaved changes. Are you sure you want to leave?")) {
+                  navigate("/blog-manager");
+                }
+              } else {
+                navigate("/blog-manager");
+              }
+            }} 
+            className="mb-4"
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Blog Manager
           </Button>
@@ -412,13 +450,17 @@ export default function EditBlogPage() {
                   </SelectContent>
                 </Select>
                 
-                <Button type="submit" disabled={updateBlogMutation.isPending}>
+                <Button 
+                  type="submit" 
+                  disabled={updateBlogMutation.isPending || !isFormModified}
+                  variant={isFormModified ? "default" : "outline"}
+                >
                   {updateBlogMutation.isPending ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
                     <Save className="mr-2 h-4 w-4" />
                   )}
-                  Save Changes
+                  {isFormModified ? "Save Changes" : "No Changes"}
                 </Button>
               </div>
             </CardFooter>
