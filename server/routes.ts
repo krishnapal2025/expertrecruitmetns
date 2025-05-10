@@ -2396,60 +2396,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Delete a user (admin only) - handles employers, job seekers, and admin accounts with simplified auth
-  // Get user by ID (admin only) - for debugging
-  app.get("/api/users/:id", async (req, res) => {
-    try {
-      // Authentication check
-      if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "Unauthorized - not logged in" });
-      }
-      
-      // Authorization check
-      const user = req.user as Express.User;
-      if (user.userType !== 'admin' && user.userType !== 'super_admin') {
-        return res.status(403).json({ message: "Forbidden - admin access required" });
-      }
-      
-      // Get user ID from params
-      const userId = parseInt(req.params.id, 10);
-      if (isNaN(userId)) {
-        return res.status(400).json({ message: "Invalid user ID format" });
-      }
-      
-      // Get user by ID
-      console.log(`Server: Looking up user with ID ${userId} for debug`);
-      const userToView = await storage.getUser(userId);
-      
-      if (!userToView) {
-        console.log(`Server: User with ID ${userId} not found`);
-        return res.status(404).json({ 
-          message: "User not found",
-          requestedId: userId
-        });
-      }
-      
-      console.log(`Server: Found user with ID ${userId}, type: ${userToView.userType}`);
-      
-      // Return user data
-      return res.json(userToView);
-    } catch (error) {
-      console.error("Error getting user by ID:", error);
-      return res.status(500).json({ message: "Internal server error" });
-    }
-  });
-
   app.delete("/api/users/:id", async (req, res) => {
     try {
-      const isDebug = req.headers['x-request-debug'] === 'true';
-      console.log(`Server: Received DELETE request for user ID: ${req.params.id}`);
-      console.log(`Server: Request headers:`, JSON.stringify(req.headers, null, 2));
+      console.log(`Received DELETE request for user ID: ${req.params.id}`);
       
       // Get admin ID from request headers for alternative authentication
       const adminId = req.headers['x-admin-id'] ? Number(req.headers['x-admin-id']) : null;
       const adminType = req.headers['x-admin-type'];
       const isAdminSession = req.headers['x-admin-session'] === 'true';
-      
-      console.log(`Server: Auth parameters - adminId: ${adminId}, adminType: ${adminType}, isAdminSession: ${isAdminSession}`);
       
       console.log(`Auth check: isAuthenticated=${req.isAuthenticated()}, adminId=${adminId}, adminType=${adminType}`);
       
@@ -2517,25 +2471,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only administrators can delete users" });
       }
       
-      // Parse and validate the user ID from the URL parameter
-      const userIdParam = req.params.id;
-      console.log(`Server: Raw user ID from request params: "${userIdParam}"`);
-      
-      const userId = parseInt(userIdParam, 10);
+      const userId = parseInt(req.params.id, 10);
       if (isNaN(userId)) {
-        console.log(`Server: Invalid user ID format: "${userIdParam}" parsed as NaN`);
-        return res.status(400).json({ 
-          message: "Invalid user ID", 
-          detail: `The provided ID "${userIdParam}" is not a valid number` 
-        });
-      }
-      
-      console.log(`Server: Valid user ID parsed: ${userId}`);
-      
-      // Verify that the admin ID from the authenticated user is also valid
-      console.log(`Server: Admin user ID (from auth): ${user.id}, type: ${typeof user.id}`);
-      if (typeof user.id !== 'number' || isNaN(user.id)) {
-        console.log(`Server: WARNING - Authenticated admin has invalid ID: ${user.id}`);
+        console.log("Invalid user ID format");
+        return res.status(400).json({ message: "Invalid user ID" });
       }
       
       // Check if user is trying to delete themselves
@@ -2545,17 +2484,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Get the user to determine if they're an admin
-      console.log(`Server: Attempting to get user with ID ${userId} to delete`);
       const userToDelete = await storage.getUser(userId);
       if (!userToDelete) {
-        console.log(`Server: User ID ${userId} not found in database`);
-        return res.status(404).json({ 
-          message: "User not found", 
-          detail: `No user found with ID ${userId} in the database`,
-          userId: userId 
-        });
+        console.log(`User ID ${userId} not found`);
+        return res.status(404).json({ message: "User not found" });
       }
-      console.log(`Server: Found user to delete: ID=${userToDelete.id}, type=${userToDelete.userType}, email=${userToDelete.email}`);
+      console.log(`User to delete: ID=${userToDelete.id}, type=${userToDelete.userType}`);
       
       // Only super_admin can delete admin accounts
       if (userToDelete.userType === 'admin' && user.userType !== 'super_admin') {
@@ -2563,67 +2497,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only super admins can delete admin accounts" });
       }
       
-      console.log(`Server: Calling storage.deleteUser for ID ${userId}`);
+      console.log(`Calling storage.deleteUser for ID ${userId}`);
       try {
-        // Check that admin and user records exist before proceeding
-        if (userToDelete.userType === "admin") {
-          const adminRecord = await storage.getAdminByUserId(userId);
-          console.log(`Server: Admin profile for user ${userId}: ${adminRecord ? 'Found' : 'Not found'}`);
-        } else if (userToDelete.userType === "employer") {
-          const employerRecord = await storage.getEmployerByUserId(userId);
-          console.log(`Server: Employer profile for user ${userId}: ${employerRecord ? 'Found' : 'Not found'}`);
-        } else if (userToDelete.userType === "jobseeker") {
-          const jobSeekerRecord = await storage.getJobSeekerByUserId(userId);
-          console.log(`Server: JobSeeker profile for user ${userId}: ${jobSeekerRecord ? 'Found' : 'Not found'}`);
-        }
-        
         // Call the storage method to delete the user with proper cascade handling
-        console.log(`Server: About to execute actual deleteUser operation for ID ${userId}`);
         const deleted = await storage.deleteUser(userId);
         
         if (!deleted) {
-          console.log(`Server: Storage deleteUser method returned false for ID ${userId}`);
+          console.log("Storage deleteUser method returned false");
           return res.status(404).json({ 
             success: false, 
-            message: "User not found or cannot be deleted",
-            detail: "The user exists but could not be deleted due to database constraints or internal error",
-            userId: userId
+            message: "User not found or cannot be deleted" 
           });
         }
         
-        console.log(`Server: Successfully deleted user ID ${userId}`);
+        console.log(`Successfully deleted user ID ${userId}`);
         return res.status(200).json({ 
           success: true, 
           message: "User deleted successfully",
           userId: userId
         });
       } catch (deleteError) {
-        console.error(`Server: Error in storage.deleteUser for ID ${userId}:`, deleteError);
+        console.error(`Error in storage.deleteUser for ID ${userId}:`, deleteError);
         
         // Provide a more detailed response with the full error chain
         let errorMessage = deleteError instanceof Error ? deleteError.message : String(deleteError);
-        let errorDetails = deleteError instanceof Error && deleteError.stack ? deleteError.stack : '';
-        
-        console.log(`Server: Detailed error information for failed deletion of ${userId}:`, {
-          message: errorMessage,
-          stack: errorDetails,
-          userType: userToDelete.userType
-        });
         
         // Check for specific error types to give clearer messages
         if (errorMessage.includes("foreign key constraint")) {
           errorMessage = "Cannot delete this user because they have related records in the system. Please remove those first.";
-          errorDetails = "The user has associated records that must be deleted before the user can be removed. This may include blog posts, job listings, or other content they've created.";
-        } else if (errorMessage.includes("violates foreign key constraint")) {
-          errorMessage = "This user has related data that prevents deletion.";
-          errorDetails = "There are database references to this user that must be removed first. This typically includes blog posts, applications, or other entities linked to this user.";
         }
         
         return res.status(500).json({ 
           success: false,
           message: "Failed to delete user", 
           error: errorMessage,
-          detail: errorDetails,
           userId: userId
         });
       }
