@@ -2555,6 +2555,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Special endpoint for deleting super admin accounts
+  app.delete("/api/admin/super-admins/:id", async (req, res) => {
+    try {
+      // Check if user is authenticated and is a super admin
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = req.user;
+      if (user.userType !== 'super_admin') {
+        return res.status(403).json({ 
+          success: false,
+          message: "Only super admins can access this endpoint",
+          code: "SUPER_ADMIN_REQUIRED"
+        });
+      }
+
+      const superAdminId = parseInt(req.params.id, 10);
+      if (isNaN(superAdminId)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
+
+      // Check if user is trying to delete themselves
+      if (superAdminId === user.id) {
+        return res.status(403).json({ 
+          success: false,
+          message: "Cannot delete your own super admin account", 
+          code: "SELF_DELETE_FORBIDDEN"
+        });
+      }
+
+      // Import the specialized deletion function
+      const { deleteSuperAdmin } = await import('./scripts/delete-super-admin.js');
+      
+      // Execute the deletion with transaction handling
+      const result = await deleteSuperAdmin(superAdminId);
+      
+      if (result.success) {
+        return res.status(200).json({ 
+          success: true, 
+          message: result.message,
+          userId: superAdminId
+        });
+      } else {
+        return res.status(400).json({ 
+          success: false, 
+          message: result.message,
+          userId: superAdminId
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting super admin:", error);
+      return res.status(500).json({ 
+        success: false,
+        message: "Server error while processing super admin deletion",
+        error: error instanceof Error ? error.message : String(error),
+        code: "SERVER_ERROR"
+      });
+    }
+  });
+
   // Get all admins (admin only)
   app.get("/api/admin/all", async (req, res) => {
     try {
