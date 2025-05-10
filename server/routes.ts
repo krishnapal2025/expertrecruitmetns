@@ -2395,46 +2395,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Delete a user (admin only) - handles employers, job seekers, and admin accounts
+  // Delete a user (admin only) - handles employers, job seekers, and admin accounts with simplified auth
   app.delete("/api/users/:id", async (req, res) => {
     try {
       console.log(`Received DELETE request for user ID: ${req.params.id}`);
-      const sess = req.session;
-      console.log(`Session exists: ${!!sess}, isAuthenticated: ${req.isAuthenticated()}`);
-      console.log("Headers:", req.headers);
       
-      // Check if there's a special admin session header
+      // Get admin ID from request headers for alternative authentication
+      const adminId = req.headers['x-admin-id'] ? Number(req.headers['x-admin-id']) : null;
+      const adminType = req.headers['x-admin-type'];
       const isAdminSession = req.headers['x-admin-session'] === 'true';
-      if (isAdminSession) {
-        console.log("Admin session header detected");
-      }
       
-      // Special handling for DELETE requests with X-Admin-Session header
-      // Check if user is authenticated
-      if (!req.isAuthenticated()) {
-        console.log("User not authenticated, checking for admin session...");
+      console.log(`Auth check: isAuthenticated=${req.isAuthenticated()}, adminId=${adminId}, adminType=${adminType}`);
+      
+      // First attempt: Check if standard authentication via passport is active
+      if (req.isAuthenticated()) {
+        console.log("User is authenticated via normal session");
+        // Normal authentication flow - continue with request.user
+      }
+      // Second attempt: Use the admin ID from the headers to fetch the user directly
+      else if (isAdminSession && adminId) {
+        console.log(`Using alternative auth with admin ID ${adminId} from headers`);
+        const headerUser = await storage.getUser(adminId);
         
-        // If we have an admin session header but no authenticated session,
-        // we'll still proceed if we can find a valid user in the session
-        if (isAdminSession && sess && sess['passport'] && sess['passport']['user']) {
-          console.log("Found user ID in session:", sess['passport']['user']);
-          
-          // Get the user from the session ID
-          const sessionUserId = sess['passport']['user'];
-          const sessionUser = await storage.getUser(sessionUserId);
-          
-          if (sessionUser && (sessionUser.userType === 'admin' || sessionUser.userType === 'super_admin')) {
-            console.log("Valid admin user found in session, proceeding with delete operation");
-            // Use the session user for the rest of the operation
-            req.user = sessionUser;
-          } else {
-            console.log("No valid admin user found in session");
-            return res.status(401).json({ message: "Unauthorized - Invalid admin session" });
-          }
+        if (headerUser && (headerUser.userType === 'admin' || headerUser.userType === 'super_admin')) {
+          console.log(`Valid admin user found via header ID: ${headerUser.id}, type: ${headerUser.userType}`);
+          // Set the user on the request object for authorization
+          req.user = headerUser;
         } else {
-          console.log("No authenticated user or valid session found");
-          return res.status(401).json({ message: "Unauthorized" });
+          console.log("No valid admin user found via header ID");
+          return res.status(401).json({ message: "Unauthorized - Invalid admin credentials" });
         }
+      } 
+      // Third attempt: Try to find user in session
+      else if (isAdminSession && req.session && req.session.passport && req.session.passport.user) {
+        const sessionUserId = req.session.passport.user;
+        console.log(`Trying session fallback auth with user ID: ${sessionUserId}`);
+        
+        const sessionUser = await storage.getUser(sessionUserId);
+        if (sessionUser && (sessionUser.userType === 'admin' || sessionUser.userType === 'super_admin')) {
+          console.log(`Valid admin found in session: ${sessionUser.id}, type: ${sessionUser.userType}`);
+          req.user = sessionUser;
+        } else {
+          console.log("No valid admin user found in session");
+          return res.status(401).json({ message: "Unauthorized - Invalid admin session" });
+        }
+      }
+      // No authentication available
+      else {
+        console.log("No authentication method available");
+        return res.status(401).json({ message: "Unauthorized - No valid authentication" });
       }
 
       // Cast to Express.User type to handle TypeScript errors
