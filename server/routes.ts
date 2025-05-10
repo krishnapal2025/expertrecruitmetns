@@ -3202,13 +3202,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Request to remove all admin accounts received");
       
+      // Using direct SQL queries since we're having import issues
       // 1. Find all admin users
-      const adminUsers = await db
-        .select()
-        .from(users)
-        .where(
-          eq(users.userType, "admin").or(eq(users.userType, "super_admin"))
-        );
+      const adminUsersResult = await storage.db.query(
+        `SELECT id FROM users WHERE user_type = 'admin' OR user_type = 'super_admin'`
+      );
+      
+      const adminUsers = adminUsersResult.rows;
       
       if (adminUsers.length === 0) {
         console.log("No admin users found");
@@ -3225,34 +3225,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // 2. Update blog posts to remove references to admin users
       console.log("Updating blog posts to remove admin authors...");
-      const updateResult = await db
-        .update(blogPosts)
-        .set({ authorId: null })
-        .where(inArray(blogPosts.authorId, adminIds));
+      await storage.db.query(
+        `UPDATE blog_posts SET author_id = NULL WHERE author_id = ANY($1)`,
+        [adminIds]
+      );
       
       console.log(`Updated blog posts that referenced admin authors`);
 
       // 3. Delete notifications for admin users
       console.log("Deleting notifications for admin users...");
-      await db
-        .delete(notifications)
-        .where(inArray(notifications.userId, adminIds));
+      await storage.db.query(
+        `DELETE FROM notifications WHERE user_id = ANY($1)`,
+        [adminIds]
+      );
       
       console.log("Deleted notifications for admin users");
 
       // 4. Delete admin profiles
       console.log("Deleting admin profiles...");
-      await db
-        .delete(admins)
-        .where(inArray(admins.userId, adminIds));
+      await storage.db.query(
+        `DELETE FROM admins WHERE user_id = ANY($1)`,
+        [adminIds]
+      );
       
       console.log("Deleted admin profiles");
 
       // 5. Finally delete the admin user accounts
       console.log("Deleting admin user accounts...");
-      await db
-        .delete(users)
-        .where(inArray(users.id, adminIds));
+      await storage.db.query(
+        `DELETE FROM users WHERE id = ANY($1)`,
+        [adminIds]
+      );
       
       console.log("Deleted admin user accounts");
       
