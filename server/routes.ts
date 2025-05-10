@@ -2511,10 +2511,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      console.log(`Calling storage.deleteUser for ID ${userId} with type ${userType}`);
+      // Special handling for employer deletion
+      // If we received an employer ID instead of a user ID, we need to get the user ID first
+      let idToDelete = userId;
+
+      if (userType === 'employer') {
+        console.log(`Checking if ID ${userId} is an employer ID rather than a user ID`);
+        
+        // Check if this might be an employer ID instead of a user ID
+        const employer = await storage.getEmployer(userId);
+        
+        if (employer) {
+          console.log(`Found employer with ID ${userId}, associated with user ID ${employer.userId}`);
+          idToDelete = employer.userId;
+          console.log(`Will delete user with ID ${idToDelete} instead`);
+        } else {
+          console.log(`No employer found with ID ${userId}, treating as user ID`);
+        }
+      }
+      
+      console.log(`Calling storage.deleteUser for ID ${idToDelete} with type ${userType}`);
       try {
         // Call the storage method to delete the user with proper cascade handling
-        const deleted = await storage.deleteUser(userId, userType);
+        const deleted = await storage.deleteUser(idToDelete, userType);
         
         if (!deleted) {
           console.log("Storage deleteUser method returned false");
@@ -2524,11 +2543,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
         
-        console.log(`Successfully deleted user ID ${userId}`);
+        console.log(`Successfully deleted user ID ${idToDelete}`);
         return res.status(200).json({ 
           success: true, 
           message: "User deleted successfully",
-          userId: userId
+          userId: idToDelete
         });
       } catch (deleteError) {
         console.error(`Error in storage.deleteUser for ID ${userId}:`, deleteError);

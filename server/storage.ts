@@ -970,9 +970,28 @@ export class DatabaseStorage implements IStorage {
           );
           console.log(`DEBUG: Found ${notificationCount.rows[0].count || 0} notifications for this employer`);
           
+          // Step 3.5: Count blog posts written by this user
+          const blogPostsCount = await pgPool.query(
+            `SELECT COUNT(*) FROM blog_posts WHERE author_id = $1`,
+            [userId]
+          );
+          console.log(`DEBUG: Found ${blogPostsCount.rows[0].count || 0} blog posts written by this employer`);
+          
           console.log("Starting direct SQL deletion operations with proper error handling");
           
-          // Step 4: Update jobs to remove employer reference
+          // Step 4: Update blog posts to set author_id to NULL
+          try {
+            const blogUpdate = await pgPool.query(
+              `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1 RETURNING id`,
+              [userId]
+            );
+            console.log(`DEBUG: Updated ${blogUpdate.rowCount} blog posts to remove author reference`);
+          } catch (blogError) {
+            console.error("ERROR in blog posts update step:", blogError);
+            throw new Error(`Failed to update blog posts: ${blogError.message}`);
+          }
+          
+          // Step 5: Update jobs to remove employer reference
           if (employer) {
             try {
               const jobsUpdate = await pgPool.query(
@@ -1059,9 +1078,28 @@ export class DatabaseStorage implements IStorage {
           );
           console.log(`DEBUG: Found ${notificationCount.rows[0].count || 0} notifications for this job seeker`);
           
+          // Step 3.5: Count blog posts written by this user
+          const blogPostsCount = await pgPool.query(
+            `SELECT COUNT(*) FROM blog_posts WHERE author_id = $1`,
+            [userId]
+          );
+          console.log(`DEBUG: Found ${blogPostsCount.rows[0].count || 0} blog posts written by this job seeker`);
+          
           console.log("Starting direct SQL deletion operations with proper error handling");
           
-          // Step 4: Delete job applications by this job seeker
+          // Step 4: Update blog posts to set author_id to NULL
+          try {
+            const blogUpdate = await pgPool.query(
+              `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1 RETURNING id`,
+              [userId]
+            );
+            console.log(`DEBUG: Updated ${blogUpdate.rowCount} blog posts to remove author reference`);
+          } catch (blogError) {
+            console.error("ERROR in blog posts update step:", blogError);
+            throw new Error(`Failed to update blog posts: ${blogError.message}`);
+          }
+          
+          // Step 5: Delete job applications by this job seeker
           if (jobSeeker) {
             try {
               const applicationsDelete = await pgPool.query(
