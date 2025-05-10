@@ -456,7 +456,7 @@ function AdminDashboard() {
   // Handle user deletion
   const handleDeleteUser = (userId: number, userType: string) => {
     if (window.confirm(`Are you sure you want to delete this ${userType}?`)) {
-      deleteUserMutation.mutate(userId);
+      deleteUserMutation.mutate({ id: userId, userType });
     }
   };
   
