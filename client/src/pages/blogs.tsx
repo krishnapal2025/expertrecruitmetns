@@ -69,20 +69,30 @@ export default function BlogsPage() {
   });
 
   // Filter blogs based on search term and category
-  const filteredBlogs = apiBlogs ? apiBlogs.filter((blog) => {
-    // For search, look at title, subtitle/excerpt, and content
-    const matchesSearch = 
-      blog.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      (blog.subtitle && blog.subtitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (blog.excerpt && blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (blog.content && blog.content.toLowerCase().includes(searchTerm.toLowerCase()));
-    
-    // For category, either match the selected category or show all if "All Categories" is selected
-    const matchesCategory = selectedCategory === "All Categories" || blog.category === selectedCategory;
-    
-    // Only include published blogs
-    return blog.published && matchesSearch && matchesCategory;
-  }) : [];
+  const filteredBlogs = apiBlogs ? apiBlogs
+    .filter((blog) => {
+      // For search, look at title, subtitle/excerpt, and content
+      const matchesSearch = 
+        blog.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        (blog.subtitle && blog.subtitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (blog.excerpt && blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (blog.content && blog.content.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      // For category, either match the selected category or show all if "All Categories" is selected
+      const matchesCategory = selectedCategory === "All Categories" || blog.category === selectedCategory;
+      
+      // Only include published blogs
+      return blog.published && matchesSearch && matchesCategory;
+    })
+    // Sort by publish date in descending order (newest first)
+    .sort((a, b) => {
+      // Use publishDate if available
+      if (a.publishDate && b.publishDate) {
+        return new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime();
+      }
+      // If publishDate is not available, sort by ID in descending order (assuming newer posts have higher IDs)
+      return b.id - a.id;
+    }) : [];
 
   return (
     <>
