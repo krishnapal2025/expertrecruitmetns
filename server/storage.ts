@@ -146,8 +146,10 @@ export interface IStorage {
 // Database storage using PostgreSQL
 export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
+  db: DatabaseInstance;
 
   constructor() {
+    this.db = db;
     if (pgPool) {
       try {
         this.sessionStore = new PostgresSessionStore({
