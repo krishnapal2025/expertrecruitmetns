@@ -2497,12 +2497,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only super admins can delete admin accounts" });
       }
       
-      // Prevent deletion of super_admin accounts through the regular delete endpoint
-      if (userToDelete.userType === 'super_admin') {
-        console.log("Attempt to delete a super_admin account - using regular endpoint");
+      // Only super_admin can delete other super_admin accounts
+      if (userToDelete.userType === 'super_admin' && user.userType !== 'super_admin') {
+        console.log("Non-super admin attempting to delete a super_admin account");
         return res.status(403).json({ 
           success: false,
-          message: "Super admin accounts cannot be deleted through this interface for security reasons",
+          message: "Only super admins can delete super admin accounts",
           code: "SUPER_ADMIN_PROTECTION"
         });
       }
