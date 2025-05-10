@@ -506,89 +506,11 @@ export function setupAuth(app: Express) {
   
   // Admin-only login route
   app.post("/api/admin/login", (req, res, next) => {
-    passport.authenticate("local", async (err, user, info) => {
-      if (err) return next(err);
-      if (!user) return res.status(400).json({ message: info.message || "Invalid credentials" });
-      
-      // Check if the user is an admin or super_admin
-      if (user.userType !== "admin" && user.userType !== "super_admin") {
-        return res.status(403).json({ 
-          message: "Access denied. This login is for administrators only." 
-        });
-      }
-      
-      req.login(user, async (err) => {
-        if (err) return next(err);
-        
-        // Get deployment environment info
-        const isProduction = process.env.NODE_ENV === 'production';
-        const isFlyIo = process.env.FLY_APP_NAME !== undefined;
-        const isReplit = process.env.REPL_ID !== undefined || process.env.REPL_SLUG !== undefined;
-        const isCrossDomainEnvironment = isFlyIo || isReplit;
-        
-        // Get admin profile
-        const admin = await storage.getAdminByUserId(user.id);
-        
-        if (!admin) {
-          return res.status(404).json({ 
-            message: "Admin profile not found. Please contact support." 
-          });
-        }
-        
-        // Update last login time
-        await storage.updateAdminLastLogin(admin.id);
-        
-        // Ensure session is saved before responding
-        req.session!.save((err) => {
-          if (err) {
-            console.error("Error saving admin session after login:", err);
-            return res.status(500).json({ 
-              message: "Login successful, but session could not be saved",
-              user,
-              profile: { 
-                id: admin.id, 
-                role: admin.role,
-                firstName: admin.firstName,
-                lastName: admin.lastName
-              }
-            });
-          }
-          
-          // For cross-domain environments, add helpful info to response
-          if (isCrossDomainEnvironment) {
-            res.status(200).json({
-              user, 
-              profile: { 
-                id: admin.id, 
-                role: admin.role,
-                firstName: admin.firstName,
-                lastName: admin.lastName
-              },
-              environment: 'cross-domain',
-              notes: {
-                sessionInfo: "Your admin session has been created in a deployment environment.",
-                cookieSettings: {
-                  secure: isProduction,
-                  sameSite: isProduction && isCrossDomainEnvironment ? "none" : "lax",
-                  domain: process.env.COOKIE_DOMAIN || undefined
-                }
-              }
-            });
-          } else {
-            // Standard response for development environments
-            res.status(200).json({ 
-              user, 
-              profile: { 
-                id: admin.id, 
-                role: admin.role,
-                firstName: admin.firstName,
-                lastName: admin.lastName
-              } 
-            });
-          }
-        });
-      });
-    })(req, res, next);
+    // For security reasons, admin login has been disabled
+    console.log("Admin login attempt blocked - admin login is disabled");
+    return res.status(403).json({ 
+      message: "Administrator login is currently disabled for security reasons. Please contact system support."
+    });
   });
 
   // Logout route
