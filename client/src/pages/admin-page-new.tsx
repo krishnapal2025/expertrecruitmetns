@@ -1688,16 +1688,44 @@ function AdminDashboard() {
                               <TableCell>{formatDate(application.createdAt)}</TableCell>
                               <TableCell>
                                 {application.resumePath ? (
-                                  <div className="flex space-x-3">
-                                    <a 
-                                      href={`/api/applications/${application.id}/resume`} 
-                                      target="_blank" 
-                                      rel="noopener noreferrer"
-                                      className="text-primary hover:text-primary/80 flex items-center"
-                                    >
-                                      <Download className="h-4 w-4 mr-1" />
-                                      Download
-                                    </a>
+                                  <div className="flex flex-wrap gap-2">
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button 
+                                          variant="outline" 
+                                          size="sm"
+                                          className="text-xs h-7 px-2"
+                                        >
+                                          <Download className="h-3.5 w-3.5 mr-1" />
+                                          Download
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end" className="w-[160px]">
+                                        <DropdownMenuItem asChild>
+                                          <a 
+                                            href={`/api/applications/${application.id}/download-cv`} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="flex items-center cursor-pointer"
+                                          >
+                                            <FileText className="h-3.5 w-3.5 mr-2" />
+                                            Original Format
+                                          </a>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem asChild>
+                                          <a 
+                                            href={`/api/applications/${application.id}/download-pdf`} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="flex items-center cursor-pointer"
+                                          >
+                                            <FileText className="h-3.5 w-3.5 mr-2" />
+                                            PDF Format
+                                          </a>
+                                        </DropdownMenuItem>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                    
                                     <Button 
                                       variant="outline" 
                                       size="sm"
