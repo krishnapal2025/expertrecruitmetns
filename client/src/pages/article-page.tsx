@@ -66,12 +66,12 @@ const BlogPostContent = ({
           <div className="flex items-center mb-8">
             <Avatar className="h-10 w-10 mr-4">
               <AvatarFallback>
-                {adminUser ? adminUser.firstName.charAt(0) : "A"}
+                {adminUser && adminUser.firstName ? adminUser.firstName.charAt(0) : "A"}
               </AvatarFallback>
             </Avatar>
             <div>
               <div className="font-medium">
-                {adminUser ? `${adminUser.firstName} ${adminUser.lastName}` : "Admin"}
+                {adminUser && adminUser.firstName ? `${adminUser.firstName} ${adminUser.lastName || ''}` : "Admin"}
               </div>
               <div className="text-sm text-gray-500">
                 Recruitment Specialist

@@ -443,6 +443,7 @@ const CreateBlogPage = () => {
   };
 
   const blogCategories = [
+    "Expert Recruitments",
     "Career Development",
     "Industry Insights",
     "Recruitment Tips",
