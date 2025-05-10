@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, LogOut, AlertCircle } from "lucide-react";
+import { ShieldCheck, LogOut, AlertCircle, Bug } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -91,6 +91,19 @@ export default function AdminNav() {
               <span className="font-medium">{adminUser.email || 'Admin User'}</span>
             </div>
           )}
+          
+          <Link href="/admin-debug">
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-gray-600 hover:text-gray-900 mr-2"
+            >
+              <span className="flex items-center">
+                <Bug className="h-4 w-4 mr-1 text-amber-600" />
+                Debug Tool
+              </span>
+            </Button>
+          </Link>
           
           <Button
             variant="ghost"
