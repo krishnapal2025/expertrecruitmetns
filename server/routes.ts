@@ -807,8 +807,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add additional properties to create a complete job record
       const cleanedJobData = {
         ...validatedJobData,
-        // Set default values for any potentially missing fields
-        employerId: validatedJobData.employerId || null,
+        // We're using company name directly instead of employer ID
+        // This simplifies job posting by not requiring an employer ID
+        employerId: null, // Always set to null as we now use company name
         // Mark as active by default
         isActive: true,
         // Set posted date to now
