@@ -48,6 +48,7 @@ export interface IStorage {
   getUserById(id: number): Promise<User | undefined>;
   updateUserPassword(userId: number, password: string): Promise<User | undefined>;
   deleteUser(userId: number): Promise<boolean>;
+  deleteSuperAdmin(id: number): Promise<{ success: boolean; message: string }>;
 
   // JobSeeker methods
   getJobSeeker(id: number): Promise<JobSeeker | undefined>;
