@@ -439,7 +439,7 @@ export function setupAuth(app: Express) {
 
   // Login route - only for regular users (jobseeker and employer)
   app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", async (err, user, info) => {
+    passport.authenticate("local", async (err: any, user: any, info: any) => {
       if (err) return next(err);
       if (!user) return res.status(400).json({ message: info.message || "Invalid credentials" });
       
@@ -460,7 +460,7 @@ export function setupAuth(app: Express) {
         const isCrossDomainEnvironment = isFlyIo || isReplit;
         
         // Fetch appropriate profile based on user type
-        let profile;
+        let profile: any; // Using any for simplicity, would be better to use proper union type
         if (user.userType === "jobseeker") {
           profile = await storage.getJobSeekerByUserId(user.id);
         } else if (user.userType === "employer") {
@@ -513,7 +513,7 @@ export function setupAuth(app: Express) {
   
   // Admin-only login route
   app.post("/api/admin/login", (req, res, next) => {
-    passport.authenticate("local", async (err, user, info) => {
+    passport.authenticate("local", async (err: any, user: any, info: any) => {
       if (err) return next(err);
       if (!user) return res.status(400).json({ message: info.message || "Invalid credentials" });
       
