@@ -27,7 +27,7 @@ import { generateResetToken, sendPasswordResetEmail, sendVacancyAssignmentEmail,
 import { seedJobs } from "./seed-jobs";
 import { generateResumePDF, resumeDataSchema, bufferToStream, ResumeData } from "./pdf-service";
 import { handleCvDownload } from "./cv-service";
-import { uploadBlogImage, getUploadedFilePath } from "./upload-service";
+import { uploadBlogImage, uploadResume, getUploadedFilePath } from "./upload-service";
 import path from "path";
 
 // Add ResumeData type to session
@@ -923,7 +923,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Apply for a job (requires jobseeker authentication)
-  app.post("/api/jobs/:id/apply", async (req, res) => {
+  app.post("/api/jobs/:id/apply", uploadResume, async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "You must be logged in to apply for a job" });
@@ -961,6 +961,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Validate application data
       const { coverLetter } = req.body;
+      
+      // Handle uploaded resume file if present
+      if (req.file) {
+        // Get the uploaded file path
+        const cvFilename = req.file.filename;
+        const cvPath = getUploadedFilePath(cvFilename, 'resume');
+        
+        // Update jobSeeker profile with new CV path if CV was uploaded
+        await storage.updateJobSeeker(jobSeeker.id, {
+          ...jobSeeker,
+          cvPath
+        });
+        
+        console.log(`Resume uploaded: ${cvFilename} for job seeker ID ${jobSeeker.id}`);
+      }
 
       // Create the application
       const application = await storage.createApplication({
