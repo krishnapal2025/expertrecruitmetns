@@ -75,7 +75,19 @@ export function AdminsList({ user }: { user: User | null }) {
     },
   });
 
-  // Handle admin deletion
+  // Handle admin deletion using AlertDialog
+  const [adminToDelete, setAdminToDelete] = useState<any>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  
+  const handleDeleteConfirm = () => {
+    if (adminToDelete && adminToDelete.user && adminToDelete.user.id) {
+      console.log(`Attempting to delete admin user with ID: ${adminToDelete.user.id}`);
+      deleteUserMutation.mutate(adminToDelete.user.id);
+      setShowDeleteDialog(false);
+      setAdminToDelete(null);
+    }
+  };
+  
   const handleDeleteAdmin = (admin: any) => {
     if (!admin.user || !admin.user.id) {
       toast({
@@ -85,11 +97,9 @@ export function AdminsList({ user }: { user: User | null }) {
       });
       return;
     }
-
-    if (window.confirm(`Are you sure you want to delete the admin account for ${admin.firstName} ${admin.lastName}?`)) {
-      console.log(`Attempting to delete admin user with ID: ${admin.user.id}`);
-      deleteUserMutation.mutate(admin.user.id);
-    }
+    
+    setAdminToDelete(admin);
+    setShowDeleteDialog(true);
   };
   
   const formatDate = (date: string | Date | null) => {

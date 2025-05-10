@@ -75,10 +75,11 @@ export async function apiRequest(
   };
   
   try {
-    // For POST requests, verify authentication state first
-    if (method === 'POST' && !url.includes('/api/login') && !url.includes('/api/register')) {
+    // For POST, DELETE, PATCH, or PUT requests, verify authentication state first
+    if ((method === 'POST' || method === 'DELETE' || method === 'PATCH' || method === 'PUT') && 
+        !url.includes('/api/login') && !url.includes('/api/register')) {
       try {
-        console.log('Verifying authentication before POST request...');
+        console.log(`Verifying authentication before ${method} request to ${url}...`);
         const authCheck = await fetch('/api/user', { 
           credentials: 'include',
           headers: {
