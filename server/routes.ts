@@ -2399,6 +2399,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/users/:id", async (req, res) => {
     try {
       console.log(`Received DELETE request for user ID: ${req.params.id}`);
+      const sess = req.session;
+      console.log(`Session exists: ${!!sess}, isAuthenticated: ${req.isAuthenticated()}`);
       
       // Check if user is authenticated and is an admin
       if (!req.isAuthenticated()) {
@@ -2452,19 +2454,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       console.log(`Calling storage.deleteUser for ID ${userId}`);
-      // Call the storage method to delete the user with proper cascade handling
-      const deleted = await storage.deleteUser(userId);
-      
-      if (!deleted) {
-        console.log("Storage deleteUser method returned false");
-        return res.status(500).json({ message: "Failed to delete user" });
+      try {
+        // Call the storage method to delete the user with proper cascade handling
+        const deleted = await storage.deleteUser(userId);
+        
+        if (!deleted) {
+          console.log("Storage deleteUser method returned false");
+          return res.status(500).json({ message: "Failed to delete user" });
+        }
+        
+        console.log(`Successfully deleted user ID ${userId}`);
+        return res.status(200).json({ success: true, message: "User deleted successfully" });
+      } catch (deleteError) {
+        console.error(`Error in storage.deleteUser for ID ${userId}:`, deleteError);
+        return res.status(500).json({ 
+          message: "Error during user deletion process", 
+          error: deleteError instanceof Error ? deleteError.message : String(deleteError)
+        });
       }
-      
-      console.log(`Successfully deleted user ID ${userId}`);
-      res.status(200).json({ success: true, message: "User deleted successfully" });
     } catch (error) {
       console.error("Error deleting user:", error);
-      res.status(500).json({ 
+      return res.status(500).json({ 
         message: "Failed to delete user",
         error: error instanceof Error ? error.message : String(error)
       });
