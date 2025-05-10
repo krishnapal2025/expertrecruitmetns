@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/table";
 import { Loader2, Trash2 } from "lucide-react";
 
-export function AdminsList({ user, onDelete }: { user?: User | null, onDelete?: (userId: number, userType: string) => void }) {
+export function AdminsList({ user }: { user: User | null }) {
   const { toast } = useToast();
   
   const { data: admins, isLoading: adminsLoading } = useQuery({
@@ -136,16 +136,10 @@ export function AdminsList({ user, onDelete }: { user?: User | null, onDelete?: 
       const userType = adminToDelete.user.userType || 'admin';
       
       // Call mutation with both userId and userType
-      if (onDelete) {
-        // Use the passed onDelete function if available
-        onDelete(adminToDelete.user.id, userType);
-      } else {
-        // Fall back to the internal mutation if no onDelete prop
-        deleteUserMutation.mutate({ 
-          userId: adminToDelete.user.id,
-          userType: userType
-        });
-      }
+      deleteUserMutation.mutate({ 
+        userId: adminToDelete.user.id,
+        userType: userType
+      });
       
       setShowDeleteDialog(false);
       setAdminToDelete(null);
