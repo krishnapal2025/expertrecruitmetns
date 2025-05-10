@@ -41,16 +41,30 @@ export function AdminsList({ user }: { user: User | null }) {
     enabled: !!user && (user.userType === "admin" || user.userType === "super_admin")
   });
 
-  // Admin delete mutation
+  // Admin delete mutation with improved session handling
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: number) => {
       try {
         console.log(`Deleting user with ID: ${userId}`);
+        console.log("Admin session active:", sessionStorage.getItem('adminLoginNewTab') === 'true');
         
-        const res = await apiRequest("DELETE", `/api/users/${userId}`);
+        // First, verify we're in admin mode
+        const isAdminSession = sessionStorage.getItem('adminLoginNewTab') === 'true';
+        
+        // Set special headers for admin session
+        const customOptions: RequestInit = {
+          headers: {
+            'X-Admin-Session': isAdminSession ? 'true' : 'false'
+          }
+        };
+        
+        // Use the improved apiRequest method that handles DELETE requests properly
+        const res = await apiRequest("DELETE", `/api/users/${userId}`, undefined, customOptions);
         
         if (!res.ok) {
-          throw new Error("Failed to delete admin account");
+          console.error("Delete request failed with status:", res.status);
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.message || "Failed to delete admin account");
         }
         
         return await res.json();
@@ -64,12 +78,13 @@ export function AdminsList({ user }: { user: User | null }) {
         title: "Admin deleted",
         description: "The admin account has been deleted successfully.",
       });
+      // Refresh admin list after successful deletion
       queryClient.invalidateQueries({ queryKey: ["/api/admin/all"] });
     },
     onError: (error: Error) => {
       toast({
         title: "Failed to delete admin",
-        description: error.message,
+        description: error.message || "An unexpected error occurred",
         variant: "destructive",
       });
     },
