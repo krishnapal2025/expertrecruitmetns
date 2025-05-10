@@ -3220,6 +3220,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized: Please log in" });
       }
       
+      console.log("Auth check - User trying to create post: ", 
+        { id: req.user.id, email: req.user.email, userType: req.user.userType });
+      
       if (req.user.userType !== "admin" && req.user.userType !== "super_admin") {
         console.log(`Unauthorized attempt to create blog post by user type: ${req.user.userType}`);
         return res.status(403).json({ message: "Unauthorized: Admin access required" });
@@ -3293,16 +3296,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Create the blog post
-      const newPost = await storage.createBlogPost(postData);
-      res.status(201).json(newPost);
+      console.log("Attempting to create blog post with data:", postData);
+      try {
+        const newPost = await storage.createBlogPost(postData);
+        console.log("Blog post created successfully:", newPost.id);
+        res.status(201).json(newPost);
+      } catch (dbError) {
+        console.error("Database error creating blog post:", dbError);
+        return res.status(500).json({ message: "Database error: " + (dbError.message || "Unknown error") });
+      }
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromZodError(error);
+        console.error("Validation error:", validationError);
         return res.status(400).json({ message: validationError.message });
       }
 
       console.error("Error creating blog post:", error);
-      res.status(500).json({ message: "Failed to create blog post" });
+      res.status(500).json({ message: "Failed to create blog post: " + (error instanceof Error ? error.message : "Unknown error") });
     }
   });
 
