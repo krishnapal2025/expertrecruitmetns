@@ -1114,26 +1114,51 @@ function AdminDashboard() {
                         <TableHead>Email</TableHead>
                         <TableHead>Username</TableHead>
                         <TableHead>Type</TableHead>
+                        <TableHead>Created At</TableHead>
+                        <TableHead>Status</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredAdmins.map((admin: User, index: number) => (
-                        <TableRow key={admin.id}>
+                        <TableRow 
+                          key={admin.id} 
+                          className={admin.id === user?.id ? "bg-muted/50" : ""}
+                        >
                           <TableCell>{index + 1}</TableCell>
                           <TableCell>{admin.email}</TableCell>
-                          <TableCell>{admin.username}</TableCell>
+                          <TableCell>{admin.username || "N/A"}</TableCell>
                           <TableCell>
                             <Badge variant={admin.userType === "super_admin" ? "default" : "outline"}>
                               {admin.userType === "super_admin" ? "Super Admin" : "Admin"}
                             </Badge>
                           </TableCell>
+                          <TableCell>
+                            {admin.createdAt 
+                              ? new Date(admin.createdAt).toLocaleDateString("en-US", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric"
+                                })
+                              : "N/A"
+                            }
+                          </TableCell>
+                          <TableCell>
+                            {admin.id === user?.id ? (
+                              <Badge variant="secondary" className="flex items-center gap-1">
+                                <Check className="h-3 w-3" /> Current
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline">Active</Badge>
+                            )}
+                          </TableCell>
                           <TableCell className="text-right">
                             <Button
-                              variant="ghost"
+                              variant={admin.id === user?.id ? "ghost" : "destructive"}
                               size="icon"
                               onClick={() => handleDeleteUser(admin.id)}
-                              disabled={admin.id === user?.id || admin.userType === "super_admin"}
+                              disabled={admin.id === user?.id} 
+                              title={admin.id === user?.id ? "Cannot delete your own account" : "Delete account"}
                             >
                               <Trash2 className="h-4 w-4" />
                               <span className="sr-only">Delete</span>
