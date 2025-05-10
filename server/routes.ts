@@ -2398,48 +2398,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Delete a user (admin only) - handles employers, job seekers, and admin accounts
   app.delete("/api/users/:id", async (req, res) => {
     try {
+      console.log(`Received DELETE request for user ID: ${req.params.id}`);
+      
       // Check if user is authenticated and is an admin
       if (!req.isAuthenticated()) {
+        console.log("User not authenticated");
         return res.status(401).json({ message: "Unauthorized" });
       }
 
       const user = req.user;
+      console.log(`Authenticated user: ID=${user.id}, type=${user.userType}`);
 
-      // Get admin profile
-      const admin = await storage.getAdminByUserId(user.id);
-
-      if (!admin) {
+      // For user types admin and super_admin, we need to check for an admin profile
+      if (user.userType === 'admin' || user.userType === 'super_admin') {
+        console.log("Checking admin profile");
+        // Get admin profile
+        const admin = await storage.getAdminByUserId(user.id);
+        
+        if (!admin) {
+          console.log("No admin profile found for user");
+          return res.status(403).json({ message: "Only administrators can delete users" });
+        }
+        console.log(`Admin profile found: ID=${admin.id}`);
+      } else {
+        console.log("User is not an admin or super_admin");
         return res.status(403).json({ message: "Only administrators can delete users" });
       }
       
       const userId = parseInt(req.params.id, 10);
       if (isNaN(userId)) {
+        console.log("Invalid user ID format");
         return res.status(400).json({ message: "Invalid user ID" });
       }
       
       // Check if user is trying to delete themselves
       if (userId === user.id) {
+        console.log("User attempting to delete their own account");
         return res.status(403).json({ message: "Cannot delete your own account" });
       }
       
       // Get the user to determine if they're an admin
       const userToDelete = await storage.getUser(userId);
       if (!userToDelete) {
+        console.log(`User ID ${userId} not found`);
         return res.status(404).json({ message: "User not found" });
       }
+      console.log(`User to delete: ID=${userToDelete.id}, type=${userToDelete.userType}`);
       
       // Only super_admin can delete admin accounts
       if (userToDelete.userType === 'admin' && user.userType !== 'super_admin') {
+        console.log("Non-super admin attempting to delete an admin account");
         return res.status(403).json({ message: "Only super admins can delete admin accounts" });
       }
       
+      console.log(`Calling storage.deleteUser for ID ${userId}`);
       // Call the storage method to delete the user with proper cascade handling
       const deleted = await storage.deleteUser(userId);
       
       if (!deleted) {
+        console.log("Storage deleteUser method returned false");
         return res.status(500).json({ message: "Failed to delete user" });
       }
       
+      console.log(`Successfully deleted user ID ${userId}`);
       res.status(200).json({ success: true, message: "User deleted successfully" });
     } catch (error) {
       console.error("Error deleting user:", error);
