@@ -485,11 +485,16 @@ export class DatabaseStorage implements IStorage {
       // We need to use a transaction to handle referential integrity
       return await db.transaction(async (tx) => {
         try {
+          console.log(`Database Storage: Starting transaction to delete user ID: ${userId}`);
+          
           // 1. Check if user exists
           const [user] = await tx.select().from(users).where(eq(users.id, userId));
           if (!user) {
-            throw new Error(`User with ID ${userId} not found`);
+            console.log(`Database Storage: User with ID ${userId} not found`);
+            return false; // Return false instead of throwing an error for consistent behavior
           }
+          
+          console.log(`Database Storage: Found user ${userId} to delete, userType: ${user.userType}`);
 
           // 2. Delete admin record if exists
           await tx.delete(admins).where(eq(admins.userId, userId));
@@ -530,15 +535,17 @@ export class DatabaseStorage implements IStorage {
           // 7. Finally delete the user
           const result = await tx.delete(users).where(eq(users.id, userId));
           
-          return result.rowCount > 0;
+          const success = result.rowCount > 0;
+          console.log(`Database Storage: User deletion result - rowCount: ${result.rowCount}, success: ${success}`);
+          return success;
         } catch (txError) {
-          console.error(`Transaction error while deleting user ${userId}:`, txError);
-          throw txError; // Rethrow to trigger transaction rollback
+          console.error(`Database Storage: Transaction error while deleting user ${userId}:`, txError);
+          return false; // Return false instead of rethrowing to provide consistent return values
         }
       });
     } catch (error) {
-      console.error(`Error deleting user ${userId}:`, error);
-      throw error; // Rethrow the error for proper error handling
+      console.error(`Database Storage: Error deleting user ${userId}:`, error);
+      return false; // Return false instead of rethrowing to maintain consistent error handling
     }
   }
 
@@ -1327,11 +1334,16 @@ export class MemStorage implements IStorage {
   
   async deleteUser(userId: number) {
     try {
+      console.log(`MemStorage: Attempting to delete user ID: ${userId}`);
+      
       // Check if user exists
       const user = this.users.get(userId);
       if (!user) {
-        throw new Error(`User with ID ${userId} not found`);
+        console.log(`MemStorage: User with ID ${userId} not found`);
+        return false;
       }
+      
+      console.log(`MemStorage: Found user ${userId} to delete, userType: ${user.userType}`);
 
       // Delete admin record if exists
       for (const [adminId, admin] of this.admins.entries()) {
