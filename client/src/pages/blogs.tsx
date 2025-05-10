@@ -84,14 +84,14 @@ export default function BlogsPage() {
       // Only include published blogs
       return blog.published && matchesSearch && matchesCategory;
     })
-    // Sort by publish date in descending order (newest first)
+    // Sort by publish date in ascending order (oldest first)
     .sort((a, b) => {
       // Use publishDate if available
       if (a.publishDate && b.publishDate) {
-        return new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime();
+        return new Date(a.publishDate).getTime() - new Date(b.publishDate).getTime();
       }
-      // If publishDate is not available, sort by ID in descending order (assuming newer posts have higher IDs)
-      return b.id - a.id;
+      // If publishDate is not available, sort by ID in ascending order (assuming older posts have lower IDs)
+      return a.id - b.id;
     }) : [];
 
   return (
@@ -197,7 +197,7 @@ export default function BlogsPage() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {apiBlogs
                 .filter(post => post.published)
-                .sort((a, b) => new Date(b.publishDate || "").getTime() - new Date(a.publishDate || "").getTime())
+                .sort((a, b) => new Date(a.publishDate || "").getTime() - new Date(b.publishDate || "").getTime())
                 .slice(0, 3)
                 .map(post => (
                   <Card key={`api-blog-${post.id}`} className="overflow-hidden flex flex-col h-full border-t-4 border-t-primary shadow-md">
