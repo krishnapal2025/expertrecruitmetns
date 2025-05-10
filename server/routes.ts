@@ -2407,24 +2407,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
+      if (!user) {
+        console.log("Unable to identify authenticated user");
+        return res.status(401).json({ message: "Authentication error" });
+      }
+      
       console.log(`Authenticated user: ID=${user.id}, type=${user.userType}`);
 
-      // For user types admin and super_admin, we need to check for an admin profile
-      if (user.userType === 'admin' || user.userType === 'super_admin') {
-        console.log("Checking admin profile");
-        // Get admin profile
-        const admin = await storage.getAdminByUserId(user.id);
-        
-        if (!admin) {
-          console.log("No admin profile found for user");
-          return res.status(403).json({ message: "Only administrators can delete users" });
-        }
-        console.log(`Admin profile found: ID=${admin.id}`);
-      } else {
+      // Simplified permissions check - only admin/super_admin can delete
+      if (user.userType !== 'admin' && user.userType !== 'super_admin') {
         console.log("User is not an admin or super_admin");
         return res.status(403).json({ message: "Only administrators can delete users" });
       }
       
+      // Get the user ID to delete
       const userId = parseInt(req.params.id, 10);
       if (isNaN(userId)) {
         console.log("Invalid user ID format");
@@ -2437,7 +2433,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Cannot delete your own account" });
       }
       
-      // Get the user to determine if they're an admin
+      // Get the user to delete
       const userToDelete = await storage.getUser(userId);
       if (!userToDelete) {
         console.log(`User ID ${userId} not found`);
