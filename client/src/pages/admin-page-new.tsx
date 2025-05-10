@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { AdminsList } from "@/components/admin/admins-list";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
