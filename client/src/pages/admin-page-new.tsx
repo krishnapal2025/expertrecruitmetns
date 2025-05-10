@@ -791,9 +791,15 @@ function AdminDashboard() {
         <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-8">
           <TabsTrigger value="dashboard">
             <BarChart2 className="mr-2 h-4 w-4" />
+            Dashboard
+          </TabsTrigger>
           <TabsTrigger value="admins">
             <ShieldCheck className="mr-2 h-4 w-4" />
             Admins
+          </TabsTrigger>
+          <TabsTrigger value="employers">
+            <Building className="mr-2 h-4 w-4" />
+            Employers
           </TabsTrigger>
             Dashboard
           </TabsTrigger>
