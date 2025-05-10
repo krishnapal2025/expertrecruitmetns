@@ -41,7 +41,7 @@ export async function handleCvDownload(
     
     let authorized = false;
     
-    if (user.userType === "admin") {
+    if (user.userType === "admin" || user.userType === "super_admin") {
       authorized = true;
     } else if (user.userType === "employer") {
       const employer = await storage.getEmployerByUserId(user.id);

@@ -1403,7 +1403,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      if (user.userType !== "employer" && user.userType !== "admin") {
+      if (user.userType !== "employer" && user.userType !== "admin" && user.userType !== "super_admin") {
         return res.status(403).json({ message: "Only employers or admins can update application status" });
       }
 

@@ -1680,15 +1680,28 @@ function AdminDashboard() {
                               <TableCell>{formatDate(application.createdAt)}</TableCell>
                               <TableCell>
                                 {application.resumePath ? (
-                                  <a 
-                                    href={`/api/applications/${application.id}/resume`} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="text-primary hover:text-primary/80 flex items-center"
-                                  >
-                                    <Download className="h-4 w-4 mr-1" />
-                                    Download
-                                  </a>
+                                  <div className="flex space-x-3">
+                                    <a 
+                                      href={`/api/applications/${application.id}/resume`} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="text-primary hover:text-primary/80 flex items-center"
+                                    >
+                                      <Download className="h-4 w-4 mr-1" />
+                                      Download
+                                    </a>
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm"
+                                      onClick={() => {
+                                        window.open(`/api/applications/${application.id}/resume`, '_blank');
+                                      }}
+                                      className="text-xs h-7 px-2"
+                                    >
+                                      <FileText className="h-3.5 w-3.5 mr-1" />
+                                      Preview
+                                    </Button>
+                                  </div>
                                 ) : (
                                   <span className="text-muted-foreground">No Resume</span>
                                 )}
