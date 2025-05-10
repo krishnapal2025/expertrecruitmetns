@@ -60,7 +60,6 @@ import {
   UserPlus,
   Pencil,
   MapPin,
-  FileDown,
   ShieldCheck,
 } from "lucide-react";
 
@@ -1720,7 +1719,7 @@ function AdminDashboard() {
                                             rel="noopener noreferrer"
                                             className="flex items-center cursor-pointer"
                                           >
-                                            <FileDown className="h-3.5 w-3.5 mr-2" />
+                                            <FilePdf className="h-3.5 w-3.5 mr-2" />
                                             PDF Format
                                           </a>
                                         </DropdownMenuItem>

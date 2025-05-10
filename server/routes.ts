@@ -962,6 +962,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validate application data
       const { coverLetter } = req.body;
       
+      // Parse additional data if it was sent as JSON string in FormData
+      let additionalData = {};
+      if (req.body.additionalData) {
+        try {
+          if (typeof req.body.additionalData === 'string') {
+            additionalData = JSON.parse(req.body.additionalData);
+          } else {
+            additionalData = req.body.additionalData;
+          }
+          console.log("Additional application data:", additionalData);
+        } catch (error) {
+          console.error("Error parsing additionalData:", error);
+        }
+      }
+      
       // Handle uploaded resume file if present
       if (req.file) {
         // Get the uploaded file path
