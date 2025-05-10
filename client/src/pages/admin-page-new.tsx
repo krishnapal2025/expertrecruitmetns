@@ -221,35 +221,12 @@ function AdminDashboard() {
   // Mutations for actions
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: number) => {
-      try {
-        // First check if we're authenticated as admin
-        const adminUser = await fetch('/api/admin/user');
-        if (!adminUser.ok) {
-          throw new Error("Admin authentication required. Please log in again.");
-        }
-        
-        // Proceed with deletion
-        console.log(`Attempting to delete user ID: ${userId}`);
-        const res = await fetch(`/api/users/${userId}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include' // Important for cookie-based auth
-        });
-        
-        console.log(`Delete response status: ${res.status}`);
-        
-        if (!res.ok) {
-          const errorData = await res.json().catch(() => ({ message: "Unknown error occurred" }));
-          throw new Error(errorData.message || `Server returned ${res.status}`);
-        }
-        
-        return await res.json();
-      } catch (error) {
-        console.error("Error in delete mutation:", error);
-        throw error;
+      const res = await apiRequest("DELETE", `/api/users/${userId}`);
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to delete user");
       }
+      return await res.json();
     },
     onSuccess: () => {
       toast({
@@ -261,10 +238,9 @@ function AdminDashboard() {
     onError: (error: Error) => {
       toast({
         title: "Failed to delete user",
-        description: error.message || "An unexpected error occurred",
+        description: error.message,
         variant: "destructive",
       });
-      console.error("Delete user error details:", error);
     },
   });
   
@@ -519,1038 +495,1420 @@ function AdminDashboard() {
     }
   };
   
-  // Handle application actions
-  const handleViewApplication = (application: any) => {
-    window.open(`/api/applications/${application.id}/resume`, "_blank");
+  // Update inquiry status
+  const handleUpdateInquiryStatus = async (id: number, status: string) => {
+    try {
+      await updateInquiryStatusMutation.mutateAsync({ id, status });
+      return true;
+    } catch (error) {
+      return false;
+    }
   };
   
-  const handleUpdateApplicationStatus = (applicationId: number, status: string) => {
-    updateApplicationStatusMutation.mutate({ id: applicationId, status });
+  // Handle assignment submission
+  const submitAssignment = () => {
+    if (!selectedVacancy) return;
+    
+    if (!recruiterEmail || !recruiterName) {
+      toast({
+        title: "Missing information",
+        description: "Please enter both recruiter email and name.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    assignVacancyMutation.mutate({
+      vacancyId: selectedVacancy.id,
+      recruiterEmail,
+      recruiterName
+    });
   };
   
-  // Counts for dashboard stats
-  const employerCount = users ? users.filter((u: User) => u.userType === "employer").length : 0;
-  const jobSeekerCount = users ? users.filter((u: User) => u.userType === "jobseeker").length : 0;
-  const activeJobsCount = jobs ? jobs.filter((j: Job) => j.status === "active").length : 0;
-  const pendingVacanciesCount = vacancies ? vacancies.filter((v: any) => v.status === "pending").length : 0;
-  const pendingInquiriesCount = inquiries ? inquiries.filter((i: any) => i.status === "pending").length : 0;
-  const pendingApplicationsCount = applications ? applications.filter((a: any) => a.status === "pending").length : 0;
+  // We now have a single authentication check in the useEffect at the top
   
-  // Main render
-  if (adminLoading || usersLoading) {
+  // Loading state
+  if (!user || adminLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-border" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
   
   return (
-    <div className="container mx-auto p-4 py-8">
-      <div className="flex flex-col">
-        <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
-        <p className="text-muted-foreground mb-6">
-          Manage your recruitment platform, users, jobs, and more.
-        </p>
-        
-        {/* Dashboard overview cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base font-medium flex items-center">
-                <Building className="mr-2 h-4 w-4" />
-                Employers
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{employerCount}</div>
-              <p className="text-xs text-muted-foreground">Registered companies</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base font-medium flex items-center">
-                <Users className="mr-2 h-4 w-4" />
-                Job Seekers
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{jobSeekerCount}</div>
-              <p className="text-xs text-muted-foreground">Registered candidates</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base font-medium flex items-center">
-                <Briefcase className="mr-2 h-4 w-4" />
-                Active Jobs
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{activeJobsCount}</div>
-              <p className="text-xs text-muted-foreground">Available positions</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base font-medium flex items-center">
-                <AlertCircle className="mr-2 h-4 w-4" />
-                Pending Items
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {pendingVacanciesCount + pendingInquiriesCount + pendingApplicationsCount}
+    <div className="container mx-auto py-8 max-w-[1400px]">
+      {/* View Vacancy Dialog */}
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Vacancy Details</DialogTitle>
+            <DialogDescription>
+              Review the detailed information for this vacancy.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedVacancy && (
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="text-sm font-medium">Position</h3>
+                  <p className="text-sm">{selectedVacancy.positionName || selectedVacancy.jobTitle || "N/A"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Company</h3>
+                  <p className="text-sm">{selectedVacancy.companyName || "N/A"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Industry</h3>
+                  <p className="text-sm">{selectedVacancy.industry || "N/A"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Location</h3>
+                  <p className="text-sm">{selectedVacancy.location || "N/A"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Status</h3>
+                  <Badge variant={
+                    selectedVacancy.status === "open" 
+                      ? "default"
+                      : selectedVacancy.status === "pending" 
+                      ? "default" 
+                      : selectedVacancy.status === "closed" 
+                      ? "secondary" 
+                      : selectedVacancy.status === "lost"
+                      ? "destructive"
+                      : "outline"
+                  }>
+                    {selectedVacancy.status || "pending"}
+                  </Badge>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Salary Range</h3>
+                  <p className="text-sm">{selectedVacancy.salaryRange || "Not specified"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Deadline</h3>
+                  <p className="text-sm">{formatDate(selectedVacancy.applicationDeadline)}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Submitted</h3>
+                  <p className="text-sm">{formatDate(selectedVacancy.submittedAt || selectedVacancy.createdAt)}</p>
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">Items requiring attention</p>
+              
+              <div>
+                <h3 className="text-sm font-medium">Job Description</h3>
+                <div className="mt-1 p-3 bg-muted rounded-md text-sm max-h-[200px] overflow-y-auto">
+                  {selectedVacancy.jobDescription || "No job description provided."}
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-medium">Recruiter Assignment</h3>
+                {selectedVacancy.assignedName ? (
+                  <div className="p-3 bg-muted rounded-md text-sm mt-1">
+                    <p><span className="font-medium">Assigned to:</span> {selectedVacancy.assignedName}</p>
+                    <p><span className="font-medium">Email:</span> {selectedVacancy.assignedTo}</p>
+                    <p><span className="font-medium">Assigned at:</span> {formatDate(selectedVacancy.assignedAt)}</p>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground mt-1">Not assigned to any recruiter yet.</p>
+                )}
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="text-sm font-medium">Contact Name</h3>
+                  <p className="text-sm">{selectedVacancy.contactName || "N/A"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Contact Email</h3>
+                  <p className="text-sm">{selectedVacancy.contactEmail || "N/A"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Contact Phone</h3>
+                  <p className="text-sm">{selectedVacancy.contactPhone || "N/A"}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
+              Close
+            </Button>
+            {selectedVacancy && !selectedVacancy.assignedName && (
+              <Button onClick={() => {
+                setViewDialogOpen(false);
+                handleAssignVacancy(selectedVacancy);
+              }}>
+                Assign to Recruiter
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Vacancy Assignment Dialog */}
+      <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Assign Vacancy to Recruiter</DialogTitle>
+            <DialogDescription>
+              Enter the recruiter's email and name to assign this vacancy for handling.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="recruiter-email">Recruiter Email</Label>
+              <Input
+                id="recruiter-email"
+                type="email"
+                value={recruiterEmail}
+                onChange={(e) => setRecruiterEmail(e.target.value)}
+                placeholder="recruiter@example.com"
+                autoComplete="email"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="recruiter-name">Recruiter Name</Label>
+              <Input
+                id="recruiter-name"
+                value={recruiterName}
+                onChange={(e) => setRecruiterName(e.target.value)}
+                placeholder="John Doe"
+              />
+            </div>
+            {selectedVacancy && (
+              <div className="bg-muted p-3 rounded-md mt-2">
+                <p className="text-sm font-medium">Vacancy Details:</p>
+                <div className="text-sm text-muted-foreground mt-1">
+                  <p><span className="font-medium">Company:</span> {selectedVacancy.companyName}</p>
+                  <p><span className="font-medium">Position:</span> {selectedVacancy.positionName || selectedVacancy.jobTitle}</p>
+                  <p><span className="font-medium">Status:</span> {selectedVacancy.status || "pending"}</p>
+                </div>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAssignDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={submitAssignment} 
+              disabled={assignVacancyMutation.isPending}
+            >
+              {assignVacancyMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Assigning...
+                </>
+              ) : (
+                <>Assign Vacancy</>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Delete Vacancy Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this vacancy? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedVacancy && (
+            <div className="py-4">
+              <div className="bg-muted p-4 rounded-md flex items-start space-x-4">
+                <AlertCircle className="h-5 w-5 text-destructive mt-0.5" />
+                <div>
+                  <h4 className="font-medium">Vacancy details:</h4>
+                  <p className="text-sm mt-1"><span className="font-medium">Company:</span> {selectedVacancy.companyName}</p>
+                  <p className="text-sm"><span className="font-medium">Position:</span> {selectedVacancy.positionName || selectedVacancy.jobTitle}</p>
+                  <p className="text-sm"><span className="font-medium">Status:</span> {selectedVacancy.status || "pending"}</p>
+                  <p className="text-sm"><span className="font-medium">Submitted:</span> {formatDate(selectedVacancy.submittedAt || selectedVacancy.createdAt)}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive"
+              onClick={() => {
+                console.log("Selected vacancy for deletion:", selectedVacancy);
+                deleteVacancyMutation.mutate(selectedVacancy.id);
+              }} 
+              disabled={deleteVacancyMutation.isPending}
+            >
+              {deleteVacancyMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                <>Delete Vacancy</>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Inquiry Preview Modal */}
+      {selectedInquiry && (
+        <InquiryPreviewModal
+          inquiry={selectedInquiry}
+          isOpen={inquiryModalOpen}
+          onClose={() => {
+            setInquiryModalOpen(false);
+            setSelectedInquiry(null);
+          }}
+          onStatusChange={handleUpdateInquiryStatus}
+          onReplySuccess={() => {
+            setInquiryModalOpen(false);
+            queryClient.invalidateQueries({ queryKey: ["/api/staffing-inquiries"] });
+            toast({
+              title: "Reply sent",
+              description: "Your reply has been sent successfully."
+            });
+          }}
+        />
+      )}
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p className="text-gray-500 mt-1">
+            Manage job postings, users, and content
+          </p>
+        </div>
+      </div>
+      
+      <Tabs defaultValue="dashboard" className="w-full">
+        <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-8">
+          <TabsTrigger value="dashboard">
+            <BarChart2 className="mr-2 h-4 w-4" />
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="admins">
+            <ShieldCheck className="mr-2 h-4 w-4" />
+            Admins
+          </TabsTrigger>
+          <TabsTrigger value="employers">
+            <Building className="mr-2 h-4 w-4" />
+            Employers
+          </TabsTrigger>
+          <TabsTrigger value="jobseekers">
+            <Users className="mr-2 h-4 w-4" />
+            Job Seekers
+          </TabsTrigger>
+          <TabsTrigger value="messages">
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Messages
+          </TabsTrigger>
+          <TabsTrigger value="posts">
+            <FileTextIcon className="mr-2 h-4 w-4" />
+            Blogs
+          </TabsTrigger>
+          <TabsTrigger value="resumes">
+            <FileText className="mr-2 h-4 w-4" />
+            Resumes
+          </TabsTrigger>
+        </TabsList>
+        
+        {/* Dashboard Tab */}
+        <TabsContent value="dashboard" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Total Users Card */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Total Users</CardTitle>
+                <CardDescription>User accounts overview</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{users?.length || 0}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {usersLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      Job Seekers: {users?.filter((u: User) => u.userType === "jobseeker").length || 0} | 
+                      Employers: {users?.filter((u: User) => u.userType === "employer").length || 0} | 
+                      Admins: {users?.filter((u: User) => u.userType === "admin").length || 0}
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Active Jobs Card */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Active Jobs</CardTitle>
+                <CardDescription>Job listings overview</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{jobs?.length || 0}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {jobsLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      Recently Posted: {jobs?.filter((j: Job) => {
+                        if (!j.createdAt) return false;
+                        const date = new Date(j.createdAt);
+                        const now = new Date();
+                        const diff = now.getTime() - date.getTime();
+                        return diff <= 7 * 24 * 60 * 60 * 1000;
+                      }).length || 0}
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Vacancies Card */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Vacancies</CardTitle>
+                <CardDescription>Submitted vacancy requests</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">
+                  {vacanciesLoading ? (
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  ) : (
+                    vacancies?.length || 0
+                  )}
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {!vacanciesLoading && vacancies?.length > 0 && (
+                    <>
+                      Pending: {vacancies?.filter((v: any) => !v.status || v.status === "pending").length || 0} | 
+                      Open: {vacancies?.filter((v: any) => v.status === "open").length || 0} | 
+                      Closed: {vacancies?.filter((v: any) => v.status === "closed").length || 0}
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Inquiries Card */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Inquiries</CardTitle>
+                <CardDescription>Business and staffing inquiries</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">
+                  {inquiriesLoading ? (
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  ) : (
+                    inquiries?.length || 0
+                  )}
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {!inquiriesLoading && inquiries?.length > 0 && (
+                    <>
+                      New: {inquiries?.filter((i: any) => i.status === "new").length || 0} | 
+                      In Progress: {inquiries?.filter((i: any) => i.status === "in_progress").length || 0} | 
+                      Completed: {inquiries?.filter((i: any) => i.status === "completed").length || 0}
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Building className="h-5 w-5 mr-2" />
+                  Recent Employers
+                </CardTitle>
+                <CardDescription>
+                  Recently joined employers on the platform
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {usersLoading ? (
+                  <div className="flex justify-center py-4">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {users?.filter(u => u.userType === "employer")
+                      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+                      .slice(0, 5)
+                      .map((employer: any) => (
+                        <div key={employer.id} className="flex justify-between items-center border-b pb-2">
+                          <div>
+                            <p className="font-medium text-sm">{employer.name || employer.email}</p>
+                            <p className="text-xs text-muted-foreground">Joined {formatDate(employer.createdAt)}</p>
+                          </div>
+                          <Badge variant="outline">Employer</Badge>
+                        </div>
+                      ))}
+                    {users?.filter(u => u.userType === "employer").length === 0 && (
+                      <p className="text-muted-foreground text-sm text-center py-4">No employers registered yet</p>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter>
+                <Button variant="outline" size="sm" className="w-full" onClick={() => document.querySelector('[value="employers"]')?.click()}>
+                  View All Employers
+                </Button>
+              </CardFooter>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Users className="h-5 w-5 mr-2" />
+                  Recent Job Seekers
+                </CardTitle>
+                <CardDescription>
+                  Recently joined job seekers on the platform
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {usersLoading ? (
+                  <div className="flex justify-center py-4">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {users?.filter(u => u.userType === "jobseeker")
+                      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+                      .slice(0, 5)
+                      .map((seeker: any) => (
+                        <div key={seeker.id} className="flex justify-between items-center border-b pb-2">
+                          <div>
+                            <p className="font-medium text-sm">{seeker.name || seeker.email}</p>
+                            <p className="text-xs text-muted-foreground">Joined {formatDate(seeker.createdAt)}</p>
+                          </div>
+                          <Badge variant="outline">Job Seeker</Badge>
+                        </div>
+                      ))}
+                    {users?.filter(u => u.userType === "jobseeker").length === 0 && (
+                      <p className="text-muted-foreground text-sm text-center py-4">No job seekers registered yet</p>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter>
+                <Button variant="outline" size="sm" className="w-full" onClick={() => document.querySelector('[value="jobseekers"]')?.click()}>
+                  View All Job Seekers
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Download className="h-5 w-5 mr-2" />
+                Download Reports
+              </CardTitle>
+              <CardDescription>
+                Generate and download various reports in Excel format
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Employer Report</CardTitle>
+                    <CardDescription className="text-xs">
+                      Employer profiles, vacancy forms, inquiries
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter className="pt-2">
+                    <div className="w-full">
+                      <Select value={reportTimeframe} onValueChange={setReportTimeframe} defaultValue="weekly">
+                        <SelectTrigger className="mb-2">
+                          <SelectValue placeholder="Select timeframe" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="weekly">Weekly Report</SelectItem>
+                          <SelectItem value="monthly">Monthly Report</SelectItem>
+                          <SelectItem value="yearly">Yearly Report</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button variant="outline" size="sm" className="w-full">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
+                    </div>
+                  </CardFooter>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Job Seeker Report</CardTitle>
+                    <CardDescription className="text-xs">
+                      Job seeker profiles, resumes, inquiries
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter className="pt-2">
+                    <div className="w-full">
+                      <Select value={reportTimeframe} onValueChange={setReportTimeframe} defaultValue="weekly">
+                        <SelectTrigger className="mb-2">
+                          <SelectValue placeholder="Select timeframe" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="weekly">Weekly Report</SelectItem>
+                          <SelectItem value="monthly">Monthly Report</SelectItem>
+                          <SelectItem value="yearly">Yearly Report</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button variant="outline" size="sm" className="w-full">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
+                    </div>
+                  </CardFooter>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Combined Report</CardTitle>
+                    <CardDescription className="text-xs">
+                      All platform activity and user data
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter className="pt-2">
+                    <div className="w-full">
+                      <Select value={reportTimeframe} onValueChange={setReportTimeframe} defaultValue="weekly">
+                        <SelectTrigger className="mb-2">
+                          <SelectValue placeholder="Select timeframe" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="weekly">Weekly Report</SelectItem>
+                          <SelectItem value="monthly">Monthly Report</SelectItem>
+                          <SelectItem value="yearly">Yearly Report</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button variant="outline" size="sm" className="w-full">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
+                    </div>
+                  </CardFooter>
+                </Card>
+              </div>
             </CardContent>
           </Card>
-        </div>
-        
-        {/* Main dashboard tabs */}
-        <Tabs defaultValue="dashboard" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="dashboard" className="flex items-center">
-              <BarChart2 className="mr-2 h-4 w-4" />
-              Dashboard
-            </TabsTrigger>
-            <TabsTrigger value="admins" className="flex items-center">
-              <ShieldCheck className="mr-2 h-4 w-4" />
-              Admins
-            </TabsTrigger>
-            <TabsTrigger value="employers" className="flex items-center">
-              <Building className="mr-2 h-4 w-4" />
-              Employers
-            </TabsTrigger>
-            <TabsTrigger value="jobseekers" className="flex items-center">
-              <Users className="mr-2 h-4 w-4" />
-              Job Seekers
-            </TabsTrigger>
-            <TabsTrigger value="jobs" className="flex items-center">
-              <Briefcase className="mr-2 h-4 w-4" />
-              Jobs
-            </TabsTrigger>
-            <TabsTrigger value="applications" className="flex items-center">
-              <FileText className="mr-2 h-4 w-4" />
-              Applications
-            </TabsTrigger>
-            <TabsTrigger value="vacancies" className="flex items-center">
-              <MessageSquare className="mr-2 h-4 w-4" />
-              Staffing Requests
-            </TabsTrigger>
-            <TabsTrigger value="inquiries" className="flex items-center">
-              <Mail className="mr-2 h-4 w-4" />
-              Inquiries
-            </TabsTrigger>
-          </TabsList>
-          
-          {/* Dashboard content tab */}
-          <TabsContent value="dashboard" className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* Recent activity card */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Activity</CardTitle>
-                  <CardDescription>Recent logins and user activities</CardDescription>
-                </CardHeader>
-                <CardContent className="max-h-96 overflow-auto">
-                  <p className="text-sm text-muted-foreground">
-                    Feature coming soon. This section will show recent user logins, job applications, and other activities.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              {/* Quick stats card */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recruitment Performance</CardTitle>
-                  <CardDescription>Recruiting metrics over time</CardDescription>
-                </CardHeader>
-                <CardContent className="max-h-96 overflow-auto">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <Label htmlFor="reportTimeframe">Timeframe:</Label>
-                    <Select 
-                      value={reportTimeframe} 
-                      onValueChange={setReportTimeframe}
-                    >
-                      <SelectTrigger className="w-32">
-                        <SelectValue placeholder="Select..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="daily">Daily</SelectItem>
-                        <SelectItem value="weekly">Weekly</SelectItem>
-                        <SelectItem value="monthly">Monthly</SelectItem>
-                        <SelectItem value="quarterly">Quarterly</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="text-sm font-medium mb-1">New Users</h3>
-                      <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="bg-primary h-full" style={{ width: "65%" }}></div>
-                      </div>
-                      <div className="flex justify-between mt-1 text-xs text-muted-foreground">
-                        <span>+23 this {reportTimeframe}</span>
-                        <span>Goal: 35</span>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-sm font-medium mb-1">Applications</h3>
-                      <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="bg-primary h-full" style={{ width: "42%" }}></div>
-                      </div>
-                      <div className="flex justify-between mt-1 text-xs text-muted-foreground">
-                        <span>+18 this {reportTimeframe}</span>
-                        <span>Goal: 45</span>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-sm font-medium mb-1">Placements</h3>
-                      <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="bg-primary h-full" style={{ width: "78%" }}></div>
-                      </div>
-                      <div className="flex justify-between mt-1 text-xs text-muted-foreground">
-                        <span>+7 this {reportTimeframe}</span>
-                        <span>Goal: 9</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <p className="text-xs text-muted-foreground mt-4">
-                    Note: These metrics are simulated. Real-time analytics will be available in a future update.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-          
-          {/* Admins tab */}
-          <TabsContent value="admins">
+        </TabsContent>
+
+        {/* Admins Tab */}
+        <TabsContent value="admins" className="space-y-4">
+          <div className="flex flex-col space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle>Admin Accounts</CardTitle>
-                <CardDescription>Manage admin accounts for the platform</CardDescription>
+                <CardDescription>
+                  Manage administrator accounts and permissions
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <AdminsList />
+                {/* Admin accounts query */}
+                <AdminsList user={user} />
               </CardContent>
             </Card>
-          </TabsContent>
-          
-          {/* Employers tab */}
-          <TabsContent value="employers">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle>Registered Employers</CardTitle>
-                  <CardDescription>Companies registered on the platform</CardDescription>
-                </div>
-                
-                <div className="flex items-center w-full max-w-sm space-x-2">
-                  <Input
-                    type="text"
-                    placeholder="Search employers..."
-                    value={searchEmployers}
-                    onChange={(e) => setSearchEmployers(e.target.value)}
-                    className="w-full"
-                  />
-                  <Button variant="outline" size="icon" className="shrink-0">
-                    <Search className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {usersLoading ? (
-                  <div className="flex justify-center p-4">
-                    <Loader2 className="h-6 w-6 animate-spin text-border" />
+          </div>
+        </TabsContent>
+        
+        {/* Employers Panel */}
+        <TabsContent value="employers" className="space-y-4">
+          <Tabs defaultValue="profiles">
+            <TabsList className="w-full">
+              <TabsTrigger value="profiles" className="flex-1">
+                <Building className="mr-2 h-4 w-4" />
+                EM Profiles
+              </TabsTrigger>
+              <TabsTrigger value="vacancy-forms" className="flex-1">
+                <Briefcase className="mr-2 h-4 w-4" />
+                Received Vacancy Forms
+              </TabsTrigger>
+              <TabsTrigger value="business-inquiries" className="flex-1">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Business Inquiries
+              </TabsTrigger>
+            </TabsList>
+            
+            {/* EM Profiles Tab */}
+            <TabsContent value="profiles" className="mt-6">
+              <Card>
+                <CardHeader className="pb-2">
+                  <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div>
+                      <CardTitle>Employer Profiles</CardTitle>
+                      <CardDescription>
+                        Manage employer accounts and information
+                      </CardDescription>
+                    </div>
+                    
+                    <div className="relative max-w-sm">
+                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                        placeholder="Search by name, email, location..." 
+                        value={searchEmployers}
+                        onChange={(e) => setSearchEmployers(e.target.value)}
+                        className="pl-8"
+                      />
+                    </div>
                   </div>
-                ) : filteredEmployers.length === 0 ? (
-                  <div className="text-center p-4">
-                    <p className="text-muted-foreground">No employers found</p>
-                  </div>
-                ) : (
-                  <div className="overflow-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Company</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Location</TableHead>
-                          <TableHead>Jobs Posted</TableHead>
-                          <TableHead>Joined</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredEmployers.map((employer: any) => (
-                          <TableRow key={employer.id}>
-                            <TableCell className="font-medium">
-                              {employer.name || "Unnamed Employer"}
-                            </TableCell>
-                            <TableCell>{employer.email}</TableCell>
-                            <TableCell>{employer.location || "Not specified"}</TableCell>
-                            <TableCell>
-                              {jobs?.filter((job: any) => job.employer_id === employer.id).length || 0}
-                            </TableCell>
-                            <TableCell>{formatDate(employer.createdAt)}</TableCell>
-                            <TableCell>
-                              <div className="flex items-center space-x-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-8 px-2"
-                                  onClick={() => handleDeleteUser(employer.id, "employer")}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
+                </CardHeader>
+                <CardContent>
+                  {usersLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                  ) : filteredEmployers.length === 0 ? (
+                    <div className="text-center py-10 border rounded-md bg-muted/20">
+                      <Building className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground font-medium">No employer profiles found</p>
+                      <p className="text-sm text-muted-foreground/70 mt-1">
+                        {searchEmployers ? "Try adjusting your search" : "Employer accounts will appear here when created"}
+                      </p>
+                    </div>
+                  ) : (
+                    <ScrollArea className="h-[500px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>ID</TableHead>
+                            <TableHead>Signup Date</TableHead>
+                            <TableHead>Last Active</TableHead>
+                            <TableHead>Location</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-              <CardFooter className="border-t px-6 py-4">
-                <div className="flex items-center justify-between w-full">
-                  <p className="text-sm text-muted-foreground">
-                    Showing {filteredEmployers.length} of {employerCount} employers
-                  </p>
-                  <Button variant="outline" size="sm" disabled>
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Add Employer
-                  </Button>
-                </div>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-          
-          {/* Job Seekers tab */}
-          <TabsContent value="jobseekers">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle>Registered Job Seekers</CardTitle>
-                  <CardDescription>Candidates looking for jobs</CardDescription>
-                </div>
-                
-                <div className="flex items-center w-full max-w-sm space-x-2">
-                  <Input
-                    type="text"
-                    placeholder="Search job seekers..."
-                    value={searchJobSeekers}
-                    onChange={(e) => setSearchJobSeekers(e.target.value)}
-                    className="w-full"
-                  />
-                  <Button variant="outline" size="icon" className="shrink-0">
-                    <Search className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {usersLoading ? (
-                  <div className="flex justify-center p-4">
-                    <Loader2 className="h-6 w-6 animate-spin text-border" />
-                  </div>
-                ) : filteredJobSeekers.length === 0 ? (
-                  <div className="text-center p-4">
-                    <p className="text-muted-foreground">No job seekers found</p>
-                  </div>
-                ) : (
-                  <div className="overflow-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Name</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Location</TableHead>
-                          <TableHead>Applications</TableHead>
-                          <TableHead>Joined</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredJobSeekers.map((seeker: any) => (
-                          <TableRow key={seeker.id}>
-                            <TableCell className="font-medium">
-                              {seeker.name || "Unnamed Job Seeker"}
-                            </TableCell>
-                            <TableCell>{seeker.email}</TableCell>
-                            <TableCell>{seeker.location || "Not specified"}</TableCell>
-                            <TableCell>
-                              {applications?.filter((app: any) => app.userId === seeker.id).length || 0}
-                            </TableCell>
-                            <TableCell>{formatDate(seeker.createdAt)}</TableCell>
-                            <TableCell>
-                              <div className="flex items-center space-x-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-8 px-2"
-                                  onClick={() => handleDeleteUser(seeker.id, "job seeker")}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-              <CardFooter className="border-t px-6 py-4">
-                <div className="flex items-center justify-between w-full">
-                  <p className="text-sm text-muted-foreground">
-                    Showing {filteredJobSeekers.length} of {jobSeekerCount} job seekers
-                  </p>
-                  <Button variant="outline" size="sm" disabled>
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Add Job Seeker
-                  </Button>
-                </div>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-          
-          {/* Jobs tab */}
-          <TabsContent value="jobs">
-            <Card>
-              <CardHeader>
-                <CardTitle>Job Listings</CardTitle>
-                <CardDescription>Manage all job postings on the platform</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {jobsLoading ? (
-                  <div className="flex justify-center p-4">
-                    <Loader2 className="h-6 w-6 animate-spin text-border" />
-                  </div>
-                ) : jobs?.length === 0 ? (
-                  <div className="text-center p-4">
-                    <p className="text-muted-foreground">No jobs found</p>
-                  </div>
-                ) : (
-                  <div className="overflow-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Job Title</TableHead>
-                          <TableHead>Company</TableHead>
-                          <TableHead>Category</TableHead>
-                          <TableHead>Location</TableHead>
-                          <TableHead>Salary Range</TableHead>
-                          <TableHead>Applications</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Posted Date</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {jobs.map((job: any) => {
-                          const employerName = users?.find((u: any) => u.id === job.employer_id)?.name || "Unknown";
-                          const applicationCount = applications?.filter((app: any) => app.jobId === job.id).length || 0;
-                          
-                          return (
-                            <TableRow key={job.id}>
-                              <TableCell className="font-medium">{job.title}</TableCell>
-                              <TableCell>{employerName}</TableCell>
-                              <TableCell>{job.category}</TableCell>
-                              <TableCell className="whitespace-nowrap">
-                                <span className="flex items-center">
-                                  <MapPin className="h-3 w-3 mr-1" />
-                                  {job.location}
-                                </span>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredEmployers.map((employer: any) => (
+                            <TableRow key={employer.id}>
+                              <TableCell className="font-medium">
+                                {employer.name || employer.username || employer.email.split('@')[0]}
+                              </TableCell>
+                              <TableCell>{employer.id}</TableCell>
+                              <TableCell>{formatDate(employer.createdAt)}</TableCell>
+                              <TableCell>
+                                {employer.lastActive ? (
+                                  <span className="text-green-600 font-medium">{formatDate(employer.lastActive)}</span>
+                                ) : employer.lastLogin ? (
+                                  <span className="text-blue-600">{formatDate(employer.lastLogin)}</span>
+                                ) : (
+                                  <span className="text-gray-500 text-sm">Not active yet</span>
+                                )}
                               </TableCell>
                               <TableCell>
-                                {job.minSalary && job.maxSalary
-                                  ? `$${job.minSalary} - $${job.maxSalary}`
-                                  : "Not specified"}
+                                {employer.location ? (
+                                  <span className="font-medium flex items-center gap-1">
+                                    <MapPin className="h-3 w-3 text-primary" />
+                                    {employer.location}
+                                  </span>
+                                ) : employer.city ? (
+                                  <span className="flex items-center gap-1">
+                                    <MapPin className="h-3 w-3 text-primary" />
+                                    {employer.city}{employer.country ? `, ${employer.country}` : ''}
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-500 text-sm">Location not provided</span>
+                                )}
                               </TableCell>
-                              <TableCell>{applicationCount}</TableCell>
-                              <TableCell>
-                                <Badge
-                                  variant={
-                                    job.status === "active"
-                                      ? "default"
-                                      : job.status === "draft"
-                                      ? "outline"
-                                      : "secondary"
-                                  }
+                              <TableCell className="text-right">
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                  onClick={() => handleDeleteUser(employer.id, 'employer')}
                                 >
-                                  {job.status}
+                                  <Trash2 className="h-4 w-4" />
+                                  <span className="sr-only">Delete</span>
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  )}
+                </CardContent>
+                <CardFooter className="border-t px-6 py-4 flex justify-between">
+                  <div className="text-sm text-muted-foreground">
+                    {filteredEmployers.length} employer(s) found
+                  </div>
+                  
+                  <Select value={reportTimeframe} onValueChange={setReportTimeframe}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select timeframe" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="weekly">Weekly</SelectItem>
+                      <SelectItem value="monthly">Monthly</SelectItem>
+                      <SelectItem value="yearly">Yearly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Button variant="outline" size="sm">
+                    <Download className="mr-2 h-4 w-4" />
+                    Export Report
+                  </Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            
+            {/* Vacancy Forms Tab */}
+            <TabsContent value="vacancy-forms" className="mt-6">
+              <Card>
+                <CardHeader className="pb-2">
+                  <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div>
+                      <CardTitle>Received Vacancy Forms</CardTitle>
+                      <CardDescription>
+                        Manage vacancy requests from employers
+                      </CardDescription>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <div className="relative w-full sm:w-60">
+                        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input 
+                          placeholder="Search companies..." 
+                          className="pl-8"
+                        />
+                      </div>
+                      
+                      <Select 
+                        value={vacancyStatusFilter} 
+                        onValueChange={setVacancyStatusFilter}
+                      >
+                        <SelectTrigger className="w-[140px]">
+                          <SelectValue placeholder="Filter by status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Statuses</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="open">Open</SelectItem>
+                          <SelectItem value="closed">Closed</SelectItem>
+                          <SelectItem value="lost">Lost</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {vacanciesLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                  ) : filteredVacancies.length === 0 ? (
+                    <div className="text-center py-10 border rounded-md bg-muted/20">
+                      <Briefcase className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground font-medium">No vacancy forms found</p>
+                      <p className="text-sm text-muted-foreground/70 mt-1">
+                        {vacancyStatusFilter !== "all" 
+                          ? "Try adjusting your filter" 
+                          : "Submitted vacancy forms will appear here"}
+                      </p>
+                    </div>
+                  ) : (
+                    <ScrollArea className="h-[500px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Company</TableHead>
+                            <TableHead>Position</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Date</TableHead>
+                            <TableHead>Assigned To</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredVacancies.map((vacancy: any) => (
+                            <TableRow key={vacancy.id}>
+                              <TableCell className="font-medium">
+                                {vacancy.companyName || "N/A"}
+                              </TableCell>
+                              <TableCell>{vacancy.positionName || "N/A"}</TableCell>
+                              <TableCell>
+                                <Badge variant={
+                                  vacancy.status === "open" 
+                                    ? "default" 
+                                    : vacancy.status === "pending" 
+                                    ? "default" 
+                                    : vacancy.status === "closed" 
+                                    ? "secondary" 
+                                    : vacancy.status === "lost"
+                                    ? "destructive"
+                                    : "outline"
+                                }>
+                                  {vacancy.status || "pending"}
                                 </Badge>
                               </TableCell>
-                              <TableCell>{formatDate(job.createdAt)}</TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-              <CardFooter className="border-t px-6 py-4">
-                <div className="flex items-center justify-between w-full">
-                  <p className="text-sm text-muted-foreground">
-                    Showing {jobs?.length || 0} job listings
-                  </p>
-                  <Button variant="outline" size="sm" disabled>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add Job
-                  </Button>
-                </div>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-          
-          {/* Applications tab */}
-          <TabsContent value="applications">
-            <Card>
-              <CardHeader>
-                <CardTitle>Job Applications</CardTitle>
-                <CardDescription>View and manage submitted resumes and applications</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {applicationsLoading ? (
-                  <div className="flex justify-center p-4">
-                    <Loader2 className="h-6 w-6 animate-spin text-border" />
-                  </div>
-                ) : applications?.length === 0 ? (
-                  <div className="text-center p-4">
-                    <p className="text-muted-foreground">No applications found</p>
-                  </div>
-                ) : (
-                  <div className="overflow-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Applicant</TableHead>
-                          <TableHead>Job Position</TableHead>
-                          <TableHead>Company</TableHead>
-                          <TableHead>Applied Date</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {applications && applications.length > 0 ? (
-                          applications.map((application: any) => {
-                            const applicant = users?.find((u: any) => u.id === application.userId);
-                            const job = jobs?.find((j: any) => j.id === application.jobId);
-                            const company = users?.find((u: any) => u.id === job?.employer_id);
-                            
-                            return (
-                              <TableRow key={application.id}>
-                                <TableCell className="font-medium">
-                                  {applicant?.name || applicant?.email || "Unknown Applicant"}
-                                </TableCell>
-                                <TableCell>{job?.title || "Unknown Position"}</TableCell>
-                                <TableCell>{company?.name || "Unknown Company"}</TableCell>
-                                <TableCell>{formatDate(application.createdAt)}</TableCell>
-                                <TableCell>
-                                  <Badge
-                                    variant={
-                                      application.status === "pending"
-                                        ? "outline"
-                                        : application.status === "approved"
-                                        ? "default"
-                                        : application.status === "rejected"
-                                        ? "destructive"
-                                        : "secondary"
-                                    }
-                                  >
-                                    {application.status}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex items-center space-x-2">
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="h-8 px-2"
-                                      onClick={() => handleViewApplication(application)}
-                                    >
-                                      <Download className="h-4 w-4" />
-                                    </Button>
-                                    
-                                    {application.status === "pending" && (
-                                      <>
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          className="h-8 px-2 bg-green-50 hover:bg-green-100 border-green-200"
-                                          onClick={() => 
-                                            handleUpdateApplicationStatus(application.id, "approved")
-                                          }
-                                        >
-                                          <CheckCircle className="h-4 w-4 text-green-500" />
-                                        </Button>
-                                        
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          className="h-8 px-2 bg-red-50 hover:bg-red-100 border-red-200"
-                                          onClick={() => 
-                                            handleUpdateApplicationStatus(application.id, "rejected")
-                                          }
-                                        >
-                                          <XCircle className="h-4 w-4 text-red-500" />
-                                        </Button>
-                                      </>
-                                    )}
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })
-                        ) : (
-                          <TableRow>
-                            <TableCell colSpan={6} className="text-center py-6">
-                              No applications found
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          {/* Staffing Requests tab */}
-          <TabsContent value="vacancies">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle>Staffing Requests</CardTitle>
-                  <CardDescription>Requests from employers for staffing assistance</CardDescription>
-                </div>
-                
-                <Select 
-                  value={vacancyStatusFilter} 
-                  onValueChange={setVacancyStatusFilter}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Filter by status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Requests</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="in_progress">In Progress</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
-                  </SelectContent>
-                </Select>
-              </CardHeader>
-              <CardContent>
-                {vacanciesLoading ? (
-                  <div className="flex justify-center p-4">
-                    <Loader2 className="h-6 w-6 animate-spin text-border" />
-                  </div>
-                ) : filteredVacancies?.length === 0 ? (
-                  <div className="text-center p-4">
-                    <p className="text-muted-foreground">No staffing requests found</p>
-                  </div>
-                ) : (
-                  <div className="overflow-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Company</TableHead>
-                          <TableHead>Position Title</TableHead>
-                          <TableHead>Location</TableHead>
-                          <TableHead>Submitted</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredVacancies.map((vacancy: any) => (
-                          <TableRow key={vacancy.id}>
-                            <TableCell className="font-medium">
-                              {vacancy.companyName}
-                            </TableCell>
-                            <TableCell>{vacancy.positionTitle}</TableCell>
-                            <TableCell>{vacancy.location}</TableCell>
-                            <TableCell>{formatDate(vacancy.createdAt)}</TableCell>
-                            <TableCell>
-                              <Badge
-                                variant={
-                                  vacancy.status === "pending"
-                                    ? "outline"
-                                    : vacancy.status === "in_progress"
-                                    ? "default"
-                                    : vacancy.status === "completed"
-                                    ? "secondary"
-                                    : "destructive"
+                              <TableCell>{formatDate(vacancy.submittedAt || vacancy.createdAt)}</TableCell>
+                              <TableCell>
+                                {vacancy.assignedName ? 
+                                  <span>{vacancy.assignedName} <span className="text-xs text-muted-foreground">({vacancy.assignedTo})</span></span> : 
+                                  <span className="text-muted-foreground text-sm">Not assigned</span>
                                 }
-                              >
-                                {vacancy.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center space-x-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-8 px-2"
-                                  onClick={() => handleViewVacancy(vacancy)}
-                                >
-                                  <Eye className="h-4 w-4" />
-                                </Button>
-                                
-                                {(vacancy.status === "pending" || vacancy.status === "in_progress") && (
-                                  <Button
-                                    variant="outline"
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-1">
+                                  <Button 
+                                    variant="ghost" 
                                     size="sm"
-                                    className="h-8 px-2"
+                                    onClick={() => handleViewVacancy(vacancy)}
+                                    title="View Vacancy Form"
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
                                     onClick={() => handleAssignVacancy(vacancy)}
+                                    title="Assign to Recruiter"
                                   >
                                     <UserPlus className="h-4 w-4" />
                                   </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                    onClick={() => handleDeleteVacancy(vacancy)}
+                                    title="Delete Vacancy Form"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            {/* Business Inquiries Tab */}
+            <TabsContent value="business-inquiries" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Business Inquiries</CardTitle>
+                  <CardDescription>
+                    Manage business inquiries from employers
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {inquiriesLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                  ) : inquiries && inquiries.filter((i: any) => i.inquiryType === "business").length > 0 ? (
+                    <ScrollArea className="h-[500px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Date</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {inquiries
+                            .filter((i: any) => i.inquiryType === "business")
+                            .map((inquiry: any) => (
+                              <TableRow key={inquiry.id}>
+                                <TableCell className="font-medium">{inquiry.name}</TableCell>
+                                <TableCell>{inquiry.email}</TableCell>
+                                <TableCell>
+                                  <Badge variant={
+                                    inquiry.status === "completed" 
+                                      ? "default" 
+                                      : inquiry.status === "in_progress" 
+                                      ? "secondary" 
+                                      : "outline"
+                                  }>
+                                    {inquiry.status || "new"}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell>{formatDate(inquiry.submittedAt || inquiry.createdAt)}</TableCell>
+                                <TableCell className="text-right">
+                                  <div className="flex justify-end gap-1">
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm"
+                                      onClick={() => handleViewInquiry(inquiry)}
+                                      title="View Inquiry"
+                                    >
+                                      <Eye className="h-4 w-4" />
+                                    </Button>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm"
+                                      onClick={() => handleReplyInquiry(inquiry)}
+                                      title="Send Reply"
+                                    >
+                                      <Mail className="h-4 w-4" />
+                                    </Button>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm" 
+                                      className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                      onClick={() => handleDeleteInquiry(inquiry)}
+                                      title="Delete Inquiry"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  ) : (
+                    <div className="text-center py-10 border rounded-md bg-muted/20">
+                      <MessageSquare className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground font-medium">No business inquiries found</p>
+                      <p className="text-sm text-muted-foreground/70 mt-1">
+                        Business inquiries will appear here when submitted
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </TabsContent>
+        
+        {/* Job Seekers Panel */}
+        <TabsContent value="jobseekers" className="space-y-4">
+          <Tabs defaultValue="profiles">
+            <TabsList className="w-full">
+              <TabsTrigger value="profiles" className="flex-1">
+                <Users className="mr-2 h-4 w-4" />
+                JS Profiles
+              </TabsTrigger>
+              <TabsTrigger value="resumes" className="flex-1">
+                <FileText className="mr-2 h-4 w-4" />
+                Received Resumes
+              </TabsTrigger>
+              <TabsTrigger value="inquiries" className="flex-1">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                General Inquiries
+              </TabsTrigger>
+            </TabsList>
+            
+            {/* Job Seeker Profiles Tab */}
+            <TabsContent value="profiles" className="mt-6">
+              <Card>
+                <CardHeader className="pb-2">
+                  <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div>
+                      <CardTitle>Job Seeker Profiles</CardTitle>
+                      <CardDescription>
+                        Manage job seeker accounts and information
+                      </CardDescription>
+                    </div>
+                    
+                    <div className="relative max-w-sm">
+                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                        placeholder="Search by name, email, location..." 
+                        value={searchJobSeekers}
+                        onChange={(e) => setSearchJobSeekers(e.target.value)}
+                        className="pl-8"
+                      />
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {usersLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                  ) : filteredJobSeekers.length === 0 ? (
+                    <div className="text-center py-10 border rounded-md bg-muted/20">
+                      <Users className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground font-medium">No job seeker profiles found</p>
+                      <p className="text-sm text-muted-foreground/70 mt-1">
+                        {searchJobSeekers ? "Try adjusting your search" : "Job seeker accounts will appear here when created"}
+                      </p>
+                    </div>
+                  ) : (
+                    <ScrollArea className="h-[500px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>ID</TableHead>
+                            <TableHead>Signup Date</TableHead>
+                            <TableHead>Last Active</TableHead>
+                            <TableHead>Location</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredJobSeekers.map((seeker: any) => (
+                            <TableRow key={seeker.id}>
+                              <TableCell className="font-medium">
+                                {seeker.name || seeker.username || seeker.email.split('@')[0]}
+                              </TableCell>
+                              <TableCell>{seeker.id}</TableCell>
+                              <TableCell>{formatDate(seeker.createdAt)}</TableCell>
+                              <TableCell>
+                                {seeker.lastActive ? (
+                                  <span className="text-green-600 font-medium">{formatDate(seeker.lastActive)}</span>
+                                ) : seeker.lastLogin ? (
+                                  <span className="text-blue-600">{formatDate(seeker.lastLogin)}</span>
+                                ) : (
+                                  <span className="text-gray-500 text-sm">Not active yet</span>
                                 )}
-                                
-                                <Button
-                                  variant="outline"
+                              </TableCell>
+                              <TableCell>
+                                {seeker.location ? (
+                                  <span className="font-medium flex items-center gap-1">
+                                    <MapPin className="h-3 w-3 text-primary" />
+                                    {seeker.location}
+                                  </span>
+                                ) : seeker.city ? (
+                                  <span className="flex items-center gap-1">
+                                    <MapPin className="h-3 w-3 text-primary" />
+                                    {seeker.city}{seeker.country ? `, ${seeker.country}` : ''}
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-500 text-sm">Location not provided</span>
+                                )}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <Button 
+                                  variant="ghost" 
                                   size="sm"
-                                  className="h-8 px-2 hover:bg-red-100"
-                                  onClick={() => handleDeleteVacancy(vacancy)}
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                  onClick={() => handleDeleteUser(seeker.id, 'job seeker')}
                                 >
                                   <Trash2 className="h-4 w-4" />
+                                  <span className="sr-only">Delete</span>
                                 </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-            
-            {/* Vacancy detail dialog */}
-            <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-              <DialogContent className="sm:max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>Staffing Request Details</DialogTitle>
-                </DialogHeader>
-                
-                {selectedVacancy && (
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label className="text-right">Company:</Label>
-                      <div className="col-span-3 font-medium">{selectedVacancy.companyName}</div>
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label className="text-right">Contact:</Label>
-                      <div className="col-span-3">{selectedVacancy.contactName}</div>
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label className="text-right">Email:</Label>
-                      <div className="col-span-3">{selectedVacancy.contactEmail}</div>
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label className="text-right">Phone:</Label>
-                      <div className="col-span-3">{selectedVacancy.contactPhone}</div>
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label className="text-right">Position:</Label>
-                      <div className="col-span-3 font-medium">{selectedVacancy.positionTitle}</div>
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label className="text-right">Location:</Label>
-                      <div className="col-span-3">{selectedVacancy.location}</div>
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label className="text-right">Positions:</Label>
-                      <div className="col-span-3">{selectedVacancy.numberOfPositions}</div>
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label className="text-right">Salary Range:</Label>
-                      <div className="col-span-3">
-                        {selectedVacancy.minSalary && selectedVacancy.maxSalary
-                          ? `$${selectedVacancy.minSalary} - $${selectedVacancy.maxSalary}`
-                          : "Not specified"}
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-4 items-start gap-4">
-                      <Label className="text-right pt-2">Requirements:</Label>
-                      <div className="col-span-3 whitespace-pre-line">
-                        {selectedVacancy.requirements || "No specific requirements provided."}
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-4 items-start gap-4">
-                      <Label className="text-right pt-2">Additional Info:</Label>
-                      <div className="col-span-3 whitespace-pre-line">
-                        {selectedVacancy.additionalInfo || "No additional information provided."}
-                      </div>
-                    </div>
-                    
-                    {selectedVacancy.recruiterEmail && (
-                      <>
-                        <div className="border-t my-4"></div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label className="text-right">Assigned To:</Label>
-                          <div className="col-span-3 font-medium">{selectedVacancy.recruiterName}</div>
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label className="text-right">Recruiter Email:</Label>
-                          <div className="col-span-3">{selectedVacancy.recruiterEmail}</div>
-                        </div>
-                      </>
-                    )}
-                    
-                    <div className="border-t my-4"></div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label className="text-right">Status:</Label>
-                      <div className="col-span-3">
-                        <Badge
-                          variant={
-                            selectedVacancy.status === "pending"
-                              ? "outline"
-                              : selectedVacancy.status === "in_progress"
-                              ? "default"
-                              : selectedVacancy.status === "completed"
-                              ? "secondary"
-                              : "destructive"
-                          }
-                        >
-                          {selectedVacancy.status}
-                        </Badge>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label className="text-right">Submitted:</Label>
-                      <div className="col-span-3">{formatDate(selectedVacancy.createdAt)}</div>
-                    </div>
-                  </div>
-                )}
-                
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
-                    Close
-                  </Button>
-                  {selectedVacancy && (selectedVacancy.status === "pending" || selectedVacancy.status === "in_progress") && (
-                    <Button onClick={() => {
-                      setViewDialogOpen(false);
-                      handleAssignVacancy(selectedVacancy);
-                    }}>
-                      <UserPlus className="mr-2 h-4 w-4" />
-                      Assign Recruiter
-                    </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
                   )}
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                </CardContent>
+                <CardFooter className="border-t px-6 py-4 flex justify-between">
+                  <div className="text-sm text-muted-foreground">
+                    {filteredJobSeekers.length} job seeker(s) found
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Select value={reportTimeframe} onValueChange={setReportTimeframe}>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select timeframe" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="yearly">Yearly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    <Button variant="outline" size="sm">
+                      <Download className="mr-2 h-4 w-4" />
+                      Export Report
+                    </Button>
+                  </div>
+                </CardFooter>
+              </Card>
+            </TabsContent>
             
-            {/* Vacancy assignment dialog */}
-            <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Assign Recruiter</DialogTitle>
-                  <DialogDescription>
-                    Assign a recruiter to handle this staffing request.
-                  </DialogDescription>
-                </DialogHeader>
-                
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="recruiterName" className="text-right">
-                      Recruiter Name
-                    </Label>
-                    <Input
-                      id="recruiterName"
-                      placeholder="Enter recruiter name"
-                      className="col-span-3"
-                      value={recruiterName}
-                      onChange={(e) => setRecruiterName(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="recruiterEmail" className="text-right">
-                      Recruiter Email
-                    </Label>
-                    <Input
-                      id="recruiterEmail"
-                      placeholder="Enter recruiter email"
-                      type="email"
-                      className="col-span-3"
-                      value={recruiterEmail}
-                      onChange={(e) => setRecruiterEmail(e.target.value)}
-                    />
-                  </div>
+            {/* Resumes Tab */}
+            <TabsContent value="resumes" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Received Resumes</CardTitle>
+                  <CardDescription>
+                    View and download submitted resumes
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {applicationsLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                  ) : !applications || applications.length === 0 ? (
+                    <div className="text-center py-10 border rounded-md bg-muted/20">
+                      <FileText className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground font-medium">No resumes found</p>
+                      <p className="text-sm text-muted-foreground/70 mt-1">
+                        Submitted resumes will appear here
+                      </p>
+                    </div>
+                  ) : (
+                    <ScrollArea className="h-[500px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Job Position</TableHead>
+                            <TableHead>Company</TableHead>
+                            <TableHead>Applied Date</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {applications.map((application: any) => (
+                            <TableRow key={application.id}>
+                              <TableCell className="font-medium">
+                                {application.jobSeeker ? 
+                                  `${application.jobSeeker.firstName} ${application.jobSeeker.lastName}` 
+                                  : 'Unknown Applicant'}
+                              </TableCell>
+                              <TableCell>{application.job?.title || 'Unknown Position'}</TableCell>
+                              <TableCell>{application.job?.company || 'Unknown Company'}</TableCell>
+                              <TableCell>{formatDate(application.appliedDate)}</TableCell>
+                              <TableCell>
+                                <Select 
+                                  defaultValue={application.status || "new"}
+                                  onValueChange={(value) => {
+                                    updateApplicationStatusMutation.mutate({
+                                      id: application.id,
+                                      status: value
+                                    });
+                                  }}
+                                >
+                                  <SelectTrigger className="w-[120px]">
+                                    <SelectValue>
+                                      <Badge variant={
+                                        application.status === "shortlisted" 
+                                          ? "default" 
+                                          : application.status === "interviewed" 
+                                          ? "secondary"
+                                          : application.status === "rejected"
+                                          ? "destructive"
+                                          : application.status === "viewed" 
+                                          ? "outline" 
+                                          : "outline"
+                                      }>
+                                        {application.status || "new"}
+                                      </Badge>
+                                    </SelectValue>
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="new">New</SelectItem>
+                                    <SelectItem value="viewed">Viewed</SelectItem>
+                                    <SelectItem value="shortlisted">Shortlisted</SelectItem>
+                                    <SelectItem value="interviewed">Interviewed</SelectItem>
+                                    <SelectItem value="rejected">Rejected</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-1">
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => window.open(`/api/jobseekers/${application.jobSeekerId}/cv`, '_blank')}
+                                    title="View CV"
+                                  >
+                                    <FileText className="h-4 w-4" />
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => {
+                                      // View application details - can be implemented later
+                                      toast({
+                                        title: "View Application",
+                                        description: `Viewing application from ${application.jobSeeker?.firstName} ${application.jobSeeker?.lastName} for ${application.job?.title}`,
+                                      });
+                                    }}
+                                    title="View Application"
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            {/* General Inquiries Tab */}
+            <TabsContent value="inquiries" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>General Inquiries</CardTitle>
+                  <CardDescription>
+                    Manage inquiries from job seekers
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {inquiriesLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                  ) : inquiries && inquiries.filter((i: any) => i.inquiryType === "general").length > 0 ? (
+                    <ScrollArea className="h-[500px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Date</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {inquiries
+                            .filter((i: any) => i.inquiryType === "general")
+                            .map((inquiry: any) => (
+                              <TableRow key={inquiry.id}>
+                                <TableCell className="font-medium">{inquiry.name}</TableCell>
+                                <TableCell>{inquiry.email}</TableCell>
+                                <TableCell>
+                                  <Badge variant={
+                                    inquiry.status === "completed" 
+                                      ? "default" 
+                                      : inquiry.status === "in_progress" 
+                                      ? "secondary" 
+                                      : "outline"
+                                  }>
+                                    {inquiry.status || "new"}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell>{formatDate(inquiry.submittedAt || inquiry.createdAt)}</TableCell>
+                                <TableCell className="text-right">
+                                  <div className="flex justify-end gap-1">
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm"
+                                      onClick={() => handleViewInquiry(inquiry)}
+                                      title="View Inquiry"
+                                    >
+                                      <Eye className="h-4 w-4" />
+                                    </Button>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm"
+                                      onClick={() => handleReplyInquiry(inquiry)}
+                                      title="Send Reply"
+                                    >
+                                      <Mail className="h-4 w-4" />
+                                    </Button>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm" 
+                                      className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                      onClick={() => handleDeleteInquiry(inquiry)}
+                                      title="Delete Inquiry"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  ) : (
+                    <div className="text-center py-10 border rounded-md bg-muted/20">
+                      <MessageSquare className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground font-medium">No general inquiries found</p>
+                      <p className="text-sm text-muted-foreground/70 mt-1">
+                        Job seeker inquiries will appear here when submitted
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </TabsContent>
+        
+        {/* Messages Panel */}
+        <TabsContent value="messages" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Contact Form Messages</CardTitle>
+              <CardDescription>
+                Messages submitted through the contact form
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {inquiriesLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
-                
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setAssignDialogOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button 
-                    onClick={() => {
-                      if (selectedVacancy && recruiterName && recruiterEmail) {
-                        assignVacancyMutation.mutate({
-                          vacancyId: selectedVacancy.id,
-                          recruiterName,
-                          recruiterEmail
-                        });
-                      } else {
-                        toast({
-                          title: "Missing information",
-                          description: "Please provide both recruiter name and email",
-                          variant: "destructive",
-                        });
-                      }
-                    }}
-                    disabled={assignVacancyMutation.isPending || !recruiterName || !recruiterEmail}
-                  >
-                    {assignVacancyMutation.isPending && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    Assign & Notify
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            
-            {/* Vacancy delete confirmation dialog */}
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Confirm Deletion</DialogTitle>
-                  <DialogDescription>
-                    Are you sure you want to delete this staffing request? This action cannot be undone.
-                  </DialogDescription>
-                </DialogHeader>
-                
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button 
-                    variant="destructive"
-                    onClick={() => {
-                      if (selectedVacancy) {
-                        deleteVacancyMutation.mutate(selectedVacancy.id);
-                      }
-                    }}
-                    disabled={deleteVacancyMutation.isPending}
-                  >
-                    {deleteVacancyMutation.isPending && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    Delete
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </TabsContent>
-          
-          {/* Inquiries tab */}
-          <TabsContent value="inquiries">
-            <Card>
-              <CardHeader>
-                <CardTitle>Contact Inquiries</CardTitle>
-                <CardDescription>Review and respond to contact form submissions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {inquiriesLoading ? (
-                  <div className="flex justify-center p-4">
-                    <Loader2 className="h-6 w-6 animate-spin text-border" />
-                  </div>
-                ) : inquiries?.length === 0 ? (
-                  <div className="text-center p-4">
-                    <p className="text-muted-foreground">No inquiries found</p>
-                  </div>
-                ) : (
-                  <div className="overflow-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Name</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Subject</TableHead>
-                          <TableHead>Received</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {inquiries.map((inquiry: any) => (
-                          <TableRow key={inquiry.id}>
-                            <TableCell className="font-medium">{inquiry.name}</TableCell>
-                            <TableCell>{inquiry.email}</TableCell>
-                            <TableCell>
-                              {inquiry.subject || 
-                                (inquiry.message && inquiry.message.length > 30
-                                  ? `${inquiry.message.substring(0, 30)}...`
-                                  : inquiry.message) || 
-                                "No subject"}
-                            </TableCell>
-                            <TableCell>{formatDate(inquiry.createdAt)}</TableCell>
-                            <TableCell>
-                              <Badge
-                                variant={
-                                  inquiry.status === "pending"
-                                    ? "outline"
-                                    : inquiry.status === "in_progress"
-                                    ? "default"
-                                    : "secondary"
-                                }
-                                className="cursor-pointer"
-                                onClick={() => {
-                                  const newStatus = 
-                                    inquiry.status === "pending" 
-                                      ? "in_progress" 
-                                      : inquiry.status === "in_progress"
-                                      ? "completed"
-                                      : "pending";
-                                  
-                                  updateInquiryStatusMutation.mutate({ 
-                                    id: inquiry.id, 
-                                    status: newStatus 
-                                  });
-                                }}
-                              >
-                                {inquiry.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center space-x-2">
-                                <Button
-                                  variant="outline"
+              ) : inquiries && inquiries.filter((i: any) => i.inquiryType === "contact").length > 0 ? (
+                <ScrollArea className="h-[500px]">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Subject</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {inquiries
+                        .filter((i: any) => i.inquiryType === "contact")
+                        .map((message: any) => (
+                          <TableRow key={message.id}>
+                            <TableCell className="font-medium">{message.name}</TableCell>
+                            <TableCell>{message.email}</TableCell>
+                            <TableCell>{message.subject || "No subject"}</TableCell>
+                            <TableCell>{formatDate(message.submittedAt || message.createdAt)}</TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-1">
+                                <Button 
+                                  variant="ghost" 
                                   size="sm"
-                                  className="h-8 px-2"
-                                  onClick={() => handleViewInquiry(inquiry)}
+                                  onClick={() => handleViewInquiry(message)}
+                                  title="View Message"
                                 >
                                   <Eye className="h-4 w-4" />
                                 </Button>
-                                
-                                <Button
-                                  variant="outline"
+                                <Button 
+                                  variant="ghost" 
                                   size="sm"
-                                  className="h-8 px-2"
-                                  onClick={() => handleReplyInquiry(inquiry)}
+                                  onClick={() => handleReplyInquiry(message)}
+                                  title="Send Reply"
                                 >
-                                  <Send className="h-4 w-4" />
+                                  <Mail className="h-4 w-4" />
                                 </Button>
-                                
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-8 px-2 hover:bg-red-100"
-                                  onClick={() => handleDeleteInquiry(inquiry)}
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                  onClick={() => handleDeleteInquiry(message)}
+                                  title="Delete Message"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
@@ -1558,30 +1916,43 @@ function AdminDashboard() {
                             </TableCell>
                           </TableRow>
                         ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-            
-            {/* Inquiry modal */}
-            {selectedInquiry && (
-              <InquiryPreviewModal
-                inquiry={selectedInquiry}
-                isOpen={inquiryModalOpen}
-                onClose={() => setInquiryModalOpen(false)}
-                onStatusChange={(status) => {
-                  updateInquiryStatusMutation.mutate({ 
-                    id: selectedInquiry.id, 
-                    status 
-                  });
-                }}
-              />
-            )}
-          </TabsContent>
-        </Tabs>
-      </div>
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              ) : (
+                <div className="text-center py-10 border rounded-md bg-muted/20">
+                  <Mail className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground font-medium">No contact messages found</p>
+                  <p className="text-sm text-muted-foreground/70 mt-1">
+                    Messages from the contact form will appear here
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        {/* Posts Panel */}
+        <TabsContent value="posts" className="space-y-4">
+          <Card>
+            <CardContent className="py-10">
+              <div className="flex justify-center">
+                <div className="text-center">
+                  <FileTextIcon className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-medium mb-2">Article Management</h3>
+                  <p className="text-muted-foreground max-w-md mx-auto mb-6">
+                    Use the Post Manager page to create and manage blog articles and content.
+                  </p>
+                  <Button variant="default" onClick={() => navigate("/post-manager")}>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Go to Post Manager
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
