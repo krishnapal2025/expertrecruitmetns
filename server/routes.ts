@@ -2504,23 +2504,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         if (!deleted) {
           console.log("Storage deleteUser method returned false");
-          return res.status(500).json({ message: "Failed to delete user" });
+          return res.status(404).json({ 
+            success: false, 
+            message: "User not found or cannot be deleted" 
+          });
         }
         
         console.log(`Successfully deleted user ID ${userId}`);
-        return res.status(200).json({ success: true, message: "User deleted successfully" });
+        return res.status(200).json({ 
+          success: true, 
+          message: "User deleted successfully",
+          userId: userId
+        });
       } catch (deleteError) {
         console.error(`Error in storage.deleteUser for ID ${userId}:`, deleteError);
+        
+        // Provide a more detailed response with the full error chain
+        let errorMessage = deleteError instanceof Error ? deleteError.message : String(deleteError);
+        
+        // Check for specific error types to give clearer messages
+        if (errorMessage.includes("foreign key constraint")) {
+          errorMessage = "Cannot delete this user because they have related records in the system. Please remove those first.";
+        }
+        
         return res.status(500).json({ 
-          message: "Error during user deletion process", 
-          error: deleteError instanceof Error ? deleteError.message : String(deleteError)
+          success: false,
+          message: "Failed to delete user", 
+          error: errorMessage,
+          userId: userId
         });
       }
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.error("Outer error handler - Error deleting user:", error);
       return res.status(500).json({ 
-        message: "Failed to delete user",
-        error: error instanceof Error ? error.message : String(error)
+        success: false,
+        message: "Server error while processing deletion request",
+        error: error instanceof Error ? error.message : String(error),
+        code: "SERVER_ERROR"
       });
     }
   });
