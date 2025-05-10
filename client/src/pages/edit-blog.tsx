@@ -213,8 +213,13 @@ export default function EditBlogPage() {
           <Card>
             <CardHeader>
               <CardTitle>Blog Post Details</CardTitle>
-              <CardDescription>
+              <CardDescription className="flex items-center">
                 Edit the content and details of your blog post
+                {isFormModified && (
+                  <span className="ml-2 text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+                    Modified
+                  </span>
+                )}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -246,7 +251,7 @@ export default function EditBlogPage() {
                     id="bannerImage"
                     placeholder="Enter image URL"
                     value={bannerImage}
-                    onChange={(e) => setBannerImage(e.target.value)}
+                    onChange={createStringChangeHandler(setBannerImage, blogPost?.bannerImage)}
                   />
                   {bannerImage && (
                     <div className="mt-2 border rounded-md overflow-hidden h-48">
@@ -265,7 +270,14 @@ export default function EditBlogPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="category">Category</Label>
-                    <Select value={category} onValueChange={setCategory}>
+                    <Select 
+                      value={category} 
+                      onValueChange={(value) => {
+                        setCategory(value);
+                        if (value !== (blogPost?.category || "")) {
+                          setIsFormModified(true);
+                        }
+                      }}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
@@ -282,7 +294,14 @@ export default function EditBlogPage() {
                   
                   <div className="space-y-2">
                     <Label htmlFor="readTime">Read Time</Label>
-                    <Select value={readTime} onValueChange={setReadTime}>
+                    <Select 
+                      value={readTime} 
+                      onValueChange={(value) => {
+                        setReadTime(value);
+                        if (value !== (blogPost?.readTime || "")) {
+                          setIsFormModified(true);
+                        }
+                      }}>
                       <SelectTrigger>
                         <SelectValue placeholder="Estimated read time" />
                       </SelectTrigger>
@@ -303,7 +322,7 @@ export default function EditBlogPage() {
                     id="content"
                     placeholder="Write your blog post content here..."
                     value={content}
-                    onChange={(e) => setContent(e.target.value)}
+                    onChange={createStringChangeHandler(setContent, blogPost?.content)}
                     className="min-h-[300px] whitespace-pre-wrap"
                     style={{ 
                       whiteSpace: 'pre-wrap',
@@ -376,7 +395,13 @@ export default function EditBlogPage() {
                 
                 <Select 
                   value={published ? "published" : "draft"} 
-                  onValueChange={(value) => setPublished(value === "published")}
+                  onValueChange={(value) => {
+                    const newStatus = value === "published";
+                    setPublished(newStatus);
+                    if (newStatus !== (blogPost?.published || false)) {
+                      setIsFormModified(true);
+                    }
+                  }}
                 >
                   <SelectTrigger className="w-[130px]">
                     <SelectValue placeholder="Status" />
