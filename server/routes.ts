@@ -2394,6 +2394,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch user data" });
     }
   });
+  
+  // Delete a user (admin only) - handles employers, job seekers, and admin accounts
+  app.delete("/api/users/:id", async (req, res) => {
+    try {
+      // Check if user is authenticated and is an admin
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = req.user;
+
+      // Get admin profile
+      const admin = await storage.getAdminByUserId(user.id);
+
+      if (!admin) {
+        return res.status(403).json({ message: "Only administrators can delete users" });
+      }
+      
+      const userId = parseInt(req.params.id, 10);
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
+      
+      // Check if user is trying to delete themselves
+      if (userId === user.id) {
+        return res.status(403).json({ message: "Cannot delete your own account" });
+      }
+      
+      // Get the user to determine if they're an admin
+      const userToDelete = await storage.getUser(userId);
+      if (!userToDelete) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Only super_admin can delete admin accounts
+      if (userToDelete.userType === 'admin' && user.userType !== 'super_admin') {
+        return res.status(403).json({ message: "Only super admins can delete admin accounts" });
+      }
+      
+      // Call the storage method to delete the user with proper cascade handling
+      const deleted = await storage.deleteUser(userId);
+      
+      if (!deleted) {
+        return res.status(500).json({ message: "Failed to delete user" });
+      }
+      
+      res.status(200).json({ success: true, message: "User deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({ 
+        message: "Failed to delete user",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
 
   // Get all admins (admin only)
   app.get("/api/admin/all", async (req, res) => {
