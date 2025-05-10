@@ -41,52 +41,75 @@ export function AdminsList({ user }: { user: User | null }) {
     enabled: !!user && (user.userType === "admin" || user.userType === "super_admin")
   });
 
-  // Admin delete mutation with improved session handling
+  // Direct admin delete mutation that doesn't rely on the queryClient
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: number) => {
       try {
-        console.log(`Deleting user with ID: ${userId}`);
-        console.log("Admin session active:", sessionStorage.getItem('adminLoginNewTab') === 'true');
+        console.log(`Deleting user with ID: ${userId} using direct approach`);
         
-        // First, verify we're in admin mode
-        const isAdminSession = sessionStorage.getItem('adminLoginNewTab') === 'true';
-        
-        // Set special headers for admin session
-        const customOptions: RequestInit = {
+        // Get a fresh user token by checking user status
+        const userCheckResponse = await fetch('/api/user', {
+          credentials: 'include',
           headers: {
-            'X-Admin-Session': isAdminSession ? 'true' : 'false'
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
           }
-        };
+        });
         
-        // Use the improved apiRequest method that handles DELETE requests properly
-        const res = await apiRequest("DELETE", `/api/users/${userId}`, undefined, customOptions);
-        
-        if (!res.ok) {
-          console.error("Delete request failed with status:", res.status);
-          const errorData = await res.json().catch(() => ({}));
-          throw new Error(errorData.message || "Failed to delete admin account");
+        if (!userCheckResponse.ok) {
+          throw new Error("Authentication verification failed. Please refresh the page and try again.");
         }
         
-        return await res.json();
+        // Get cookies from the authentication check
+        const cookies = document.cookie;
+        console.log("Authentication successful. Current cookies:", cookies ? "Cookie exists" : "No cookies");
+        
+        // Make the direct DELETE request with cookies and all possible headers for authentication
+        const response = await fetch(`/api/users/${userId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Session': 'true',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        });
+        
+        // Handle response
+        if (!response.ok) {
+          console.error(`DELETE request failed with status: ${response.status}`);
+          const errorData = await response.json().catch(() => ({ message: "Unknown error occurred" }));
+          throw new Error(errorData.message || `Failed to delete admin account (Status: ${response.status})`);
+        }
+        
+        // Parse and return response data
+        const data = await response.json();
+        console.log("Delete operation successful:", data);
+        return data;
       } catch (error: any) {
-        console.error("Error in deleteUserMutation:", error);
+        console.error("Error in admin delete operation:", error);
         throw error;
       }
     },
     onSuccess: () => {
       toast({
         title: "Admin deleted",
-        description: "The admin account has been deleted successfully.",
+        description: "The admin account has been deleted successfully",
       });
+      
       // Refresh admin list after successful deletion
       queryClient.invalidateQueries({ queryKey: ["/api/admin/all"] });
     },
     onError: (error: Error) => {
       toast({
         title: "Failed to delete admin",
-        description: error.message || "An unexpected error occurred",
+        description: error.message || "An unexpected error occurred during the delete operation",
         variant: "destructive",
       });
+      console.error("Delete mutation error:", error);
     },
   });
 

@@ -738,6 +738,47 @@ export class DatabaseStorage implements IStorage {
       const userType = user.userType;
       console.log(`User type for ID ${userId}: ${userType}`);
       
+      // Shortcut for direct deletion - much simpler approach to avoid cascading issues
+      if (userType === 'admin' || userType === 'super_admin') {
+        try {
+          console.log("Using direct SQL deletion for admin user to avoid cascade issues");
+          
+          // First, null out any references in blog posts
+          await db.query(
+            `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1`,
+            [userId]
+          );
+          
+          // Delete notifications
+          await db.query(
+            `DELETE FROM notifications WHERE user_id = $1`,
+            [userId]
+          );
+          
+          // Get and delete admin profile
+          const admin = await this.getAdminByUserId(userId);
+          if (admin) {
+            await db.query(
+              `DELETE FROM admins WHERE id = $1`,
+              [admin.id]
+            );
+          }
+          
+          // Finally delete the user
+          await db.query(
+            `DELETE FROM users WHERE id = $1`,
+            [userId]
+          );
+          
+          console.log(`Successfully deleted admin user ID ${userId} using direct approach`);
+          return true;
+        } catch (directError) {
+          console.error(`Direct deletion error for admin ${userId}:`, directError);
+          // Fall back to transaction approach if direct deletion fails
+          console.log("Falling back to transaction approach");
+        }
+      }
+      
       // Use transaction to ensure all operations succeed or fail together
       return await db.transaction(async (tx) => {
         try {
