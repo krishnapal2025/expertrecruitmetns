@@ -814,10 +814,6 @@ function AdminDashboard() {
             <FileTextIcon className="mr-2 h-4 w-4" />
             Blogs
           </TabsTrigger>
-          <TabsTrigger value="resumes">
-            <FileText className="mr-2 h-4 w-4" />
-            Resumes
-          </TabsTrigger>
         </TabsList>
         
         {/* Dashboard Tab */}
@@ -1053,7 +1049,7 @@ function AdminDashboard() {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base">Job Seeker Report</CardTitle>
                     <CardDescription className="text-xs">
-                      Job seeker profiles, resumes, inquiries
+                      Job seeker profiles and inquiries
                     </CardDescription>
                   </CardHeader>
                   <CardFooter className="pt-2">
@@ -1503,10 +1499,6 @@ function AdminDashboard() {
                 <Users className="mr-2 h-4 w-4" />
                 JS Profiles
               </TabsTrigger>
-              <TabsTrigger value="resumes" className="flex-1">
-                <FileText className="mr-2 h-4 w-4" />
-                Received Resumes
-              </TabsTrigger>
               <TabsTrigger value="inquiries" className="flex-1">
                 <MessageSquare className="mr-2 h-4 w-4" />
                 General Inquiries
@@ -1639,122 +1631,6 @@ function AdminDashboard() {
             </TabsContent>
             
             {/* Resumes Tab */}
-            <TabsContent value="resumes" className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Received Resumes</CardTitle>
-                  <CardDescription>
-                    View and download submitted resumes
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {applicationsLoading ? (
-                    <div className="flex justify-center py-8">
-                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    </div>
-                  ) : !applications || applications.length === 0 ? (
-                    <div className="text-center py-10 border rounded-md bg-muted/20">
-                      <FileText className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-muted-foreground font-medium">No resumes found</p>
-                      <p className="text-sm text-muted-foreground/70 mt-1">
-                        Submitted resumes will appear here
-                      </p>
-                    </div>
-                  ) : (
-                    <ScrollArea className="h-[500px]">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Job Position</TableHead>
-                            <TableHead>Company</TableHead>
-                            <TableHead>Applied Date</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {applications.map((application: any) => (
-                            <TableRow key={application.id}>
-                              <TableCell className="font-medium">
-                                {application.jobSeeker ? 
-                                  `${application.jobSeeker.firstName} ${application.jobSeeker.lastName}` 
-                                  : 'Unknown Applicant'}
-                              </TableCell>
-                              <TableCell>{application.job?.title || 'Unknown Position'}</TableCell>
-                              <TableCell>{application.job?.company || 'Unknown Company'}</TableCell>
-                              <TableCell>{formatDate(application.appliedDate)}</TableCell>
-                              <TableCell>
-                                <Select 
-                                  defaultValue={application.status || "new"}
-                                  onValueChange={(value) => {
-                                    updateApplicationStatusMutation.mutate({
-                                      id: application.id,
-                                      status: value
-                                    });
-                                  }}
-                                >
-                                  <SelectTrigger className="w-[120px]">
-                                    <SelectValue>
-                                      <Badge variant={
-                                        application.status === "shortlisted" 
-                                          ? "default" 
-                                          : application.status === "interviewed" 
-                                          ? "secondary"
-                                          : application.status === "rejected"
-                                          ? "destructive"
-                                          : application.status === "viewed" 
-                                          ? "outline" 
-                                          : "outline"
-                                      }>
-                                        {application.status || "new"}
-                                      </Badge>
-                                    </SelectValue>
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="new">New</SelectItem>
-                                    <SelectItem value="viewed">Viewed</SelectItem>
-                                    <SelectItem value="shortlisted">Shortlisted</SelectItem>
-                                    <SelectItem value="interviewed">Interviewed</SelectItem>
-                                    <SelectItem value="rejected">Rejected</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </TableCell>
-                              <TableCell className="text-right">
-                                <div className="flex justify-end gap-1">
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm"
-                                    onClick={() => window.open(`/api/jobseekers/${application.jobSeekerId}/cv`, '_blank')}
-                                    title="View CV"
-                                  >
-                                    <FileText className="h-4 w-4" />
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm"
-                                    onClick={() => {
-                                      // View application details - can be implemented later
-                                      toast({
-                                        title: "View Application",
-                                        description: `Viewing application from ${application.jobSeeker?.firstName} ${application.jobSeeker?.lastName} for ${application.job?.title}`,
-                                      });
-                                    }}
-                                    title="View Application"
-                                  >
-                                    <Eye className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </ScrollArea>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
             
             {/* General Inquiries Tab */}
             <TabsContent value="inquiries" className="mt-6">
