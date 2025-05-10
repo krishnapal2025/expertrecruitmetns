@@ -41,18 +41,21 @@ export function AdminsList({ user }: { user: User | null }) {
     enabled: !!user && (user.userType === "admin" || user.userType === "super_admin")
   });
 
-  // Simplified direct admin delete mutation
+  // Improved direct admin delete mutation with better error logging
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: number) => {
       try {
-        console.log(`Attempting to delete user ID: ${userId}`);
+        console.log(`Client: Attempting to delete user ID: ${userId}`);
         
         // Use the current user from props for auth headers
         if (!user || !user.id) {
+          console.error("Client: No authenticated user found");
           throw new Error("No authenticated user found. Please log in again.");
         }
         
-        // Make the direct DELETE request with simplified headers
+        console.log(`Client: Sending DELETE request for user ${userId} with auth from user ${user.id} (${user.userType})`);
+        
+        // Make the direct DELETE request with debug headers
         const response = await fetch(`/api/users/${userId}`, {
           method: 'DELETE',
           credentials: 'include',
@@ -60,37 +63,54 @@ export function AdminsList({ user }: { user: User | null }) {
             'Content-Type': 'application/json',
             'X-Admin-Session': 'true',
             'X-Admin-Id': user.id.toString(),
-            'X-Admin-Type': user.userType
+            'X-Admin-Type': user.userType,
+            'X-Request-Debug': 'true' // Add a debug flag
           }
         });
         
-        console.log(`Received response with status: ${response.status}`);
+        console.log(`Client: Received response with status: ${response.status}`);
         
-        // Handle error response
+        // Handle error response with improved debug info
         if (!response.ok) {
           let errorMessage = "Failed to delete admin account";
+          let errorDetail = "";
           
           try {
             const errorData = await response.json();
+            console.log("Client: Error response data:", errorData);
             errorMessage = errorData.message || errorMessage;
+            errorDetail = errorData.detail || "";
           } catch (parseError) {
             // If we can't parse JSON, use text content if available
-            const textContent = await response.text();
-            if (textContent) errorMessage = textContent;
+            try {
+              const textContent = await response.text();
+              console.log("Client: Error response text:", textContent);
+              if (textContent) errorMessage = textContent;
+            } catch (textError) {
+              console.error("Client: Failed to read error response body:", textError);
+            }
           }
           
-          throw new Error(`${errorMessage} (Status: ${response.status})`);
+          const fullErrorMessage = errorDetail 
+            ? `${errorMessage} - ${errorDetail} (Status: ${response.status})`
+            : `${errorMessage} (Status: ${response.status})`;
+            
+          console.error("Client: Delete operation failed with message:", fullErrorMessage);
+          throw new Error(fullErrorMessage);
         }
         
         // Success - return data or simple confirmation
         try {
-          return await response.json();
+          const data = await response.json();
+          console.log("Client: Successfully deleted user, response:", data);
+          return data;
         } catch (e) {
           // If no JSON response, just return success
+          console.log("Client: Successfully deleted user, no JSON response");
           return { success: true };
         }
       } catch (error: any) {
-        console.error("Error deleting admin:", error);
+        console.error("Client: Error deleting admin:", error);
         throw error;
       }
     },
