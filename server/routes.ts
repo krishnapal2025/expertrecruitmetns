@@ -496,9 +496,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         employerUsers.map(async (user) => {
           const employer = await storage.getEmployerByUserId(user.id);
           if (employer) {
-            // Return public profile only
+            // Return public profile only with the associated userId for admin functionality
             return {
               id: employer.id,
+              userId: user.id, // Add the userId to help with user deletion
               companyName: employer.companyName,
               industry: employer.industry,
               description: employer.description || "",

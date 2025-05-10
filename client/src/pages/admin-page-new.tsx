@@ -1225,7 +1225,7 @@ function AdminDashboard() {
                                   variant="ghost" 
                                   size="sm"
                                   className="text-red-500 hover:text-red-700 hover:bg-red-100"
-                                  onClick={() => handleDeleteUser(employer.id, 'employer')}
+                                  onClick={() => handleDeleteUser(employer.userId, 'employer')}
                                 >
                                   <Trash2 className="h-4 w-4" />
                                   <span className="sr-only">Delete</span>
