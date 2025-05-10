@@ -2477,6 +2477,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid user ID" });
       }
       
+      // Get user type from query parameter
+      const userType = req.query.type as string || '';
+      
       // Check if user is trying to delete themselves
       if (userId === user.id) {
         console.log("User attempting to delete their own account");
@@ -2507,10 +2510,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      console.log(`Calling storage.deleteUser for ID ${userId}`);
+      console.log(`Calling storage.deleteUser for ID ${userId} with type ${userType}`);
       try {
         // Call the storage method to delete the user with proper cascade handling
-        const deleted = await storage.deleteUser(userId);
+        const deleted = await storage.deleteUser(userId, userType);
         
         if (!deleted) {
           console.log("Storage deleteUser method returned false");
