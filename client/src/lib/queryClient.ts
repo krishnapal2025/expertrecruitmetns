@@ -75,8 +75,24 @@ export async function apiRequest(
   };
   
   try {
+    // For DELETE requests, ensure the request includes admin credentials from sessionStorage if available
+    if (method === 'DELETE') {
+      console.log(`Special handling for DELETE request to ${url}`);
+      
+      // Add special X-Admin-Auth header for admin session
+      const adminSession = sessionStorage.getItem('adminLoginNewTab') === 'true';
+      if (adminSession) {
+        console.log('Using admin session credentials for DELETE request');
+        // Ensure we're passing the admin session credentials
+        headers['X-Admin-Session'] = 'true';
+      }
+      
+      // Add SameSite=Lax for DELETE requests to ensure cookies are sent
+      document.cookie = "SameSite=Lax; path=/";
+    }
+    
     // For POST, DELETE, PATCH, or PUT requests, verify authentication state first
-    if ((method === 'POST' || method === 'DELETE' || method === 'PATCH' || method === 'PUT') && 
+    if ((method === 'POST' || method === 'PATCH' || method === 'PUT') && 
         !url.includes('/api/login') && !url.includes('/api/register')) {
       try {
         console.log(`Verifying authentication before ${method} request to ${url}...`);
