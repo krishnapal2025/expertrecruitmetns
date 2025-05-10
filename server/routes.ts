@@ -3213,6 +3213,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Create a new blog post (admin only)
   app.post("/api/blog-posts", async (req, res) => {
+    console.log("✅ BLOG POST REQUEST RECEIVED", {
+      authenticated: req.isAuthenticated(),
+      userInfo: req.isAuthenticated() ? {
+        id: req.user?.id,
+        email: req.user?.email,
+        userType: req.user?.userType
+      } : null,
+      bodySize: JSON.stringify(req.body).length,
+      method: req.method,
+      url: req.url
+    });
+    
     try {
       // Check authentication
       if (!req.isAuthenticated()) {
@@ -3259,6 +3271,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .trim();
         
         console.log("Generated slug:", processedData.slug);
+      }
+      
+      // Check if the slug already exists and make it unique if needed
+      try {
+        const existingPost = await storage.getBlogPostBySlug(processedData.slug);
+        if (existingPost) {
+          console.log(`Slug '${processedData.slug}' already exists, making it unique...`);
+          // Append a timestamp to make the slug unique
+          const timestamp = new Date().getTime().toString().slice(-6); // Last 6 digits of timestamp
+          processedData.slug = `${processedData.slug}-${timestamp}`;
+          console.log(`Modified to unique slug: ${processedData.slug}`);
+        }
+      } catch (slugError) {
+        console.log(`Error checking slug uniqueness: ${slugError instanceof Error ? slugError.message : String(slugError)}`);
+        // If error is due to the post not being found, that's fine (slug is unique)
+        // Other errors will be caught in the database operation later
       }
 
       // Set default values for optional fields
