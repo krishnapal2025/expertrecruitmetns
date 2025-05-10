@@ -47,7 +47,7 @@ export interface IStorage {
   removeSuperAdminUsers(): Promise<{ count: number; removedUserIds: number[] }>;
   getUserById(id: number): Promise<User | undefined>;
   updateUserPassword(userId: number, password: string): Promise<User | undefined>;
-  deleteUser(userId: number): Promise<boolean>;
+  deleteUser(userId: number, userType?: string): Promise<boolean>;
   deleteSuperAdmin(id: number): Promise<{ success: boolean; message: string }>;
 
   // JobSeeker methods
@@ -837,9 +837,9 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
   
-  async deleteUser(userId: number): Promise<boolean> {
+  async deleteUser(userId: number, providedUserType?: string): Promise<boolean> {
     try {
-      console.log(`Starting deletion process for user ID ${userId}`);
+      console.log(`Starting deletion process for user ID ${userId}${providedUserType ? ` with provided type ${providedUserType}` : ''}`);
       
       // First get the user type to determine what related records to delete
       const user = await this.getUser(userId);
@@ -848,7 +848,8 @@ export class DatabaseStorage implements IStorage {
         return false;
       }
       
-      const userType = user.userType;
+      // Use the provided user type if available, otherwise use the one from the database
+      const userType = providedUserType || user.userType;
       console.log(`User type for ID ${userId}: ${userType}`);
       
       // Enhanced shortcut for direct deletion - much simpler approach to avoid cascading issues
