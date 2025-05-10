@@ -54,8 +54,8 @@ export function AdminsList({ user }: { user: User | null }) {
         );
         
         if (!res.ok) {
-          const error = await res.json();
-          console.error("Delete admin error:", error);
+          const errorData = await res.json();
+          console.error("Delete admin error:", errorData);
           
           // Even if there's a 404, we'll still consider it a success
           // because the user might have been already deleted
@@ -63,7 +63,12 @@ export function AdminsList({ user }: { user: User | null }) {
             return { success: true, message: "Admin account already deleted or not found" };
           }
           
-          throw new Error(error.message || "Failed to delete admin account");
+          // Special handling for super admin protection
+          if (errorData.code === "SUPER_ADMIN_PROTECTION") {
+            throw new Error("Super admin accounts cannot be deleted through this interface for security reasons");
+          }
+          
+          throw new Error(errorData.message || "Failed to delete admin account");
         }
         
         // Parse response JSON
