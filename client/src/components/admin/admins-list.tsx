@@ -65,7 +65,7 @@ export function AdminsList({ user }: { user: User | null }) {
           
           // Special handling for super admin protection
           if (errorData.code === "SUPER_ADMIN_PROTECTION") {
-            throw new Error("Super admin accounts cannot be deleted through this interface for security reasons");
+            throw new Error(errorData.message || "Only super admins can delete other super admin accounts");
           }
           
           throw new Error(errorData.message || "Failed to delete admin account");
