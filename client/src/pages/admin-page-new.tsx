@@ -1499,6 +1499,10 @@ function AdminDashboard() {
                 <Users className="mr-2 h-4 w-4" />
                 JS Profiles
               </TabsTrigger>
+              <TabsTrigger value="resumes" className="flex-1">
+                <FileText className="mr-2 h-4 w-4" />
+                Received Resumes
+              </TabsTrigger>
               <TabsTrigger value="inquiries" className="flex-1">
                 <MessageSquare className="mr-2 h-4 w-4" />
                 General Inquiries
