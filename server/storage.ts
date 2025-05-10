@@ -47,6 +47,7 @@ export interface IStorage {
   removeSuperAdminUsers(): Promise<{ count: number; removedUserIds: number[] }>;
   getUserById(id: number): Promise<User | undefined>;
   updateUserPassword(userId: number, password: string): Promise<User | undefined>;
+  deleteUser(userId: number): Promise<boolean>;
 
   // JobSeeker methods
   getJobSeeker(id: number): Promise<JobSeeker | undefined>;
