@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/table";
 
 // Icons
-  ShieldCheck,
 import { InquiryPreviewModal } from "@/components/inquiry-preview-modal";
 import {
   Loader2,
@@ -52,6 +51,7 @@ import {
   UserPlus,
   Pencil,
   MapPin,
+  ShieldCheck,
 } from "lucide-react";
 
 // Date utilities
@@ -788,14 +788,14 @@ function AdminDashboard() {
       </div>
       
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-8">
+        <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-8">
           <TabsTrigger value="dashboard">
             <BarChart2 className="mr-2 h-4 w-4" />
-            Dashboard
           <TabsTrigger value="admins">
             <ShieldCheck className="mr-2 h-4 w-4" />
             Admins
           </TabsTrigger>
+            Dashboard
           </TabsTrigger>
           <TabsTrigger value="employers">
             <Building className="mr-2 h-4 w-4" />
