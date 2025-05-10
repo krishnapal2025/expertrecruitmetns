@@ -365,6 +365,109 @@ export class DatabaseStorage implements IStorage {
   async getUserById(id: number): Promise<User | undefined> {
     return this.getUser(id);
   }
+  
+  /**
+   * Delete a super admin user account
+   * This follows a similar approach to scripts/delete-super-admin-direct.js
+   */
+  async deleteSuperAdmin(id: number): Promise<{ success: boolean; message: string }> {
+    console.log(`Attempting to delete super admin with ID: ${id}`);
+    
+    try {
+      // Start by verifying the user exists and is a super_admin
+      const user = await this.getUser(id);
+      
+      if (!user) {
+        console.log(`No user found with ID ${id}`);
+        return { success: false, message: "User not found" };
+      }
+      
+      if (user.userType !== "super_admin") {
+        console.log(`User with ID ${id} is not a super_admin (type: ${user.userType})`);
+        return { success: false, message: "User is not a super admin" };
+      }
+      
+      // Find the admin profile for this user
+      const admin = await this.getAdminByUserId(id);
+      console.log(`Admin profile for user ${id}: ${admin ? `Found ID=${admin.id}` : 'Not found'}`);
+      
+      // Begin a transaction using the pool we added
+      const client = await this.pool.connect();
+      
+      try {
+        // Begin transaction
+        await client.query('BEGIN');
+        
+        console.log("Starting transaction for super admin deletion");
+        
+        // Delete references in blog posts
+        const blogResult = await client.query(
+          `UPDATE blog_posts SET author_id = NULL WHERE author_id = $1`,
+          [id]
+        );
+        console.log(`Updated ${blogResult.rowCount} blog posts to remove author reference`);
+        
+        // Delete notifications
+        const notifResult = await client.query(
+          `DELETE FROM notifications WHERE user_id = $1`,
+          [id]
+        );
+        console.log(`Deleted ${notifResult.rowCount} notifications`);
+        
+        // Clear job assignments
+        const jobResult = await client.query(
+          `UPDATE jobs SET assigned_to = NULL WHERE assigned_to = $1`,
+          [id]
+        );
+        console.log(`Cleared ${jobResult.rowCount} job assignments`);
+        
+        // Delete admin profile if exists
+        if (admin) {
+          const adminResult = await client.query(
+            `DELETE FROM admins WHERE id = $1`,
+            [admin.id]
+          );
+          console.log(`Deleted admin profile: ${adminResult.rowCount} rows affected`);
+        }
+        
+        // Finally delete the user
+        const deleteResult = await client.query(
+          `DELETE FROM users WHERE id = $1 AND user_type = 'super_admin' RETURNING id`,
+          [id]
+        );
+        
+        if (deleteResult.rowCount === 0) {
+          // If no rows were affected, rollback and return failure
+          await client.query('ROLLBACK');
+          console.error(`No user rows deleted - transaction rolled back`);
+          return { success: false, message: "Failed to delete super admin user" };
+        }
+        
+        // Commit the transaction
+        await client.query('COMMIT');
+        
+        console.log(`Successfully deleted super admin user with ID ${id}`);
+        return { success: true, message: `Successfully deleted super admin with ID ${id}` };
+      } catch (txError: any) {
+        // If there's an error, rollback
+        await client.query('ROLLBACK');
+        console.error(`Transaction error while deleting super admin ${id}:`, txError);
+        return { 
+          success: false, 
+          message: txError instanceof Error ? txError.message : "Transaction failed" 
+        };
+      } finally {
+        // Release the client back to the pool
+        client.release();
+      }
+    } catch (error: any) {
+      console.error(`Error deleting super admin ${id}:`, error);
+      return { 
+        success: false, 
+        message: error instanceof Error ? error.message : "Unknown error occurred" 
+      };
+    }
+  }
 
   // JobSeeker methods
   async getJobSeeker(id: number): Promise<JobSeeker | undefined> {
