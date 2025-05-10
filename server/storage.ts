@@ -946,6 +946,184 @@ export class DatabaseStorage implements IStorage {
         }
       }
       
+      // Enhanced direct deletion for employer accounts
+      if (userType === 'employer') {
+        try {
+          console.log(`DEBUG: Starting enhanced direct SQL deletion for employer user ${userId}`);
+          
+          // Step 1: Check for employer profile existence
+          const employer = await this.getEmployerByUserId(userId);
+          console.log(`DEBUG: Employer profile check result: ${employer ? `Found ID=${employer.id}` : 'Not found'}`);
+          
+          // Step 2: Count related jobs
+          const jobsCount = await db.query(
+            `SELECT COUNT(*) FROM jobs WHERE employer_id = $1`,
+            [employer ? employer.id : -1]
+          );
+          console.log(`DEBUG: Found ${jobsCount.rows[0].count || 0} jobs posted by this employer`);
+          
+          // Step 3: Count notifications
+          const notificationCount = await db.query(
+            `SELECT COUNT(*) FROM notifications WHERE user_id = $1`,
+            [userId]
+          );
+          console.log(`DEBUG: Found ${notificationCount.rows[0].count || 0} notifications for this employer`);
+          
+          console.log("Starting direct SQL deletion operations with proper error handling");
+          
+          // Step 4: Update jobs to remove employer reference
+          if (employer) {
+            try {
+              const jobsUpdate = await db.query(
+                `UPDATE jobs SET employer_id = NULL WHERE employer_id = $1 RETURNING id`,
+                [employer.id]
+              );
+              console.log(`DEBUG: Updated ${jobsUpdate.rowCount} jobs to remove employer reference`);
+            } catch (jobsError) {
+              console.error("ERROR in jobs update step:", jobsError);
+              throw new Error(`Failed to update jobs: ${jobsError.message}`);
+            }
+          }
+          
+          // Step 5: Delete notifications
+          try {
+            const notificationDelete = await db.query(
+              `DELETE FROM notifications WHERE user_id = $1 RETURNING id`,
+              [userId]
+            );
+            console.log(`DEBUG: Deleted ${notificationDelete.rowCount} notifications`);
+          } catch (notifError) {
+            console.error("ERROR in notification deletion step:", notifError);
+            throw new Error(`Failed to delete notifications: ${notifError.message}`);
+          }
+          
+          // Step 6: Delete employer profile
+          if (employer) {
+            try {
+              const employerDelete = await db.query(
+                `DELETE FROM employers WHERE id = $1 RETURNING id`,
+                [employer.id]
+              );
+              console.log(`DEBUG: Deleted employer profile: ${employerDelete.rowCount} rows affected`);
+            } catch (employerError) {
+              console.error("ERROR in employer profile deletion step:", employerError);
+              throw new Error(`Failed to delete employer profile: ${employerError.message}`);
+            }
+          }
+          
+          // Step 7: Finally delete the user
+          try {
+            const userDelete = await db.query(
+              `DELETE FROM users WHERE id = $1 RETURNING id`,
+              [userId]
+            );
+            console.log(`DEBUG: Deleted user: ${userDelete.rowCount} rows affected`);
+            
+            if (userDelete.rowCount === 0) {
+              throw new Error("User deletion did not affect any rows - user may not exist");
+            }
+          } catch (userError) {
+            console.error("ERROR in user deletion step:", userError);
+            throw new Error(`Failed to delete user: ${userError.message}`);
+          }
+          
+          console.log(`Successfully deleted employer user ID ${userId} using enhanced direct approach`);
+          return true;
+        } catch (directError) {
+          console.error(`Direct deletion error for employer ${userId}:`, directError);
+          throw new Error(`Failed to delete employer user: ${directError.message}`);
+        }
+      }
+      
+      // Enhanced direct deletion for job seeker accounts
+      if (userType === 'jobseeker') {
+        try {
+          console.log(`DEBUG: Starting enhanced direct SQL deletion for jobseeker user ${userId}`);
+          
+          // Step 1: Check for job seeker profile existence
+          const jobSeeker = await this.getJobSeekerByUserId(userId);
+          console.log(`DEBUG: Job seeker profile check result: ${jobSeeker ? `Found ID=${jobSeeker.id}` : 'Not found'}`);
+          
+          // Step 2: Count related applications
+          const applicationsCount = await db.query(
+            `SELECT COUNT(*) FROM applications WHERE job_seeker_id = $1`,
+            [jobSeeker ? jobSeeker.id : -1]
+          );
+          console.log(`DEBUG: Found ${applicationsCount.rows[0].count || 0} applications by this job seeker`);
+          
+          // Step 3: Count notifications
+          const notificationCount = await db.query(
+            `SELECT COUNT(*) FROM notifications WHERE user_id = $1`,
+            [userId]
+          );
+          console.log(`DEBUG: Found ${notificationCount.rows[0].count || 0} notifications for this job seeker`);
+          
+          console.log("Starting direct SQL deletion operations with proper error handling");
+          
+          // Step 4: Delete job applications by this job seeker
+          if (jobSeeker) {
+            try {
+              const applicationsDelete = await db.query(
+                `DELETE FROM applications WHERE job_seeker_id = $1 RETURNING id`,
+                [jobSeeker.id]
+              );
+              console.log(`DEBUG: Deleted ${applicationsDelete.rowCount} applications`);
+            } catch (applicationsError) {
+              console.error("ERROR in applications deletion step:", applicationsError);
+              throw new Error(`Failed to delete applications: ${applicationsError.message}`);
+            }
+          }
+          
+          // Step 5: Delete notifications
+          try {
+            const notificationDelete = await db.query(
+              `DELETE FROM notifications WHERE user_id = $1 RETURNING id`,
+              [userId]
+            );
+            console.log(`DEBUG: Deleted ${notificationDelete.rowCount} notifications`);
+          } catch (notifError) {
+            console.error("ERROR in notification deletion step:", notifError);
+            throw new Error(`Failed to delete notifications: ${notifError.message}`);
+          }
+          
+          // Step 6: Delete job seeker profile
+          if (jobSeeker) {
+            try {
+              const jobSeekerDelete = await db.query(
+                `DELETE FROM job_seekers WHERE id = $1 RETURNING id`,
+                [jobSeeker.id]
+              );
+              console.log(`DEBUG: Deleted job seeker profile: ${jobSeekerDelete.rowCount} rows affected`);
+            } catch (jobSeekerError) {
+              console.error("ERROR in job seeker profile deletion step:", jobSeekerError);
+              throw new Error(`Failed to delete job seeker profile: ${jobSeekerError.message}`);
+            }
+          }
+          
+          // Step 7: Finally delete the user
+          try {
+            const userDelete = await db.query(
+              `DELETE FROM users WHERE id = $1 RETURNING id`,
+              [userId]
+            );
+            console.log(`DEBUG: Deleted user: ${userDelete.rowCount} rows affected`);
+            
+            if (userDelete.rowCount === 0) {
+              throw new Error("User deletion did not affect any rows - user may not exist");
+            }
+          } catch (userError) {
+            console.error("ERROR in user deletion step:", userError);
+            throw new Error(`Failed to delete user: ${userError.message}`);
+          }
+          
+          console.log(`Successfully deleted job seeker user ID ${userId} using enhanced direct approach`);
+          return true;
+        } catch (directError) {
+          console.error(`Direct deletion error for job seeker ${userId}:`, directError);
+          throw new Error(`Failed to delete job seeker user: ${directError.message}`);
+        }
+      }
+      
       // Use transaction to ensure all operations succeed or fail together
       return await db.transaction(async (tx) => {
         try {
