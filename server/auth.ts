@@ -437,11 +437,18 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // Login route
+  // Login route - only for regular users (jobseeker and employer)
   app.post("/api/login", (req, res, next) => {
     passport.authenticate("local", async (err, user, info) => {
       if (err) return next(err);
       if (!user) return res.status(400).json({ message: info.message || "Invalid credentials" });
+      
+      // Prevent admin users from logging in through the regular login page
+      if (user.userType === "admin" || user.userType === "super_admin") {
+        return res.status(403).json({ 
+          message: "Administrators must sign in through the admin login page." 
+        });
+      }
       
       req.login(user, async (err) => {
         if (err) return next(err);
