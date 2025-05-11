@@ -1748,7 +1748,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get real-time application updates (admin only)
+  // Get real-time application updates (admin, employer, or jobseeker for their own applications)
   app.get("/api/realtime/applications", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
@@ -1761,7 +1761,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user;
 
       if (user.userType === "admin" || user.userType === "super_admin") {
-        // Get all jobs
+        // Admin gets all job applications
         const employerJobs = await storage.getJobs();
 
         // Get new applications for all jobs
@@ -1785,8 +1785,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
           applications: newApplications,
           lastId: realtimeStore.lastApplicationId
         });
+      } else if (user.userType === "jobseeker") {
+        // Get jobseeker profile
+        const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+        if (!jobSeeker) {
+          return res.status(404).json({ message: "Job seeker profile not found" });
+        }
+
+        // Get all applications for this jobseeker
+        const applications = await storage.getApplicationsByJobSeekerId(jobSeeker.id);
+        const newApplications = applications.filter(app => app.id > sinceId);
+
+        // Add job details to applications
+        const applicationsWithJobs = await Promise.all(
+          newApplications.map(async (app) => {
+            const job = await storage.getJob(app.jobId);
+            return { ...app, job };
+          })
+        );
+
+        // Update lastApplicationId if we found newer applications
+        if (newApplications.length > 0) {
+          const maxId = Math.max(...newApplications.map(app => app.id));
+          realtimeStore.lastApplicationId = Math.max(realtimeStore.lastApplicationId, maxId);
+        }
+
+        res.json({
+          applications: applicationsWithJobs,
+          lastId: realtimeStore.lastApplicationId
+        });
+      } else if (user.userType === "employer") {
+        // Get employer profile
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (!employer) {
+          return res.status(404).json({ message: "Employer profile not found" });
+        }
+
+        // Get all jobs for this employer
+        const allJobs = await storage.getJobs();
+        const employerJobs = allJobs.filter(job => job.employerId === employer.id);
+
+        // Get new applications for all employer jobs
+        let newApplications: any[] = [];
+        for (const job of employerJobs) {
+          const jobApplications = await storage.getApplicationsByJobId(job.id);
+          const filteredApplications = jobApplications.filter(app => app.id > sinceId);
+
+          newApplications = newApplications.concat(
+            filteredApplications.map(app => ({ ...app, job }))
+          );
+        }
+
+        // Update lastApplicationId if we found newer applications
+        if (newApplications.length > 0) {
+          const maxId = Math.max(...newApplications.map(app => app.id));
+          realtimeStore.lastApplicationId = Math.max(realtimeStore.lastApplicationId, maxId);
+        }
+
+        res.json({
+          applications: newApplications,
+          lastId: realtimeStore.lastApplicationId
+        });
       } else {
-        res.status(403).json({ message: "Only admin users can access this endpoint" });
+        res.status(403).json({ message: "Unauthorized user type" });
       }
     } catch (error) {
       console.error("Error fetching real-time application updates:", error);
