@@ -1580,8 +1580,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log("User ID:", req.user.id);
       }
       
-      // Use the dedicated service to handle the CV download
-      await handleCvDownload(req, res, storage);
+      // IMPORTANT DEBUG: Output request parameters
+      console.log('Request parameters:', req.params);
+      console.log('Request query:', req.query);
+      
+      // Process the application before handling download
+      const applicationId = parseInt(req.params.id);
+      if (isNaN(applicationId)) {
+        return res.status(400).json({ message: "Invalid application ID" });
+      }
+      
+      // Get the application
+      const application = await storage.getApplication(applicationId);
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      
+      console.log('Found application:', JSON.stringify(application, null, 2));
+      
+      // Get job seeker details
+      const jobSeeker = await storage.getJobSeeker(application.jobSeekerId);
+      if (!jobSeeker) {
+        return res.status(404).json({ message: "Job seeker not found" });
+      }
+      
+      console.log('Found job seeker:', JSON.stringify(jobSeeker, null, 2));
+      
+      // First check if the application has a specific resumePath
+      let resumePath = application.resumePath || jobSeeker.cvPath;
+      
+      console.log('Resume path to use:', resumePath);
+      
+      if (!resumePath) {
+        return res.status(404).json({ message: "No resume found for this application" });
+      }
+      
+      // Construct the correct absolute path using process.env.PWD if available
+      const baseDir = process.env.PWD || '/home/runner/workspace';
+      const cvPath = path.isAbsolute(resumePath) 
+        ? resumePath 
+        : path.join(baseDir, 'uploads/resumes', path.basename(resumePath));
+        
+      console.log('Absolute path constructed:', cvPath);
+      
+      // Check if the file exists
+      if (!fs.existsSync(cvPath)) {
+        console.error(`File not found at: ${cvPath}`);
+        return res.status(404).json({ message: "Resume file not found" });
+      }
+      
+      console.log(`File exists at ${cvPath}, size: ${fs.statSync(cvPath).size} bytes`);
+      
+      // Get file stats for additional information
+      const stats = fs.statSync(cvPath);
+      
+      // Determine content type based on file extension
+      const ext = path.extname(cvPath).toLowerCase();
+      let contentType = 'application/octet-stream'; // Default
+      
+      if (ext === '.pdf') contentType = 'application/pdf';
+      else if (ext === '.doc') contentType = 'application/msword';
+      else if (ext === '.docx') contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      
+      // Set headers for download with original filename
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Content-Disposition', `attachment; filename="${path.basename(cvPath)}"`);
+      res.setHeader('Content-Length', stats.size);
+      
+      // Special headers for PDFs to prevent malware detection
+      if (ext === '.pdf') {
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+        res.setHeader('Content-Security-Policy', "default-src 'self'");
+      }
+      
+      // Read and send the file directly
+      try {
+        const fileBuffer = fs.readFileSync(cvPath);
+        console.log(`Successfully read file into buffer, size: ${fileBuffer.length} bytes`);
+        return res.send(fileBuffer);
+      } catch (readError) {
+        console.error('Error reading file:', readError);
+        
+        // Fall back to streaming
+        console.log('Falling back to streaming method...');
+        return fs.createReadStream(cvPath).pipe(res);
+      }
     } catch (error) {
       console.error("Error downloading CV:", error);
       res.status(500).json({ message: "Failed to download CV" });
