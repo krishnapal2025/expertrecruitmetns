@@ -1722,13 +1722,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (application.coverLetter && application.coverLetter.includes('{')) {
         try {
           // Sometimes the additional data is embedded in the cover letter as JSON
-          const jsonMatch = application.coverLetter.match(/\{.*\}/s);
-          if (jsonMatch) {
-            additionalData = JSON.parse(jsonMatch[0]);
+          // Use a simple, safer approach to extract the JSON object
+          let jsonStr = application.coverLetter;
+          const openBraceIndex = jsonStr.indexOf('{');
+          const closeBraceIndex = jsonStr.lastIndexOf('}');
+          
+          if (openBraceIndex !== -1 && closeBraceIndex !== -1 && openBraceIndex < closeBraceIndex) {
+            jsonStr = jsonStr.substring(openBraceIndex, closeBraceIndex + 1);
+            additionalData = JSON.parse(jsonStr);
             console.log('Found embedded application form data:', additionalData);
           }
         } catch (error) {
-          console.log('No embedded JSON data found in cover letter');
+          console.log('No valid embedded JSON data found in cover letter:', error);
         }
       }
       
@@ -1828,6 +1833,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
               }
               .field-value {
                 margin-top: 4px;
+              }
+              .field-value a {
+                color: #2563eb;
+                text-decoration: underline;
               }
               .status {
                 display: inline-block;
@@ -1936,13 +1945,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
                     <div class="field-label">Status</div>
                     <div class="field-value">
                       <span class="status status-${application.status}">
-                        ${application.status.charAt(0).toUpperCase() + application.status.slice(1)}
+                        ${application.status ? application.status.charAt(0).toUpperCase() + application.status.slice(1) : 'Pending'}
                       </span>
                     </div>
                   </div>
+                  
+                  ${Object.keys(additionalData).length > 0 ? `
+                  <div class="section-title" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0;">Application Form Details</div>
+                  
+                  ${additionalData.currentPosition ? `
                   <div class="field">
+                    <div class="field-label">Current Position</div>
+                    <div class="field-value">${additionalData.currentPosition}</div>
+                  </div>` : ''}
+                  
+                  ${additionalData.yearsOfExperience ? `
+                  <div class="field">
+                    <div class="field-label">Years of Experience</div>
+                    <div class="field-value">${additionalData.yearsOfExperience}</div>
+                  </div>` : ''}
+                  
+                  ${additionalData.availableStartDate ? `
+                  <div class="field">
+                    <div class="field-label">Available Start Date</div>
+                    <div class="field-value">${additionalData.availableStartDate}</div>
+                  </div>` : ''}
+                  
+                  ${additionalData.salaryExpectation ? `
+                  <div class="field">
+                    <div class="field-label">Salary Expectation</div>
+                    <div class="field-value">${additionalData.salaryExpectation}</div>
+                  </div>` : ''}
+                  
+                  ${additionalData.relocation ? `
+                  <div class="field">
+                    <div class="field-label">Willing to Relocate</div>
+                    <div class="field-value">${additionalData.relocation === 'yes' ? 'Yes' : 
+                                              additionalData.relocation === 'no' ? 'No' : 
+                                              additionalData.relocation === 'flexible' ? 'Flexible' : 
+                                              additionalData.relocation}</div>
+                  </div>` : ''}
+                  
+                  ${additionalData.linkedinProfile ? `
+                  <div class="field">
+                    <div class="field-label">LinkedIn Profile</div>
+                    <div class="field-value"><a href="${additionalData.linkedinProfile}" target="_blank" style="color: #2563eb; text-decoration: underline;">${additionalData.linkedinProfile}</a></div>
+                  </div>` : ''}
+                  
+                  ${additionalData.portfolioUrl ? `
+                  <div class="field">
+                    <div class="field-label">Portfolio URL</div>
+                    <div class="field-value"><a href="${additionalData.portfolioUrl}" target="_blank" style="color: #2563eb; text-decoration: underline;">${additionalData.portfolioUrl}</a></div>
+                  </div>` : ''}
+                  
+                  ${additionalData.heardAbout ? `
+                  <div class="field">
+                    <div class="field-label">How They Heard About Us</div>
+                    <div class="field-value">${additionalData.heardAbout}</div>
+                  </div>` : ''}
+                  
+                  ${additionalData.referenceContacts ? `
+                  <div class="field">
+                    <div class="field-label">References</div>
+                    <div class="field-value">${additionalData.referenceContacts}</div>
+                  </div>` : ''}` : ''}
+                  
+                  <div class="field" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
                     <div class="field-label">Cover Letter / Message</div>
-                    <div class="field-value message">${application.coverLetter || 'No cover letter provided'}</div>
+                    <div class="field-value message">${application.coverLetter ? 
+                      // Remove any JSON object from the cover letter before displaying
+                      application.coverLetter
+                        .substring(0, application.coverLetter.indexOf('{') !== -1 ? application.coverLetter.indexOf('{') : application.coverLetter.length)
+                        .trim() || 'No cover letter provided' : 
+                      'No cover letter provided'}</div>
                   </div>
                 </div>
               </div>
