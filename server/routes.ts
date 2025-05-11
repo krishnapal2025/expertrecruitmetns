@@ -1717,6 +1717,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // First check if the application has a specific resumePath
       let resumePath = application.resumePath || jobSeeker.cvPath;
       
+      // Try to parse additional data if available
+      let additionalData = {};
+      if (application.coverLetter && application.coverLetter.includes('{')) {
+        try {
+          // Sometimes the additional data is embedded in the cover letter as JSON
+          const jsonMatch = application.coverLetter.match(/\{.*\}/s);
+          if (jsonMatch) {
+            additionalData = JSON.parse(jsonMatch[0]);
+            console.log('Found embedded application form data:', additionalData);
+          }
+        } catch (error) {
+          console.log('No embedded JSON data found in cover letter');
+        }
+      }
+      
       // If a resume file exists, serve it in a frame along with application details
       if (resumePath) {
         // Construct the correct absolute path
@@ -1736,7 +1751,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const isPdf = ext === '.pdf';
         
         // Format application date
-        const applicationDate = new Date(application.applicationDate);
+        const applicationDate = new Date(application.appliedDate || new Date());
         const formattedDate = applicationDate.toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
