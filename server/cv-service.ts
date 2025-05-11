@@ -99,26 +99,11 @@ export async function handleCvDownload(
         const uploadsDir = path.resolve('./uploads');
         let cvPath = '';
         
-        // Normalize the path and handle all path cases more robustly
-        if (path.isAbsolute(resumePath)) {
-          // Absolute path - use as is, with security check later
-          cvPath = resumePath;
-        } else if (resumePath.startsWith('./') || resumePath.startsWith('../')) {
-          // Relative path with explicit notation
-          cvPath = path.resolve(resumePath);
-        } else {
-          // Treat as a filename in uploads directory
-          if (resumePath.includes('uploads/')) {
-            // Already has uploads in path but not at start
-            cvPath = path.resolve(resumePath);
-          } else if (resumePath.includes('/')) {
-            // Has some directory structure but not uploads
-            cvPath = path.resolve('./uploads', resumePath);
-          } else {
-            // Just a filename
-            cvPath = path.resolve('./uploads/resumes', resumePath);
-          }
-        }
+        // DIRECT PATH APPROACH - use the full absolute path since we know where the files are
+        cvPath = '/home/runner/workspace/uploads/resumes/' + path.basename(resumePath);
+        
+        // Log the absolute path for debugging
+        console.log('Using direct file path:', cvPath);
         
         console.log('Root directory:', rootDir);
         console.log('Uploads directory:', uploadsDir);
