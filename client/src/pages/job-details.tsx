@@ -371,7 +371,33 @@ export default function JobDetailsPage({ id }: { id: string }) {
                       <div className="font-medium w-24">Industry:</div>
                       <div className="text-gray-600">{employer.industry}</div>
                     </div>
+                    {employer.companyType && (
+                      <div className="flex items-start">
+                        <div className="font-medium w-24">Type:</div>
+                        <div className="text-gray-600">{employer.companyType}</div>
+                      </div>
+                    )}
+                    {employer.website && (
+                      <div className="flex items-start">
+                        <div className="font-medium w-24">Website:</div>
+                        <a href={employer.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                          {employer.website.replace(/^https?:\/\//, '')}
+                        </a>
+                      </div>
+                    )}
+                    {employer.country && (
+                      <div className="flex items-start">
+                        <div className="font-medium w-24">Location:</div>
+                        <div className="text-gray-600">{employer.country}</div>
+                      </div>
+                    )}
                   </div>
+                  
+                  {!isFromApplicationsManager && employer && (
+                    <Button variant="outline" className="w-full mt-6">
+                      View Company Profile
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             ) : (
@@ -397,29 +423,18 @@ export default function JobDetailsPage({ id }: { id: string }) {
                       <div className="font-medium w-24">Category:</div>
                       <div className="text-gray-600">{job.category}</div>
                     </div>
-                  <div className="flex items-start">
-                    <div className="font-medium w-24">Type:</div>
-                    <div className="text-gray-600">{employer.companyType}</div>
+                    <div className="flex items-start">
+                      <div className="font-medium w-24">Experience:</div>
+                      <div className="text-gray-600">{job.experience || "Not specified"}</div>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="font-medium w-24">Job Level:</div>
+                      <div className="text-gray-600">{job.level || "Entry-Level"}</div>
+                    </div>
                   </div>
-                  <div className="flex items-start">
-                    <div className="font-medium w-24">Website:</div>
-                    <a href={employer.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                      {employer.website.replace(/^https?:\/\//, '')}
-                    </a>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="font-medium w-24">Location:</div>
-                    <div className="text-gray-600">{employer.country}</div>
-                  </div>
-                </div>
-                
-                {!isFromApplicationsManager && (
-                  <Button variant="outline" className="w-full mt-6">
-                    View Company Profile
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
