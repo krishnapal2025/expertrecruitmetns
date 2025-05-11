@@ -99,13 +99,25 @@ export async function handleCvDownload(
         const uploadsDir = path.resolve('./uploads');
         let cvPath = '';
         
-        // Normalize the path - handle both relative and absolute paths
-        if (resumePath.startsWith('/') || resumePath.startsWith('./')) {
-          // Path is already relative to root or absolute
+        // Normalize the path and handle all path cases more robustly
+        if (path.isAbsolute(resumePath)) {
+          // Absolute path - use as is, with security check later
+          cvPath = resumePath;
+        } else if (resumePath.startsWith('./') || resumePath.startsWith('../')) {
+          // Relative path with explicit notation
           cvPath = path.resolve(resumePath);
         } else {
-          // Path is just a filename, assume it's in uploads directory
-          cvPath = path.resolve(path.join('./uploads', resumePath));
+          // Treat as a filename in uploads directory
+          if (resumePath.includes('uploads/')) {
+            // Already has uploads in path but not at start
+            cvPath = path.resolve(resumePath);
+          } else if (resumePath.includes('/')) {
+            // Has some directory structure but not uploads
+            cvPath = path.resolve('./uploads', resumePath);
+          } else {
+            // Just a filename
+            cvPath = path.resolve('./uploads/resumes', resumePath);
+          }
         }
         
         console.log('Root directory:', rootDir);
@@ -211,28 +223,66 @@ export async function handleCvDownload(
           console.log('Streaming file to response...');
           
           try {
-            // Read the file and send it
+            // Track file access attempts for debugging
+            console.log(`Attempting to access file with current process permissions. User: ${process.getuid?.() || 'unknown'}`);
+            
+            // Check detailed file permissions
+            try {
+              const permissions = fs.statSync(cvPath).mode.toString(8);
+              console.log(`File permissions: ${permissions}`);
+            } catch (permError) {
+              console.error('Error checking file permissions:', permError);
+            }
+            
+            // Read the file and send it buffered
             const fileBuffer = fs.readFileSync(cvPath);
+            console.log(`Successfully read file into buffer, size: ${fileBuffer.length} bytes`);
+            
+            // Send the buffer to the response
             res.send(fileBuffer);
             console.log('File sent successfully!');
             return;
           } catch (readError) {
             console.error('Error reading file:', readError);
             
-            // If reading fails, fall back to streaming
-            console.log('Falling back to streaming method...');
-            const fileStream = fs.createReadStream(cvPath);
-            
-            // Handle stream errors
-            fileStream.on('error', (err) => {
-              console.error('Error streaming file:', err);
-              if (!res.headersSent) {
-                res.status(500).json({ message: "Error streaming file" });
+            // Try alternate methods with more detailed reporting
+            try {
+              // If reading fails, analyze directory contents
+              const dirPath = path.dirname(cvPath);
+              console.log(`Examining directory ${dirPath}...`);
+              
+              if (fs.existsSync(dirPath)) {
+                const dirEntries = fs.readdirSync(dirPath);
+                console.log(`Directory contains ${dirEntries.length} entries`);
+                console.log('Directory entries:', dirEntries);
+                
+                const targetFile = path.basename(cvPath);
+                const foundTarget = dirEntries.includes(targetFile);
+                console.log(`Target file ${targetFile} found in directory: ${foundTarget}`);
+              } else {
+                console.log(`Directory ${dirPath} does not exist`);
               }
-            });
-            
-            // Send the file
-            fileStream.pipe(res);
+              
+              // Fall back to streaming
+              console.log('Falling back to streaming method...');
+              const fileStream = fs.createReadStream(cvPath);
+              
+              // Handle stream errors
+              fileStream.on('error', (err) => {
+                console.error('Error streaming file:', err);
+                if (!res.headersSent) {
+                  res.status(500).json({ message: "Error streaming file" });
+                }
+              });
+              
+              // Send the file
+              fileStream.pipe(res);
+            } catch (fallbackError) {
+              console.error('Error in fallback handling:', fallbackError);
+              if (!res.headersSent) {
+                res.status(500).json({ message: "Failed to retrieve CV file" });
+              }
+            }
           }
           return;
         } else {
