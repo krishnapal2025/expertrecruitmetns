@@ -1571,6 +1571,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Download the original CV for a job application
   app.get("/api/applications/:id/download-cv", async (req, res) => {
     try {
+      console.log(`CV download request received for application ID: ${req.params.id}`);
+      
+      // Debug logged-in user
+      console.log("User authenticated:", req.isAuthenticated());
+      if (req.isAuthenticated() && req.user) {
+        console.log("User type:", req.user.userType);
+        console.log("User ID:", req.user.id);
+      }
+      
       // Use the dedicated service to handle the CV download
       await handleCvDownload(req, res, storage);
     } catch (error) {

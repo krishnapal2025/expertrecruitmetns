@@ -5,6 +5,16 @@ import { DatabaseStorage } from './storage';
 import { Readable } from 'stream';
 import PDFKit from 'pdfkit';
 
+// Add uploads directory if it doesn't exist
+try {
+  if (!fs.existsSync('./uploads')) {
+    fs.mkdirSync('./uploads', { recursive: true });
+    console.log('Created uploads directory');
+  }
+} catch (err) {
+  console.error('Error checking/creating uploads directory:', err);
+}
+
 /**
  * Handles downloading the original CV file for a job application
  * @param req The request object
