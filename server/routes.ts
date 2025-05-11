@@ -945,10 +945,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Job not found" });
       }
 
-      // Get jobseeker profile
-      const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+      // Get jobseeker profile or create one if it doesn't exist
+      let jobSeeker = await storage.getJobSeekerByUserId(user.id);
+      
+      // If profile doesn't exist, create a basic one using information from the application
       if (!jobSeeker) {
-        return res.status(404).json({ message: "Job seeker profile not found" });
+        console.log(`Creating job seeker profile for user ID ${user.id}`);
+        try {
+          let profileData = {
+            userId: user.id,
+            firstName: user.firstName || (req.body.additionalData && JSON.parse(req.body.additionalData).fullName ? JSON.parse(req.body.additionalData).fullName.split(' ')[0] : ''),
+            lastName: user.lastName || (req.body.additionalData && JSON.parse(req.body.additionalData).fullName ? JSON.parse(req.body.additionalData).fullName.split(' ').slice(1).join(' ') : ''),
+            gender: '',
+            dateOfBirth: '',
+            country: 'United Arab Emirates',
+            phoneNumber: req.body.additionalData && JSON.parse(req.body.additionalData).phone ? JSON.parse(req.body.additionalData).phone : '',
+            cvPath: null
+          };
+          
+          jobSeeker = await storage.createJobSeeker(profileData);
+          console.log(`Created job seeker profile with ID ${jobSeeker.id}`);
+        } catch (error) {
+          console.error("Error creating job seeker profile:", error);
+          return res.status(500).json({ message: "Failed to create job seeker profile" });
+        }
       }
 
       // Check if already applied
@@ -1061,7 +1081,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Get jobseeker profile
         const jobSeeker = await storage.getJobSeekerByUserId(user.id);
         if (!jobSeeker) {
-          return res.status(404).json({ message: "Job seeker profile not found" });
+          console.log(`No job seeker profile found for user ID ${user.id}, returning empty applications array`);
+          return res.json([]);
         }
 
         // Get all applications for this jobseeker
@@ -1788,8 +1809,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else if (user.userType === "jobseeker") {
         // Get jobseeker profile
         const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+        
+        // If profile doesn't exist yet, return empty array instead of 404 error
         if (!jobSeeker) {
-          return res.status(404).json({ message: "Job seeker profile not found" });
+          console.log(`No job seeker profile found for user ID ${user.id}, returning empty applications array`);
+          return res.json({
+            applications: [],
+            lastId: realtimeStore.lastApplicationId
+          });
         }
 
         // Get all applications for this jobseeker
