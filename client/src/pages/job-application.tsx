@@ -97,10 +97,10 @@ export default function JobApplicationPage() {
   const form = useForm<ApplicationFormValues>({
     resolver: zodResolver(ApplicationFormSchema),
     defaultValues: {
-      fullName: currentUser && currentUser.user.userType === "jobseeker" ? 
-        `${(currentUser.profile as any).firstName} ${(currentUser.profile as any).lastName}` : "",
+      fullName: currentUser && currentUser.user.userType === "jobseeker" && currentUser.profile ? 
+        `${currentUser.profile.firstName || ''} ${currentUser.profile.lastName || ''}`.trim() : "",
       email: currentUser ? currentUser.user.email : "",
-      phone: currentUser ? currentUser.profile.phoneNumber || "" : "",
+      phone: currentUser && currentUser.profile ? currentUser.profile.phoneNumber || "" : "",
       coverLetter: "",
       currentPosition: "",
       yearsOfExperience: "",
@@ -314,7 +314,7 @@ export default function JobApplicationPage() {
     <>
       <Helmet>
         <title>Apply for {job.title} | Expert Recruitments LLC</title>
-        <meta name="description" content={`Apply for ${job.title} at ${employer.companyName}. Fill out our application form to be considered for this position.`} />
+        <meta name="description" content={`Apply for ${job.title}${employer ? ` at ${employer.companyName}` : ''}. Fill out our application form to be considered for this position.`} />
       </Helmet>
       
       <div className="bg-primary/10 py-8">
@@ -334,7 +334,7 @@ export default function JobApplicationPage() {
                   <h3 className="text-xl font-bold mb-2">{job.title}</h3>
                   <div className="flex items-center mb-3">
                     <Building className="h-4 w-4 text-gray-500 mr-2" />
-                    <span className="text-gray-700">{employer.companyName}</span>
+                    <span className="text-gray-700">{employer ? employer.companyName : 'This Company'}</span>
                   </div>
                   <div className="space-y-4 mt-4">
                     <div className="flex items-center">
@@ -364,7 +364,7 @@ export default function JobApplicationPage() {
                   <div className="flex items-start">
                     <Info className="h-4 w-4 text-primary mr-2 mt-1" />
                     <p className="text-sm text-gray-600">
-                      Your application will be sent directly to the hiring manager at {employer.companyName}.
+                      Your application will be sent directly to the hiring manager{employer ? ` at ${employer.companyName}` : ''}.
                     </p>
                   </div>
                 </CardContent>
@@ -766,7 +766,7 @@ export default function JobApplicationPage() {
                               </div>
                               <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Submitted!</h3>
                               <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                                Your application for <span className="font-semibold">{job.title}</span> at <span className="font-semibold">{employer.companyName}</span> has been successfully submitted.
+                                Your application for <span className="font-semibold">{job.title}</span>{employer ? ` at <span className="font-semibold">${employer.companyName}</span>` : ''} has been successfully submitted.
                               </p>
                               
                               <Card className="max-w-md mx-auto bg-gray-50 border mb-6">
