@@ -2333,6 +2333,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete an application (for employers, job seekers, and admins)
+  app.delete("/api/applications/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to delete an application" });
+      }
+
+      const user = req.user;
+      if (user.userType !== "employer" && user.userType !== "admin" && user.userType !== "super_admin" && user.userType !== "jobseeker") {
+        return res.status(403).json({ message: "Only employers, job seekers, or admins can delete applications" });
+      }
+
+      const applicationId = parseInt(req.params.id);
+      if (isNaN(applicationId)) {
+        return res.status(400).json({ message: "Invalid application ID" });
+      }
+
+      // Get the application
+      const application = await storage.getApplication(applicationId);
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      // Authorization check based on user type
+      if (user.userType === "employer") {
+        // Employers can only delete applications for their own jobs
+        const employer = await storage.getEmployerByUserId(user.id);
+        if (!employer) {
+          return res.status(404).json({ message: "Employer profile not found" });
+        }
+        
+        const job = await storage.getJob(application.jobId);
+        if (!job || (job.employerId && job.employerId !== employer.id)) {
+          return res.status(403).json({ message: "You can only delete applications to your own jobs" });
+        }
+      } else if (user.userType === "jobseeker") {
+        // Job seekers can only delete their own applications
+        const jobSeeker = await storage.getJobSeekerByUserId(user.id);
+        if (!jobSeeker) {
+          return res.status(404).json({ message: "Job seeker profile not found" });
+        }
+        
+        if (application.jobSeekerId !== jobSeeker.id) {
+          return res.status(403).json({ message: "You can only delete your own applications" });
+        }
+      }
+      // Admin users can delete any application
+
+      // Delete the application
+      const success = await storage.deleteApplication(application.id);
+
+      if (success) {
+        res.status(200).json({ success: true, message: "Application deleted successfully" });
+      } else {
+        res.status(500).json({ message: "Failed to delete application" });
+      }
+    } catch (error) {
+      console.error("Error deleting application:", error);
+      res.status(500).json({ message: "An error occurred while deleting the application" });
+    }
+  });
+
   // Get all testimonials
   app.get("/api/testimonials", async (req, res) => {
     try {
