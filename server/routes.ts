@@ -1708,6 +1708,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Job seeker not found" });
       }
       
+      // Get the user data to access the email
+      const userData = await storage.getUser(jobSeeker.userId);
+      const jobSeekerEmail = userData ? userData.email : null;
+      console.log('Job seeker email retrieved:', jobSeekerEmail);
+      
       // Get job details
       const job = await storage.getJob(application.jobId);
       if (!job) {
@@ -2019,11 +2024,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   <div class="contact-info">
                     <div class="contact-item">
                       <div class="contact-icon">📱</div>
-                      <div class="contact-value">${jobSeeker.phoneNumber || application.phone || 'Not provided'}</div>
+                      <div class="contact-value">${jobSeeker.phoneNumber || 'Not provided'}</div>
                     </div>
                     <div class="contact-item">
                       <div class="contact-icon">✉️</div>
-                      <div class="contact-value">${application.email || jobSeeker.email || 'Not provided'}</div>
+                      <div class="contact-value">${jobSeekerEmail || 'Not provided'}</div>
                     </div>
                   </div>
                 </div>
