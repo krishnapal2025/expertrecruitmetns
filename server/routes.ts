@@ -1876,6 +1876,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 display: flex;
                 gap: 10px;
               }
+              .skills-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-top: 5px;
+              }
+              .skill-tag {
+                display: inline-block;
+                padding: 6px 12px;
+                background-color: #e0f2fe;
+                color: #0369a1;
+                border-radius: 4px;
+                font-size: 14px;
+                font-weight: 500;
+              }
+              .education-item {
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid #e2e8f0;
+              }
+              .education-item:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+              }
+              .edu-degree {
+                font-weight: 600;
+                font-size: 15px;
+                color: #1f2937;
+              }
+              .edu-school {
+                font-size: 14px;
+                color: #4b5563;
+                margin: 2px 0;
+              }
+              .edu-date {
+                font-size: 13px;
+                color: #6b7280;
+              }
               .download-button {
                 display: inline-block;
                 padding: 8px 16px;
@@ -2023,8 +2062,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
               </div>
               
               <div class="resume-preview">
+                <!-- Professional Profile Section -->
                 <div class="section">
-                  <div class="section-title">Resume Preview</div>
+                  <div class="section-title">Professional Profile</div>
+                  
+                  <!-- Professional Headline -->
+                  ${jobSeeker.headline ? `
+                  <div class="field">
+                    <div class="field-label">Professional Headline</div>
+                    <div class="field-value">${jobSeeker.headline}</div>
+                  </div>` : ''}
+                  
+                  <!-- Bio/Summary -->
+                  ${jobSeeker.bio ? `
+                  <div class="field">
+                    <div class="field-label">Professional Summary</div>
+                    <div class="field-value">${jobSeeker.bio}</div>
+                  </div>` : ''}
+                  
+                  <!-- Skills Section -->
+                  ${jobSeeker.skills ? `
+                  <div class="field">
+                    <div class="field-label">Skills</div>
+                    <div class="field-value skills-container">
+                      ${Array.isArray(jobSeeker.skills) ? 
+                        jobSeeker.skills.map(skill => 
+                          `<span class="skill-tag">${skill}</span>`
+                        ).join('') :
+                        typeof jobSeeker.skills === 'string' ?
+                          jobSeeker.skills.split(',').map(skill => 
+                            `<span class="skill-tag">${skill.trim()}</span>`
+                          ).join('') :
+                          'No skills provided'
+                      }
+                    </div>
+                  </div>` : ''}
+                  
+                  <!-- Experience Section -->
+                  ${jobSeeker.experience ? `
+                  <div class="field">
+                    <div class="field-label">Work Experience</div>
+                    <div class="field-value">
+                      ${jobSeeker.experience}
+                    </div>
+                  </div>` : ''}
+                  
+                  <!-- Education Section -->
+                  ${Array.isArray(jobSeeker.education) && jobSeeker.education.length > 0 ? `
+                  <div class="field">
+                    <div class="field-label">Education</div>
+                    <div class="field-value">
+                      ${Array.isArray(jobSeeker.education) ? 
+                        jobSeeker.education.map(edu => 
+                          `<div class="education-item">
+                            <div class="edu-degree">${edu.degree || ''}</div>
+                            <div class="edu-school">${edu.institution || ''}</div>
+                            <div class="edu-date">${edu.startDate || ''} - ${edu.endDate || 'Present'}</div>
+                          </div>`
+                        ).join('') : ''}
+                    </div>
+                  </div>` : ''}
+                </div>
+                
+                <!-- Resume Preview Section -->
+                <div class="section">
+                  <div class="section-title">Resume Document</div>
                   ${fileExists && isPdf ? 
                     `<iframe src="/api/applications/${application.id}/download-cv?preview=true" type="application/pdf" class="resume-frame" width="100%" height="600px" style="border: 1px solid #e2e8f0; border-radius: 4px;"></iframe>` : 
                     (fileExists ? 
