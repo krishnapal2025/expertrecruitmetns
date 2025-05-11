@@ -42,14 +42,26 @@ export default function JobApplyForm({ jobId, jobTitle, employerName, onSuccess 
   // Job application mutation
   const applicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormValues & { fileData?: File }) => {
+      console.log("Starting application mutation with data", { 
+        coverLetter: data.coverLetter,
+        hasFile: !!data.fileData,
+        fileName: data.fileData?.name || 'none'
+      });
+      
       // Create FormData for file upload
       const formData = new FormData();
       formData.append("coverLetter", data.coverLetter);
       
       // Add resume file if provided
       if (data.fileData) {
-        formData.append("resume", data.fileData);
+        // Make sure to use the original file name when appending to FormData
+        formData.append("resume", data.fileData, data.fileData.name);
+        console.log("Resume attached to FormData:", data.fileData.name, 
+                    "Size:", data.fileData.size, 
+                    "Type:", data.fileData.type);
       }
+      
+      console.log("Sending application to server endpoint:", `/api/jobs/${jobId}/apply`);
       
       // Send application data with file to server
       const res = await fetch(`/api/jobs/${jobId}/apply`, {
@@ -58,11 +70,15 @@ export default function JobApplyForm({ jobId, jobTitle, employerName, onSuccess 
         credentials: "include",
       });
       
+      console.log("Server response status:", res.status);
+      
       if (!res.ok) {
-        const errorData = await res.json();
+        const errorData = await res.json().catch(() => ({ message: "Unknown server error" }));
+        console.error("Application submission error:", errorData);
         throw new Error(errorData.message || "Failed to submit application");
       }
       
+      console.log("Application submitted successfully");
       return res.json();
     },
     onSuccess: () => {
@@ -130,13 +146,27 @@ export default function JobApplyForm({ jobId, jobTitle, employerName, onSuccess 
   
   // Handle form submission
   const onSubmit = (data: ApplicationFormValues) => {
+    console.log("Job application form submission started");
     setIsUploading(true);
     
-    // Submit application with file if selected
+    // Validate resume file is selected
+    if (!fileData) {
+      toast({
+        title: "Resume Required",
+        description: "Please upload your resume/CV before submitting the application",
+        variant: "destructive",
+      });
+      setIsUploading(false);
+      return;
+    }
+    
+    console.log("Resume file validated, file size:", fileData.size, "bytes");
+    
+    // Submit application with file
     applicationMutation.mutate(
       { 
         ...data, 
-        fileData: fileData || undefined 
+        fileData: fileData 
       },
       {
         onSettled: () => {

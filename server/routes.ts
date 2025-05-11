@@ -925,24 +925,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Apply for a job (requires jobseeker authentication)
   app.post("/api/jobs/:id/apply", uploadResume, async (req, res) => {
     try {
+      console.log("Received job application request for job ID:", req.params.id);
+      
       if (!req.isAuthenticated()) {
+        console.error("Authentication required for job application");
         return res.status(401).json({ message: "You must be logged in to apply for a job" });
       }
 
       const user = req.user;
       if (user.userType !== "jobseeker") {
+        console.error("User type not authorized:", user.userType);
         return res.status(403).json({ message: "Only job seekers can apply for jobs" });
       }
 
       const jobId = parseInt(req.params.id);
       if (isNaN(jobId)) {
+        console.error("Invalid job ID format:", req.params.id);
         return res.status(400).json({ message: "Invalid job ID" });
       }
+
+      console.log("Processing application for job ID:", jobId, "by user ID:", user.id);
 
       // Validate the job exists
       const job = await storage.getJob(jobId);
       if (!job) {
+        console.error("Job not found with ID:", jobId);
         return res.status(404).json({ message: "Job not found" });
+      }
+      
+      // Log file information if received
+      if (req.file) {
+        console.log("Resume file received:", {
+          filename: req.file.filename,
+          originalname: req.file.originalname,
+          mimetype: req.file.mimetype,
+          size: req.file.size,
+          path: req.file.path
+        });
+      } else {
+        console.log("No resume file received with application");
       }
 
       // Get jobseeker profile or create one if it doesn't exist
