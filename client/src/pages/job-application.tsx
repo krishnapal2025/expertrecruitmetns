@@ -200,67 +200,84 @@ export default function JobApplicationPage() {
   // Job application mutation
   const applicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormValues) => {
-      console.log("Starting application submission...");
+      console.log("Starting application submission with data:", data);
       
-      // Create FormData for file uploads
-      const formData = new FormData();
-      
-      // Append basic form data
-      formData.append("coverLetter", data.coverLetter);
-      
-      // Append additional applicant data as JSON
-      const additionalData = {
-        fullName: data.fullName,
-        email: data.email,
-        phone: data.phone,
-        currentPosition: data.currentPosition,
-        yearsOfExperience: data.yearsOfExperience,
-        availableStartDate: data.availableStartDate,
-        salaryExpectation: data.salaryExpectation ? `${data.salaryExpectation} ${selectedCurrency}` : "",
-        heardAbout: data.heardAbout || "",
-        linkedinProfile: data.linkedinProfile || "",
-        portfolioUrl: data.portfolioUrl || "",
-        relocation: data.relocation,
-        referenceContacts: data.referenceContacts || "",
-        hasCvFile: !!cvFileName,
-        hasAdditionalDocuments: !!additionalFileName,
-      };
-      
-      console.log("Application additional data:", additionalData);
-      formData.append("additionalData", JSON.stringify(additionalData));
-      
-      // Add resume file if available
-      if (cvFile) {
-        console.log("Attaching resume file:", cvFileName);
-        formData.append("resume", cvFile);
-      } else {
-        console.error("No resume file available for upload");
-        throw new Error("Resume file is required");
-      }
-      
-      console.log("Sending application to server...");
-      
-      // Send application data to server with files
-      const res = await fetch(`/api/jobs/${jobId}/apply`, {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-      
-      if (!res.ok) {
-        console.error("Application submission error:", res.status);
-        let errorMsg = "Failed to submit application";
-        try {
-          const errorData = await res.json();
-          errorMsg = errorData.message || errorMsg;
-        } catch (e) {
-          console.error("Error parsing error response:", e);
+      try {
+        // Create FormData for file uploads
+        const formData = new FormData();
+        
+        // Append basic form data
+        formData.append("coverLetter", data.coverLetter);
+        
+        // Append additional applicant data as JSON
+        const additionalData = {
+          fullName: data.fullName,
+          email: data.email,
+          phone: data.phone,
+          currentPosition: data.currentPosition,
+          yearsOfExperience: data.yearsOfExperience,
+          availableStartDate: data.availableStartDate,
+          salaryExpectation: data.salaryExpectation ? `${data.salaryExpectation} ${selectedCurrency}` : "",
+          heardAbout: data.heardAbout || "",
+          linkedinProfile: data.linkedinProfile || "",
+          portfolioUrl: data.portfolioUrl || "",
+          relocation: data.relocation,
+          referenceContacts: data.referenceContacts || "",
+          hasCvFile: !!cvFileName,
+          hasAdditionalDocuments: !!additionalFileName,
+        };
+        
+        console.log("Application additional data:", additionalData);
+        formData.append("additionalData", JSON.stringify(additionalData));
+        
+        // Add resume file if available
+        if (cvFile) {
+          console.log("Attaching resume file:", cvFileName, "Size:", cvFile.size, "Type:", cvFile.type);
+          formData.append("resume", cvFile, cvFileName);
+          
+          // Log FormData contents for debugging
+          console.log("FormData resume filename:", cvFile.name);
+        } else {
+          console.error("No resume file available for upload");
+          throw new Error("Resume file is required");
         }
-        throw new Error(errorMsg);
+        
+        // Debug to ensure formData contains the file
+        console.log("FormData entries:");
+        for (const pair of formData.entries()) {
+          console.log(pair[0], pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]);
+        }
+        
+        console.log("Sending application to server at", `/api/jobs/${jobId}/apply`);
+        
+        // Send application data to server with files
+        const res = await fetch(`/api/jobs/${jobId}/apply`, {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        });
+        
+        console.log("Server response status:", res.status);
+        
+        if (!res.ok) {
+          console.error("Application submission error:", res.status);
+          let errorMsg = "Failed to submit application";
+          try {
+            const errorData = await res.json();
+            errorMsg = errorData.message || errorMsg;
+            console.error("Error details:", errorData);
+          } catch (e) {
+            console.error("Error parsing error response:", e);
+          }
+          throw new Error(errorMsg);
+        }
+        
+        console.log("Application submitted successfully");
+        return await res.json();
+      } catch (error) {
+        console.error("Error in mutation function:", error);
+        throw error; // Re-throw to let the mutation's onError handle it
       }
-      
-      console.log("Application submitted successfully");
-      return res.json();
     },
     onSuccess: () => {
       setIsSubmitting(false);
@@ -270,7 +287,7 @@ export default function JobApplicationPage() {
       toast({
         title: "Application Submitted",
         description: "Your job application has been successfully submitted!",
-        variant: "success",
+        variant: "default",
       });
       
       // Invalidate queries to refresh job applications data
@@ -302,6 +319,13 @@ export default function JobApplicationPage() {
   // Handle form submission
   const onSubmit = (formData: ApplicationFormValues) => {
     console.log("Form submission started", formData);
+    
+    // Prevent double submissions
+    if (isSubmitting || applicationMutation.isPending) {
+      console.log("Submission already in progress, ignoring duplicate request");
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
@@ -316,8 +340,13 @@ export default function JobApplicationPage() {
         return;
       }
       
+      console.log("CV file validated, proceeding with application submission");
+      
       // Process the application
       applicationMutation.mutate(formData);
+      
+      // Additional logging to track submission flow
+      console.log("Application mutation initiated");
     } catch (error) {
       console.error("Application submission error:", error);
       toast({
@@ -884,14 +913,19 @@ export default function JobApplicationPage() {
                                 </Button>
                                 
                                 <Button 
-                                  type="submit"
+                                  type="button"
+                                  onClick={form.handleSubmit(onSubmit)}
                                   disabled={isSubmitting || applicationMutation.isPending}
-                                  className="min-w-[120px]"
+                                  className="min-w-[120px] bg-primary hover:bg-primary/90"
                                 >
-                                  {(isSubmitting || applicationMutation.isPending) && (
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  {(isSubmitting || applicationMutation.isPending) ? (
+                                    <>
+                                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                      Submitting...
+                                    </>
+                                  ) : (
+                                    "Submit Application"
                                   )}
-                                  Submit Application
                                 </Button>
                               </div>
                             </div>
