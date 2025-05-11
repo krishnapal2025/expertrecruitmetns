@@ -2013,19 +2013,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   <div class="section-title">Applicant Information</div>
                   <div style="margin-bottom: 15px;">
                     <div class="field">
-                      <div class="field-label">Full Name</div>
-                      <div class="field-value" style="font-size: 18px; font-weight: 600; color: #1e40af;">${jobSeeker.firstName} ${jobSeeker.lastName}</div>
+                      <div class="field-value" style="font-size: 20px; font-weight: 600; color: #1e40af;">${jobSeeker.firstName} ${jobSeeker.lastName}</div>
                     </div>
                   </div>
                   <div class="contact-info">
                     <div class="contact-item">
                       <div class="contact-icon">📱</div>
-                      <div class="contact-label">Phone</div>
                       <div class="contact-value">${jobSeeker.phoneNumber || application.phone || 'Not provided'}</div>
                     </div>
                     <div class="contact-item">
                       <div class="contact-icon">✉️</div>
-                      <div class="contact-label">Email</div>
                       <div class="contact-value">${application.email || jobSeeker.email || 'Not provided'}</div>
                     </div>
                   </div>
@@ -2051,15 +2048,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
                     </div>
                   </div>
                   
-                  <!-- Resume Download Links -->
-                  ${resumePath ? `
-                  <div style="margin-top: 15px;">
-                    <div class="field-label">Resume</div>
-                    <div class="download-links">
-                      <a href="/api/applications/${application.id}/download-cv" class="download-button" target="_blank">Download Resume</a>
-                    </div>
-                  </div>
-                  ` : ''}
                 </div>
                 
                 ${Object.keys(additionalData).length > 0 ? `
@@ -2137,35 +2125,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               
               <!-- Right Column -->
               <div>
-                <!-- Download Resume Links -->
-                ${fileExists ? `
-                <div class="section">
-                  <div class="section-title">Resume Downloads</div>
-                  <div class="download-links" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-                    <a href="/api/applications/${application.id}/download-cv" class="download-button" style="padding: 8px 16px; background-color: #2a41e8; color: white; text-decoration: none; border-radius: 4px; font-weight: 500; display: inline-block;" target="_blank">
-                      <span style="display: flex; align-items: center; gap: 6px;">
-                        <span style="font-size: 14px;">📄</span> Download Original (${ext.replace('.', '').toUpperCase()})
-                      </span>
-                    </a>
-                    <a href="/api/applications/${application.id}/download-pdf" class="download-button" style="padding: 8px 16px; background-color: #2a41e8; color: white; text-decoration: none; border-radius: 4px; font-weight: 500; display: inline-block;" target="_blank">
-                      <span style="display: flex; align-items: center; gap: 6px;">
-                        <span style="font-size: 14px;">📄</span> Download as PDF
-                      </span>
-                    </a>
-                  </div>
-                  <div style="margin-top: 10px; font-size: 13px; color: #6b7280;">
-                    <span>Format: ${ext.replace('.', '').toUpperCase()} | ${fileSize ? `Size: ${(fileSize / (1024 * 1024)).toFixed(2)} MB` : ''}</span>
-                  </div>
-                </div>
-                ` : `
-                <div class="section">
-                  <div class="section-title">Resume Downloads</div>
-                  <div class="no-resume" style="display: flex; align-items: center; justify-content: center; height: 80px; background-color: #f8fafc; border-radius: 4px; border: 1px dashed #cbd5e1; margin: 15px 0;">
-                    <span style="color: #64748b; font-size: 14px;">No resume file available</span>
-                  </div>
-                </div>
-                `}
-                </div>
+                <!-- Intentionally left empty as per design requirements -->
+              </div>
               </div>
             </div>
           </body>
