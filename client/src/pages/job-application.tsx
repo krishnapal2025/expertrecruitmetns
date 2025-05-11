@@ -339,8 +339,14 @@ export default function JobApplicationPage() {
       
       console.log("CV file validated, proceeding with application submission");
       
-      // Process the application
-      applicationMutation.mutate(formData);
+      // Build data object with file data
+      const dataWithFile = {
+        ...formData,
+        fileData: cvFile
+      };
+      
+      // Process the application with file data included
+      applicationMutation.mutate(dataWithFile);
       
       // Additional logging to track submission flow
       console.log("Application mutation initiated");
@@ -910,13 +916,7 @@ export default function JobApplicationPage() {
                                 </Button>
                                 
                                 <Button 
-                                  type="button"
-                                  onClick={() => {
-                                    console.log("Submit button clicked!");
-                                    if (!isSubmitting && !applicationMutation.isPending) {
-                                      form.handleSubmit(onSubmit)();
-                                    }
-                                  }}
+                                  type="submit"
                                   disabled={isSubmitting || applicationMutation.isPending}
                                   className="min-w-[120px] bg-primary hover:bg-primary/90"
                                 >
