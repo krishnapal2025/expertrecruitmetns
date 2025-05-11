@@ -1788,6 +1788,51 @@ function AdminDashboard() {
                                     <SelectItem value="rejected">Rejected</SelectItem>
                                   </SelectContent>
                                 </Select>
+                                <div className="mt-2">
+                                  <Button 
+                                    variant="destructive" 
+                                    size="sm"
+                                    className="h-8"
+                                    onClick={() => {
+                                      if (window.confirm("Are you sure you want to delete this application? This action cannot be undone.")) {
+                                        // Will add mutation call here
+                                        const deleteApplication = async () => {
+                                          try {
+                                            const res = await fetch(`/api/applications/${application.id}`, {
+                                              method: 'DELETE',
+                                              headers: {
+                                                'Content-Type': 'application/json'
+                                              }
+                                            });
+                                            
+                                            if (!res.ok) {
+                                              throw new Error('Failed to delete application');
+                                            }
+                                            
+                                            // Success notification
+                                            toast({
+                                              title: "Application deleted",
+                                              description: "The job application has been deleted successfully",
+                                            });
+                                            
+                                            // Refresh the applications list
+                                            refetch();
+                                          } catch (error) {
+                                            toast({
+                                              title: "Failed to delete application",
+                                              description: error instanceof Error ? error.message : "An unknown error occurred",
+                                              variant: "destructive",
+                                            });
+                                          }
+                                        };
+                                        
+                                        deleteApplication();
+                                      }
+                                    }}
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-1" /> Delete
+                                  </Button>
+                                </div>
                               </TableCell>
                             </TableRow>
                           ))}
