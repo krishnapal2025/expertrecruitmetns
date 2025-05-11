@@ -70,6 +70,7 @@ export const applications = pgTable("applications", {
   appliedDate: timestamp("applied_date").defaultNow(),
   status: text("status").default("new"), // 'new', 'viewed', 'shortlisted', 'rejected'
   coverLetter: text("cover_letter"),
+  resumePath: text("resume_path"),  // Added to store CV file path for this application
 });
 
 // Testimonials table

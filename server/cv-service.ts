@@ -75,11 +75,14 @@ export async function handleCvDownload(
       return;
     }
     
-    // If job seeker has an actual CV uploaded, serve that
-    if (jobSeeker.cvPath) {
+    // First check if the application has a specific resumePath
+    let resumePath = application.resumePath || jobSeeker.cvPath;
+    
+    // If we have a resume path, serve that
+    if (resumePath) {
       try {
         // Print debugging information
-        console.log('CV path from database:', jobSeeker.cvPath);
+        console.log('Resume path from database:', resumePath);
         
         // Get absolute paths
         const rootDir = path.resolve('.');
@@ -87,12 +90,12 @@ export async function handleCvDownload(
         let cvPath = '';
         
         // Normalize the path - handle both relative and absolute paths
-        if (jobSeeker.cvPath.startsWith('/') || jobSeeker.cvPath.startsWith('./')) {
+        if (resumePath.startsWith('/') || resumePath.startsWith('./')) {
           // Path is already relative to root or absolute
-          cvPath = path.resolve(jobSeeker.cvPath);
+          cvPath = path.resolve(resumePath);
         } else {
           // Path is just a filename, assume it's in uploads directory
-          cvPath = path.resolve(path.join('./uploads', jobSeeker.cvPath));
+          cvPath = path.resolve(path.join('./uploads', resumePath));
         }
         
         console.log('Root directory:', rootDir);
