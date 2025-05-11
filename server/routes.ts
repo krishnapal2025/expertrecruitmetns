@@ -1781,9 +1781,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
                 line-height: 1.6;
                 color: #333;
-                max-width: 1200px;
+                max-width: 1000px;
                 margin: 0 auto;
                 padding: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
               }
               .header {
                 display: flex;
@@ -1792,6 +1795,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 border-bottom: 1px solid #e2e8f0;
                 padding-bottom: 15px;
                 margin-bottom: 20px;
+                width: 100%;
               }
               .company-name {
                 font-size: 24px;
@@ -1806,6 +1810,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 20px;
+                width: 100%;
               }
               .section {
                 background: #f9fafb;
