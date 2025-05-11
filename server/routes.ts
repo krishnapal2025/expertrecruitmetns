@@ -1915,6 +1915,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 font-size: 13px;
                 color: #6b7280;
               }
+              .experience-item {
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid #e2e8f0;
+              }
+              .experience-item:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+              }
+              .experience-text {
+                white-space: pre-wrap;
+              }
+              .exp-position {
+                font-weight: 600;
+                font-size: 15px;
+                color: #1f2937;
+                margin-bottom: 2px;
+              }
+              .exp-company {
+                font-weight: 500;
+                font-size: 14px;
+                color: #4b5563;
+              }
+              .exp-location {
+                font-size: 14px;
+                color: #6b7280;
+                margin-top: 2px;
+              }
+              .exp-date {
+                font-size: 13px;
+                color: #6b7280;
+                margin-top: 2px;
+                margin-bottom: 5px;
+              }
+              .exp-description {
+                font-size: 14px;
+                color: #4b5563;
+                white-space: pre-wrap;
+                margin-top: 5px;
+                line-height: 1.5;
+              }
               .download-button {
                 display: inline-block;
                 padding: 8px 16px;
@@ -2103,7 +2145,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   <div class="field">
                     <div class="field-label">Work Experience</div>
                     <div class="field-value">
-                      ${jobSeeker.experience}
+                      ${Array.isArray(jobSeeker.experience) ? 
+                        jobSeeker.experience.map(exp => 
+                          `<div class="experience-item">
+                            <div class="exp-position">${exp.position || exp.title || ''}</div>
+                            <div class="exp-company">${exp.company || ''}</div>
+                            <div class="exp-location">${exp.location || ''}</div>
+                            <div class="exp-date">${exp.startDate || ''} - ${exp.endDate || 'Present'}</div>
+                            ${exp.description ? `<div class="exp-description">${exp.description}</div>` : ''}
+                          </div>`
+                        ).join('') : 
+                        typeof jobSeeker.experience === 'string' ? 
+                          `<div class="experience-text">${jobSeeker.experience}</div>` : 
+                          'No experience provided'}
                     </div>
                   </div>` : ''}
                   
