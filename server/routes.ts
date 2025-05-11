@@ -2010,45 +2010,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
               <div>
                 <!-- Contact Information (Highlighted) -->
                 <div class="highlight-section">
-                  <div class="section-title">Applicant Contact Information</div>
+                  <div class="section-title">Applicant Information</div>
+                  <div style="margin-bottom: 15px;">
+                    <div class="field">
+                      <div class="field-label">Full Name</div>
+                      <div class="field-value" style="font-size: 18px; font-weight: 600; color: #1e40af;">${jobSeeker.firstName} ${jobSeeker.lastName}</div>
+                    </div>
+                  </div>
                   <div class="contact-info">
                     <div class="contact-item">
                       <div class="contact-icon">📱</div>
                       <div class="contact-label">Phone</div>
-                      <div class="contact-value">${application.phone || 'Not provided'}</div>
+                      <div class="contact-value">${jobSeeker.phoneNumber || application.phone || 'Not provided'}</div>
                     </div>
                     <div class="contact-item">
                       <div class="contact-icon">✉️</div>
                       <div class="contact-label">Email</div>
-                      <div class="contact-value">${application.email}</div>
+                      <div class="contact-value">${application.email || jobSeeker.email || 'Not provided'}</div>
                     </div>
-                  </div>
-                  <div style="margin-top: 15px;">
-                    <div class="field">
-                      <div class="field-label">Full Name</div>
-                      <div class="field-value" style="font-size: 16px; font-weight: 600;">${jobSeeker.firstName} ${jobSeeker.lastName}</div>
-                    </div>
-                    <div class="field">
-                      <div class="field-label">Location</div>
-                      <div class="field-value">${jobSeeker.location || 'Not provided'}</div>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Skills Section (Highlighted) -->
-                <div class="highlight-section">
-                  <div class="section-title">Skills</div>
-                  <div class="skills-container">
-                    ${Array.isArray(jobSeeker.skills) ? 
-                      jobSeeker.skills.map(skill => 
-                        `<span class="skill-tag">${skill}</span>`
-                      ).join('') :
-                      typeof jobSeeker.skills === 'string' ?
-                        jobSeeker.skills.split(',').map(skill => 
-                          `<span class="skill-tag">${skill.trim()}</span>`
-                        ).join('') :
-                        '<div class="field-value">No skills provided</div>'
-                    }
                   </div>
                 </div>
                 
@@ -2158,107 +2137,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
               
               <!-- Right Column -->
               <div>
-                <!-- Professional Profile Section -->
+                <!-- Download Resume Links -->
+                ${fileExists ? `
                 <div class="section">
-                  <div class="section-title">Professional Profile</div>
-                  
-                  <!-- Professional Headline -->
-                  ${jobSeeker.headline ? `
-                  <div class="field">
-                    <div class="field-label">Professional Headline</div>
-                    <div class="field-value">${jobSeeker.headline}</div>
-                  </div>` : ''}
-                  
-                  <!-- Bio/Summary -->
-                  ${jobSeeker.bio ? `
-                  <div class="field">
-                    <div class="field-label">Professional Summary</div>
-                    <div class="field-value">${jobSeeker.bio}</div>
-                  </div>` : ''}
-                  
-                  <!-- Skills Section -->
-                  ${jobSeeker.skills ? `
-                  <div class="field">
-                    <div class="field-label">Skills</div>
-                    <div class="field-value skills-container">
-                      ${Array.isArray(jobSeeker.skills) ? 
-                        jobSeeker.skills.map(skill => 
-                          `<span class="skill-tag">${skill}</span>`
-                        ).join('') :
-                        typeof jobSeeker.skills === 'string' ?
-                          jobSeeker.skills.split(',').map(skill => 
-                            `<span class="skill-tag">${skill.trim()}</span>`
-                          ).join('') :
-                          'No skills provided'
-                      }
-                    </div>
-                  </div>` : ''}
-                  
-                  <!-- Experience Section -->
-                  ${jobSeeker.experience ? `
-                  <div class="field">
-                    <div class="field-label">Work Experience</div>
-                    <div class="field-value">
-                      ${Array.isArray(jobSeeker.experience) ? 
-                        jobSeeker.experience.map(exp => 
-                          `<div class="experience-item">
-                            <div class="exp-position">${exp.position || exp.title || ''}</div>
-                            <div class="exp-company">${exp.company || ''}</div>
-                            <div class="exp-location">${exp.location || ''}</div>
-                            <div class="exp-date">${exp.startDate || ''} - ${exp.endDate || 'Present'}</div>
-                            ${exp.description ? `<div class="exp-description">${exp.description}</div>` : ''}
-                          </div>`
-                        ).join('') : 
-                        typeof jobSeeker.experience === 'string' ? 
-                          `<div class="experience-text">${jobSeeker.experience}</div>` : 
-                          'No experience provided'}
-                    </div>
-                  </div>` : ''}
-                  
-                  <!-- Education Section -->
-                  ${Array.isArray(jobSeeker.education) && jobSeeker.education.length > 0 ? `
-                  <div class="field">
-                    <div class="field-label">Education</div>
-                    <div class="field-value">
-                      ${Array.isArray(jobSeeker.education) ? 
-                        jobSeeker.education.map(edu => 
-                          `<div class="education-item">
-                            <div class="edu-degree">${edu.degree || ''}</div>
-                            <div class="edu-school">${edu.institution || ''}</div>
-                            <div class="edu-date">${edu.startDate || ''} - ${edu.endDate || 'Present'}</div>
-                          </div>`
-                        ).join('') : ''}
-                    </div>
-                  </div>` : ''}
-                  
-                  <!-- Download Resume Links -->
-                  ${fileExists ? `
-                  <div class="field" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
-                    <div class="field-label">Resume Documents</div>
-                    <div class="download-links" style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
-                      <a href="/api/applications/${application.id}/download-cv" class="download-button" style="padding: 8px 16px; background-color: #2a41e8; color: white; text-decoration: none; border-radius: 4px; font-weight: 500; display: inline-block;" target="_blank">
-                        <span style="display: flex; align-items: center; gap: 6px;">
-                          <span style="font-size: 14px;">📄</span> Download Original (${ext.replace('.', '').toUpperCase()})
-                        </span>
-                      </a>
-                      <a href="/api/applications/${application.id}/download-pdf" class="download-button" style="padding: 8px 16px; background-color: #2a41e8; color: white; text-decoration: none; border-radius: 4px; font-weight: 500; display: inline-block;" target="_blank">
-                        <span style="display: flex; align-items: center; gap: 6px;">
-                          <span style="font-size: 14px;">📄</span> Download as PDF
-                        </span>
-                      </a>
-                    </div>
-                    <div style="margin-top: 10px; font-size: 13px; color: #6b7280;">
-                      <span>Format: ${ext.replace('.', '').toUpperCase()} | ${fileSize ? `Size: ${(fileSize / (1024 * 1024)).toFixed(2)} MB` : ''}</span>
-                    </div>
+                  <div class="section-title">Resume Downloads</div>
+                  <div class="download-links" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <a href="/api/applications/${application.id}/download-cv" class="download-button" style="padding: 8px 16px; background-color: #2a41e8; color: white; text-decoration: none; border-radius: 4px; font-weight: 500; display: inline-block;" target="_blank">
+                      <span style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 14px;">📄</span> Download Original (${ext.replace('.', '').toUpperCase()})
+                      </span>
+                    </a>
+                    <a href="/api/applications/${application.id}/download-pdf" class="download-button" style="padding: 8px 16px; background-color: #2a41e8; color: white; text-decoration: none; border-radius: 4px; font-weight: 500; display: inline-block;" target="_blank">
+                      <span style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 14px;">📄</span> Download as PDF
+                      </span>
+                    </a>
                   </div>
-                  ` : `
-                  <div class="field" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
-                    <div class="field-label">Resume Documents</div>
-                    <div class="no-resume" style="display: flex; align-items: center; justify-content: center; height: 80px; background-color: #f8fafc; border-radius: 4px; border: 1px dashed #cbd5e1; margin: 10px 0;">
-                      <span style="color: #64748b; font-size: 14px;">No resume file available</span>
-                    </div>
+                  <div style="margin-top: 10px; font-size: 13px; color: #6b7280;">
+                    <span>Format: ${ext.replace('.', '').toUpperCase()} | ${fileSize ? `Size: ${(fileSize / (1024 * 1024)).toFixed(2)} MB` : ''}</span>
                   </div>
-                  `}
+                </div>
+                ` : `
+                <div class="section">
+                  <div class="section-title">Resume Downloads</div>
+                  <div class="no-resume" style="display: flex; align-items: center; justify-content: center; height: 80px; background-color: #f8fafc; border-radius: 4px; border: 1px dashed #cbd5e1; margin: 15px 0;">
+                    <span style="color: #64748b; font-size: 14px;">No resume file available</span>
+                  </div>
+                </div>
+                `}
                 </div>
               </div>
             </div>
