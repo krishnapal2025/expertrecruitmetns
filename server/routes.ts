@@ -978,25 +978,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Handle uploaded resume file if present
+      let resumePath = null;
       if (req.file) {
         // Get the uploaded file path
         const cvFilename = req.file.filename;
-        const cvPath = getUploadedFilePath(cvFilename, 'resume');
+        resumePath = getUploadedFilePath(cvFilename, 'resume');
         
         // Update jobSeeker profile with new CV path if CV was uploaded
         await storage.updateJobSeeker(jobSeeker.id, {
           ...jobSeeker,
-          cvPath
+          cvPath: resumePath
         });
         
         console.log(`Resume uploaded: ${cvFilename} for job seeker ID ${jobSeeker.id}`);
+      } else if (jobSeeker.cvPath) {
+        // Use existing CV path from job seeker profile if available
+        resumePath = jobSeeker.cvPath;
+        console.log(`Using existing resume path for job seeker ID ${jobSeeker.id}: ${resumePath}`);
       }
 
       // Create the application
       const application = await storage.createApplication({
         jobId,
         jobSeekerId: jobSeeker.id,
-        coverLetter
+        coverLetter,
+        resumePath
       });
 
       // Update real-time store for application tracking
