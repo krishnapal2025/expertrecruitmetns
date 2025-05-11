@@ -1696,13 +1696,25 @@ function AdminDashboard() {
                               </TableCell>
                               <TableCell>
                                 {application.resumePath ? (
-                                  <div className="flex flex-wrap gap-2">
+                                  <div className="flex flex-col gap-1">
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm"
+                                      onClick={() => {
+                                        window.open(`/api/applications/${application.id}/resume`, '_blank');
+                                      }}
+                                      className="text-xs h-7 px-2 w-full"
+                                    >
+                                      <FileText className="h-3.5 w-3.5 mr-1" />
+                                      Preview
+                                    </Button>
+                                    
                                     <DropdownMenu>
                                       <DropdownMenuTrigger asChild>
                                         <Button 
                                           variant="outline" 
                                           size="sm"
-                                          className="text-xs h-7 px-2"
+                                          className="text-xs h-7 px-2 w-full"
                                         >
                                           <Download className="h-3.5 w-3.5 mr-1" />
                                           Download
@@ -1733,18 +1745,6 @@ function AdminDashboard() {
                                         </DropdownMenuItem>
                                       </DropdownMenuContent>
                                     </DropdownMenu>
-                                    
-                                    <Button 
-                                      variant="outline" 
-                                      size="sm"
-                                      onClick={() => {
-                                        window.open(`/api/applications/${application.id}/resume`, '_blank');
-                                      }}
-                                      className="text-xs h-7 px-2"
-                                    >
-                                      <FileText className="h-3.5 w-3.5 mr-1" />
-                                      Preview
-                                    </Button>
                                   </div>
                                 ) : (
                                   <span className="text-muted-foreground">No Resume</span>
@@ -1768,34 +1768,34 @@ function AdminDashboard() {
                                 </Badge>
                               </TableCell>
                               <TableCell className="text-right">
-                                <Select 
-                                  defaultValue={application.status}
-                                  onValueChange={(value) => {
-                                    updateApplicationStatusMutation.mutate({
-                                      id: application.id,
-                                      status: value
-                                    });
-                                  }}
-                                >
-                                  <SelectTrigger className="h-8 w-32">
-                                    <SelectValue placeholder="Update Status" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="new">New</SelectItem>
-                                    <SelectItem value="viewed">Viewed</SelectItem>
-                                    <SelectItem value="shortlisted">Shortlisted</SelectItem>
-                                    <SelectItem value="hired">Hired</SelectItem>
-                                    <SelectItem value="rejected">Rejected</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <div className="mt-2">
+                                <div className="flex flex-col gap-2 items-end">
+                                  <Select 
+                                    defaultValue={application.status}
+                                    onValueChange={(value) => {
+                                      updateApplicationStatusMutation.mutate({
+                                        id: application.id,
+                                        status: value
+                                      });
+                                    }}
+                                  >
+                                    <SelectTrigger className="h-8 w-32">
+                                      <SelectValue placeholder="Update Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="new">New</SelectItem>
+                                      <SelectItem value="viewed">Viewed</SelectItem>
+                                      <SelectItem value="shortlisted">Shortlisted</SelectItem>
+                                      <SelectItem value="hired">Hired</SelectItem>
+                                      <SelectItem value="rejected">Rejected</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  
                                   <Button 
                                     variant="destructive" 
                                     size="sm"
-                                    className="h-8"
+                                    className="h-8 w-32"
                                     onClick={() => {
                                       if (window.confirm("Are you sure you want to delete this application? This action cannot be undone.")) {
-                                        // Will add mutation call here
                                         const deleteApplication = async () => {
                                           try {
                                             const res = await fetch(`/api/applications/${application.id}`, {
@@ -1809,14 +1809,12 @@ function AdminDashboard() {
                                               throw new Error('Failed to delete application');
                                             }
                                             
-                                            // Success notification
                                             toast({
                                               title: "Application deleted",
                                               description: "The job application has been deleted successfully",
                                             });
                                             
-                                            // Refresh the applications list
-                                            refetch();
+                                            refetchApplications();
                                           } catch (error) {
                                             toast({
                                               title: "Failed to delete application",
