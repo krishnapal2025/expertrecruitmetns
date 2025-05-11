@@ -1798,20 +1798,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 font-size: 14px;
               }
               .container {
-                display: flex;
-                flex-wrap: wrap;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
                 gap: 20px;
-              }
-              .details {
-                flex: 1;
-                min-width: 300px;
-              }
-              .resume-preview {
-                flex: 2;
-                min-width: 500px;
               }
               .section {
                 background: #f9fafb;
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+              }
+              .highlight-section {
+                background: #e0f2fe;
                 border-radius: 8px;
                 padding: 20px;
                 margin-bottom: 20px;
@@ -1865,12 +1864,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 background-color: #dbeafe;
                 color: #1e40af;
               }
-              iframe {
-                width: 100%;
-                height: 600px;
-                border: 1px solid #e2e8f0;
-                border-radius: 8px;
-              }
               .download-links {
                 margin-top: 20px;
                 display: flex;
@@ -1885,11 +1878,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
               .skill-tag {
                 display: inline-block;
                 padding: 6px 12px;
-                background-color: #e0f2fe;
-                color: #0369a1;
+                background-color: #dbeafe;
+                color: #1e40af;
                 border-radius: 4px;
                 font-size: 14px;
                 font-weight: 500;
+              }
+              .contact-info {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+              }
+              .contact-item {
+                padding: 15px;
+                background-color: #f3f4f6;
+                border-radius: 6px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+              }
+              .contact-icon {
+                font-size: 24px;
+                margin-bottom: 8px;
+                color: #2563eb;
+              }
+              .contact-label {
+                font-size: 13px;
+                color: #6b7280;
+                margin-bottom: 4px;
+              }
+              .contact-value {
+                font-weight: 600;
+                font-size: 16px;
+                color: #1f2937;
+                word-break: break-word;
+                text-align: center;
               }
               .education-item {
                 margin-bottom: 15px;
@@ -1971,14 +1994,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
               .download-button:hover {
                 background-color: #1d4ed8;
               }
-              .no-resume {
-                padding: 40px;
-                text-align: center;
-                background-color: #f9fafb;
-                border: 1px dashed #e2e8f0;
-                border-radius: 8px;
-                color: #6b7280;
-              }
               .message {
                 white-space: pre-wrap;
               }
@@ -1991,27 +2006,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
             </div>
             
             <div class="container">
-              <div class="details">
-                <div class="section">
-                  <div class="section-title">Applicant Information</div>
-                  <div class="field">
-                    <div class="field-label">Name</div>
-                    <div class="field-value">${jobSeeker.firstName} ${jobSeeker.lastName}</div>
+              <!-- Left Column -->
+              <div>
+                <!-- Contact Information (Highlighted) -->
+                <div class="highlight-section">
+                  <div class="section-title">Applicant Contact Information</div>
+                  <div class="contact-info">
+                    <div class="contact-item">
+                      <div class="contact-icon">📱</div>
+                      <div class="contact-label">Phone</div>
+                      <div class="contact-value">${application.phone || 'Not provided'}</div>
+                    </div>
+                    <div class="contact-item">
+                      <div class="contact-icon">✉️</div>
+                      <div class="contact-label">Email</div>
+                      <div class="contact-value">${application.email}</div>
+                    </div>
                   </div>
-                  <div class="field">
-                    <div class="field-label">Email</div>
-                    <div class="field-value">${application.email}</div>
-                  </div>
-                  <div class="field">
-                    <div class="field-label">Phone</div>
-                    <div class="field-value">${application.phone || 'Not provided'}</div>
-                  </div>
-                  <div class="field">
-                    <div class="field-label">Location</div>
-                    <div class="field-value">${jobSeeker.location || 'Not provided'}</div>
+                  <div style="margin-top: 15px;">
+                    <div class="field">
+                      <div class="field-label">Full Name</div>
+                      <div class="field-value" style="font-size: 16px; font-weight: 600;">${jobSeeker.firstName} ${jobSeeker.lastName}</div>
+                    </div>
+                    <div class="field">
+                      <div class="field-label">Location</div>
+                      <div class="field-value">${jobSeeker.location || 'Not provided'}</div>
+                    </div>
                   </div>
                 </div>
                 
+                <!-- Skills Section (Highlighted) -->
+                <div class="highlight-section">
+                  <div class="section-title">Skills</div>
+                  <div class="skills-container">
+                    ${Array.isArray(jobSeeker.skills) ? 
+                      jobSeeker.skills.map(skill => 
+                        `<span class="skill-tag">${skill}</span>`
+                      ).join('') :
+                      typeof jobSeeker.skills === 'string' ?
+                        jobSeeker.skills.split(',').map(skill => 
+                          `<span class="skill-tag">${skill.trim()}</span>`
+                        ).join('') :
+                        '<div class="field-value">No skills provided</div>'
+                    }
+                  </div>
+                </div>
+                
+                <!-- Application Details -->
                 <div class="section">
                   <div class="section-title">Application Details</div>
                   <div class="field">
@@ -2031,8 +2072,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
                     </div>
                   </div>
                   
-                  ${Object.keys(additionalData).length > 0 ? `
-                  <div class="section-title" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0;">Application Form Details</div>
+                  <!-- Resume Download Links -->
+                  ${resumePath ? `
+                  <div style="margin-top: 15px;">
+                    <div class="field-label">Resume</div>
+                    <div class="download-links">
+                      <a href="/api/applications/${application.id}/download-cv" class="download-button" target="_blank">Download Resume</a>
+                    </div>
+                  </div>
+                  ` : ''}
+                </div>
+                
+                ${Object.keys(additionalData).length > 0 ? `
+                <div class="section">
+                  <div class="section-title">Application Form Details</div>
                   
                   ${additionalData.currentPosition ? `
                   <div class="field">
