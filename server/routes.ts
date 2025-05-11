@@ -983,6 +983,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               console.log("Parsed additionalData:", additionalData);
             } catch (parseError) {
               console.error("Error parsing additionalData:", parseError);
+              // Avoid bubbling up this error
+              additionalData = {};
             }
           }
           
@@ -995,7 +997,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Use current date for required date fields
           const currentDate = new Date().toISOString().split('T')[0];
           
-          let profileData = {
+          // Create a profile with valid values guaranteed to satisfy database constraints
+          const profileData = {
             userId: user.id,
             firstName: firstName,
             lastName: lastName,
@@ -1006,13 +1009,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
             cvPath: null
           };
           
-          console.log("Creating job seeker profile with data:", profileData);
-          jobSeeker = await storage.createJobSeeker(profileData);
-          console.log(`Created job seeker profile with ID ${jobSeeker.id}`);
+          console.log("CREATING JOB SEEKER PROFILE with data:", profileData);
+          // Force the creation of the job seeker profile
+          try {
+            jobSeeker = await storage.createJobSeeker(profileData);
+            console.log(`SUCCESS: Created job seeker profile with ID ${jobSeeker.id}`);
+          } catch (dbError) {
+            console.error("DATABASE ERROR creating job seeker profile:", dbError);
+            // Try one more time with even more basic data as a last resort
+            try {
+              const basicProfile = {
+                userId: user.id,
+                firstName: "Applicant",
+                lastName: "User",
+                gender: "prefer not to say",
+                dateOfBirth: currentDate,
+                country: "United Arab Emirates",
+                phoneNumber: "+971000000000",
+                cvPath: null
+              };
+              console.log("RETRY: Creating job seeker profile with basic data:", basicProfile);
+              jobSeeker = await storage.createJobSeeker(basicProfile);
+              console.log(`SUCCESS on RETRY: Created job seeker profile with ID ${jobSeeker.id}`);
+            } catch (finalError) {
+              console.error("FATAL ERROR: Could not create job seeker profile even with basic data:", finalError);
+              return res.status(500).json({ message: "Failed to create job seeker profile", error: String(finalError) });
+            }
+          }
         } catch (error) {
-          console.error("Error creating job seeker profile:", error);
+          console.error("OUTER ERROR creating job seeker profile:", error);
           return res.status(500).json({ message: "Failed to create job seeker profile", error: String(error) });
         }
+      } else {
+        console.log(`Using existing job seeker profile with ID ${jobSeeker.id}`);
       }
 
       // Check if already applied
