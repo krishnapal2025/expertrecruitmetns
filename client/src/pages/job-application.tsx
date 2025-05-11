@@ -243,10 +243,7 @@ export default function JobApplicationPage() {
         }
         
         // Debug to ensure formData contains the file
-        console.log("FormData entries:");
-        for (const pair of formData.entries()) {
-          console.log(pair[0], pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]);
-        }
+        console.log("FormData contains resume file:", formData.has("resume"));
         
         console.log("Sending application to server at", `/api/jobs/${jobId}/apply`);
         
@@ -914,7 +911,12 @@ export default function JobApplicationPage() {
                                 
                                 <Button 
                                   type="button"
-                                  onClick={form.handleSubmit(onSubmit)}
+                                  onClick={() => {
+                                    console.log("Submit button clicked!");
+                                    if (!isSubmitting && !applicationMutation.isPending) {
+                                      form.handleSubmit(onSubmit)();
+                                    }
+                                  }}
                                   disabled={isSubmitting || applicationMutation.isPending}
                                   className="min-w-[120px] bg-primary hover:bg-primary/90"
                                 >
