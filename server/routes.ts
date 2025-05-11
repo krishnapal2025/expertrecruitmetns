@@ -2026,18 +2026,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 <div class="section">
                   <div class="section-title">Resume Preview</div>
                   ${fileExists && isPdf ? 
-                    `<iframe src="/api/applications/${application.id}/download-cv?preview=true" type="application/pdf"></iframe>` : 
+                    `<iframe src="/api/applications/${application.id}/download-cv?preview=true" type="application/pdf" class="resume-frame" width="100%" height="600px" style="border: 1px solid #e2e8f0; border-radius: 4px;"></iframe>` : 
                     (fileExists ? 
                       `<div class="field-value">
                         <p>This file format (${ext}) cannot be previewed directly in the browser.</p>
                        </div>` : 
-                      `<div class="no-resume">No resume file available</div>`
+                      `<div class="no-resume" style="display: flex; align-items: center; justify-content: center; height: 200px; background-color: #f8fafc; border-radius: 4px; border: 1px dashed #cbd5e1; margin: 20px 0;"><span style="color: #64748b; font-size: 16px;">No resume file available</span></div>`
                     )
                   }
                   ${fileExists ? 
-                    `<div class="download-links">
-                      <a href="/api/applications/${application.id}/download-cv" class="download-button" target="_blank">Download Original</a>
-                      <a href="/api/applications/${application.id}/download-pdf" class="download-button" target="_blank">Download as PDF</a>
+                    `<div class="download-links" style="margin-top: 15px; display: flex; gap: 10px;">
+                      <a href="/api/applications/${application.id}/download-cv" class="download-button" style="padding: 8px 16px; background-color: #2a41e8; color: white; text-decoration: none; border-radius: 4px; font-weight: 500; display: inline-block;" target="_blank">Download Original</a>
+                      <a href="/api/applications/${application.id}/download-pdf" class="download-button" style="padding: 8px 16px; background-color: #2a41e8; color: white; text-decoration: none; border-radius: 4px; font-weight: 500; display: inline-block;" target="_blank">Download as PDF</a>
                      </div>` : 
                     ''
                   }
