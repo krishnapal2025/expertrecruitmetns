@@ -28,7 +28,9 @@ import { seedJobs } from "./seed-jobs";
 import { generateResumePDF, resumeDataSchema, bufferToStream, ResumeData } from "./pdf-service";
 import { handleCvDownload } from "./cv-service";
 import { uploadBlogImage, uploadResume, getUploadedFilePath } from "./upload-service";
+import * as fs from "fs";
 import path from "path";
+import PDFKit from "pdfkit";
 
 // Add ResumeData type to session
 declare module "express-session" {
@@ -1682,9 +1684,344 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log("User type:", req.user.userType);
         console.log("User ID:", req.user.id);
       }
+
+      // IMPORTANT DEBUG: Output request parameters
+      console.log('Request parameters:', req.params);
+      console.log('Request query:', req.query);
       
-      // Use the same handler but with inline content disposition
-      await handleCvDownload(req, res, storage, true);
+      const applicationId = parseInt(req.params.id);
+      if (isNaN(applicationId)) {
+        return res.status(400).json({ message: "Invalid application ID" });
+      }
+      
+      // Get application and related data
+      const application = await storage.getApplication(applicationId);
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      
+      console.log('Found application:', JSON.stringify(application, null, 2));
+      
+      // Get job seeker details
+      const jobSeeker = await storage.getJobSeeker(application.jobSeekerId);
+      if (!jobSeeker) {
+        return res.status(404).json({ message: "Job seeker not found" });
+      }
+      
+      // Get job details
+      const job = await storage.getJob(application.jobId);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+      
+      // First check if the application has a specific resumePath
+      let resumePath = application.resumePath || jobSeeker.cvPath;
+      
+      // If a resume file exists, serve it in a frame along with application details
+      if (resumePath) {
+        // Construct the correct absolute path
+        const baseDir = process.env.PWD || '/home/runner/workspace';
+        const cvPath = path.isAbsolute(resumePath) 
+          ? resumePath 
+          : path.join(baseDir, 'uploads/resumes', path.basename(resumePath));
+          
+        console.log('Absolute path constructed:', cvPath);
+        
+        // Check if the file exists
+        const fileExists = fs.existsSync(cvPath);
+        console.log('File exists:', fileExists);
+        
+        // Get file extension
+        const ext = path.extname(cvPath).toLowerCase();
+        const isPdf = ext === '.pdf';
+        
+        // Format application date
+        const applicationDate = new Date(application.applicationDate);
+        const formattedDate = applicationDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        
+        // Build HTML response with application details and resume preview
+        let html = `
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Application Preview</title>
+            <style>
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+              }
+              .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #e2e8f0;
+                padding-bottom: 15px;
+                margin-bottom: 20px;
+              }
+              .company-name {
+                font-size: 24px;
+                font-weight: bold;
+                color: #2563eb;
+              }
+              .application-id {
+                color: #6b7280;
+                font-size: 14px;
+              }
+              .container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+              }
+              .details {
+                flex: 1;
+                min-width: 300px;
+              }
+              .resume-preview {
+                flex: 2;
+                min-width: 500px;
+              }
+              .section {
+                background: #f9fafb;
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+              }
+              .section-title {
+                font-size: 18px;
+                font-weight: 600;
+                margin-bottom: 15px;
+                color: #1f2937;
+              }
+              .field {
+                margin-bottom: 12px;
+              }
+              .field-label {
+                font-weight: 600;
+                color: #4b5563;
+                font-size: 14px;
+              }
+              .field-value {
+                margin-top: 4px;
+              }
+              .status {
+                display: inline-block;
+                padding: 4px 12px;
+                border-radius: 9999px;
+                font-size: 14px;
+                font-weight: 500;
+              }
+              .status-pending {
+                background-color: #fee2e2;
+                color: #b91c1c;
+              }
+              .status-reviewed {
+                background-color: #e0f2fe;
+                color: #0369a1;
+              }
+              .status-shortlisted {
+                background-color: #dcfce7;
+                color: #166534;
+              }
+              .status-rejected {
+                background-color: #f3f4f6;
+                color: #6b7280;
+              }
+              .status-hired {
+                background-color: #dbeafe;
+                color: #1e40af;
+              }
+              iframe {
+                width: 100%;
+                height: 600px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+              }
+              .download-links {
+                margin-top: 20px;
+                display: flex;
+                gap: 10px;
+              }
+              .download-button {
+                display: inline-block;
+                padding: 8px 16px;
+                background-color: #2563eb;
+                color: white;
+                border-radius: 8px;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 500;
+                transition: background-color 0.2s;
+              }
+              .download-button:hover {
+                background-color: #1d4ed8;
+              }
+              .no-resume {
+                padding: 40px;
+                text-align: center;
+                background-color: #f9fafb;
+                border: 1px dashed #e2e8f0;
+                border-radius: 8px;
+                color: #6b7280;
+              }
+              .message {
+                white-space: pre-wrap;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <div class="company-name">Expert Recruitments LLC</div>
+              <div class="application-id">Application #${application.id}</div>
+            </div>
+            
+            <div class="container">
+              <div class="details">
+                <div class="section">
+                  <div class="section-title">Applicant Information</div>
+                  <div class="field">
+                    <div class="field-label">Name</div>
+                    <div class="field-value">${jobSeeker.firstName} ${jobSeeker.lastName}</div>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Email</div>
+                    <div class="field-value">${application.email}</div>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Phone</div>
+                    <div class="field-value">${application.phone || 'Not provided'}</div>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Location</div>
+                    <div class="field-value">${jobSeeker.location || 'Not provided'}</div>
+                  </div>
+                </div>
+                
+                <div class="section">
+                  <div class="section-title">Application Details</div>
+                  <div class="field">
+                    <div class="field-label">Job Title</div>
+                    <div class="field-value">${job.title}</div>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Applied On</div>
+                    <div class="field-value">${formattedDate}</div>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Status</div>
+                    <div class="field-value">
+                      <span class="status status-${application.status}">
+                        ${application.status.charAt(0).toUpperCase() + application.status.slice(1)}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Cover Letter / Message</div>
+                    <div class="field-value message">${application.coverLetter || 'No cover letter provided'}</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="resume-preview">
+                <div class="section">
+                  <div class="section-title">Resume Preview</div>
+                  ${fileExists && isPdf ? 
+                    `<iframe src="/api/applications/${application.id}/download-cv?preview=true" type="application/pdf"></iframe>` : 
+                    (fileExists ? 
+                      `<div class="field-value">
+                        <p>This file format (${ext}) cannot be previewed directly in the browser.</p>
+                       </div>` : 
+                      `<div class="no-resume">No resume file available</div>`
+                    )
+                  }
+                  ${fileExists ? 
+                    `<div class="download-links">
+                      <a href="/api/applications/${application.id}/download-cv" class="download-button" target="_blank">Download Original</a>
+                      <a href="/api/applications/${application.id}/download-pdf" class="download-button" target="_blank">Download as PDF</a>
+                     </div>` : 
+                    ''
+                  }
+                </div>
+              </div>
+            </div>
+          </body>
+          </html>
+        `;
+        
+        // Send the HTML response
+        res.setHeader('Content-Type', 'text/html');
+        return res.send(html);
+      } else {
+        // No resume available
+        return res.status(404).send(`
+          <html>
+            <head>
+              <title>Resume Not Found</title>
+              <style>
+                body {
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: center;
+                  align-items: center;
+                  height: 100vh;
+                  margin: 0;
+                  background-color: #f5f5f5;
+                  color: #333;
+                }
+                .message {
+                  background-color: white;
+                  border-radius: 8px;
+                  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                  padding: 30px;
+                  max-width: 500px;
+                  text-align: center;
+                }
+                h2 {
+                  margin-top: 0;
+                  color: #e53e3e;
+                }
+                p {
+                  margin: 15px 0;
+                  line-height: 1.6;
+                }
+                .button {
+                  display: inline-block;
+                  margin-top: 20px;
+                  padding: 10px 20px;
+                  background-color: #4299e1;
+                  color: white;
+                  border-radius: 5px;
+                  text-decoration: none;
+                  font-weight: 500;
+                  transition: background-color 0.2s;
+                }
+                .button:hover {
+                  background-color: #3182ce;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="message">
+                <h2>Resume Not Found</h2>
+                <p>The applicant has not uploaded a resume for this application.</p>
+                <p>You can still view the application details and contact information through the admin dashboard.</p>
+                <a href="/admin-dashboard" class="button">Return to Dashboard</a>
+              </div>
+            </body>
+          </html>
+        `);
+      }
     } catch (error) {
       console.error("Error viewing resume:", error);
       res.status(500).json({ message: "Failed to view resume" });
