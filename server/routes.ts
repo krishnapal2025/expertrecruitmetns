@@ -973,22 +973,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!jobSeeker) {
         console.log(`Creating job seeker profile for user ID ${user.id}`);
         try {
+          // Parse additionalData once to avoid parsing multiple times
+          let additionalData = {};
+          if (req.body.additionalData) {
+            try {
+              additionalData = typeof req.body.additionalData === 'string' 
+                ? JSON.parse(req.body.additionalData) 
+                : req.body.additionalData;
+              console.log("Parsed additionalData:", additionalData);
+            } catch (parseError) {
+              console.error("Error parsing additionalData:", parseError);
+            }
+          }
+          
+          // Extract fullName if available
+          const fullName = additionalData.fullName || '';
+          const nameParts = fullName.split(' ');
+          const firstName = nameParts[0] || 'Applicant';
+          const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : 'User';
+          
+          // Use current date for required date fields
+          const currentDate = new Date().toISOString().split('T')[0];
+          
           let profileData = {
             userId: user.id,
-            firstName: user.firstName || (req.body.additionalData && JSON.parse(req.body.additionalData).fullName ? JSON.parse(req.body.additionalData).fullName.split(' ')[0] : ''),
-            lastName: user.lastName || (req.body.additionalData && JSON.parse(req.body.additionalData).fullName ? JSON.parse(req.body.additionalData).fullName.split(' ').slice(1).join(' ') : ''),
-            gender: '',
-            dateOfBirth: '',
+            firstName: firstName,
+            lastName: lastName,
+            gender: 'prefer not to say', // Default value that meets the NOT NULL constraint
+            dateOfBirth: currentDate, // Use current date as default
             country: 'United Arab Emirates',
-            phoneNumber: req.body.additionalData && JSON.parse(req.body.additionalData).phone ? JSON.parse(req.body.additionalData).phone : '',
+            phoneNumber: additionalData.phone || '+971000000000', // Default phone number to meet NOT NULL constraint
             cvPath: null
           };
           
+          console.log("Creating job seeker profile with data:", profileData);
           jobSeeker = await storage.createJobSeeker(profileData);
           console.log(`Created job seeker profile with ID ${jobSeeker.id}`);
         } catch (error) {
           console.error("Error creating job seeker profile:", error);
-          return res.status(500).json({ message: "Failed to create job seeker profile" });
+          return res.status(500).json({ message: "Failed to create job seeker profile", error: String(error) });
         }
       }
 
@@ -1026,10 +1049,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         resumePath = getUploadedFilePath(cvFilename, 'resume');
         
         // Update jobSeeker profile with new CV path if CV was uploaded
-        await storage.updateJobSeeker(jobSeeker.id, {
-          ...jobSeeker,
-          cvPath: resumePath
-        });
+        try {
+          const updatedJobSeeker = { ...jobSeeker, cvPath: resumePath };
+          await storage.updateJobSeeker(updatedJobSeeker);
+          console.log(`Updated job seeker ${jobSeeker.id} with new CV path: ${resumePath}`);
+        } catch (updateError) {
+          console.error("Error updating job seeker profile with CV:", updateError);
+          // Continue with application process even if profile update fails
+        }
         
         console.log(`Resume uploaded: ${cvFilename} for job seeker ID ${jobSeeker.id}`);
       } else if (jobSeeker.cvPath) {
@@ -1049,13 +1076,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       let application;
       try {
+        // Create the application
         application = await storage.createApplication({
           jobId,
           jobSeekerId: jobSeeker.id,
           coverLetter,
-          resumePath,
-          status: "pending",
-          appliedDate: new Date()
+          resumePath
+          // Remove status field since it's not in the schema and has a default value
         });
         
         console.log("Application created successfully with ID:", application.id);
