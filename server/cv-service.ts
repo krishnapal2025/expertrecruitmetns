@@ -190,6 +190,14 @@ export async function handleCvDownload(
             return;
           }
           
+          // Set special headers for PDFs to prevent malware detection
+          if (ext === '.pdf') {
+            // Chrome sometimes flags downloaded PDFs as malware
+            // Set appropriate headers to prevent this
+            res.setHeader('X-Content-Type-Options', 'nosniff');
+            res.setHeader('Content-Security-Policy', "default-src 'self'");
+          }
+          
           // Set appropriate content disposition based on preview flag
           const disposition = preview ? 'inline' : 'attachment';
           res.setHeader('Content-Disposition', `${disposition}; filename="${originalFilename}"`);
@@ -200,19 +208,32 @@ export async function handleCvDownload(
             console.log('File content preview:', fileContent.substring(0, 200));
           }
           
-          // Stream the file
-          const fileStream = fs.createReadStream(cvPath);
+          console.log('Streaming file to response...');
           
-          // Handle stream errors
-          fileStream.on('error', (err) => {
-            console.error('Error streaming file:', err);
-            if (!res.headersSent) {
-              res.status(500).json({ message: "Error streaming file" });
-            }
-          });
-          
-          // Send the file
-          fileStream.pipe(res);
+          try {
+            // Read the file and send it
+            const fileBuffer = fs.readFileSync(cvPath);
+            res.send(fileBuffer);
+            console.log('File sent successfully!');
+            return;
+          } catch (readError) {
+            console.error('Error reading file:', readError);
+            
+            // If reading fails, fall back to streaming
+            console.log('Falling back to streaming method...');
+            const fileStream = fs.createReadStream(cvPath);
+            
+            // Handle stream errors
+            fileStream.on('error', (err) => {
+              console.error('Error streaming file:', err);
+              if (!res.headersSent) {
+                res.status(500).json({ message: "Error streaming file" });
+              }
+            });
+            
+            // Send the file
+            fileStream.pipe(res);
+          }
           return;
         } else {
           console.log(`CV file not found at path: ${cvPath}`);
