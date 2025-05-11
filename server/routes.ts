@@ -1038,48 +1038,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`Using existing resume path for job seeker ID ${jobSeeker.id}: ${resumePath}`);
       }
 
-      // Create the application
-      const application = await storage.createApplication({
+      // Create the application with detailed logging to track progress
+      console.log("Creating job application with data:", {
         jobId,
         jobSeekerId: jobSeeker.id,
-        coverLetter,
+        coverLetterLength: coverLetter ? coverLetter.length : 0,
+        hasResumePath: !!resumePath,
         resumePath
       });
+      
+      let application;
+      try {
+        application = await storage.createApplication({
+          jobId,
+          jobSeekerId: jobSeeker.id,
+          coverLetter,
+          resumePath,
+          status: "pending",
+          appliedDate: new Date()
+        });
+        
+        console.log("Application created successfully with ID:", application.id);
+      } catch (createError) {
+        console.error("Error creating application in database:", createError);
+        throw createError;
+      }
 
       // Update real-time store for application tracking
-      realtimeStore.lastApplicationId = Math.max(realtimeStore.lastApplicationId, application.id);
+      if (application && application.id) {
+        realtimeStore.lastApplicationId = Math.max(realtimeStore.lastApplicationId, application.id);
+        console.log("Updated realtime store with application ID:", application.id);
+      }
 
       // Get the employer who posted this job if employerId exists
-      if (job.employerId) {
-        const employer = await storage.getEmployer(job.employerId);
-        if (employer) {
-          // Get the employer user
-          const employerUser = await storage.getUserByEmployerId(employer.id);
-          if (employerUser) {
-            // Create a notification for the employer
-            realtimeStore.notifications.push({
-              id: realtimeStore.notificationId++,
-              userId: employerUser.id,
-              message: `${jobSeeker.firstName} ${jobSeeker.lastName} applied for your job: ${job.title}`,
-              read: false,
-              createdAt: new Date()
-            });
+      if (job && job.employerId && jobSeeker && application) {
+        try {
+          console.log("Getting employer info for job ID:", jobId, "with employer ID:", job.employerId);
+          const employer = await storage.getEmployer(job.employerId);
+          
+          if (employer) {
+            // Get the employer user
+            const employerUser = await storage.getUserByEmployerId(employer.id);
+            if (employerUser) {
+              // Create a notification for the employer
+              const notification = {
+                id: realtimeStore.notificationId++,
+                userId: employerUser.id,
+                message: `${jobSeeker.firstName} ${jobSeeker.lastName} applied for your job: ${job.title}`,
+                read: false,
+                createdAt: new Date()
+              };
+              
+              realtimeStore.notifications.push(notification);
+              console.log("Created notification for employer (ID:", employerUser.id, "):", notification.message);
+            }
           }
+        } catch (notificationError) {
+          console.error("Error creating employer notification:", notificationError);
+          // Continue execution even if notification creation fails
         }
       }
 
       // Create a notification for admin users
-      const adminUsers = await storage.getAdminUsers();
-      for (const adminUser of adminUsers) {
-        realtimeStore.notifications.push({
-          id: realtimeStore.notificationId++,
-          userId: adminUser.userId,
-          message: `New resume received: ${jobSeeker.firstName} ${jobSeeker.lastName} applied for ${job.title}`,
-          type: "resume_received",
-          read: false,
-          entityId: application.id,
-          createdAt: new Date()
-        });
+      try {
+        if (jobSeeker && job && application) {
+          console.log("Creating notifications for admins about this application");
+          const adminUsers = await storage.getAdminUsers();
+          let notificationCount = 0;
+          
+          for (const adminUser of adminUsers) {
+            try {
+              // Create a notification with only the properties supported by the schema
+              const adminNotification = {
+                id: realtimeStore.notificationId++,
+                userId: adminUser.userId,
+                message: `New resume received: ${jobSeeker.firstName} ${jobSeeker.lastName} applied for ${job.title}`,
+                read: false,
+                createdAt: new Date()
+              };
+              
+              realtimeStore.notifications.push(adminNotification);
+              notificationCount++;
+            } catch (adminNotifError) {
+              console.error("Error creating admin notification:", adminNotifError);
+              // Continue with other admins even if one fails
+            }
+          }
+          
+          console.log(`Created ${notificationCount} notifications for admin users`);
+        }
+      } catch (adminError) {
+        console.error("Error processing admin notifications:", adminError);
+        // Continue execution even if notification creation fails
       }
 
       res.status(201).json(application);
