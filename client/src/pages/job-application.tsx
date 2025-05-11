@@ -200,6 +200,8 @@ export default function JobApplicationPage() {
   // Job application mutation
   const applicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormValues) => {
+      console.log("Starting application submission...");
+      
       // Create FormData for file uploads
       const formData = new FormData();
       
@@ -214,21 +216,29 @@ export default function JobApplicationPage() {
         currentPosition: data.currentPosition,
         yearsOfExperience: data.yearsOfExperience,
         availableStartDate: data.availableStartDate,
-        salaryExpectation: `${data.salaryExpectation} ${selectedCurrency}`,
-        heardAbout: data.heardAbout,
-        linkedinProfile: data.linkedinProfile,
-        portfolioUrl: data.portfolioUrl,
+        salaryExpectation: data.salaryExpectation ? `${data.salaryExpectation} ${selectedCurrency}` : "",
+        heardAbout: data.heardAbout || "",
+        linkedinProfile: data.linkedinProfile || "",
+        portfolioUrl: data.portfolioUrl || "",
         relocation: data.relocation,
-        referenceContacts: data.referenceContacts,
+        referenceContacts: data.referenceContacts || "",
         hasCvFile: !!cvFileName,
         hasAdditionalDocuments: !!additionalFileName,
       };
+      
+      console.log("Application additional data:", additionalData);
       formData.append("additionalData", JSON.stringify(additionalData));
       
       // Add resume file if available
       if (cvFile) {
+        console.log("Attaching resume file:", cvFileName);
         formData.append("resume", cvFile);
+      } else {
+        console.error("No resume file available for upload");
+        throw new Error("Resume file is required");
       }
+      
+      console.log("Sending application to server...");
       
       // Send application data to server with files
       const res = await fetch(`/api/jobs/${jobId}/apply`, {
@@ -238,23 +248,41 @@ export default function JobApplicationPage() {
       });
       
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Failed to submit application");
+        console.error("Application submission error:", res.status);
+        let errorMsg = "Failed to submit application";
+        try {
+          const errorData = await res.json();
+          errorMsg = errorData.message || errorMsg;
+        } catch (e) {
+          console.error("Error parsing error response:", e);
+        }
+        throw new Error(errorMsg);
       }
       
+      console.log("Application submitted successfully");
       return res.json();
     },
     onSuccess: () => {
+      setIsSubmitting(false);
       setApplicationComplete(true);
       setActiveTab("confirmation");
+      
+      toast({
+        title: "Application Submitted",
+        description: "Your job application has been successfully submitted!",
+        variant: "success",
+      });
       
       // Invalidate queries to refresh job applications data
       queryClient.invalidateQueries({ queryKey: ["/api/applications"] });
     },
     onError: (error: Error) => {
+      setIsSubmitting(false);
+      console.error("Application submission failed:", error);
+      
       toast({
-        title: "Application failed",
-        description: error.message || "An error occurred while submitting your application.",
+        title: "Application Failed",
+        description: error.message || "An error occurred while submitting your application. Please try again.",
         variant: "destructive",
       });
     },
@@ -273,16 +301,31 @@ export default function JobApplicationPage() {
   
   // Handle form submission
   const onSubmit = (formData: ApplicationFormValues) => {
-    // Simulate file upload if files were selected
-    if (cvFileName || additionalFileName) {
-      setIsSubmitting(true);
-      // Simulate upload delay
-      setTimeout(() => {
+    console.log("Form submission started", formData);
+    setIsSubmitting(true);
+    
+    try {
+      // Validate that CV file is selected
+      if (!cvFile || !cvFileName) {
+        toast({
+          title: "Resume Required",
+          description: "Please upload your resume/CV before submitting your application",
+          variant: "destructive",
+        });
         setIsSubmitting(false);
-        applicationMutation.mutate(formData);
-      }, 1500);
-    } else {
+        return;
+      }
+      
+      // Process the application
       applicationMutation.mutate(formData);
+    } catch (error) {
+      console.error("Application submission error:", error);
+      toast({
+        title: "Submission Error",
+        description: "An error occurred while submitting your application. Please try again.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
     }
   };
   
