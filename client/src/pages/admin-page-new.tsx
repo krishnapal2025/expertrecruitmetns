@@ -1686,7 +1686,14 @@ function AdminDashboard() {
                                 <div className="text-sm text-muted-foreground">{application.email}</div>
                               </TableCell>
                               <TableCell>{application.job?.title || "N/A"}</TableCell>
-                              <TableCell>{formatDate(application.createdAt)}</TableCell>
+                              <TableCell>
+                                <div className="font-medium">{formatDate(application.appliedDate || application.createdAt)}</div>
+                                <div className="text-xs text-muted-foreground">
+                                  {application.appliedDate && application.createdAt && 
+                                   application.appliedDate !== application.createdAt ? 
+                                   `Created: ${formatDate(application.createdAt)}` : ""}
+                                </div>
+                              </TableCell>
                               <TableCell>
                                 {application.resumePath ? (
                                   <div className="flex flex-wrap gap-2">
@@ -1746,16 +1753,16 @@ function AdminDashboard() {
                               <TableCell>
                                 <Badge 
                                   variant={
-                                    application.status === "pending" ? "outline" : 
-                                    application.status === "reviewed" ? "secondary" :
-                                    application.status === "interviewed" ? "default" :
+                                    application.status === "new" ? "outline" : 
+                                    application.status === "viewed" ? "secondary" :
+                                    application.status === "shortlisted" ? "default" :
                                     application.status === "hired" ? "success" : 
                                     "destructive"
                                   }
                                 >
-                                  {application.status === "pending" ? "Pending" : 
-                                   application.status === "reviewed" ? "Reviewed" :
-                                   application.status === "interviewed" ? "Interviewed" :
+                                  {application.status === "new" ? "New" : 
+                                   application.status === "viewed" ? "Viewed" :
+                                   application.status === "shortlisted" ? "Shortlisted" :
                                    application.status === "hired" ? "Hired" : 
                                    "Rejected"}
                                 </Badge>
@@ -1774,9 +1781,9 @@ function AdminDashboard() {
                                     <SelectValue placeholder="Update Status" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="pending">Pending</SelectItem>
-                                    <SelectItem value="reviewed">Reviewed</SelectItem>
-                                    <SelectItem value="interviewed">Interviewed</SelectItem>
+                                    <SelectItem value="new">New</SelectItem>
+                                    <SelectItem value="viewed">Viewed</SelectItem>
+                                    <SelectItem value="shortlisted">Shortlisted</SelectItem>
                                     <SelectItem value="hired">Hired</SelectItem>
                                     <SelectItem value="rejected">Rejected</SelectItem>
                                   </SelectContent>
