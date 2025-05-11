@@ -1591,11 +1591,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Resume endpoint - allows for viewing in browser
   app.get("/api/applications/:id/resume", async (req, res) => {
     try {
+      console.log(`Resume preview request received for application ID: ${req.params.id}`);
+      
+      // Debug logged-in user
+      console.log("User authenticated:", req.isAuthenticated());
+      if (req.isAuthenticated() && req.user) {
+        console.log("User type:", req.user.userType);
+        console.log("User ID:", req.user.id);
+      }
+      
       // Use the same handler but with inline content disposition
       await handleCvDownload(req, res, storage, true);
     } catch (error) {
       console.error("Error viewing resume:", error);
       res.status(500).json({ message: "Failed to view resume" });
+    }
+  });
+  
+  // PDF Download endpoint
+  app.get("/api/applications/:id/download-pdf", async (req, res) => {
+    try {
+      console.log(`PDF download request received for application ID: ${req.params.id}`);
+      
+      // Debug logged-in user
+      console.log("User authenticated:", req.isAuthenticated());
+      if (req.isAuthenticated() && req.user) {
+        console.log("User type:", req.user.userType);
+        console.log("User ID:", req.user.id);
+      }
+      
+      // Use the dedicated service to handle the CV download
+      await handleCvDownload(req, res, storage, false, 'pdf');
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      res.status(500).json({ message: "Failed to download PDF" });
     }
   });
   
