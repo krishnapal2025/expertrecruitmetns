@@ -296,10 +296,10 @@ export const sendVacancyAssignmentEmail = async (
   vacancy: Vacancy,
   origin: string
 ): Promise<{ success: boolean; message?: string }> => {
-  // First try to use SendGrid for actual email delivery
-  if (process.env.SENDGRID_API_KEY) {
-    console.log('Using SendGrid for vacancy assignment email');
-    return await sendVacancyAssignmentEmailWithSendGrid(
+  // First try to use Mailgun for actual email delivery
+  if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
+    console.log('Using Mailgun for vacancy assignment email');
+    return await sendVacancyAssignmentEmailWithMailgun(
       recruiterEmail,
       recruiterName,
       vacancy,
@@ -307,7 +307,7 @@ export const sendVacancyAssignmentEmail = async (
     );
   }
   
-  // Fall back to nodemailer/Ethereal if SendGrid is not configured
+  // Fall back to nodemailer/Ethereal if Mailgun is not configured
   try {
     console.log(`Sending vacancy assignment email to ${recruiterEmail} using fallback method`);
     
