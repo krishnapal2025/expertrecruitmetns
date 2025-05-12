@@ -42,7 +42,26 @@ import { Loader2, Trash2, KeyRound, Copy, CheckCircle, RefreshCw } from "lucide-
 
 export function AdminsList({ user }: { user: User | null }) {
   const { toast } = useToast();
+  const [invitationDialog, setInvitationDialog] = useState(false);
+  const [invitationEmail, setInvitationEmail] = useState("");
+  const [generatedCode, setGeneratedCode] = useState("");
+  const [codeCopied, setCodeCopied] = useState(false);
   
+  // Function to generate a random code
+  const generateRandomCode = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let code = "";
+    for (let i = 0; i < 12; i++) {
+      // Add a hyphen every 4 characters for readability
+      if (i > 0 && i % 4 === 0) {
+        code += "-";
+      }
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  };
+  
+  // Get all admin accounts
   const { data: admins, isLoading: adminsLoading } = useQuery({
     queryKey: ["/api/admin/all"],
     queryFn: async () => {
@@ -52,7 +71,81 @@ export function AdminsList({ user }: { user: User | null }) {
     },
     enabled: !!user && (user.userType === "admin" || user.userType === "super_admin")
   });
+  
+  // Get invitation codes
+  const { data: invitationCodes, isLoading: invitationCodesLoading, refetch: refetchInvitationCodes } = useQuery({
+    queryKey: ["/api/admin/invitation-codes"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/invitation-codes");
+      if (!res.ok) throw new Error("Failed to fetch invitation codes");
+      return await res.json();
+    },
+    enabled: !!user && user.userType === "super_admin"
+  });
 
+  // Create invitation code mutation
+  const createInvitationCodeMutation = useMutation({
+    mutationFn: async () => {
+      // Generate a random code
+      const code = generateRandomCode();
+      setGeneratedCode(code);
+      
+      // Calculate expiration date (7 days from now)
+      const expiresAt = addDays(new Date(), 7).toISOString();
+      
+      const res = await apiRequest(
+        "POST",
+        "/api/admin/invitation-codes",
+        {
+          code,
+          email: invitationEmail,
+          expiresAt
+        }
+      );
+      
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to create invitation code");
+      }
+      
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Invitation code created",
+        description: `A new invitation code has been created for ${invitationEmail}`,
+      });
+      
+      // Refresh invitation codes list
+      refetchInvitationCodes();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to create invitation code",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // Copy to clipboard function
+  const copyToClipboard = () => {
+    if (generatedCode) {
+      navigator.clipboard.writeText(generatedCode);
+      setCodeCopied(true);
+      
+      toast({
+        title: "Copied to clipboard",
+        description: "Invitation code has been copied to your clipboard",
+      });
+      
+      // Reset copied state after 3 seconds
+      setTimeout(() => {
+        setCodeCopied(false);
+      }, 3000);
+    }
+  };
+  
   // Admin delete mutation - using the same pattern as vacancy deletion
   const deleteUserMutation = useMutation({
     mutationFn: async ({ userId, userType }: { userId: number; userType: string }) => {
@@ -187,6 +280,25 @@ export function AdminsList({ user }: { user: User | null }) {
   return (
     <>
       <div className="space-y-4">
+        {/* Add invitation code generator button for super admins */}
+        {user?.userType === "super_admin" && (
+          <div className="flex justify-end mb-4">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setInvitationEmail("");
+                setGeneratedCode("");
+                setCodeCopied(false);
+                setInvitationDialog(true);
+              }}
+              className="flex items-center"
+            >
+              <KeyRound className="mr-2 h-4 w-4" />
+              Generate Invitation Code
+            </Button>
+          </div>
+        )}
+        
         {adminsLoading ? (
           <div className="flex justify-center p-4">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -289,6 +401,79 @@ export function AdminsList({ user }: { user: User | null }) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Invitation Code Dialog */}
+      <Dialog open={invitationDialog} onOpenChange={setInvitationDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Generate Admin Invitation Code</DialogTitle>
+            <DialogDescription>
+              Create an invitation code for a new admin. The code will be valid for 7 days.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="email">Admin Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter admin email address"
+                value={invitationEmail}
+                onChange={(e) => setInvitationEmail(e.target.value)}
+                className="w-full"
+              />
+              <p className="text-xs text-muted-foreground">
+                The invitation will be restricted to this email address.
+              </p>
+            </div>
+            
+            {generatedCode && (
+              <div className="space-y-2 pt-2">
+                <Label>Invitation Code</Label>
+                <div className="flex items-center space-x-2">
+                  <div className="flex-1 rounded-md border border-input bg-background px-3 py-2 font-mono text-sm">
+                    {generatedCode}
+                  </div>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={copyToClipboard}
+                    title="Copy to clipboard"
+                  >
+                    {codeCopied ? <CheckCircle className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Share this code with the new admin to complete registration.
+                </p>
+              </div>
+            )}
+          </div>
+          
+          <DialogFooter className="sm:justify-between">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={!invitationEmail || createInvitationCodeMutation.isPending}
+              onClick={() => createInvitationCodeMutation.mutate()}
+              className="flex items-center"
+            >
+              {createInvitationCodeMutation.isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <RefreshCw className="mr-2 h-4 w-4" />
+              )}
+              Generate Code
+            </Button>
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
