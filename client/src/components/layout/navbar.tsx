@@ -166,43 +166,43 @@ export default function Navbar() {
   const navigationLinks = getNavigationLinks();
 
   return (
-    <header className={`sticky top-0 z-40 transition-colors duration-200 ${scrolled ? "bg-[#5372f1] shadow-md" : "bg-[#5372f1] bg-opacity-95"}`}>
-      <div className="container mx-auto px-4">
-        <div className="flex h-[100px] md:h-[120px] items-center justify-between">
+    <header className={`sticky top-0 z-40 transition-colors duration-200 w-full ${scrolled ? "bg-[#5372f1] shadow-md" : "bg-[#5372f1] bg-opacity-95"}`}>
+      <div className="container mx-auto px-2 sm:px-4 max-w-full xl:max-w-7xl">
+        <div className="flex h-[80px] sm:h-[90px] md:h-[100px] lg:h-[110px] items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/">
               <div className="flex items-center cursor-pointer" onClick={scrollToTop}>
-                <div className="flex items-center justify-center h-[50px] md:h-[70px] w-[50px] md:w-[70px] rounded-full bg-white p-2 border-2 border-white shadow-md">
+                <div className="flex items-center justify-center h-[40px] sm:h-[45px] md:h-[55px] lg:h-[65px] w-[40px] sm:w-[45px] md:w-[55px] lg:w-[65px] rounded-full bg-white p-2 border-2 border-white shadow-md">
                   <img 
                     src={expertLogo} 
                     alt="Expert Recruitments LLC" 
                     className="h-full w-full object-contain"
                   />
                 </div>
-                <div className="ml-3 flex flex-col">
-                  <span className="text-white font-bold text-xl md:text-2xl uppercase" style={{ letterSpacing: '0.15em', width: '91%', display: 'inline-block' }}>Expert</span>
-                  <span className="text-white text-xs md:text-sm -mt-1">Recruitments LLC</span>
+                <div className="ml-2 sm:ml-3 flex flex-col">
+                  <span className="text-white font-bold text-base sm:text-lg md:text-xl lg:text-2xl uppercase" style={{ letterSpacing: '0.12em', display: 'inline-block' }}>Expert</span>
+                  <span className="text-white text-[10px] sm:text-xs md:text-sm -mt-1">Recruitments LLC</span>
                 </div>
               </div>
             </Link>
           </div>
 
           {/* Desktop navigation */}
-          <nav className="hidden md:flex space-x-6 items-center">
+          <nav className="hidden md:flex md:space-x-1 lg:space-x-3 xl:space-x-5 items-center">
             {navigationLinks.map((link) => (
               link.isDropdown ? (
                 <div key={link.name} className="relative group">
-                  <div className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer flex items-center ${
+                  <div className={`text-sm lg:text-base xl:text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-2 lg:px-3 xl:px-4 py-2 rounded-md cursor-pointer flex items-center ${
                     link.dropdownItems?.some(item => location === item.href) ? "text-white font-bold" : "text-gray-100"
                   }`}>
                     {link.name}
-                    <ChevronDown className="h-4 w-4 ml-1 transition-transform group-hover:rotate-180" />
+                    <ChevronDown className="h-3 w-3 lg:h-4 lg:w-4 ml-1 transition-transform group-hover:rotate-180" />
                   </div>
-                  <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                  <div className="absolute left-0 mt-2 w-48 lg:w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                     <div className="py-2 rounded-lg bg-white dark:bg-gray-800 border-2 border-[#5372f1]/20 dark:border-gray-700">
                       {link.dropdownItems?.map((item) => (
-                        <ScrollLink key={item.name} href={item.href} className={`block px-5 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-[#5372f1]/10 hover:text-[#5372f1] transition-colors duration-200 ${location === item.href ? "text-[#5372f1] bg-[#5372f1]/10 font-medium border-l-2 border-[#5372f1]" : ""}`}>
+                        <ScrollLink key={item.name} href={item.href} className={`block px-3 lg:px-5 py-2 lg:py-3 text-sm lg:text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-[#5372f1]/10 hover:text-[#5372f1] transition-colors duration-200 ${location === item.href ? "text-[#5372f1] bg-[#5372f1]/10 font-medium border-l-2 border-[#5372f1]" : ""}`}>
                           {item.name}
                         </ScrollLink>
                       ))}
@@ -215,7 +215,7 @@ export default function Navbar() {
                   href={link.href}
                   requiredUserType="employer"
                   redirectPath="/employer-register"
-                  className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}
+                  className={`text-sm lg:text-base xl:text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-2 lg:px-3 xl:px-4 py-2 rounded-md cursor-pointer whitespace-nowrap ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}
                 >
                   {link.name}
                 </RoleScrollLink>
@@ -225,7 +225,7 @@ export default function Navbar() {
                   href={link.href}
                   requiredUserType="jobseeker"
                   redirectPath="/job-seeker-register"
-                  className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}
+                  className={`text-sm lg:text-base xl:text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-2 lg:px-3 xl:px-4 py-2 rounded-md cursor-pointer whitespace-nowrap ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}
                 >
                   {link.name}
                 </RoleScrollLink>
@@ -235,12 +235,12 @@ export default function Navbar() {
                   href={link.href}
                   requiredUserType="employer"
                   redirectPath="/employer-register"
-                  className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}
+                  className={`text-sm lg:text-base xl:text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-2 lg:px-3 xl:px-4 py-2 rounded-md cursor-pointer whitespace-nowrap ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}
                 >
                   {link.name}
                 </RoleScrollLink>
               ) : (
-                <ScrollLink key={link.name} href={link.href} className={`text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-4 py-2 rounded-md cursor-pointer ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}>
+                <ScrollLink key={link.name} href={link.href} className={`text-sm lg:text-base xl:text-lg font-medium transition-colors hover:text-white hover:bg-[#4060e0] px-2 lg:px-3 xl:px-4 py-2 rounded-md cursor-pointer whitespace-nowrap ${location === link.href ? "text-white font-bold bg-[#4060e0]" : "text-gray-100"}`}>
                   {link.name}
                 </ScrollLink>
               )
