@@ -362,10 +362,10 @@ export default function Navbar() {
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[350px]">
-                <SheetHeader className="mb-4">
-                  <div className="flex flex-col items-center mb-3 space-y-2">
-                    <div className="flex items-center justify-center h-16 w-16 rounded-full bg-white p-2 border-2 border-[#5372f1] shadow-md">
+              <SheetContent side="right" className="w-[85vw] max-w-[400px] overflow-y-auto">
+                <SheetHeader className="mb-2">
+                  <div className="flex flex-col items-center mb-2 space-y-1">
+                    <div className="flex items-center justify-center h-14 w-14 rounded-full bg-white p-2 border-2 border-[#5372f1] shadow-md">
                       <img 
                         src={expertLogo} 
                         alt="Expert Recruitments LLC" 
@@ -373,22 +373,25 @@ export default function Navbar() {
                       />
                     </div>
                     <div className="flex flex-col items-center">
-                      <span className="text-[#5372f1] font-bold text-xl md:text-2xl uppercase" style={{ letterSpacing: '0.15em', width: '91%', display: 'inline-block' }}>Expert</span>
-                      <span className="text-[#5372f1] text-xs -mt-1">Recruitments LLC</span>
+                      <span className="text-[#5372f1] font-bold text-lg uppercase" style={{ letterSpacing: '0.12em', display: 'inline-block' }}>Expert</span>
+                      <span className="text-gray-600 text-xs -mt-1">Recruitments LLC</span>
                     </div>
                   </div>
-                  <SheetTitle>Menu</SheetTitle>
+                  <SheetTitle className="text-center text-lg font-bold">{currentUser ? 'Menu' : 'Welcome'}</SheetTitle>
+                  <SheetDescription className="text-center text-xs">
+                    {currentUser ? 'Access all your options here' : 'Please sign in or register'}
+                  </SheetDescription>
                 </SheetHeader>
-                <div className="flex flex-col space-y-4 py-4">
+                <div className="flex flex-col space-y-2 py-2 px-1">
                   {navigationLinks.map((link) => 
                     link.isDropdown ? (
-                      <div key={link.name} className="flex flex-col mb-2">
+                      <div key={link.name} className="flex flex-col mb-1">
                         <div 
-                          className="px-4 py-3 font-medium text-gray-800 text-base hover:bg-gray-100 rounded-md flex items-center justify-between cursor-pointer"
+                          className="px-3 py-2 font-medium text-gray-800 text-sm hover:bg-gray-100 rounded-md flex items-center justify-between cursor-pointer"
                           onClick={() => toggleDropdown(link.name)}
                         >
                           {link.name}
-                          <ChevronDown className={`h-5 w-5 transition-transform duration-200 ${openDropdowns[link.name] ? 'rotate-180' : ''}`} />
+                          <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${openDropdowns[link.name] ? 'rotate-180' : ''}`} />
                         </div>
                         {openDropdowns[link.name] && (
                           <div className="ml-4 flex flex-col space-y-2 mt-2">
