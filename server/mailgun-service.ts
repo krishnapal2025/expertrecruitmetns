@@ -157,15 +157,38 @@ export async function sendVacancyAssignmentEmailWithMailgun(
           return;
         }
 
+        // Check if we're using a sandbox domain (common issue)
+        const domain = process.env.MAILGUN_DOMAIN || '';
+        const isSandbox = domain.includes('sandbox');
+        if (isSandbox) {
+          console.warn('WARNING: Using a Mailgun sandbox domain');
+          console.warn('Sandbox domains require recipient email verification before sending');
+          console.warn('Verify that recipient email is authorized for the sandbox account');
+        }
+
         console.log('Calling Mailgun messages().send()...');
         mailgunClient.messages().send(emailData, (error, body) => {
           if (error) {
             console.error('Mailgun API returned an error:');
             console.error('- Status Code:', error.statusCode);
             console.error('- Error Message:', error.message);
+            
+            // Provide more helpful error details
+            if (error.statusCode === 401) {
+              console.error('- Authentication Issue: Your API key may be invalid');
+            } else if (error.statusCode === 403) {
+              console.error('- Authorization Issue: You may not be authorized for this domain');
+              console.error('- If using sandbox domain, verify recipient email is authorized');
+            }
+            
             reject(error);
           } else {
             console.log('Mailgun API response:', body);
+            console.log('Email submitted successfully to Mailgun queue');
+            console.log('If you do not receive the email, check:');
+            console.log('1. Your spam/junk folder');
+            console.log('2. Domain verification status in Mailgun dashboard');
+            console.log('3. Email deliverability settings in Mailgun');
             resolve();
           }
         });
