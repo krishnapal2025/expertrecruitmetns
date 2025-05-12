@@ -3843,8 +3843,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Vacancy ID:", updatedVacancy.id);
       console.log("Vacancy Title:", updatedVacancy.jobTitle);
       
+      // Print full vacancy for debugging
+      console.log("FULL UPDATED VACANCY OBJECT:");
+      console.log(JSON.stringify(updatedVacancy, null, 2));
+      
       const origin = `${req.protocol}://${req.get('host')}`;
       console.log("Origin URL:", origin);
+      
+      console.log("MAILGUN ENVIRONMENT CHECK:");
+      console.log(`MAILGUN_API_KEY exists: ${!!process.env.MAILGUN_API_KEY} (${process.env.MAILGUN_API_KEY?.substring(0, 5)}...)`);
+      console.log(`MAILGUN_DOMAIN exists: ${!!process.env.MAILGUN_DOMAIN} (${process.env.MAILGUN_DOMAIN})`);
+      console.log(`MAILGUN_FROM_EMAIL exists: ${!!process.env.MAILGUN_FROM_EMAIL} (${process.env.MAILGUN_FROM_EMAIL})`);
       
       console.log("Calling sendVacancyAssignmentEmail function...");
       const emailResult = await sendVacancyAssignmentEmail(

@@ -199,18 +199,36 @@ export async function sendVacancyAssignmentEmailWithMailgun(
         success: true,
         message: 'Email sent successfully' 
       };
-    } catch (sendError) {
+    } catch (sendError: any) {
       console.error('Mailgun error:', sendError);
+      // Get detailed error information
+      const statusCode = sendError.statusCode || 'unknown';
+      const errorMessage = sendError.message || 'Unknown error';
+      
+      console.error(`Mailgun API error - Status: ${statusCode}, Message: ${errorMessage}`);
+      
+      // Check for specific error types and provide better diagnostics
+      if (statusCode === 401) {
+        console.error('❌ AUTHENTICATION ERROR: Mailgun API key is invalid or unauthorized');
+      } else if (statusCode === 403) {
+        console.error('❌ FORBIDDEN ERROR: Domain verification issue or sending restrictions');
+        console.error('Check if your domain is properly verified in Mailgun account');
+      } else if (statusCode === 400) {
+        console.error('❌ BAD REQUEST: Problem with the email data format');
+        console.error('Email data:', JSON.stringify(emailData, null, 2));
+      }
+      
       return { 
         success: false,
-        message: `Failed to send email via Mailgun: ${sendError.message || 'Unknown error'}` 
+        message: `Failed to send email via Mailgun: ${errorMessage} (Status: ${statusCode})` 
       };
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in sendVacancyAssignmentEmailWithMailgun:', error);
+    const errorMessage = error?.message || 'Unknown error';
     return { 
       success: false,
-      message: `Error preparing email: ${error.message || 'Unknown error'}` 
+      message: `Error preparing email: ${errorMessage}` 
     };
   }
 }
