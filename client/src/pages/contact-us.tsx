@@ -18,6 +18,7 @@ import contactHeroBg from "../assets/images/contact-hero-bg.jpg";
 import contactHeroBgSmall from "../assets/optimized/images/contact-hero-bg-sm.webp";
 import contactHeroBgMedium from "../assets/optimized/images/contact-hero-bg-md.webp";
 import { useAuth } from "@/hooks/use-auth";
+import XLogo from "../components/icons/x-logo";
 import { apiRequest } from "@/lib/queryClient";
 
 const contactFormSchema = z.object({
