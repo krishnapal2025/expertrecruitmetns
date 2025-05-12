@@ -394,10 +394,10 @@ export default function Navbar() {
                           <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${openDropdowns[link.name] ? 'rotate-180' : ''}`} />
                         </div>
                         {openDropdowns[link.name] && (
-                          <div className="ml-4 flex flex-col space-y-2 mt-2">
+                          <div className="ml-3 flex flex-col space-y-1 mt-1">
                             {link.dropdownItems?.map((item) => (
                               <div key={item.name} 
-                                className={`px-4 py-2 rounded-md cursor-pointer ${location === item.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}
+                                className={`px-3 py-2 text-sm rounded-md cursor-pointer ${location === item.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}
                                 onClick={() => {
                                   setIsMobileMenuOpen(false);
                                   window.scrollTo(0, 0);
@@ -412,7 +412,7 @@ export default function Navbar() {
                       </div>
                     ) : (
                       <div key={link.name}
-                        className={`px-4 py-2 rounded-md cursor-pointer block ${location === link.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}
+                        className={`px-3 py-2 text-sm rounded-md cursor-pointer block ${location === link.href ? "bg-primary/10 text-primary" : "hover:bg-gray-100"}`}
                         onClick={(e) => {
                           // Special handling for role-specific links
                           if (link.name === "Hire Talent" || link.name === "Vacancy Form") {
