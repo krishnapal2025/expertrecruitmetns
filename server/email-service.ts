@@ -316,6 +316,12 @@ export const sendVacancyAssignmentEmail = async (
     return { success: false, message: `Invalid email format: "${recruiterEmail}"` };
   }
   
+  // Block specific email addresses
+  if (recruiterEmail.toLowerCase().includes('anilkumar.gvm9@gmail.com')) {
+    console.error(`Blocked email address: "${recruiterEmail}"`);
+    return { success: false, message: `This recipient email is not allowed` };
+  }
+  
   // First try to use Mailgun for actual email delivery
   if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
     console.log('Using Mailgun for vacancy assignment email');
