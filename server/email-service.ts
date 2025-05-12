@@ -296,15 +296,46 @@ export const sendVacancyAssignmentEmail = async (
   vacancy: Vacancy,
   origin: string
 ): Promise<{ success: boolean; message?: string }> => {
+  console.log("\n=====================================");
+  console.log(" VACANCY ASSIGNMENT EMAIL REQUESTED");
+  console.log("=====================================");
+  console.log(`Recruiter Email: ${recruiterEmail}`);
+  console.log(`Recruiter Name: ${recruiterName}`);
+  console.log(`Vacancy ID: ${vacancy.id}`);
+  console.log(`Vacancy Title: ${vacancy.jobTitle || vacancy.title}`);
+  console.log(`Origin: ${origin}`);
+  
+  // Check for valid email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(recruiterEmail)) {
+    console.error(`Invalid email format: "${recruiterEmail}"`);
+    return { success: false, message: `Invalid email format: "${recruiterEmail}"` };
+  }
+  
   // First try to use Mailgun for actual email delivery
   if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
     console.log('Using Mailgun for vacancy assignment email');
-    return await sendVacancyAssignmentEmailWithMailgun(
-      recruiterEmail,
-      recruiterName,
-      vacancy,
-      origin
-    );
+    console.log(`MAILGUN_API_KEY exists: ${!!process.env.MAILGUN_API_KEY} (${process.env.MAILGUN_API_KEY?.substring(0, 5)}...)`);
+    console.log(`MAILGUN_DOMAIN exists: ${!!process.env.MAILGUN_DOMAIN} (${process.env.MAILGUN_DOMAIN})`);
+    console.log(`MAILGUN_FROM_EMAIL exists: ${!!process.env.MAILGUN_FROM_EMAIL} (${process.env.MAILGUN_FROM_EMAIL})`);
+    
+    try {
+      const result = await sendVacancyAssignmentEmailWithMailgun(
+        recruiterEmail,
+        recruiterName,
+        vacancy,
+        origin
+      );
+      
+      console.log("Mailgun email sending result:", result);
+      return result;
+    } catch (error) {
+      console.error("Error caught at sendVacancyAssignmentEmail level:", error);
+      return { 
+        success: false, 
+        message: `Error sending email via Mailgun: ${(error as Error).message}` 
+      };
+    }
   }
   
   // Fall back to nodemailer/Ethereal if Mailgun is not configured
