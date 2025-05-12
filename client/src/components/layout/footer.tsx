@@ -287,12 +287,9 @@ export default function Footer() {
                     <Linkedin className="h-5 w-5 text-white" />
                   </a>
                 </div>
-                <div className="flex space-x-4">
+                <div className="flex justify-center">
                   <a href="https://x.com/xprtrecruitment" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-[#000000] transition-colors">
                     <XLogo className="h-5 w-5 text-white" />
-                  </a>
-                  <a href="https://www.instagram.com/expertrecruitmentsdubai/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] transition-colors">
-                    <Instagram className="h-5 w-5 text-white" />
                   </a>
                 </div>
               </div>
