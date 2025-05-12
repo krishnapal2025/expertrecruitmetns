@@ -713,7 +713,7 @@ export default function ContactUsPage() {
             </motion.div>
             
             <motion.h3 
-              className="text-xl font-medium text-gray-700 mb-6 relative z-10"
+              className="text-xl font-medium text-gray-700 mb-3 relative z-10"
               variants={{
                 hidden: { opacity: 0, y: 10 },
                 visible: {
@@ -729,7 +729,7 @@ export default function ContactUsPage() {
             </motion.h3>
             
             {/* Social Media Icons - Modern & Elegant Design */}
-            <div className="flex flex-col items-center gap-5 mt-6 relative z-10">
+            <div className="flex flex-col items-center gap-3 mt-2 relative z-10">
               <div className="flex space-x-5">
                 <motion.a 
                   href="https://www.facebook.com/expertrecruitmentsdubai" 
