@@ -3,6 +3,7 @@ import { randomBytes } from 'crypto';
 import jwt from 'jsonwebtoken';
 import { User, Vacancy } from '@shared/schema';
 import { log } from './vite';
+import { sendVacancyAssignmentEmailWithMailgun } from './mailgun-service';
 
 // Secret for JWT token signing
 const JWT_SECRET = process.env.SESSION_SECRET || 'your-jwt-secret';
@@ -295,8 +296,20 @@ export const sendVacancyAssignmentEmail = async (
   vacancy: Vacancy,
   origin: string
 ): Promise<{ success: boolean; message?: string }> => {
+  // First try to use SendGrid for actual email delivery
+  if (process.env.SENDGRID_API_KEY) {
+    console.log('Using SendGrid for vacancy assignment email');
+    return await sendVacancyAssignmentEmailWithSendGrid(
+      recruiterEmail,
+      recruiterName,
+      vacancy,
+      origin
+    );
+  }
+  
+  // Fall back to nodemailer/Ethereal if SendGrid is not configured
   try {
-    console.log(`Sending vacancy assignment email to ${recruiterEmail}`);
+    console.log(`Sending vacancy assignment email to ${recruiterEmail} using fallback method`);
     
     // Create a view vacancy URL
     const vacancyUrl = `${origin}/recruiter/vacancy/${vacancy.id}`;
