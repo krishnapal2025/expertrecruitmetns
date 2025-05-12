@@ -2,8 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Phone, MapPin, Facebook, Linkedin, Instagram, Star } from "lucide-react";
-import XLogo from "../icons/x-logo";
+import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Star } from "lucide-react";
 import expertLogo from "../../assets/er-logo-icon.png";
 import qrCodeImage from "../../assets/qr-code.jpeg";
 
@@ -278,8 +277,8 @@ export default function Footer() {
             
             <div className="flex flex-col h-full justify-start md:pl-8">
               <h3 className="text-lg font-bold mb-3">Follow Us</h3>
-              <div className="flex flex-col space-y-3 mt-1">
-                <div className="flex space-x-4 justify-center">
+              <div className="flex flex-col space-y-4">
+                <div className="flex space-x-4">
                   <a href="https://www.facebook.com/expertrecruitmentsdubai" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition-colors">
                     <Facebook className="h-5 w-5 text-white" />
                   </a>
@@ -287,9 +286,12 @@ export default function Footer() {
                     <Linkedin className="h-5 w-5 text-white" />
                   </a>
                 </div>
-                <div className="flex justify-center">
-                  <a href="https://x.com/xprtrecruitment" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-[#000000] transition-colors">
-                    <XLogo className="h-5 w-5 text-white" />
+                <div className="flex space-x-4">
+                  <a href="https://twitter.com/ExpertRecruitLLC" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-[#1DA1F2] transition-colors">
+                    <Twitter className="h-5 w-5 text-white" />
+                  </a>
+                  <a href="https://www.instagram.com/expertrecruitmentsdubai/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] transition-colors">
+                    <Instagram className="h-5 w-5 text-white" />
                   </a>
                 </div>
               </div>
