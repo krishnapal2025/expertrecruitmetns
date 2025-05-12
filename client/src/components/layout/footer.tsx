@@ -276,10 +276,10 @@ export default function Footer() {
               </form>
             </div>
             
-            <div className="flex flex-col h-full justify-start md:pl-8">
+            <div className="flex flex-col h-full justify-start md:pr-8">
               <h3 className="text-lg font-bold mb-3">Follow Us</h3>
               <div className="flex flex-col items-start">
-                <div className="flex space-x-4 mb-4">
+                <div className="flex space-x-3 mb-4">
                   <a href="https://www.facebook.com/expertrecruitmentsdubai" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition-colors">
                     <Facebook className="h-5 w-5 text-white" />
                   </a>
