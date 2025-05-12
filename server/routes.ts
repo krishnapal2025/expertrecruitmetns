@@ -3824,13 +3824,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Send notification email to the recruiter
+      console.log("---------------------------------------");
+      console.log("SENDING VACANCY ASSIGNMENT EMAIL");
+      console.log("---------------------------------------");
+      console.log("Recruiter Email:", recruiterEmail);
+      console.log("Recruiter Name:", recruiterName);
+      console.log("Vacancy ID:", updatedVacancy.id);
+      console.log("Vacancy Title:", updatedVacancy.jobTitle);
+      
       const origin = `${req.protocol}://${req.get('host')}`;
+      console.log("Origin URL:", origin);
+      
+      console.log("Calling sendVacancyAssignmentEmail function...");
       const emailResult = await sendVacancyAssignmentEmail(
         recruiterEmail,
         recruiterName,
         updatedVacancy,
         origin
       );
+      
+      console.log("Email send result:", emailResult);
+      console.log("Success:", emailResult.success);
+      console.log("Message:", emailResult.message || "No message provided");
+      console.log("---------------------------------------");
 
       res.json({
         success: true,

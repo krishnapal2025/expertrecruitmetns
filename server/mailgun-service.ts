@@ -41,6 +41,9 @@ export async function sendVacancyAssignmentEmailWithMailgun(
   origin: string
 ): Promise<{ success: boolean; message?: string }> {
   try {
+    console.log("\n==== MAILGUN VACANCY EMAIL ASSIGNMENT ====");
+    console.log(`Attempting to send email to ${recruiterEmail} for vacancy #${vacancy.id}`);
+    
     // If Mailgun is not initialized, return early
     if (!mailgunClient) {
       console.log('Mailgun service not available, cannot send email');
