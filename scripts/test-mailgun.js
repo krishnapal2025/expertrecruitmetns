@@ -15,19 +15,41 @@ import mailgun from 'mailgun-js';
 
 config();
 
-// Check for required environment variables
-if (!process.env.MAILGUN_API_KEY) {
-  console.error('Error: MAILGUN_API_KEY environment variable is not set');
-  process.exit(1);
+// Function to display environment variables and API information
+function displayMailgunInfo() {
+  console.log('\n--------------------------------------');
+  console.log('MAILGUN CONFIGURATION CHECK');
+  console.log('--------------------------------------');
+  
+  // Check API key
+  const hasApiKey = !!process.env.MAILGUN_API_KEY;
+  console.log(`API Key: ${hasApiKey ? 
+    ('✓ Present (begins with ' + process.env.MAILGUN_API_KEY.substring(0, 5) + '...)') : 
+    '✗ Missing'}`);
+  
+  // Check domain
+  const hasDomain = !!process.env.MAILGUN_DOMAIN;
+  console.log(`Domain: ${hasDomain ? 
+    ('✓ Set to ' + process.env.MAILGUN_DOMAIN) : 
+    '✗ Missing'}`);
+  
+  // Check from email
+  const hasFromEmail = !!process.env.MAILGUN_FROM_EMAIL;
+  console.log(`From Email: ${hasFromEmail ? 
+    ('✓ Set to ' + process.env.MAILGUN_FROM_EMAIL) : 
+    '✗ Missing'}`);
+    
+  console.log('--------------------------------------\n');
+  
+  return hasApiKey && hasDomain && hasFromEmail;
 }
 
-if (!process.env.MAILGUN_DOMAIN) {
-  console.error('Error: MAILGUN_DOMAIN environment variable is not set');
-  process.exit(1);
-}
+// Display configuration information
+const configValid = displayMailgunInfo();
 
-if (!process.env.MAILGUN_FROM_EMAIL) {
-  console.error('Error: MAILGUN_FROM_EMAIL environment variable is not set');
+// Exit if configuration is incomplete
+if (!configValid) {
+  console.error('Error: One or more required Mailgun configuration variables are missing');
   process.exit(1);
 }
 
@@ -63,6 +85,7 @@ const emailData = {
         <p><strong>Sender:</strong> ${process.env.MAILGUN_FROM_EMAIL}</p>
         <p><strong>Domain:</strong> ${process.env.MAILGUN_DOMAIN}</p>
         <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
+        <p><strong>Test ID:</strong> ${Math.random().toString(36).substring(2, 10)}</p>
       </div>
       
       <p>If you received this email, it means that the Mailgun integration is functioning correctly!</p>
@@ -75,11 +98,32 @@ const emailData = {
   `
 };
 
-// Send the email
+// Send the email with better error handling
 try {
   const result = await new Promise((resolve, reject) => {
+    console.log('Calling Mailgun API...');
     mg.messages().send(emailData, (error, body) => {
       if (error) {
+        console.error('Mailgun API error details:');
+        if (error.statusCode) {
+          console.error(`- Status code: ${error.statusCode}`);
+        }
+        if (error.message) {
+          console.error(`- Error message: ${error.message}`);
+        }
+        
+        // Provide helpful guidance based on error codes
+        if (error.statusCode === 401) {
+          console.error('\nAuthentication Error (401): Your API key may be invalid or inactive.');
+          console.error('Please verify your API key is correct and has proper permissions.');
+        } else if (error.statusCode === 403) {
+          console.error('\nForbidden Error (403): You do not have permission to send from this domain.');
+          console.error('Make sure your domain is properly verified in your Mailgun account.');
+        } else if (error.statusCode === 400) {
+          console.error('\nBad Request Error (400): There is a problem with your request format.');
+          console.error('Check the email addresses, formatting, or message content.');
+        }
+        
         reject(error);
       } else {
         resolve(body);
@@ -87,10 +131,14 @@ try {
     });
   });
   
-  console.log('Test email sent successfully!');
+  console.log('\n✅ TEST EMAIL SENT SUCCESSFULLY!');
   console.log('Mailgun API response:', result);
+  console.log('\nIf you do not receive the email:');
+  console.log('1. Check your spam/junk folder');
+  console.log('2. Verify your domain is properly set up in Mailgun');
+  console.log('3. For sandbox domains, ensure recipient emails are verified');
   process.exit(0);
 } catch (error) {
-  console.error('Error sending test email:', error);
+  console.error('\n❌ Error sending test email:', error.message || 'Unknown error');
   process.exit(1);
 }

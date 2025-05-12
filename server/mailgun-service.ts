@@ -9,6 +9,11 @@ export function initializeMailgun() {
     return false;
   }
 
+  console.log('Initializing Mailgun with:');
+  console.log('- Domain:', process.env.MAILGUN_DOMAIN);
+  console.log('- API Key:', process.env.MAILGUN_API_KEY.substring(0, 5) + '...[rest hidden]');
+  console.log('- From Email:', process.env.MAILGUN_FROM_EMAIL || 'Not set');
+
   try {
     const mg = mailgun({
       apiKey: process.env.MAILGUN_API_KEY,
@@ -39,20 +44,35 @@ export async function sendVacancyAssignmentEmailWithMailgun(
     // If Mailgun is not initialized, return early
     if (!mailgunClient) {
       console.log('Mailgun service not available, cannot send email');
+      console.log('Mailgun environment check:');
+      console.log('- MAILGUN_API_KEY exists:', !!process.env.MAILGUN_API_KEY);
+      console.log('- MAILGUN_DOMAIN exists:', !!process.env.MAILGUN_DOMAIN);
+      console.log('- MAILGUN_FROM_EMAIL exists:', !!process.env.MAILGUN_FROM_EMAIL);
       return { 
         success: false, 
         message: 'Email service not configured' 
       };
     }
 
-    console.log(`Sending vacancy assignment email to ${recruiterEmail} via Mailgun`);
+    console.log('-----------------------------------');
+    console.log(`SENDING EMAIL VIA MAILGUN`);
+    console.log('-----------------------------------');
+    console.log(`- To: ${recruiterEmail}`);
+    console.log(`- Recipient Name: ${recruiterName}`);
+    console.log(`- Vacancy ID: ${vacancy.id}`);
+    console.log(`- Job Title: ${vacancy.jobTitle}`);
+    console.log(`- Company: ${vacancy.companyName}`);
     
     // Create a view vacancy URL
     const vacancyUrl = `${origin}/recruiter/vacancy/${vacancy.id}`;
+    console.log(`- Vacancy URL: ${vacancyUrl}`);
     
     // Create email content
+    const fromEmail = process.env.MAILGUN_FROM_EMAIL || 'noreply@expertrecruitments.com';
+    console.log(`- From Email: ${fromEmail}`);
+    
     const emailData = {
-      from: process.env.MAILGUN_FROM_EMAIL || 'noreply@expertrecruitments.com',
+      from: fromEmail,
       to: recruiterEmail,
       subject: `New Vacancy Assignment: ${vacancy.jobTitle} at ${vacancy.companyName}`,
       text: `
@@ -123,11 +143,23 @@ export async function sendVacancyAssignmentEmailWithMailgun(
       `
     };
     
+    console.log('Attempting to send email via Mailgun API...');
+    
     try {
       // Send the email using Mailgun
       await new Promise<void>((resolve, reject) => {
+        if (!mailgunClient) {
+          console.error('Mailgun client became null somehow!');
+          reject(new Error('Mailgun client is not available'));
+          return;
+        }
+
+        console.log('Calling Mailgun messages().send()...');
         mailgunClient.messages().send(emailData, (error, body) => {
           if (error) {
+            console.error('Mailgun API returned an error:');
+            console.error('- Status Code:', error.statusCode);
+            console.error('- Error Message:', error.message);
             reject(error);
           } else {
             console.log('Mailgun API response:', body);
@@ -145,14 +177,14 @@ export async function sendVacancyAssignmentEmailWithMailgun(
       console.error('Mailgun error:', sendError);
       return { 
         success: false,
-        message: 'Failed to send email via Mailgun' 
+        message: `Failed to send email via Mailgun: ${sendError.message || 'Unknown error'}` 
       };
     }
   } catch (error) {
     console.error('Error in sendVacancyAssignmentEmailWithMailgun:', error);
     return { 
       success: false,
-      message: 'Error preparing email' 
+      message: `Error preparing email: ${error.message || 'Unknown error'}` 
     };
   }
 }
