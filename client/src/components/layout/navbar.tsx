@@ -562,10 +562,10 @@ export default function Navbar() {
                       </>
                     ) : (
                       <>
-                        <div className="px-4 py-2 mb-4">
+                        <div className="px-2 py-2 mb-2">
                           <Button 
                             variant="default" 
-                            className="w-full mb-4 text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold text-white focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                            className="w-full mb-3 text-sm sm:text-base py-4 bg-[#4060e0] hover:bg-[#3050d0] font-bold text-white focus:ring-0 focus:ring-offset-0 focus:outline-none"
                             onClick={() => {
                               setIsMobileMenuOpen(false);
                               window.scrollTo(0, 0);
@@ -575,12 +575,12 @@ export default function Navbar() {
                             Sign In
                           </Button>
                         
-                          <div className="mt-6 mb-2">
-                            <div className="font-medium text-base mb-3 text-center">Sign Up as:</div>
-                            <div className="space-y-3">
+                          <div className="mt-4 mb-2">
+                            <div className="font-medium text-sm mb-2 text-center">Sign Up as:</div>
+                            <div className="space-y-2">
                               <Button 
                                 variant="default" 
-                                className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                                className="w-full flex items-center justify-center text-sm sm:text-base py-4 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   setIsMobileMenuOpen(false);
@@ -597,12 +597,12 @@ export default function Navbar() {
                                   }
                                 }}
                               >
-                                <Briefcase className="mr-2 h-5 w-5" />
+                                <Briefcase className="mr-2 h-4 w-4" />
                                 Employer
                               </Button>
                               <Button 
                                 variant="default" 
-                                className="w-full flex items-center text-lg py-6 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                                className="w-full flex items-center justify-center text-sm sm:text-base py-4 bg-[#4060e0] hover:bg-[#3050d0] focus:ring-0 focus:ring-offset-0 focus:outline-none"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   setIsMobileMenuOpen(false);
@@ -619,7 +619,7 @@ export default function Navbar() {
                                   }
                                 }}
                               >
-                                <User className="mr-2 h-5 w-5" />
+                                <User className="mr-2 h-4 w-4" />
                                 Job Seeker
                               </Button>
                             </div>
