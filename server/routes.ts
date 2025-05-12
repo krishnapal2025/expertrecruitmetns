@@ -3753,14 +3753,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Assign vacancy to recruiter (admin only)
   app.patch("/api/admin/vacancies/:id/assign", async (req, res) => {
     try {
+      const { id } = req.params;
+      const { recruiterEmail, recruiterName } = req.body;
+      
+      console.log("\n=================================================");
+      console.log(" VACANCY ASSIGNMENT API ENDPOINT CALLED");
+      console.log("=================================================");
+      console.log("Vacancy ID:", id);
+      console.log("Recruiter Email:", recruiterEmail);
+      console.log("Recruiter Name:", recruiterName);
+      console.log("Request Body:", JSON.stringify(req.body));
+      console.log("Request User:", req.user ? `ID: ${req.user.id}, Type: ${req.user.userType}` : "Not authenticated");
+      
       // Check if user is authenticated and is an admin
       if (!req.isAuthenticated()) {
+        console.log("❌ AUTHENTICATION FAILURE: User is not authenticated");
         return res.status(401).json({ message: "Unauthorized" });
       }
 
       const user = req.user;
-      const { id } = req.params;
-      const { recruiterEmail, recruiterName } = req.body;
 
       // Validate required fields
       if (!recruiterEmail || !recruiterName) {

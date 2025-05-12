@@ -302,7 +302,11 @@ export const sendVacancyAssignmentEmail = async (
   console.log(`Recruiter Email: ${recruiterEmail}`);
   console.log(`Recruiter Name: ${recruiterName}`);
   console.log(`Vacancy ID: ${vacancy.id}`);
-  console.log(`Vacancy Title: ${vacancy.jobTitle || vacancy.title}`);
+  console.log(`Vacancy Title: ${vacancy.jobTitle}`);
+  
+  // Log full vacancy object details for debugging
+  console.log('Full Vacancy Object:');
+  console.log(JSON.stringify(vacancy, null, 2));
   console.log(`Origin: ${origin}`);
   
   // Check for valid email format
