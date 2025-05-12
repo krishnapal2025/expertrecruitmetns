@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { User } from "@shared/schema";
-import { format, parseISO, isValid } from "date-fns";
+import { format, parseISO, isValid, addDays } from "date-fns";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +18,18 @@ import {
 // UI Components
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -26,7 +38,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Loader2, Trash2 } from "lucide-react";
+import { Loader2, Trash2, KeyRound, Copy, CheckCircle, RefreshCw } from "lucide-react";
 
 export function AdminsList({ user }: { user: User | null }) {
   const { toast } = useToast();
