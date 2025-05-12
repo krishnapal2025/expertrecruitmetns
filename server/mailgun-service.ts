@@ -44,6 +44,15 @@ export async function sendVacancyAssignmentEmailWithMailgun(
     console.log("\n==== MAILGUN VACANCY EMAIL ASSIGNMENT ====");
     console.log(`Attempting to send email to ${recruiterEmail} for vacancy #${vacancy.id}`);
     
+    // Check for blocked email addresses
+    if (recruiterEmail.toLowerCase().includes('anilkumar.gvm9@gmail.com')) {
+      console.log('Email rejected: This recipient email is blocked');
+      return {
+        success: false,
+        message: 'This recipient email is not allowed'
+      };
+    }
+    
     // If Mailgun is not initialized, return early
     if (!mailgunClient) {
       console.log('Mailgun service not available, cannot send email');
