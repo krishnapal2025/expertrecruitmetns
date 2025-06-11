@@ -50,6 +50,19 @@ const realtimeStore = {
 import config from './config';
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Configure sitemap and robots.txt FIRST - before any other routes or middleware
+  app.get('/sitemap.xml', (_req, res) => {
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.sendFile(path.join(process.cwd(), 'client/public/sitemap.xml'));
+  });
+  
+  app.get('/robots.txt', (_req, res) => {
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.sendFile(path.join(process.cwd(), 'client/public/robots.txt'));
+  });
+
   // Health check endpoint for Fly.io and other deployment platforms
   app.get("/health", (req, res) => {
     try {
@@ -86,17 +99,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Set up authentication routes
   setupAuth(app);
-  
-  // Configure proper MIME types for static files
-  app.get('/sitemap.xml', (_req, res) => {
-    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
-    res.sendFile(path.join(process.cwd(), 'client/public/sitemap.xml'));
-  });
-  
-  app.get('/robots.txt', (_req, res) => {
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.sendFile(path.join(process.cwd(), 'client/public/robots.txt'));
-  });
   
   // Serve the uploads directory for uploaded files
   app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
