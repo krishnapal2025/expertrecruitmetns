@@ -1,0 +1,37 @@
+User-agent: *
+Allow: /
+
+# Block admin pages from search engines
+Disallow: /admin*
+Disallow: /admin-*
+Disallow: /super-admin*
+Disallow: /post-job
+Disallow: /post-manager
+Disallow: /blog-manager
+Disallow: /create-blog
+Disallow: /edit-blog/
+Disallow: /edit-job/
+Disallow: /apply/
+Disallow: /profile
+Disallow: /applications-manager
+
+# Allow important pages
+Allow: /
+Allow: /about-us
+Allow: /services
+Allow: /sectors
+Allow: /job-board
+Allow: /hire-talent
+Allow: /contact-us
+Allow: /blogs
+Allow: /careers
+Allow: /job-seeker-register
+Allow: /employer-register
+Allow: /vacancy-form
+Allow: /resources/
+
+# Sitemap location
+Sitemap: https://expertrecruitments.com/sitemap.xml
+
+# Crawl delay (optional - helps prevent server overload)
+Crawl-delay: 1

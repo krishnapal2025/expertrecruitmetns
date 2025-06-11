@@ -22,6 +22,125 @@ export default function HomePage() {
         <title>Expert Recruitments LLC | Find Your Next Career Opportunity</title>
         <meta name="description" content="Connect with the best job opportunities and top talent through our professional job portal. Specializing in executive search across UAE & GCC markets." />
         <meta name="keywords" content="Expert Recruitments LLC, Recruitment agency in Dubai, UAE head hunters, Executive search services, Job vacancies in Dubai, Hiring in UAE, Top recruitment agency, Employment in GCC, Talent acquisition specialists, Dubai career portal, Middle East job market, Professional recruiters, Headhunting services, Gulf employment, Job search Dubai" />
+        
+        {/* JSON-LD Structured Data for Organization */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Expert Recruitments LLC",
+            "alternateName": "Expert Recruitments",
+            "url": "https://expertrecruitments.com",
+            "logo": "https://expertrecruitments.com/logo.png",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+971-4-123-4567",
+              "contactType": "customer service",
+              "areaServed": "AE",
+              "availableLanguage": ["English", "Arabic"]
+            },
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Business Bay",
+              "addressLocality": "Dubai",
+              "addressRegion": "Dubai",
+              "postalCode": "00000",
+              "addressCountry": "AE"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 25.2048,
+              "longitude": 55.2708
+            },
+            "sameAs": [
+              "https://www.linkedin.com/company/expert-recruitments",
+              "https://twitter.com/expertrecruitments"
+            ],
+            "description": "Leading executive search and recruitment agency in Dubai, UAE. Expert headhunters specializing in talent acquisition for senior positions across GCC markets.",
+            "foundingDate": "2015",
+            "numberOfEmployees": "50-100",
+            "industry": "Recruitment and Staffing",
+            "serviceArea": {
+              "@type": "GeoCircle",
+              "geoMidpoint": {
+                "@type": "GeoCoordinates",
+                "latitude": 25.2048,
+                "longitude": 55.2708
+              },
+              "geoRadius": "1000000"
+            }
+          })}
+        </script>
+
+        {/* JSON-LD Structured Data for Website */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Expert Recruitments LLC",
+            "alternateName": "Expert Recruitments Job Portal",
+            "url": "https://expertrecruitments.com",
+            "description": "Professional recruitment and job portal connecting top talent with leading companies across UAE and GCC region.",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://expertrecruitments.com/job-board?search={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Expert Recruitments LLC"
+            }
+          })}
+        </script>
+
+        {/* JSON-LD Structured Data for Local Business */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "name": "Expert Recruitments LLC",
+            "image": "https://expertrecruitments.com/logo.png",
+            "telephone": "+971-4-123-4567",
+            "email": "info@expertrecruitments.com",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Business Bay",
+              "addressLocality": "Dubai",
+              "addressRegion": "Dubai",
+              "postalCode": "00000",
+              "addressCountry": "AE"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 25.2048,
+              "longitude": 55.2708
+            },
+            "url": "https://expertrecruitments.com",
+            "openingHours": "Mo-Fr 09:00-18:00",
+            "priceRange": "$$",
+            "serviceArea": {
+              "@type": "Country",
+              "name": "United Arab Emirates"
+            },
+            "areaServed": [
+              {
+                "@type": "Country",
+                "name": "United Arab Emirates"
+              },
+              {
+                "@type": "Country", 
+                "name": "Saudi Arabia"
+              },
+              {
+                "@type": "Country",
+                "name": "Qatar"
+              }
+            ]
+          })}
+        </script>
       </Helmet>
       
       {/* Hidden SEO keywords for search engines */}
