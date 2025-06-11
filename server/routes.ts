@@ -87,6 +87,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication routes
   setupAuth(app);
   
+  // Configure proper MIME types for static files
+  app.get('/sitemap.xml', (_req, res) => {
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.sendFile(path.join(process.cwd(), 'client/public/sitemap.xml'));
+  });
+  
+  app.get('/robots.txt', (_req, res) => {
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.sendFile(path.join(process.cwd(), 'client/public/robots.txt'));
+  });
+  
   // Serve the uploads directory for uploaded files
   app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
   
