@@ -1,48 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <!-- Main Pages -->
   <url>
     <loc>https://expertrecruitments.com/</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/about-us</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/services</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/sectors</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/hire-talent</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/contact-us</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -50,14 +47,14 @@
   <!-- Job Board & Career Pages -->
   <url>
     <loc>https://expertrecruitments.com/job-board</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/careers</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -65,7 +62,7 @@
   <!-- Blog & Content Pages -->
   <url>
     <loc>https://expertrecruitments.com/blogs</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -73,21 +70,21 @@
   <!-- Registration & Public Forms -->
   <url>
     <loc>https://expertrecruitments.com/job-seeker-register</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/employer-register</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/vacancy-form</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -95,28 +92,28 @@
   <!-- Job Seeker Resources -->
   <url>
     <loc>https://expertrecruitments.com/resources/create-resume</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/resources/interview-prep</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/resources/career-advice</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/resources/salary-negotiation</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -124,21 +121,21 @@
   <!-- Legal & Information Pages -->
   <url>
     <loc>https://expertrecruitments.com/privacy-policy</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/terms-conditions</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
     <loc>https://expertrecruitments.com/site-map</loc>
-    <lastmod>2025-01-25</lastmod>
+    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
