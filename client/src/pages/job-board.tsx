@@ -164,6 +164,7 @@ export default function JobBoardPage() {
         <title>Find Jobs | Expert Recruitments</title>
         <meta name="description" content="Browse through our extensive collection of job listings across various sectors and locations. Find your perfect career opportunity today." />
         <meta name="keywords" content="Executive search UAE, Recruitment agency Dubai, Headhunters Dubai, Job opportunities UAE, Career Dubai, Employment agencies UAE, Executive jobs Dubai, Top recruitment firms, Dubai job market, UAE employment, Senior management positions, C-level jobs UAE, UAE hiring services, Dubai employment portal, Recruitment companies UAE" />
+        <link rel="canonical" href="https://expertrecruitments.com/job-board" />
       </Helmet>
       
       {/* Hidden SEO keywords that are not visible to users but help with search engines */}
