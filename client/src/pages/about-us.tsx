@@ -70,6 +70,7 @@ export default function AboutUsPage() {
       <Helmet>
         <title>About Us | Expert Recruitments</title>
         <meta name="description" content="Expert Recruitments - The Home of High-End Executive Search in Dubai. We provide comprehensive and meticulous approach to executive search in Dubai and across the UAE." />
+        <link rel="canonical" href="https://expertrecruitments.com/about-us" />
       </Helmet>
 
       {/* Hero Section with Premium Executive Design */}

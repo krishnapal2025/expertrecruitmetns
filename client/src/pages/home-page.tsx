@@ -22,6 +22,7 @@ export default function HomePage() {
         <title>Expert Recruitments LLC | Find Your Next Career Opportunity</title>
         <meta name="description" content="Connect with the best job opportunities and top talent through our professional job portal. Specializing in executive search across UAE & GCC markets." />
         <meta name="keywords" content="Expert Recruitments LLC, Recruitment agency in Dubai, UAE head hunters, Executive search services, Job vacancies in Dubai, Hiring in UAE, Top recruitment agency, Employment in GCC, Talent acquisition specialists, Dubai career portal, Middle East job market, Professional recruiters, Headhunting services, Gulf employment, Job search Dubai" />
+        <link rel="canonical" href="https://expertrecruitments.com/" />
         
         {/* JSON-LD Structured Data for Organization */}
         <script type="application/ld+json">

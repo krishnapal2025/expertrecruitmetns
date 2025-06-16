@@ -15,6 +15,7 @@ export default function HireTalentPage() {
       <Helmet>
         <title>Hire Talent | Expert Recruitments</title>
         <meta name="description" content="Partner with Dubai's leading executive search specialists to find exceptional leadership talent that will drive your business forward." />
+        <link rel="canonical" href="https://expertrecruitments.com/hire-talent" />
       </Helmet>
 
       {/* Hero Section */}

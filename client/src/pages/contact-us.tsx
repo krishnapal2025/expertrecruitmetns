@@ -155,6 +155,7 @@ export default function ContactUsPage() {
       <Helmet>
         <title>Connect With Us | Expert Recruitments LLC</title>
         <meta name="description" content="Get in touch with Expert Recruitments across our global offices in India, Dubai, and USA. We're here to help with all your recruitment needs." />
+        <link rel="canonical" href="https://expertrecruitments.com/contact-us" />
       </Helmet>
 
       {/* Hero Section with Black Tint - matching Services page style */}

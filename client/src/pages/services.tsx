@@ -19,6 +19,7 @@ export default function ServicesPage() {
       <Helmet>
         <title>Our Services | Expert Recruitments</title>
         <meta name="description" content="Explore our comprehensive range of services for both job seekers and employers. From recruitment solutions to career coaching." />
+        <link rel="canonical" href="https://expertrecruitments.com/services" />
       </Helmet>
 
       <div className="relative min-h-[90vh] overflow-hidden">
