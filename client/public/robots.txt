@@ -14,8 +14,22 @@ Disallow: /edit-job/
 Disallow: /apply/
 Disallow: /profile
 Disallow: /applications-manager
+Disallow: /auth*
 
-# Allow important pages
+# Block dynamic parameter versions to prevent duplicate content
+Disallow: /*?*
+Disallow: /*#*
+Disallow: /*/page/*
+Disallow: /*?utm_*
+Disallow: /*&utm_*
+
+# Block non-canonical URL patterns
+Disallow: /index.html
+Disallow: /index.php
+Disallow: /home
+Disallow: /home/
+
+# Allow important pages with explicit canonical URLs
 Allow: /
 Allow: /about-us
 Allow: /services
@@ -29,9 +43,14 @@ Allow: /job-seeker-register
 Allow: /employer-register
 Allow: /vacancy-form
 Allow: /resources/
+Allow: /job/
+Allow: /article/
+Allow: /site-map
+Allow: /privacy-policy
+Allow: /terms-conditions
 
 # Sitemap location
 Sitemap: https://expertrecruitments.com/sitemap.xml
 
-# Crawl delay (optional - helps prevent server overload)
-Crawl-delay: 1
+# Crawl delay (helps prevent server overload and canonical conflicts)
+Crawl-delay: 2

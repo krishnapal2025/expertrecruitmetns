@@ -131,8 +131,9 @@ export default function JobDetailsPage({ id }: { id: string }) {
   return (
     <>
       <Helmet>
-        <title>{`${job.title} | RH Job Portal`}</title>
+        <title>{`${job.title} | Expert Recruitments`}</title>
         <meta name="description" content={`Apply for ${job.title}${employer ? ` at ${employer.companyName}` : ''}. ${job.description.substring(0, 150)}...`} />
+        <link rel="canonical" href={`https://expertrecruitments.com/job/${id}`} />
       </Helmet>
 
       <div className="bg-primary text-white py-12">

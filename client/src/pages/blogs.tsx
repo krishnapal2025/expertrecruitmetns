@@ -99,6 +99,7 @@ export default function BlogsPage() {
       <Helmet>
         <title>Blog | Career Resources & Advice | Expert Recruitments</title>
         <meta name="description" content="Browse our collection of career advice, industry insights, and job search tips to help you advance your professional journey." />
+        <link rel="canonical" href="https://expertrecruitments.com/blogs" />
       </Helmet>
 
       <div className="relative min-h-[90vh] overflow-hidden">
