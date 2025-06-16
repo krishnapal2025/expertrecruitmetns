@@ -116,6 +116,7 @@ export default function SiteMap() {
           name="keywords"
           content="Executive search UAE, Talent acquisition, Recruitment agencies in Dubai, Recruitment agencies in UAE, Head hunting, Head hunters Dubai"
         />
+        <link rel="canonical" href="https://expertrecruitments.com/site-map" />
       </Helmet>
 
       <div className="bg-gray-50 py-12 md:py-20">
