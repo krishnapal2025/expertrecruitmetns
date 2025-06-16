@@ -54,13 +54,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/sitemap.xml', (_req, res) => {
     res.setHeader('Content-Type', 'application/xml; charset=utf-8');
     res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.setHeader('Link', '<https://expertrecruitments.com/sitemap.xml>; rel="canonical"');
     res.sendFile(path.join(process.cwd(), 'client/public/sitemap.xml'));
   });
   
   app.get('/robots.txt', (_req, res) => {
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.setHeader('Link', '<https://expertrecruitments.com/robots.txt>; rel="canonical"');
     res.sendFile(path.join(process.cwd(), 'client/public/robots.txt'));
+  });
+
+  // Add canonical URL middleware for all public pages to resolve Google Search Console conflicts
+  app.use((req, res, next) => {
+    // Skip API routes, admin routes, and static assets
+    if (req.path.startsWith('/api/') || 
+        req.path.startsWith('/admin') || 
+        req.path.startsWith('/assets/') ||
+        req.path.includes('.') ||
+        req.path.startsWith('/auth')) {
+      return next();
+    }
+    
+    // Construct canonical URL for public pages
+    const canonicalUrl = `https://expertrecruitments.com${req.path}`;
+    res.setHeader('Link', `<${canonicalUrl}>; rel="canonical"`);
+    
+    // Add additional SEO headers to prevent duplicate content
+    res.setHeader('X-Robots-Tag', 'index, follow');
+    res.setHeader('Cache-Control', 'public, max-age=1800'); // 30 minutes for pages
+    
+    next();
   });
 
   // Health check endpoint for Fly.io and other deployment platforms

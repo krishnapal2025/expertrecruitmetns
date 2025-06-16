@@ -1,0 +1,36 @@
+# SEO Redirects and Canonical URL enforcement
+# This file helps resolve Google Search Console canonical tag conflicts
+
+# Redirect www to non-www (handled by SiteGround)
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www\.expertrecruitments\.com [NC]
+RewriteRule ^(.*)$ https://expertrecruitments.com/$1 [R=301,L]
+
+# Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Prevent duplicate content from trailing slashes
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# Block access to admin routes from search engines
+RewriteRule ^admin - [F,L]
+RewriteRule ^super-admin - [F,L]
+RewriteRule ^post-job - [F,L]
+RewriteRule ^applications-manager - [F,L]
+
+# Set cache headers for static assets
+<FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg|webp)$">
+    Header set Cache-Control "public, max-age=31536000"
+</FilesMatch>
+
+# Set XML headers for sitemap
+<FilesMatch "\.xml$">
+    Header set Content-Type "application/xml; charset=utf-8"
+</FilesMatch>
+
+# Custom error pages
+ErrorDocument 404 /404.html
+ErrorDocument 500 /500.html
