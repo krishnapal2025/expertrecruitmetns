@@ -16,12 +16,18 @@ Disallow: /profile
 Disallow: /applications-manager
 Disallow: /auth*
 
-# Block dynamic parameter versions to prevent duplicate content
-Disallow: /*?*
-Disallow: /*#*
+# Block specific tracking and duplicate content parameters
+Disallow: /*?utm_source=*
+Disallow: /*?utm_medium=*
+Disallow: /*?utm_campaign=*
+Disallow: /*?utm_term=*
+Disallow: /*?utm_content=*
+Disallow: /*?fbclid=*
+Disallow: /*?gclid=*
+Disallow: /*?ref=*
+Disallow: /*?source=*
+Disallow: /*?track=*
 Disallow: /*/page/*
-Disallow: /*?utm_*
-Disallow: /*&utm_*
 
 # Block non-canonical URL patterns
 Disallow: /index.html
