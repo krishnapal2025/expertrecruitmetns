@@ -50,90 +50,191 @@ const realtimeStore = {
 import config from './config';
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Configure sitemap and robots.txt with HIGHEST PRIORITY - must be before any other middleware or routes
+  // CRITICAL: Sitemap.xml route must be FIRST to prevent SPA interception
   app.get('/sitemap.xml', (_req, res) => {
-    try {
-      res.setHeader('Content-Type', 'application/xml; charset=utf-8');
-      res.setHeader('Cache-Control', 'public, max-age=3600');
-      res.setHeader('Link', '<https://expertrecruitments.com/sitemap.xml>; rel="canonical"');
-      res.setHeader('X-Robots-Tag', 'noindex'); // Prevent indexing of sitemap itself
-      
-      const sitemapPath = path.join(process.cwd(), 'client/public/sitemap.xml');
-      
-      // Check if file exists and serve it
-      if (fs.existsSync(sitemapPath)) {
-        res.sendFile(sitemapPath);
-      } else {
-        // Generate sitemap content directly if file doesn't exist
-        const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+    // Immediately set XML headers to prevent any HTML interpretation
+    res.writeHead(200, {
+      'Content-Type': 'application/xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600',
+      'X-Robots-Tag': 'index, follow'
+    });
+    
+    // Generate comprehensive sitemap with proper XML structure
+    const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- Main Pages -->
   <url>
     <loc>https://expertrecruitments.com/</loc>
-    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  
   <url>
     <loc>https://expertrecruitments.com/about-us</loc>
-    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  
   <url>
     <loc>https://expertrecruitments.com/services</loc>
-    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  
+  <url>
+    <loc>https://expertrecruitments.com/sectors</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://expertrecruitments.com/hire-talent</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
   <url>
     <loc>https://expertrecruitments.com/contact-us</loc>
-    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  
+  <!-- Job Board & Career Pages -->
   <url>
     <loc>https://expertrecruitments.com/job-board</loc>
-    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
+  
   <url>
-    <loc>https://expertrecruitments.com/hire-talent</loc>
-    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
+    <loc>https://expertrecruitments.com/careers</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Blog & Content Pages -->
+  <url>
+    <loc>https://expertrecruitments.com/blogs</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Registration & Public Forms -->
+  <url>
+    <loc>https://expertrecruitments.com/job-seeker-register</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  
   <url>
-    <loc>https://expertrecruitments.com/blogs</loc>
-    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://expertrecruitments.com/employer-register</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://expertrecruitments.com/vacancy-form</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Job Seeker Resources -->
+  <url>
+    <loc>https://expertrecruitments.com/resources/create-resume</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+  
+  <url>
+    <loc>https://expertrecruitments.com/resources/interview-prep</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://expertrecruitments.com/resources/career-advice</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://expertrecruitments.com/resources/salary-negotiation</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Legal & Information Pages -->
+  <url>
+    <loc>https://expertrecruitments.com/privacy-policy</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <url>
+    <loc>https://expertrecruitments.com/terms-conditions</loc>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
   <url>
     <loc>https://expertrecruitments.com/site-map</loc>
-    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
+    <lastmod>2025-06-19T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
-  <url>
-    <loc>https://expertrecruitments.com/job-seeker-register</loc>
-    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://expertrecruitments.com/employer-register</loc>
-    <lastmod>2025-01-25T12:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
+  
 </urlset>`;
-        res.send(sitemapXml);
-      }
-    } catch (error) {
-      console.error('Error serving sitemap:', error);
-      res.status(500).send('Error generating sitemap');
+    
+    // Send XML content and end response immediately
+    res.end(sitemapXml);
+  });
+  
+  app.get('/robots.txt', (_req, res) => {
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.setHeader('Link', '<https://expertrecruitments.com/robots.txt>; rel="canonical"');
+    res.sendFile(path.join(process.cwd(), 'client/public/robots.txt'));
+  });
+
+  // Add canonical URL middleware for all public pages to resolve Google Search Console conflicts
+  app.use((req, res, next) => {
+    // Skip API routes, admin routes, and static assets
+    if (req.path.startsWith('/api/') || 
+        req.path.startsWith('/admin') || 
+        req.path.startsWith('/assets/') ||
+        req.path.includes('.') ||
+        req.path.startsWith('/auth')) {
+      return next();
     }
+    
+    // Construct canonical URL for public pages
+    const canonicalUrl = `https://expertrecruitments.com${req.path}`;
+    res.setHeader('Link', `<${canonicalUrl}>; rel="canonical"`);
+    
+    // Add additional SEO headers to prevent duplicate content
+    res.setHeader('X-Robots-Tag', 'index, follow');
+    res.setHeader('Cache-Control', 'public, max-age=1800'); // 30 minutes for pages
+    
+    next();
   });
   
   app.get('/robots.txt', (_req, res) => {
