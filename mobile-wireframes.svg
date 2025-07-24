@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="375" height="2000" viewBox="0 0 375 2000" xmlns="http://www.w3.org/2000/svg">
+  <!-- Expert Recruitments - Mobile Wireframes -->
+  <defs>
+    <style>
+      .wireframe-element { fill: rgba(83, 114, 241, 0.1); stroke: #5372f1; stroke-width: 2; }
+      .wireframe-text { font-family: Inter, Arial, sans-serif; font-size: 10px; fill: #5372f1; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
+      .header-element { fill: rgba(83, 114, 241, 0.2); stroke: #5372f1; }
+      .content-element { fill: rgba(100, 116, 139, 0.1); stroke: #64748b; }
+      .sidebar-element { fill: rgba(156, 163, 175, 0.1); stroke: #9ca3af; }
+      .card-element { fill: rgba(34, 197, 94, 0.1); stroke: #22c55e; }
+      .button-element { fill: rgba(239, 68, 68, 0.1); stroke: #ef4444; }
+      .form-element { fill: rgba(168, 85, 247, 0.1); stroke: #a855f7; }
+    </style>
+  </defs>
+  
+  <!-- Mobile Homepage - 375x812 -->
+  <g id="mobile-homepage">
+    <text x="187.5" y="20" class="wireframe-text" font-size="12">Mobile Homepage (375x812px)</text>
+    
+    <!-- Mobile Header -->
+    <rect x="0" y="30" width="375" height="60" class="wireframe-element header-element" rx="4"/>
+    <text x="187.5" y="60" class="wireframe-text">MOBILE HEADER (375x60px)</text>
+    
+    <!-- Hero Section -->
+    <rect x="0" y="90" width="375" height="250" class="wireframe-element content-element" rx="4"/>
+    <text x="187.5" y="215" class="wireframe-text">HERO IMAGE (375x250px)</text>
+    
+    <!-- Search Bar -->
+    <rect x="20" y="200" width="335" height="50" class="wireframe-element form-element" rx="4"/>
+    <text x="187.5" y="225" class="wireframe-text">SEARCH BAR (335x50px)</text>
+    
+    <!-- CTA Button -->
+    <rect x="20" y="270" width="335" height="45" class="wireframe-element button-element" rx="4"/>
+    <text x="187.5" y="292.5" class="wireframe-text">FIND JOBS BUTTON (335x45px)</text>
+    
+    <!-- Quick Stats -->
+    <rect x="10" y="340" width="110" height="80" class="wireframe-element card-element" rx="4"/>
+    <text x="65" y="380" class="wireframe-text">STAT 1</text>
+    
+    <rect x="130" y="340" width="110" height="80" class="wireframe-element card-element" rx="4"/>
+    <text x="185" y="380" class="wireframe-text">STAT 2</text>
+    
+    <rect x="250" y="340" width="110" height="80" class="wireframe-element card-element" rx="4"/>
+    <text x="305" y="380" class="wireframe-text">STAT 3</text>
+    
+    <!-- Featured Jobs -->
+    <rect x="20" y="440" width="335" height="80" class="wireframe-element card-element" rx="4"/>
+    <text x="187.5" y="480" class="wireframe-text">FEATURED JOB 1 (335x80px)</text>
+    
+    <rect x="20" y="540" width="335" height="80" class="wireframe-element card-element" rx="4"/>
+    <text x="187.5" y="580" class="wireframe-text">FEATURED JOB 2 (335x80px)</text>
+    
+    <rect x="20" y="640" width="335" height="80" class="wireframe-element card-element" rx="4"/>
+    <text x="187.5" y="680" class="wireframe-text">FEATURED JOB 3 (335x80px)</text>
+  </g>
+  
+  <!-- Mobile Job Board - 375x812 -->
+  <g id="mobile-jobboard" transform="translate(0, 800)">
+    <text x="187.5" y="20" class="wireframe-text" font-size="12">Mobile Job Board (375x812px)</text>
+    
+    <!-- Mobile Header -->
+    <rect x="0" y="30" width="375" height="60" class="wireframe-element header-element" rx="4"/>
+    <text x="187.5" y="60" class="wireframe-text">MOBILE HEADER (375x60px)</text>
+    
+    <!-- Filter Toggle -->
+    <rect x="0" y="90" width="375" height="50" class="wireframe-element sidebar-element" rx="4"/>
+    <text x="187.5" y="115" class="wireframe-text">FILTERS & SORT (375x50px)</text>
+    
+    <!-- Search Bar -->
+    <rect x="20" y="150" width="335" height="45" class="wireframe-element form-element" rx="4"/>
+    <text x="187.5" y="172.5" class="wireframe-text">SEARCH BAR (335x45px)</text>
+    
+    <!-- Job Cards Stack -->
+    <rect x="20" y="215" width="335" height="100" class="wireframe-element card-element" rx="4"/>
+    <text x="187.5" y="265" class="wireframe-text">JOB CARD 1 (335x100px)</text>
+    
+    <rect x="20" y="325" width="335" height="100" class="wireframe-element card-element" rx="4"/>
+    <text x="187.5" y="375" class="wireframe-text">JOB CARD 2 (335x100px)</text>
+    
+    <rect x="20" y="435" width="335" height="100" class="wireframe-element card-element" rx="4"/>
+    <text x="187.5" y="485" class="wireframe-text">JOB CARD 3 (335x100px)</text>
+    
+    <rect x="20" y="545" width="335" height="100" class="wireframe-element card-element" rx="4"/>
+    <text x="187.5" y="595" class="wireframe-text">JOB CARD 4 (335x100px)</text>
+    
+    <!-- Load More Button -->
+    <rect x="20" y="665" width="335" height="40" class="wireframe-element button-element" rx="4"/>
+    <text x="187.5" y="685" class="wireframe-text">LOAD MORE JOBS</text>
+  </g>
+  
+  <!-- Mobile Job Details - 375x812 -->
+  <g id="mobile-jobdetails" transform="translate(0, 1600)">
+    <text x="187.5" y="20" class="wireframe-text" font-size="12">Mobile Job Details (375x812px)</text>
+    
+    <!-- Mobile Header -->
+    <rect x="0" y="30" width="375" height="60" class="wireframe-element header-element" rx="4"/>
+    <text x="187.5" y="60" class="wireframe-text">MOBILE HEADER (375x60px)</text>
+    
+    <!-- Job Header -->
+    <rect x="20" y="110" width="335" height="100" class="wireframe-element content-element" rx="4"/>
+    <text x="187.5" y="160" class="wireframe-text">JOB TITLE & COMPANY (335x100px)</text>
+    
+    <!-- Apply Button -->
+    <rect x="20" y="230" width="335" height="50" class="wireframe-element button-element" rx="4"/>
+    <text x="187.5" y="255" class="wireframe-text">QUICK APPLY BUTTON (335x50px)</text>
+    
+    <!-- Job Description -->
+    <rect x="20" y="300" width="335" height="150" class="wireframe-element content-element" rx="4"/>
+    <text x="187.5" y="375" class="wireframe-text">JOB DESCRIPTION (335x150px)</text>
+    
+    <!-- Requirements -->
+    <rect x="20" y="470" width="335" height="100" class="wireframe-element content-element" rx="4"/>
+    <text x="187.5" y="520" class="wireframe-text">REQUIREMENTS (335x100px)</text>
+    
+    <!-- Company Info -->
+    <rect x="20" y="590" width="335" height="80" class="wireframe-element card-element" rx="4"/>
+    <text x="187.5" y="630" class="wireframe-text">COMPANY INFO (335x80px)</text>
+  </g>
+</svg>
