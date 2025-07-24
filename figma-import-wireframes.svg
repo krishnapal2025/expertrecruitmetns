@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1400" height="3000" viewBox="0 0 1400 3000" xmlns="http://www.w3.org/2000/svg">
+  <!-- Expert Recruitments - Desktop Homepage Wireframe -->
+  <defs>
+    <style>
+      .wireframe-element { fill: rgba(83, 114, 241, 0.1); stroke: #5372f1; stroke-width: 2; }
+      .wireframe-text { font-family: Inter, Arial, sans-serif; font-size: 12px; fill: #5372f1; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
+      .header-element { fill: rgba(83, 114, 241, 0.2); stroke: #5372f1; }
+      .content-element { fill: rgba(100, 116, 139, 0.1); stroke: #64748b; }
+      .sidebar-element { fill: rgba(156, 163, 175, 0.1); stroke: #9ca3af; }
+      .card-element { fill: rgba(34, 197, 94, 0.1); stroke: #22c55e; }
+      .button-element { fill: rgba(239, 68, 68, 0.1); stroke: #ef4444; }
+      .form-element { fill: rgba(168, 85, 247, 0.1); stroke: #a855f7; }
+    </style>
+  </defs>
+  
+  <!-- Desktop Homepage - 1400x800 -->
+  <g id="desktop-homepage">
+    <text x="700" y="30" class="wireframe-text" font-size="16">Desktop Homepage (1400x800px)</text>
+    
+    <!-- Header/Navigation -->
+    <rect x="0" y="50" width="1400" height="80" class="wireframe-element header-element" rx="8"/>
+    <text x="700" y="90" class="wireframe-text">HEADER/NAVIGATION (1400x80px)</text>
+    
+    <!-- Hero Section -->
+    <rect x="0" y="130" width="1400" height="400" class="wireframe-element content-element" rx="8"/>
+    <text x="700" y="330" class="wireframe-text">HERO CAROUSEL (1400x400px)</text>
+    
+    <!-- Search Bar -->
+    <rect x="100" y="280" width="600" height="60" class="wireframe-element form-element" rx="4"/>
+    <text x="400" y="310" class="wireframe-text">JOB SEARCH BAR (600x60px)</text>
+    
+    <!-- CTA Buttons -->
+    <rect x="100" y="360" width="150" height="50" class="wireframe-element button-element" rx="4"/>
+    <text x="175" y="385" class="wireframe-text">FIND JOBS</text>
+    
+    <rect x="270" y="360" width="150" height="50" class="wireframe-element button-element" rx="4"/>
+    <text x="345" y="385" class="wireframe-text">POST JOB</text>
+    
+    <!-- Statistics Section -->
+    <rect x="0" y="550" width="1400" height="120" class="wireframe-element content-element" rx="8"/>
+    <text x="700" y="610" class="wireframe-text">COMPANY STATISTICS (1400x120px)</text>
+    
+    <!-- Featured Jobs -->
+    <rect x="50" y="690" width="300" height="120" class="wireframe-element card-element" rx="8"/>
+    <text x="200" y="750" class="wireframe-text">JOB CARD 1</text>
+    
+    <rect x="370" y="690" width="300" height="120" class="wireframe-element card-element" rx="8"/>
+    <text x="520" y="750" class="wireframe-text">JOB CARD 2</text>
+    
+    <rect x="690" y="690" width="300" height="120" class="wireframe-element card-element" rx="8"/>
+    <text x="840" y="750" class="wireframe-text">JOB CARD 3</text>
+    
+    <rect x="1010" y="690" width="300" height="120" class="wireframe-element card-element" rx="8"/>
+    <text x="1160" y="750" class="wireframe-text">JOB CARD 4</text>
+  </g>
+  
+  <!-- Desktop Job Board - 1400x800 -->
+  <g id="desktop-jobboard" transform="translate(0, 900)">
+    <text x="700" y="30" class="wireframe-text" font-size="16">Desktop Job Board (1400x800px)</text>
+    
+    <!-- Header -->
+    <rect x="0" y="50" width="1400" height="80" class="wireframe-element header-element" rx="8"/>
+    <text x="700" y="90" class="wireframe-text">HEADER/NAVIGATION (1400x80px)</text>
+    
+    <!-- Filter Sidebar -->
+    <rect x="0" y="130" width="280" height="420" class="wireframe-element sidebar-element" rx="8"/>
+    <text x="140" y="340" class="wireframe-text">FILTERS (280x420px)</text>
+    
+    <!-- Search & Sort Bar -->
+    <rect x="300" y="130" width="1100" height="60" class="wireframe-element form-element" rx="4"/>
+    <text x="850" y="160" class="wireframe-text">SEARCH & SORT BAR (1100x60px)</text>
+    
+    <!-- Job Cards Grid -->
+    <rect x="300" y="210" width="530" height="120" class="wireframe-element card-element" rx="8"/>
+    <text x="565" y="270" class="wireframe-text">JOB CARD 1 (530x120px)</text>
+    
+    <rect x="850" y="210" width="530" height="120" class="wireframe-element card-element" rx="8"/>
+    <text x="1115" y="270" class="wireframe-text">JOB CARD 2 (530x120px)</text>
+    
+    <rect x="300" y="350" width="530" height="120" class="wireframe-element card-element" rx="8"/>
+    <text x="565" y="410" class="wireframe-text">JOB CARD 3 (530x120px)</text>
+    
+    <rect x="850" y="350" width="530" height="120" class="wireframe-element card-element" rx="8"/>
+    <text x="1115" y="410" class="wireframe-text">JOB CARD 4 (530x120px)</text>
+    
+    <!-- Pagination -->
+    <rect x="600" y="490" width="200" height="40" class="wireframe-element button-element" rx="4"/>
+    <text x="700" y="510" class="wireframe-text">PAGINATION</text>
+  </g>
+  
+  <!-- Desktop Job Details - 1400x800 -->
+  <g id="desktop-jobdetails" transform="translate(0, 1800)">
+    <text x="700" y="30" class="wireframe-text" font-size="16">Desktop Job Details (1400x800px)</text>
+    
+    <!-- Header -->
+    <rect x="0" y="50" width="1400" height="80" class="wireframe-element header-element" rx="8"/>
+    <text x="700" y="90" class="wireframe-text">HEADER/NAVIGATION (1400x80px)</text>
+    
+    <!-- Job Header -->
+    <rect x="0" y="150" width="1100" height="120" class="wireframe-element content-element" rx="8"/>
+    <text x="550" y="210" class="wireframe-text">JOB TITLE & COMPANY INFO (1100x120px)</text>
+    
+    <!-- Apply Sidebar -->
+    <rect x="1120" y="150" width="280" height="350" class="wireframe-element sidebar-element" rx="8"/>
+    <text x="1260" y="325" class="wireframe-text">APPLY FORM (280x350px)</text>
+    
+    <!-- Job Description -->
+    <rect x="0" y="290" width="1100" height="200" class="wireframe-element content-element" rx="8"/>
+    <text x="550" y="390" class="wireframe-text">JOB DESCRIPTION (1100x200px)</text>
+    
+    <!-- Requirements -->
+    <rect x="0" y="510" width="540" height="150" class="wireframe-element content-element" rx="8"/>
+    <text x="270" y="585" class="wireframe-text">REQUIREMENTS (540x150px)</text>
+    
+    <!-- Benefits -->
+    <rect x="560" y="510" width="540" height="150" class="wireframe-element content-element" rx="8"/>
+    <text x="830" y="585" class="wireframe-text">BENEFITS (540x150px)</text>
+    
+    <!-- Company Profile -->
+    <rect x="0" y="680" width="1100" height="100" class="wireframe-element card-element" rx="8"/>
+    <text x="550" y="730" class="wireframe-text">COMPANY PROFILE (1100x100px)</text>
+  </g>
+</svg>
