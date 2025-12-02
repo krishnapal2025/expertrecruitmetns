@@ -315,68 +315,65 @@ export default function JobSeekerRegisterPage() {
               </Card>
             </div>
             
-            {/* Right side: Hero section */}
-            <div className="md:col-span-2 bg-primary text-white rounded-lg p-8 flex flex-col justify-center shadow-lg h-full">
-              <div className="mb-8">
-                <h2 className="text-3xl font-bold mb-3">For Job Seekers</h2>
-                <p className="text-primary-foreground/90 text-lg">
-                  Join thousands of job seekers who found their perfect role through our platform.
-                </p>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="flex items-start">
-                  <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+            {/* Right side: Careers Page Iframe */}
+            <div className="md:col-span-2">
+              <Card className="shadow-lg border-t-4 border-t-primary h-full flex flex-col">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-2xl text-primary font-bold">Current Openings</CardTitle>
+                  <CardDescription className="text-base">Explore available openings</CardDescription>
+                </CardHeader>
+                <CardContent className="px-0 py-0 overflow-hidden flex-1 relative flex flex-col">
+                  {/* Iframe section */}
+                  <div 
+                    className="w-full flex-1 overflow-hidden rounded-b-lg"
+                    style={{ 
+                      position: 'relative',
+                      minHeight: '380px',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    {/* Image banner with centered button */}
+                    <div 
+                      className="absolute top-0 left-0 right-0 z-10 flex flex-col items-center justify-center text-center px-4"
+                      style={{ 
+                        height: '210px',
+                        backgroundImage: 'url(https://images.pexels.com/photos/4069293/pexels-photo-4069293.jpeg)',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center'
+                      }}
+                    >
+                      {/* Dark overlay for better button visibility */}
+                      <div className="absolute inset-0 bg-black/30"></div>
+                      <a 
+                        href="https://www.careers-page.com/expertrecruitments" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="relative z-10 bg-white/20 backdrop-blur-sm text-white font-semibold px-6 py-3 rounded-lg border border-white/50 hover:bg-white/30 transition-colors text-sm sm:text-base"
+                      >
+                        View Openings
+                      </a>
+                    </div>
+                    <iframe 
+                      src="https://www.careers-page.com/expertrecruitments#jobs" 
+                      title="Expert Recruitments Careers"
+                      className="w-full border-none"
+                      scrolling="no"
+                      style={{ 
+                        width: '100%', 
+                        height: 'calc(100% + 850px)',
+                        border: 'none',
+                        marginTop: '-850px',
+                        overflow: 'hidden'
+                      }}
+                    />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Personalized Job Matches</h3>
-                    <p className="text-base text-primary-foreground/90">Get job recommendations based on your skills and experience</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Industry Connections</h3>
-                    <p className="text-base text-primary-foreground/90">Network with leading UAE & GCC employers across diverse sectors</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Career Resources</h3>
-                    <p className="text-base text-primary-foreground/90">Access tools and guidance to advance your professional journey</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-auto pt-8">
-                <div className="bg-white/10 rounded-lg p-4 border border-white/20">
-                  <h3 className="font-semibold text-lg mb-2">Join Today and Get:</h3>
-                  <p className="text-base text-primary-foreground/90 mb-3">
-                    Access to exclusive job opportunities in Dubai & UAE's top companies
-                  </p>
-                  <p className="text-sm text-primary-foreground/70">
-                    By joining, you agree to our terms of service and privacy policy
-                  </p>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
+}
 }
