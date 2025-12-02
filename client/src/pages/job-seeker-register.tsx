@@ -317,17 +317,24 @@ export default function JobSeekerRegisterPage() {
             
             {/* Right side: Careers Page Iframe */}
             <div className="md:col-span-2">
-              <Card className="shadow-lg border-t-4 border-t-primary h-full">
+              <Card className="shadow-lg border-t-4 border-t-primary h-full flex flex-col">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-2xl text-primary font-bold">Current Openings</CardTitle>
                   <CardDescription className="text-base">Explore available positions at Expert Recruitments</CardDescription>
                 </CardHeader>
-                <CardContent className="px-0 py-0 overflow-hidden">
+                <CardContent className="px-0 py-0 overflow-hidden flex-1">
                   <iframe 
                     src="https://www.careers-page.com/expertrecruitments" 
                     title="Expert Recruitments Careers"
                     className="w-full border-none rounded-b-lg"
-                    style={{ width: '100%', height: '520px', border: 'none' }}
+                    scrolling="no"
+                    style={{ 
+                      width: '100%', 
+                      height: '100%',
+                      minHeight: '480px',
+                      border: 'none',
+                      overflow: 'hidden'
+                    }}
                   />
                 </CardContent>
               </Card>
