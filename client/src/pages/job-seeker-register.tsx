@@ -348,7 +348,7 @@ export default function JobSeekerRegisterPage() {
                         href="https://www.careers-page.com/expertrecruitments" 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="relative z-10 bg-white text-primary font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors shadow-md text-sm sm:text-base"
+                        className="relative z-10 bg-white/20 backdrop-blur-sm text-white font-semibold px-6 py-3 rounded-lg border border-white/50 hover:bg-white/30 transition-colors text-sm sm:text-base"
                       >
                         View Openings
                       </a>
