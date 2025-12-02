@@ -336,7 +336,7 @@ export default function JobSeekerRegisterPage() {
                     <div 
                       className="absolute top-0 left-0 right-0 bg-primary z-10 flex flex-col items-center justify-center text-center px-4"
                       style={{ 
-                        height: '120px'
+                        height: '210px'
                       }}
                     >
                       <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-1">Come work with us</h2>
