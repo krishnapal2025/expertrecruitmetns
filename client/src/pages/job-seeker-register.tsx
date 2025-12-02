@@ -320,7 +320,7 @@ export default function JobSeekerRegisterPage() {
               <Card className="shadow-lg border-t-4 border-t-primary h-full flex flex-col">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-2xl text-primary font-bold">Current Openings</CardTitle>
-                  <CardDescription className="text-base">Explore available positions at Expert Recruitments</CardDescription>
+                  <CardDescription className="text-base">Explore available openings</CardDescription>
                 </CardHeader>
                 <CardContent className="px-0 py-0 overflow-hidden flex-1 relative flex flex-col">
                   {/* Iframe section */}
