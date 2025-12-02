@@ -322,12 +322,21 @@ export default function JobSeekerRegisterPage() {
                   <CardTitle className="text-2xl text-primary font-bold">Current Openings</CardTitle>
                   <CardDescription className="text-base">Explore available positions at Expert Recruitments</CardDescription>
                 </CardHeader>
-                <CardContent className="px-0 py-0 overflow-hidden flex-1 relative">
+                <CardContent className="px-0 py-0 overflow-hidden flex-1 relative flex flex-col">
+                  {/* Hero heading section */}
+                  <div className="bg-primary text-white text-center py-8 px-6">
+                    <h2 className="text-2xl font-bold mb-2">Come work with us</h2>
+                    <p className="text-primary-foreground/90 text-base">
+                      We're looking for great people to join our growing team
+                    </p>
+                  </div>
+                  
+                  {/* Iframe section */}
                   <div 
-                    className="w-full h-full overflow-hidden rounded-b-lg bg-white"
+                    className="w-full flex-1 overflow-hidden rounded-b-lg bg-white"
                     style={{ 
                       position: 'relative',
-                      height: '520px',
+                      minHeight: '380px',
                       overflow: 'hidden'
                     }}
                   >
