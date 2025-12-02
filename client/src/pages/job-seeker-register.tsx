@@ -325,10 +325,10 @@ export default function JobSeekerRegisterPage() {
                 <CardContent className="px-0 py-0 overflow-hidden flex-1 relative flex flex-col">
                   {/* Iframe section */}
                   <div 
-                    className="w-full flex-1 overflow-hidden rounded-b-lg"
+                    className="w-full overflow-hidden"
                     style={{ 
                       position: 'relative',
-                      minHeight: '380px',
+                      height: '480px',
                       overflow: 'hidden'
                     }}
                   >
@@ -357,6 +357,17 @@ export default function JobSeekerRegisterPage() {
                         overflow: 'hidden'
                       }}
                     />
+                  </div>
+                  {/* View Openings button section */}
+                  <div className="bg-gray-100 flex items-center justify-center py-4 px-4">
+                    <a 
+                      href="https://www.careers-page.com/expertrecruitments" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-6 rounded-md transition-colors"
+                    >
+                      View Openings
+                    </a>
                   </div>
                 </CardContent>
               </Card>
