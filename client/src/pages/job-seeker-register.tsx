@@ -315,64 +315,14 @@ export default function JobSeekerRegisterPage() {
               </Card>
             </div>
             
-            {/* Right side: Hero section */}
-            <div className="md:col-span-2 bg-primary text-white rounded-lg p-8 flex flex-col justify-center shadow-lg h-full">
-              <div className="mb-8">
-                <h2 className="text-3xl font-bold mb-3">For Job Seekers</h2>
-                <p className="text-primary-foreground/90 text-lg">
-                  Join thousands of job seekers who found their perfect role through our platform.
-                </p>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="flex items-start">
-                  <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Personalized Job Matches</h3>
-                    <p className="text-base text-primary-foreground/90">Get job recommendations based on your skills and experience</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Industry Connections</h3>
-                    <p className="text-base text-primary-foreground/90">Network with leading UAE & GCC employers across diverse sectors</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="bg-white/20 p-2 rounded-full mr-4 flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Career Resources</h3>
-                    <p className="text-base text-primary-foreground/90">Access tools and guidance to advance your professional journey</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-auto pt-8">
-                <div className="bg-white/10 rounded-lg p-4 border border-white/20">
-                  <h3 className="font-semibold text-lg mb-2">Join Today and Get:</h3>
-                  <p className="text-base text-primary-foreground/90 mb-3">
-                    Access to exclusive job opportunities in Dubai & UAE's top companies
-                  </p>
-                  <p className="text-sm text-primary-foreground/70">
-                    By joining, you agree to our terms of service and privacy policy
-                  </p>
-                </div>
-              </div>
+            {/* Right side: Careers Page Iframe */}
+            <div className="md:col-span-2 rounded-lg overflow-hidden shadow-lg h-full min-h-[700px]">
+              <iframe 
+                src="https://www.careers-page.com/expertrecruitments" 
+                title="Expert Recruitments Careers"
+                className="w-full h-full min-h-[700px] border-none"
+                style={{ width: '100%', height: '100%', minHeight: '700px', border: 'none' }}
+              />
             </div>
           </div>
         </div>
