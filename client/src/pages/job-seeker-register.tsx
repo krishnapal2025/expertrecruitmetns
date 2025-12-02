@@ -333,7 +333,7 @@ export default function JobSeekerRegisterPage() {
                   
                   {/* Iframe section */}
                   <div 
-                    className="w-full flex-1 overflow-hidden rounded-b-lg bg-white"
+                    className="w-full flex-1 overflow-hidden rounded-b-lg bg-primary"
                     style={{ 
                       position: 'relative',
                       minHeight: '380px',
