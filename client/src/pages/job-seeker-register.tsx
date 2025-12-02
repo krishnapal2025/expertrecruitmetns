@@ -332,18 +332,23 @@ export default function JobSeekerRegisterPage() {
                       overflow: 'hidden'
                     }}
                   >
-                    {/* Blue overlay with centered button */}
+                    {/* Image banner with centered button */}
                     <div 
-                      className="absolute top-0 left-0 right-0 bg-primary z-10 flex flex-col items-center justify-center text-center px-4"
+                      className="absolute top-0 left-0 right-0 z-10 flex flex-col items-center justify-center text-center px-4"
                       style={{ 
-                        height: '210px'
+                        height: '210px',
+                        backgroundImage: 'url(https://images.pexels.com/photos/4069293/pexels-photo-4069293.jpeg)',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center'
                       }}
                     >
+                      {/* Dark overlay for better button visibility */}
+                      <div className="absolute inset-0 bg-black/30"></div>
                       <a 
                         href="https://www.careers-page.com/expertrecruitments" 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="bg-white text-primary font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors shadow-md text-sm sm:text-base"
+                        className="relative z-10 bg-white text-primary font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors shadow-md text-sm sm:text-base"
                       >
                         View Openings
                       </a>
