@@ -138,15 +138,15 @@ function App() {
   // Back to top button state
   const [showBackToTop, setShowBackToTop] = useState(false);
   
-  // Check if page is being displayed in embed/iframe mode
-  const [isEmbedMode, setIsEmbedMode] = useState(false);
-  
-  useEffect(() => {
+  // Check if page is being displayed in embed/iframe mode - use lazy initialization
+  // to detect immediately on first render (not after useEffect)
+  const [isEmbedMode] = useState(() => {
+    if (typeof window === 'undefined') return false;
     const urlParams = new URLSearchParams(window.location.search);
     const embedParam = urlParams.get('embed');
     const isInIframe = window.self !== window.top;
-    setIsEmbedMode(embedParam === 'true' || isInIframe);
-  }, []);
+    return embedParam === 'true' || isInIframe;
+  });
 
   // Handle scroll to show/hide back to top button
   useEffect(() => {
