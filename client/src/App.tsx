@@ -74,26 +74,6 @@ function PageViewTracker() {
 function Router() {
   return (
     <Switch>
-      {/* Embed routes - same pages but with /embed/ prefix for iframe display */}
-      <Route path="/embed" component={HomePage} />
-      <Route path="/embed/" component={HomePage} />
-      <Route path="/embed/home" component={HomePage} />
-      <Route path="/embed/about-us" component={AboutUsPage} />
-      <Route path="/embed/services" component={ServicesPage} />
-      <Route path="/embed/job-board" component={JobBoardPage} />
-      <Route path="/embed/job/:id">
-        {params => <JobDetailsPage id={params.id} />}
-      </Route>
-      <Route path="/embed/sectors" component={SectorsPage} />
-      <Route path="/embed/contact-us" component={ContactUsPage} />
-      <Route path="/embed/blogs" component={BlogsPage} />
-      <Route path="/embed/article/:id">
-        {params => <ArticlePage />}
-      </Route>
-      <Route path="/embed/hire-talent" component={HireTalentPage} />
-      <Route path="/embed/vacancy-form" component={VacancyFormPage} />
-      
-      {/* Regular routes */}
       <Route path="/" component={HomePage} />
       <Route path="/about-us" component={AboutUsPage} />
       <Route path="/services" component={ServicesPage} />
@@ -159,30 +139,14 @@ function App() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   
   // Check if page is being displayed in embed/iframe mode
-  const [location] = useLocation();
+  const [isEmbedMode, setIsEmbedMode] = useState(false);
   
-  // Check embed mode status - using path prefix /embed/ or query param ?embed=true
-  const isEmbedMode = (() => {
-    if (typeof window === 'undefined') return false;
-    
-    // Check URL path for /embed/ prefix
-    const isEmbedPath = location.startsWith('/embed/') || location === '/embed';
-    
-    // Check query parameter
+  useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const embedParam = urlParams.get('embed');
-    
-    // Check if in iframe
-    let isInIframe = false;
-    try {
-      isInIframe = window.self !== window.top;
-    } catch (e) {
-      // Cross-origin iframe - assume we're embedded
-      isInIframe = true;
-    }
-    
-    return isEmbedPath || embedParam === 'true' || isInIframe;
-  })();
+    const isInIframe = window.self !== window.top;
+    setIsEmbedMode(embedParam === 'true' || isInIframe);
+  }, []);
 
   // Handle scroll to show/hide back to top button
   useEffect(() => {
