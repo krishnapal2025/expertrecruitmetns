@@ -333,13 +333,20 @@ export default function JobSeekerRegisterPage() {
                   
                   {/* Iframe section */}
                   <div 
-                    className="w-full flex-1 overflow-hidden rounded-b-lg bg-primary"
+                    className="w-full flex-1 overflow-hidden rounded-b-lg"
                     style={{ 
                       position: 'relative',
                       minHeight: '380px',
                       overflow: 'hidden'
                     }}
                   >
+                    {/* Blue overlay to cover the white gap from external page */}
+                    <div 
+                      className="absolute top-0 left-0 right-0 bg-primary pointer-events-none z-10"
+                      style={{ 
+                        height: '155px'
+                      }}
+                    />
                     <iframe 
                       src="https://www.careers-page.com/expertrecruitments#jobs" 
                       title="Expert Recruitments Careers"
