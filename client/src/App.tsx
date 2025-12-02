@@ -137,16 +137,6 @@ function App() {
 
   // Back to top button state
   const [showBackToTop, setShowBackToTop] = useState(false);
-  
-  // Check if page is being displayed in embed/iframe mode - use lazy initialization
-  // to detect immediately on first render (not after useEffect)
-  const [isEmbedMode] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    const urlParams = new URLSearchParams(window.location.search);
-    const embedParam = urlParams.get('embed');
-    const isInIframe = window.self !== window.top;
-    return embedParam === 'true' || isInIframe;
-  });
 
   // Handle scroll to show/hide back to top button
   useEffect(() => {
@@ -171,16 +161,16 @@ function App() {
         {/* Preload all hero background images */}
         <PreloadHeroImages />
 
-        <div className={`flex flex-col min-h-screen ${isEmbedMode ? 'embed-mode' : ''}`}>
-          {!isEmbedMode && <Navbar />}
-          <main className={`flex-grow ${isEmbedMode ? 'h-screen overflow-auto' : ''}`}>
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <main className="flex-grow">
             <PageViewTracker />
             <Router />
           </main>
-          {!isEmbedMode && <Footer />}
+          <Footer />
           
-          {/* Back to top button - hide in embed mode */}
-          {showBackToTop && !isEmbedMode && (
+          {/* Back to top button */}
+          {showBackToTop && (
             <button 
               onClick={scrollToTop}
               aria-label="Back to top"
