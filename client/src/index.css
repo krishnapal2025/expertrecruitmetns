@@ -102,6 +102,38 @@
   to { transform: scale(1.15); }
 }
 
+/* Embed/iframe mode styles */
+.embed-mode {
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.embed-mode main {
+  height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.embed-mode main > * {
+  min-height: auto;
+}
+
+/* Remove any top margins/padding in embed mode */
+.embed-mode .hero-section,
+.embed-mode section:first-child {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* Ensure content fits without gaps */
+body.iframe-embedded {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 @layer base {
   * {
     @apply border-border;
