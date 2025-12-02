@@ -323,8 +323,11 @@ export default function JobSeekerRegisterPage() {
                   <CardDescription className="text-base">Explore available positions at Expert Recruitments</CardDescription>
                 </CardHeader>
                 <CardContent className="px-0 py-0 overflow-hidden flex-1 relative flex flex-col">
-                  {/* Hero heading section */}
-                  <div className="bg-primary text-white text-center py-6 px-6 flex flex-col items-center justify-center">
+                  {/* Hero heading section - taller banner with centered text */}
+                  <div 
+                    className="bg-primary text-white text-center px-6 flex flex-col items-center justify-center"
+                    style={{ height: '180px' }}
+                  >
                     <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">Come work with us</h2>
                     <p className="text-primary-foreground/90 text-base sm:text-lg md:text-xl">
                       We're looking for great people to join our growing team
@@ -344,7 +347,7 @@ export default function JobSeekerRegisterPage() {
                     <div 
                       className="absolute top-0 left-0 right-0 bg-primary pointer-events-none z-10"
                       style={{ 
-                        height: '155px'
+                        height: '60px'
                       }}
                     />
                     <iframe 
