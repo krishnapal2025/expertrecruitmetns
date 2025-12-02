@@ -291,16 +291,32 @@ export default function JobSeekerRegisterPage() {
                         />
                       </div>
                       
-                      <Button 
-                        type="submit" 
-                        className="w-full text-base py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold" 
-                        disabled={registerJobSeekerMutation.isPending}
-                      >
-                        {registerJobSeekerMutation.isPending ? (
-                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                        ) : null}
-                        Create Job Seeker Account
-                      </Button>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Button 
+                          type="submit" 
+                          className="flex-1 text-base py-6 bg-[#4060e0] hover:bg-[#3050d0] font-bold" 
+                          disabled={registerJobSeekerMutation.isPending}
+                        >
+                          {registerJobSeekerMutation.isPending ? (
+                            <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                          ) : null}
+                          Create Job Seeker Account
+                        </Button>
+                        <a 
+                          href="https://www.careers-page.com/expertrecruitments" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex-1"
+                        >
+                          <Button 
+                            type="button" 
+                            variant="outline"
+                            className="w-full text-base py-6 border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold"
+                          >
+                            View Openings
+                          </Button>
+                        </a>
+                      </div>
                     </form>
                   </Form>
                 </CardContent>
