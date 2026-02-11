@@ -185,7 +185,7 @@ export default function Navbar() {
                   <span className="text-white text-[10px] sm:text-xs md:text-sm -mt-1">Recruitments LLC</span>
                   <a 
                     href="https://jobpost.me" 
-                    target="_blank" 
+                    target="https://jobpost.me/" 
                     rel="noopener noreferrer" 
                     className="flex items-center ml-1 -mt-1"
                   >
