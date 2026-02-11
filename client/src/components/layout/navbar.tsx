@@ -183,10 +183,26 @@ export default function Navbar() {
                 <div className="ml-2 sm:ml-3 flex flex-col">
                   <span className="text-white font-bold text-base sm:text-lg md:text-xl lg:text-2xl uppercase" style={{ letterSpacing: '0.12em', display: 'inline-block' }}>Expert</span>
                   <span className="text-white text-[10px] sm:text-xs md:text-sm -mt-1">Recruitments LLC</span>
+                  <a 
+                    href="https://jobpost.me" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="flex items-center ml-1 -mt-1"
+                  >
+                    <img 
+                      src="https://res.cloudinary.com/deeiccvqd/image/upload/v1770804947/awsyzhmfmdsr02r39iul.png" 
+                      alt="jobpost.me logo" 
+                      className="h-6 sm:h-8 md:h-8 w-auto object-contain cursor-pointer"
+                    />
+                  </a>
+
                 </div>
               </div>
             </Link>
+            
           </div>
+          
+
 
           {/* Desktop navigation */}
           <nav className="hidden md:flex md:space-x-1 lg:space-x-3 xl:space-x-5 items-center">
@@ -245,6 +261,8 @@ export default function Navbar() {
                 </ScrollLink>
               )
             ))}
+          
+
           </nav>
 
           {/* Desktop right section */}
