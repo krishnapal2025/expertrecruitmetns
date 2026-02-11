@@ -183,19 +183,16 @@ export default function Navbar() {
                 <div className="ml-2 sm:ml-3 flex flex-col">
                   <span className="text-white font-bold text-base sm:text-lg md:text-xl lg:text-2xl uppercase" style={{ letterSpacing: '0.12em', display: 'inline-block' }}>Expert</span>
                   <span className="text-white text-[10px] sm:text-xs md:text-sm -mt-1">Recruitments LLC</span>
-                  <a 
-                    href="https://jobpost.me" 
-                    target="https://jobpost.me/" 
-                    rel="noopener noreferrer" 
-                    className="flex items-center ml-1 -mt-1"
+                  <div
+                    className="flex items-center ml-1 -mt-1 cursor-pointer"
+                    onClick={() => window.open("https://jobpost.me", "_blank")}
                   >
-                    <img 
-                      src="https://res.cloudinary.com/deeiccvqd/image/upload/v1770804947/awsyzhmfmdsr02r39iul.png" 
-                      alt="jobpost.me logo" 
-                      className="h-6 sm:h-8 md:h-8 w-auto object-contain cursor-pointer"
+                    <img
+                      src="https://res.cloudinary.com/deeiccvqd/image/upload/v1770804947/awsyzhmfmdsr02r39iul.png"
+                      alt="jobpost.me logo"
+                      className="h-8 w-auto object-contain"
                     />
-                  </a>
-
+                  </div>
                 </div>
               </div>
             </Link>
