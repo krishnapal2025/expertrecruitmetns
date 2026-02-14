@@ -182,8 +182,9 @@ export default function Navbar() {
                 </div>
                 <div className="ml-2 sm:ml-3 flex flex-col">
                   <span className="text-white font-bold text-base sm:text-lg md:text-xl lg:text-2xl uppercase" style={{ letterSpacing: '0.12em', display: 'inline-block' }}>Expert</span>
-                  <span className="text-white text-[10px] sm:text-xs md:text-sm -mt-1">Recruitments LLC</span>
-                  
+                  <span className="text-white text-[10px] sm:text-xs md:text-sm whitespace-nowrap">
+                    Recruitments LLC
+                  </span>
                 </div>
               </div>
             </Link>
@@ -193,7 +194,7 @@ export default function Navbar() {
 
 
           {/* Desktop navigation */}
-          <nav className="hidden md:flex md:space-x-1 lg:space-x-3 xl:space-x-5 items-center">
+          <nav className="hidden md:flex md:space-x-1 lg:space-x-3 xl:space-x-4 items-center ml-10">
             {navigationLinks.map((link) => (
               link.isDropdown ? (
                 <div key={link.name} className="relative group">
@@ -203,7 +204,7 @@ export default function Navbar() {
                     {link.name}
                     <ChevronDown className="h-3 w-3 lg:h-4 lg:w-4 ml-1 transition-transform group-hover:rotate-180" />
                   </div>
-                  <div className="absolute left-0 mt-2 w-48 lg:w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                  <div className="absolute left-0 mt-12 w-48 lg:w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                     <div className="py-2 rounded-lg bg-white dark:bg-gray-800 border-2 border-[#5372f1]/20 dark:border-gray-700">
                       {link.dropdownItems?.map((item) => (
                         <ScrollLink key={item.name} href={item.href} className={`block px-3 lg:px-5 py-2 lg:py-3 text-sm lg:text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-[#5372f1]/10 hover:text-[#5372f1] transition-colors duration-200 ${location === item.href ? "text-[#5372f1] bg-[#5372f1]/10 font-medium border-l-2 border-[#5372f1]" : ""}`}>
@@ -254,7 +255,7 @@ export default function Navbar() {
           </nav>
 
           {/* Desktop right section */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-5 ml-6">
             {currentUser ? (
               <>
                 <NotificationsPopover />
@@ -348,7 +349,7 @@ export default function Navbar() {
                       </DropdownMenuItem>
                     </RoleScrollLink>
                     <RoleScrollLink href="/job-seeker-register" requiredUserType="jobseeker" className="w-full">
-                      <DropdownMenuItem className="flex items-center py-3 px-4 rounded-md hover:bg-[#5372f1] hover:text-white cursor-pointer">
+                      <DropdownMenuItem className="flex items-center py-3 px-3 rounded-md hover:bg-[#5372f1] hover:text-white cursor-pointer">
                         <User className="mr-2 h-5 w-5" />
                         <span className="text-base font-medium">Job Seeker</span>
                       </DropdownMenuItem>
@@ -360,13 +361,13 @@ export default function Navbar() {
           </div>
          
           <div
-            className="flex items-center ml-1 -mt-1 cursor-pointer"
+            className="flex items-center ml-1 cursor-pointer"
             onClick={() => window.open("https://jobpost.me", "_blank")}
           >
             <img
               src="https://res.cloudinary.com/deeiccvqd/image/upload/v1770804947/awsyzhmfmdsr02r39iul.png"
               alt="jobpost.me logo"
-              className="h-12 w-auto object-contain"
+              className="h-[40px] w-auto object-contain"
             />
           </div>
 
@@ -601,7 +602,17 @@ export default function Navbar() {
                                 onClick={(e) => {
                                   e.preventDefault();
                                   setIsMobileMenuOpen(false);
-                                  setTimeout(() => window.location.href = "/employer-register", 100);
+                                  // Use the role redirect logic
+                                  if (!currentUser) {
+                                    // Not logged in - go to employer registration
+                                    setTimeout(() => window.location.href = "/employer-register", 100);
+                                  } else if (currentUser?.user?.userType === "employer") {
+                                    // Already an employer - stay on current page
+                                    window.scrollTo(0, 0);
+                                  } else if (currentUser?.user?.userType === "jobseeker") {
+                                    // Job seeker - go to employer registration
+                                    setTimeout(() => window.location.href = "/employer-register", 100);
+                                  }
                                 }}
                               >
                                 <Briefcase className="mr-2 h-4 w-4" />
@@ -613,7 +624,17 @@ export default function Navbar() {
                                 onClick={(e) => {
                                   e.preventDefault();
                                   setIsMobileMenuOpen(false);
-                                  setTimeout(() => window.location.href = "/job-seeker-register", 100);
+                                  // Use the role redirect logic
+                                  if (!currentUser) {
+                                    // Not logged in - go to job seeker registration
+                                    setTimeout(() => window.location.href = "/job-seeker-register", 100);
+                                  } else if (currentUser?.user?.userType === "jobseeker") {
+                                    // Already a job seeker - stay on current page
+                                    window.scrollTo(0, 0);
+                                  } else if (currentUser?.user?.userType === "employer") {
+                                    // Employer - go to job seeker registration
+                                    setTimeout(() => window.location.href = "/job-seeker-register", 100);
+                                  }
                                 }}
                               >
                                 <User className="mr-2 h-4 w-4" />
