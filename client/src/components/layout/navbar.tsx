@@ -183,16 +183,7 @@ export default function Navbar() {
                 <div className="ml-2 sm:ml-3 flex flex-col">
                   <span className="text-white font-bold text-base sm:text-lg md:text-xl lg:text-2xl uppercase" style={{ letterSpacing: '0.12em', display: 'inline-block' }}>Expert</span>
                   <span className="text-white text-[10px] sm:text-xs md:text-sm -mt-1">Recruitments LLC</span>
-                  <div
-                    className="flex items-center ml-1 -mt-1 cursor-pointer"
-                    onClick={() => window.open("https://jobpost.me", "_blank")}
-                  >
-                    <img
-                      src="https://res.cloudinary.com/deeiccvqd/image/upload/v1770804947/awsyzhmfmdsr02r39iul.png"
-                      alt="jobpost.me logo"
-                      className="h-8 w-auto object-contain"
-                    />
-                  </div>
+                  
                 </div>
               </div>
             </Link>
@@ -366,6 +357,17 @@ export default function Navbar() {
                 </DropdownMenu>
               </>
             )}
+          </div>
+         
+          <div
+            className="flex items-center ml-1 -mt-1 cursor-pointer"
+            onClick={() => window.open("https://jobpost.me", "_blank")}
+          >
+            <img
+              src="https://res.cloudinary.com/deeiccvqd/image/upload/v1770804947/awsyzhmfmdsr02r39iul.png"
+              alt="jobpost.me logo"
+              className="h-12 w-auto object-contain"
+            />
           </div>
 
           {/* Mobile menu button */}
@@ -599,17 +601,7 @@ export default function Navbar() {
                                 onClick={(e) => {
                                   e.preventDefault();
                                   setIsMobileMenuOpen(false);
-                                  // Use the role redirect logic
-                                  if (!currentUser) {
-                                    // Not logged in - go to employer registration
-                                    setTimeout(() => window.location.href = "/employer-register", 100);
-                                  } else if (currentUser?.user?.userType === "employer") {
-                                    // Already an employer - stay on current page
-                                    window.scrollTo(0, 0);
-                                  } else if (currentUser?.user?.userType === "jobseeker") {
-                                    // Job seeker - go to employer registration
-                                    setTimeout(() => window.location.href = "/employer-register", 100);
-                                  }
+                                  setTimeout(() => window.location.href = "/employer-register", 100);
                                 }}
                               >
                                 <Briefcase className="mr-2 h-4 w-4" />
@@ -621,17 +613,7 @@ export default function Navbar() {
                                 onClick={(e) => {
                                   e.preventDefault();
                                   setIsMobileMenuOpen(false);
-                                  // Use the role redirect logic
-                                  if (!currentUser) {
-                                    // Not logged in - go to job seeker registration
-                                    setTimeout(() => window.location.href = "/job-seeker-register", 100);
-                                  } else if (currentUser?.user?.userType === "jobseeker") {
-                                    // Already a job seeker - stay on current page
-                                    window.scrollTo(0, 0);
-                                  } else if (currentUser?.user?.userType === "employer") {
-                                    // Employer - go to job seeker registration
-                                    setTimeout(() => window.location.href = "/job-seeker-register", 100);
-                                  }
+                                  setTimeout(() => window.location.href = "/job-seeker-register", 100);
                                 }}
                               >
                                 <User className="mr-2 h-4 w-4" />
